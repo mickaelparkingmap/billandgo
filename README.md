@@ -26,7 +26,9 @@ About Us
 --------
 
 Bill&Go is an [iumio component][5], created by [Mickael Builard][4]
+
 [iumio][5], Create tools to optimize developers work.
+
 Follow us on [Bill&Go blog][6]
 
 [1]: http://billandgo.fr
