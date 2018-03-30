@@ -1,0 +1,363 @@
+<?php
+
+namespace MyJobManagerBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+/**
+ * Project
+ *
+ * @ORM\Table(name="project")
+ * @ORM\Entity
+ */
+class Project
+{
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="begin", type="datetime", nullable=false)
+     */
+    private $begin = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="deadline", type="datetime", nullable=true)
+     */
+    private $deadline;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=100, nullable=false)
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text", length=65535, nullable=true)
+     */
+    private $description;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \MyJobManagerBundle\Entity\Devis
+     *
+     * @ORM\ManyToMany(targetEntity="MyJobManagerBundle\Entity\Devis", inversedBy="refProject")
+     * @ORM\JoinTable(name="estimate_project",
+     *		joinColumns={@ORM\JoinColumn(name="project_id", referencedColumnName="id")},
+     *		inverseJoinColumns={@ORM\JoinColumn(name="estimate_id", referencedColumnName="id")}
+     *		)
+     */
+    private $refEstimate;
+
+    /**
+     * @var \MyJobManagerBundle\Entity\Bill
+     *
+     * @ORM\ManyToMany(targetEntity="MyJobManagerBundle\Entity\Bill", inversedBy="refProject")
+     * @ORM\JoinTable(name="project_bill",
+     *		joinColumns={@ORM\JoinColumn(name="project_id", referencedColumnName="id")},
+     *		inverseJoinColumns={@ORM\JoinColumn(name="bill_id", referencedColumnName="id")}
+     *		)
+     */
+    private $refBill;
+
+    /**
+     * @var \MyJobManagerBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="MyJobManagerBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="ref_user", referencedColumnName="id")
+     * })
+     */
+    private $refUser;
+
+    /**
+     * @var \MyJobManagerBundle\Entity\Client
+     *
+     * @ORM\ManyToOne(targetEntity="MyJobManagerBundle\Entity\Client")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="client", referencedColumnName="id")
+     * })
+     */
+    private $client;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Todo", cascade={"all"}, orphanRemoval=true)
+     * @ORM\JoinTable(name="project_todo",
+     *		joinColumns={@ORM\JoinColumn(name="project_id", referencedColumnName="id")},
+     *		inverseJoinColumns={@ORM\JoinColumn(name="todo_id", referencedColumnName="id", unique=true)}
+     *		)
+     */
+    private $todo;
+
+
+
+    /**
+     * Set begin
+     *
+     * @param \DateTime $begin
+     *
+     * @return Project
+     */
+    public function setBegin($begin)
+    {
+        $this->begin = $begin;
+
+        return $this;
+    }
+
+    /**
+     * Get begin
+     *
+     * @return \DateTime
+     */
+    public function getBegin()
+    {
+        return $this->begin;
+    }
+
+    /**
+     * Set deadline
+     *
+     * @param \DateTime $deadline
+     *
+     * @return Project
+     */
+    public function setDeadline($deadline)
+    {
+        $this->deadline = $deadline;
+
+        return $this;
+    }
+
+    /**
+     * Get deadline
+     *
+     * @return \DateTime
+     */
+    public function getDeadline()
+    {
+        return $this->deadline;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Project
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Project
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set refUser
+     *
+     * @param \MyJobManagerBundle\Entity\User $refUser
+     *
+     * @return Project
+     */
+    public function setRefUser(\MyJobManagerBundle\Entity\User $refUser = null)
+    {
+        $this->refUser = $refUser;
+
+        return $this;
+    }
+
+    /**
+     * Get refUser
+     *
+     * @return \MyJobManagerBundle\Entity\User
+     */
+    public function getRefUser()
+    {
+        return $this->refUser;
+    }
+
+    /**
+     * Set client
+     *
+     * @param \MyJobManagerBundle\Entity\Client $clicli
+     *
+     * @return Project
+     */
+    public function setClient(\MyJobManagerBundle\Entity\Client $clicli = null)
+    {
+        $this->client = $clicli;
+
+        return $this;
+    }
+
+    /**
+     * Get client
+     *
+     * @return \MyJobManagerBundle\Entity\Client
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
+     * @param Todo $line
+     *
+     * @return Project
+     */
+    public function addTodo(Todo $line)
+    {
+        $this->todo[] = $line;
+    }
+
+    /**
+     * @param Todo $line
+     *
+     * @return Project
+     */
+    public function removeTodo(Todo $line)
+    {
+        $this->todo->removeElement($line);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getTodo()
+    {
+        return $this->todo;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->todo = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add refEstimate
+     *
+     * @param \MyJobManagerBundle\Entity\Devis $refEstimate
+     *
+     * @return Project
+     */
+    public function addRefEstimate(\MyJobManagerBundle\Entity\Devis $refEstimate)
+    {
+        $this->refEstimate[] = $refEstimate;
+
+        return $this;
+    }
+
+    /**
+     * Remove refEstimate
+     *
+     * @param \MyJobManagerBundle\Entity\Devis $refEstimate
+     */
+    public function removeRefEstimate(\MyJobManagerBundle\Entity\Devis $refEstimate)
+    {
+        $this->refEstimate->removeElement($refEstimate);
+    }
+
+    /**
+     * Get refEstimate
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRefEstimate()
+    {
+        return $this->refEstimate;
+    }
+
+    /**
+     * Add refBill
+     *
+     * @param \MyJobManagerBundle\Entity\Bill $refBill
+     *
+     * @return Project
+     */
+    public function addRefBill(\MyJobManagerBundle\Entity\Bill $refBill)
+    {
+        $this->refBill[] = $refBill;
+
+        return $this;
+    }
+
+    /**
+     * Remove refBill
+     *
+     * @param \MyJobManagerBundle\Entity\Bill $refBill
+     */
+    public function removeRefBill(\MyJobManagerBundle\Entity\Bill $refBill)
+    {
+        $this->refBill->removeElement($refBill);
+    }
+
+    /**
+     * Get refBill
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRefBill()
+    {
+        return $this->refBill;
+    }
+}
+
