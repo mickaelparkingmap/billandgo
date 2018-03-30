@@ -1,0 +1,61 @@
+{% extends "MyJobManagerBundle::base.html.twig" %}
+
+{% block title %}{{ parent() }} - Liste des taxes{% endblock %}
+
+{% block fos_user_content %}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Taxes
+                <small>Liste des taxes</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><i class="fa fa-wrench"></i> Administration</li>
+                <li class="active"><i class="fa fa-legal"></i> Taxes</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Liste des taxes</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        {% for tax in taxes %}
+                            <div class="well">
+                                <h3>{{ tax.name }} ({{ tax.percent }}%)</h3>
+                                <p>{{ tax.help }}</p>
+                            </div>
+                        {% else %}
+                            <div class="col-sm-12">
+                                <div class="callout callout-warning text-center">
+                                    <h4> <i class="fa fa-warning"></i> Aucune taxe <i class="fa fa-warning"></i> </h4>
+                                    <p>Vous n'avez pas encore enregistré de taxe, ne perdez pas de temps, <a href="#">Ajoutez en une</a></p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="text-center">
+                        <a href="#" class="btn btn-success"><i class="fa fa-plus"></i> Ajouter une taxe</a>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+{% endblock fos_user_content %}

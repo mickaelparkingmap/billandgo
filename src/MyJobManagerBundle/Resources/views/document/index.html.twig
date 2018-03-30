@@ -1,0 +1,782 @@
+{% extends "MyJobManagerBundle::base.html.twig" %}
+
+{% if type == 'estimate' %}
+    {% set min_fr = "devis" %}
+    {% set maj_fr = "Devis" %}
+{% elseif type == 'bill' %}
+    {% set min_fr = "facture" %}
+    {% set maj_fr = "Facture" %}
+{% endif %}
+
+{% block title %}{{ parent() }} - Liste des {{ min_fr }}{% endblock %}
+
+{%
+set status_fr = {
+"draw" : "brouillon",
+"estimated" : "envoyé",
+"sent" : "devisé",
+"accepted" : "accepté",
+"billed" : "facturé",
+"canceled" : "annulé",
+"refused" : "refusé",
+"partially" : "partiellement payé",
+"paid" : "payé",
+"" : "inconnu"
+}
+%}
+
+
+{% block fos_user_content %}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                {{ maj_fr }}
+                <small>Liste des {{ min_fr }}</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li class="active"><i class="fa fa-file-text-o"></i> {{ maj_fr }}</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+
+            {# good #}
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Vos {{ maj_fr }} en cours</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="text-center">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-primary" id="estimateFilterAll">Tous</button>
+                                <button type="button" class="btn btn-default btn-primary" id="estimateFilterSent">Envoyés</button>
+                                <button type="button" class="btn btn-default btn-primary" id="estimateFilterAccepted">Acceptés</button>
+                            </div>
+                        </div>
+                        {% set nbdoc = 0 %}
+                        {% set totalHT = 0 %}
+                        {% set totalVat = 0 %}
+                        {% set draws = [] %}
+                        {% set transformed = [] %}
+                        {% set canceled = [] %}
+                        {% for doc in list %}
+                            {% if doc.status == "draw" %}
+                                {% set draws = draws|merge([doc]) %}
+                            {% elseif (doc.status == "canceled" or doc.status == "refused") %}
+                                {% set canceled = canceled|merge([doc]) %}
+                            {% elseif doc.areLinesTransformed %}
+                                {% set transformed = transformed|merge([doc]) %}
+                            {% else %}
+                                {% set totalHT = totalHT + doc.HT %}
+                                {% set totalVat = totalVat + doc.VAT %}
+                                {% set nbdoc = nbdoc + 1 %}
+                                <div class="col-md-6 col-lg-4 text-center third-block estimate-block estimate-{{ doc.status }}">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="color-{{ doc.status }}">
+                                            <a href="{{ path('myjobmanager_document_view', {'id': doc.id}) }}">
+                                                {{ doc.number }}
+                                            </a>
+                                        </h3>
+                                        <h4 class="color-{{ doc.status }}">
+                                            pour
+                                            <a href="{{ path('myjobmanager_clients_view', {'id': doc.refClient.id}) }}">
+                                                {{ doc.refClient.companyName }}
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <ul class="nav nav-pills nav-justified">
+                                            <li class="active">
+                                                <a data-toggle="tab" href="#estimate-{{ doc.number }}-stat">
+                                                    {{ status_fr[doc.status] }}
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#estimate-{{ doc.number }}-desc">
+                                                    Description
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#estimate-{{ doc.number }}-fin">
+                                                    {{ doc.HT + doc.VAT }}€ TTC
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div id="estimate-{{ doc.number }}-stat" class="tab-pane fade in active bg-info">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        Envoyé le :
+                                                        <br/>
+                                                        {{ doc.sentDate|date('d-m-Y') }}
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        Valide jusqu'au :
+                                                        <br/>
+                                                        {{ doc.delayDate|date('d-m-Y') }}
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    {% if doc.status == "estimated" %}
+                                                        <div class="col-sm-6 text-left">
+                                                            <a class="btn btn-success" href="{{ path('myjobmanager_document_edit_status', {'id': doc.id, 'status': 'accepted'}) }}">
+                                                                <i class="fa fa-envelope-open"></i> Accepté
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-sm-6 text-right">
+                                                            <a class="btn btn-danger" href="{{ path('myjobmanager_document_edit_status', {'id': doc.id, 'status': 'refused'}) }}">
+                                                                <i class="fa fa-envelope-open"></i> Refusé
+                                                            </a>
+                                                        </div>
+                                                    {% elseif doc.status == "accepted" %}
+                                                        <div class="col-sm-6 text-left">
+                                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createProjectModal">
+                                                                <i class="fa fa-industry"></i> Créer un projet
+                                                            </button>
+                                                            <div class="modal fade text-center" id="createProjectModal" tabindex="-1" role="dialog" aria-labelledby="createProjectModalLabel" aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="createProjectModalLabel">Créer un projet</h5>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="well">
+                                                                                <form method="post" action="{{ path('myjobmanager_project_create_from_estimate', {'estimateID' : doc.id}) }}">
+                                                                                    <div class="form-group row">
+                                                                                        <label for="project_name" class="col-sm-3 col-form-label">Nom</label>
+                                                                                        <div class="col-sm-9">
+                                                                                            <input class="form-control" type="text" value="Entrez le nom du projet" id="project_name" name="name">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="form-group row">
+                                                                                        <label for="project_deadline" class="col-sm-3 col-form-label">Deadline</label>
+                                                                                        <div class="col-sm-9">
+                                                                                            <input class="form-control" type="text" name="deadline" id="project_deadline">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <button type="submit" class="btn btn-success">Créer le projet</button>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6 text-right">
+                                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createBillModal">
+                                                                <i class="fa fa-briefcase"></i> Créer une facture
+                                                            </button>
+                                                            <div class="modal fade text-center" id="createBillModal" tabindex="-1" role="dialog" aria-labelledby="createBillModalLabel" aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="exampleModalLabel">Créer une facture</h5>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="well">
+                                                                                <form method="post" action="{{ path('myjobmanager_bill_create_from_estimate', {'estimate_id' : doc.id}) }}">
+                                                                                    <div class="form-group">
+                                                                                        <label for="bill_delay" class="form-label">Date de paiement</label>
+                                                                                        <input id="bill_delay" name="delay" required="required" class="form-control" type="text">
+                                                                                    </div>
+                                                                                    <button type="submit" class="btn btn-success">Créer la facture</button>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div id="estimate-{{ doc.number }}-desc" class="tab-pane fade in bg-info">
+                                                <p>
+                                                    {{ doc.description|length > 300 ? doc.description|slice(0, 300) ~ '...' : doc.description  }}
+                                                </p>
+                                            </div>
+                                            <div id="estimate-{{ doc.number }}-fin" class="tab-pane fade in bg-info">
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        HT : {{ doc.HT }}€
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        HT : {{ doc.HT + doc.VAT }}€
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    {% for line in doc.refLines %}
+                                                        <div {% if (line.refProject|first or line.refBill|first) %}class="color-grey"{% endif %} >
+                                                            {% if (line.refProject|first or line.refBill|first) %}<em>{% endif %}
+                                                                {{ line.name }}
+                                                            {% if (line.refProject|first or line.refBill|first) %}</em>{% endif %}
+                                                            <span class="badge badge-success">
+                                                                {{ (line.refTax.percent + 100) / 100 * (line.price * line.quantity) }}€ TTC
+                                                            </span>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="col-sm-12">
+                                <div class="callout callout-warning text-center">
+                                    <h4> <i class="fa fa-warning"></i> Aucun {{ min_fr }} enregistré <i class="fa fa-warning"></i> </h4>
+                                    <p>
+                                        Vous n'avez pas encore saisi de {{ min_fr }}, ne perdez pas de temps,
+                                        <a href="{{ path('myjobmanager_estimate_add') }}">Ajoutez votre premier {{ min_fr }}</a>
+                                    </p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div> Total HT : <span class="badge bg-green">{{ totalHT }}€</span></div>
+                    <div> Total TTC : <span class="badge bg-green">{{ totalVat + totalHT }}€</span></div>
+                    <div> Total TVA : <span class="badge bg-red">{{ totalVat }}€</span></div>
+                </div>
+            </div>
+
+            {# brouillons #}
+            <div class="box box-default collapsed-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{ draws|length }} brouillon{% if draws|length > 1 %}s{% endif %}</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            {% if draws|length > 0 %}<i class="fa fa-plus"></i>{% endif %}
+                        </button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        {% for doc in draws %}
+                            <div class="col-md-6 col-lg-4 text-center third-block estimate-block">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="color-{{ doc.status }}">
+                                            <a href="{{ path('myjobmanager_document_view', {'id': doc.id}) }}">
+                                                {{ doc.number }}
+                                            </a>
+                                        </h3>
+                                        <h4 class="color-{{ doc.status }}">
+                                            pour
+                                            <a href="{{ path('myjobmanager_clients_view', {'id': doc.refClient.id}) }}">
+                                                {{ doc.refClient.companyName }}
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <ul class="nav nav-pills nav-justified">
+                                            <li class="active">
+                                                <a data-toggle="tab" href="#estimate-{{ doc.number }}-stat">
+                                                    {{ status_fr[doc.status] }}
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#estimate-{{ doc.number }}-desc">
+                                                    Description
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#estimate-{{ doc.number }}-fin">
+                                                    {{ doc.HT + doc.VAT }}€ TTC
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div id="estimate-{{ doc.number }}-stat" class="tab-pane fade in active bg-info">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        Créé le :
+                                                        <br/>
+                                                        {{ doc.sentDate|date('d-m-Y') }}
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        Valide jusqu'au :
+                                                        <br/>
+                                                        {{ doc.delayDate|date('d-m-Y') }}
+                                                    </div>
+                                                </div>
+                                                <div style="margin:15px;">
+                                                    <form action="{{ path("myjobmanager_document_send_email", {"doc_id": doc.id}) }}" method="get">
+                                                        <div class="form-group"style="float:left;width:70%;">
+                                                            <select dir="rtl" class="form-control" name="contact" style="background-color: #00c0ef;color:#fff;">
+                                                                {% for contact in doc.refClient.contacts %}
+                                                                    <option value="{{ contact.id }}">{{ contact.email }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-info" style="float:left;width: 30%;">
+                                                            <i class="fa fa-envelope"></i> Envoyer
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div id="estimate-{{ doc.number }}-desc" class="tab-pane fade in bg-info">
+                                                <p>
+                                                    {{ doc.description|length > 300 ? doc.description|slice(0, 300) ~ '...' : doc.description  }}
+                                                </p>
+                                            </div>
+                                            <div id="estimate-{{ doc.number }}-fin" class="tab-pane fade in bg-info">
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        HT : {{ doc.HT }}€
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        HT : {{ doc.HT + doc.VAT }}€
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    {% for line in doc.refLines %}
+                                                        <div {% if (line.refProject|first or line.refBill|first) %}class="color-grey"{% endif %} >
+                                                            {% if (line.refProject|first or line.refBill|first) %}<em>{% endif %}
+                                                                {{ line.name }}
+                                                                {% if (line.refProject|first or line.refBill|first) %}</em>{% endif %}
+                                                            <span class="badge badge-success">
+                                                                {{ (line.refTax.percent + 100) / 100 * (line.price * line.quantity) }}€ TTC
+                                                            </span>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="col-sm-12">
+                                <div class="callout callout-warning text-center">
+                                    <h4> <i class="fa fa-warning"></i> Aucun {{ min_fr }} enregistré <i class="fa fa-warning"></i> </h4>
+                                    <p>
+                                        Vous n'avez pas encore saisi de {{ min_fr }}, ne perdez pas de temps,
+                                        <a href="{{ path('myjobmanager_estimate_add') }}">Ajoutez votre premier {{ min_fr }}</a>
+                                    </p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+
+            {# transformed #}
+            <div class="box box-default collapsed-box">
+                <div class="box-header with-border">
+                    {% if type == 'estimate' %}
+                        <h3 class="box-title">{{ transformed|length }} devis transformé{% if transformed|length > 1 %}s{% endif %}</h3>
+                    {% elseif type == 'bill' %}
+                        <h3 class="box-title">Vos factures payées</h3>
+                    {% endif %}
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            {% if transformed|length > 0 %}<i class="fa fa-plus"></i>{% endif %}
+                        </button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        {% for doc in transformed %}
+                            <div class="col-md-6 col-lg-4 text-center third-block estimate-block">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="color-{{ doc.status }}">
+                                            <a href="{{ path('myjobmanager_document_view', {'id': doc.id}) }}">
+                                                {{ doc.number }}
+                                            </a>
+                                        </h3>
+                                        <h4 class="color-{{ doc.status }}">
+                                            pour
+                                            <a href="{{ path('myjobmanager_clients_view', {'id': doc.refClient.id}) }}">
+                                                {{ doc.refClient.companyName }}
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <ul class="nav nav-pills nav-justified">
+                                            <li class="active">
+                                                <a data-toggle="tab" href="#estimate-{{ doc.number }}-stat">
+                                                    {{ status_fr[doc.status] }}
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#estimate-{{ doc.number }}-desc">
+                                                    Description
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#estimate-{{ doc.number }}-fin">
+                                                    {{ doc.HT + doc.VAT }}€ TTC
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div id="estimate-{{ doc.number }}-stat" class="tab-pane fade in active bg-info">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        Envoyé le :
+                                                        <br/>
+                                                        {{ doc.sentDate|date('d-m-Y') }}
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        {% if doc.answerDate %}
+                                                            {{ status_fr[doc.status] }} le :
+                                                            <br/>
+                                                            {{ doc.answerDate|date('d-m-Y') }}
+                                                        {% else %}
+                                                            Valide jusqu'au :
+                                                            <br/>
+                                                            {{ doc.delayDate|date('d-m-Y') }}
+                                                        {%  endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="estimate-{{ doc.number }}-desc" class="tab-pane fade in bg-info">
+                                                <p>
+                                                    {{ doc.description|length > 300 ? doc.description|slice(0, 300) ~ '...' : doc.description  }}
+                                                </p>
+                                            </div>
+                                            <div id="estimate-{{ doc.number }}-fin" class="tab-pane fade in bg-info">
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        HT : {{ doc.HT }}€
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        HT : {{ doc.HT + doc.VAT }}€
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    {% for line in doc.refLines %}
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                {{ line.name }}
+                                                                <span class="badge badge-success">
+                                                                    {{ (line.refTax.percent + 100) / 100 * (line.price * line.quantity) }}€ TTC
+                                                                </span>
+                                                            </div>
+                                                            <div class="col-md-4 col-sm-6">
+                                                                {% if line.refProject|first %}
+                                                                    <a class="btn btn-info" href="{{ path("myjobmanager_project_view", {"id":line.refProject|first.id}) }}">
+                                                                        {{ line.refProject|first.name }}
+                                                                    </a>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="col-md-4 col-sm-6">
+                                                                {% if line.refBill|first %}
+                                                                    <a class="btn btn-info" href="{{ path("myjobmanager_document_view", {"id":line.refBill|first.id}) }}">
+                                                                        {{ line.refBill|first.number }}
+                                                                    </a>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="col-sm-12">
+                                <div class="callout callout-warning text-center">
+                                    <h4> <i class="fa fa-warning"></i> Aucun {{ min_fr }} enregistré <i class="fa fa-warning"></i> </h4>
+                                    <p>
+                                        Vous n'avez pas encore saisi de {{ min_fr }}, ne perdez pas de temps,
+                                        <a href="{{ path('myjobmanager_estimate_add') }}">Ajoutez votre premier {{ min_fr }}</a>
+                                    </p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+
+            {# canceled/refused #}
+            <div class="box box-default collapsed-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">
+                        {{ canceled|length }} devis annulé{% if canceled|length > 1 %}s{% endif %}/refusé{% if canceled|length > 1 %}s{% endif %}
+                    </h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            {% if canceled|length > 0 %}<i class="fa fa-plus"></i>{% endif %}
+                        </button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        {% for doc in canceled %}
+                            <div class="col-md-6 col-lg-4 text-center third-block estimate-block estimate-{{ doc.status }}">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="color-{{ doc.status }}">
+                                            <a href="{{ path('myjobmanager_document_view', {'id': doc.id}) }}">
+                                                {{ doc.number }}
+                                            </a>
+                                        </h3>
+                                        <h4 class="color-{{ doc.status }}">
+                                            pour
+                                            <a href="{{ path('myjobmanager_clients_view', {'id': doc.refClient.id}) }}">
+                                                {{ doc.refClient.companyName }}
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <ul class="nav nav-pills nav-justified">
+                                            <li class="active">
+                                                <a data-toggle="tab" href="#estimate-{{ doc.number }}-stat">
+                                                    {{ status_fr[doc.status] }}
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#estimate-{{ doc.number }}-desc">
+                                                    Description
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#estimate-{{ doc.number }}-fin">
+                                                    {{ doc.HT + doc.VAT }}€ TTC
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div id="estimate-{{ doc.number }}-stat" class="tab-pane fade in active bg-info">
+                                                <div class="row">
+                                                    {% if doc.answerDate %}
+                                                        <div class="col-sm-6">
+                                                            Envoyé le :
+                                                            <br/>
+                                                            {{ doc.sentDate|date('d-m-Y') }}
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            {% if doc.answerDate %}
+                                                                {{ status_fr[doc.status] }} le :
+                                                                <br/>
+                                                                {{ doc.answerDate|date('d-m-Y') }}
+                                                            {% else %}
+                                                                Valide jusqu'au :
+                                                                <br/>
+                                                                {{ doc.delayDate|date('d-m-Y') }}
+                                                            {%  endif %}
+                                                        </div>
+                                                    {% else %}
+                                                        <div>
+                                                            Envoyé le :
+                                                            <br/>
+                                                            {{ doc.sentDate|date('d-m-Y') }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="row">
+                                                    {% if doc.status == "estimated" %}
+                                                        <div class="col-sm-6 text-left">
+                                                            <a class="btn btn-success" href="{{ path('myjobmanager_document_edit_status', {'id': doc.id, 'status': 'accepted'}) }}">
+                                                                <i class="fa fa-envelope-open"></i> Accepté
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-sm-6 text-right">
+                                                            <a class="btn btn-danger" href="{{ path('myjobmanager_document_edit_status', {'id': doc.id, 'status': 'refused'}) }}">
+                                                                <i class="fa fa-envelope-open"></i> Refusé
+                                                            </a>
+                                                        </div>
+                                                    {% elseif doc.status == "accepted" %}
+                                                        <div class="col-sm-6 text-left">
+                                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createProjectModal">
+                                                                <i class="fa fa-industry"></i> Créer un projet
+                                                            </button>
+                                                            <div class="modal fade text-center" id="createProjectModal" tabindex="-1" role="dialog" aria-labelledby="createProjectModalLabel" aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="createProjectModalLabel">Créer un projet</h5>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="well">
+                                                                                <form method="post" action="{{ path('myjobmanager_project_create_from_estimate', {'estimateID' : doc.id}) }}">
+                                                                                    <div class="form-group row">
+                                                                                        <label for="project_name" class="col-sm-3 col-form-label">Nom</label>
+                                                                                        <div class="col-sm-9">
+                                                                                            <input class="form-control" type="text" value="Entrez le nom du projet" id="project_name" name="name">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="form-group row">
+                                                                                        <label for="project_deadline" class="col-sm-3 col-form-label">Deadline</label>
+                                                                                        <div class="col-sm-9">
+                                                                                            <input class="form-control" type="text" name="deadline" id="project_deadline">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <button type="submit" class="btn btn-success">Créer le projet</button>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6 text-right">
+                                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createBillModal">
+                                                                <i class="fa fa-briefcase"></i> Créer une facture
+                                                            </button>
+                                                            <div class="modal fade text-center" id="createBillModal" tabindex="-1" role="dialog" aria-labelledby="createBillModalLabel" aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="exampleModalLabel">Créer une facture</h5>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="well">
+                                                                                <form method="post" action="{{ path('myjobmanager_bill_create_from_estimate', {'estimate_id' : doc.id}) }}">
+                                                                                    <div class="form-group">
+                                                                                        <label for="bill_delay" class="form-label">Date de paiement</label>
+                                                                                        <input id="bill_delay" name="delay" required="required" class="form-control" type="text">
+                                                                                    </div>
+                                                                                    <button type="submit" class="btn btn-success">Créer la facture</button>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div id="estimate-{{ doc.number }}-desc" class="tab-pane fade in bg-info">
+                                                <p>
+                                                    {{ doc.description|length > 300 ? doc.description|slice(0, 300) ~ '...' : doc.description  }}
+                                                </p>
+                                            </div>
+                                            <div id="estimate-{{ doc.number }}-fin" class="tab-pane fade in bg-info">
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        HT : {{ doc.HT }}€
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        HT : {{ doc.HT + doc.VAT }}€
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    {% for line in doc.refLines %}
+                                                        <div {% if (line.refProject|first or line.refBill|first) %}class="color-grey"{% endif %} >
+                                                            {% if (line.refProject|first or line.refBill|first) %}<em>{% endif %}
+                                                                {{ line.name }}
+                                                                {% if (line.refProject|first or line.refBill|first) %}</em>{% endif %}
+                                                            <span class="badge badge-success">
+                                                                {{ (line.refTax.percent + 100) / 100 * (line.price * line.quantity) }}€ TTC
+                                                            </span>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="col-sm-12">
+                                <div class="callout callout-warning text-center">
+                                    <h4> <i class="fa fa-warning"></i> Aucun {{ min_fr }} enregistré <i class="fa fa-warning"></i> </h4>
+                                    <p>
+                                        Vous n'avez pas encore saisi de {{ min_fr }}, ne perdez pas de temps,
+                                        <a href="{{ path('myjobmanager_estimate_add') }}">Ajoutez votre premier {{ min_fr }}</a>
+                                    </p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+
+            <div class="text-center">
+                <a href="{{ path('myjobmanager_estimate_add') }}" class="btn btn-success"><i class="fa fa-plus"></i> Ajouter un {{ min_fr }}</a>
+            </div>
+
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+{% endblock fos_user_content %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        //filter
+        $('#estimateFilterAll').addClass('active');
+
+        $("#estimateFilterSent").click(
+            function() {
+                $('.estimate-sent').show();
+                $('.estimate-accepted').hide();
+                $('#estimateFilterSent').addClass('active');
+                $('#estimateFilterAccepted').removeClass('active');
+                $('#estimateFilterAll').removeClass('active');
+            }
+        );
+        $("#estimateFilterAccepted").click(
+            function() {
+                $('.estimate-sent').hide();
+                $('.estimate-accepted').show();
+                $('#estimateFilterAccepted').addClass('active');
+                $('#estimateFilterSent').removeClass('active');
+                $('#estimateFilterAll').removeClass('active');
+            }
+        );
+        $("#estimateFilterAll").click(
+            function() {
+                $('.estimate-sent').show();
+                $('.estimate-accepted').show();
+                $('#estimateFilterAll').addClass('active');
+                $('#estimateFilterSent').removeClass('active');
+                $('#estimateFilterAccepted').removeClass('active');
+            }
+        );
+    </script>
+{% endblock %}

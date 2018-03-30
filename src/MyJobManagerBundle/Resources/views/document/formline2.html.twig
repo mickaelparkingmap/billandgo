@@ -1,0 +1,71 @@
+<tr class="line-elt">
+    <div class="hidden">
+        {# form(form) #}
+        {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+        {{ form_errors(form) }}
+    </div>
+    <td>
+        <div class="form-group">
+            {# form_label(form.name, "Nom", {'label_attr': {'class': 'col-sm-3 col-form-label'}}) #}
+            {{ form_errors(form.name) }}
+            {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Nom de la ligne'}}) }}
+        </div>
+    </td>
+    <td>
+        <div class="form-group row">
+            {{ form_label(form.quantity, "Quantité :", {'label_attr': {'class': 'col-sm-6 col-form-label'}}) }}
+            {{ form_errors(form.quantity) }}
+            <div class="col-sm-6">
+                {{ form_widget(form.quantity, {'attr': {'class': 'form-control', 'placeholder': '1'}}) }}
+            </div>
+        </div>
+    </td>
+    <td>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    {# form_label(form.price, "Prix", {'label_attr': {'class': 'control-label'}}) #}
+                    {{ form_errors(form.price) }}
+                    {{ form_widget(form.price, {'attr': {'class': 'form-control', 'placeholder': 'Prix unitaire'}}) }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    {# form_label(form.refTax, "Taxe :", {'label_attr': {'class': 'control-label'}}) #}
+                    {{ form_errors(form.refTax) }}
+                    {{ form_widget(form.refTax) }}
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            {# form_label(form.description, "Description", {'label_attr': {'class': 'col-sm-3 control-label'}}) #}
+            {{ form_errors(form.description) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Description de la ligne'}}) }}
+        </div>
+    </td>
+    <td>
+        {% if form.estimatedTime is defined %}
+            <div class="form-group">
+                {# form_label(form.estimatedTime, "Temps estimé", {'label_attr': {'class': 'control-label'}}) #}
+                {{ form_errors(form.estimatedTime) }}
+                {{ form_widget(form.estimatedTime, {'attr': {'class': 'form-control', 'placeholder': "Temps unitaire en h"}}) }}
+            </div>
+        {% endif %}
+    </td>
+    <td>
+        <div class="col-xs-12">
+            <div class="form-group" id="estimate_modal_submit">
+                {{ form_widget(form.save, {'attr': {'class': 'btn btn-success', }}) }}
+            </div>
+        </div>
+    </td>
+    <div class="col-xs-12">
+        {{ form_rest(form) }}
+        {{ form_end(form) }}
+    </div>
+        {#
+        {{ form_label(form.name, "Intitulé :", {'label_attr': {'class': 'control-label'}}) }}
+        {{ form_errors(form.name) }}
+        {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+        #}
+</tr>

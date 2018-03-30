@@ -1,0 +1,317 @@
+{% extends "MyJobManagerBundle::base.html.twig" %}
+
+{% block title %}{{ parent() }} - Facture {{ bill.number }}{% endblock %}
+
+{%
+    set status_fr = {
+        "canceled" : "annulé",
+        "sent" : "envoyé",
+        "paid" : "payé",
+        "partially" : "partiellement payé",
+        "draft" : "brouillon",
+        "" : "statut inconnu"
+    }
+%}
+{%
+    set paiment_fr = {
+        "cheque" : "chèque",
+        "cash" : "comptant",
+        "bank_transfer" : "virement"
+    }
+%}
+{% set modify = (bill.status == "draft") %}
+{% set type = "bill" %}
+
+{% set totalHT = 0 %}
+{% set totalTTC = 0 %}
+{% for line in bill.lines %}
+    {% set totalHT = totalHT + line.priceHT * line.quantity %}
+    {% set totalTTC = totalTTC + line.priceTTC * line.quantity %}
+{% endfor %}
+{% set paimentTotal = 0 %}
+{% for paiment in bill.refPaiment %}
+    {% set paimentTotal = paimentTotal + paiment.amount %}
+{% endfor %}
+
+{% block fos_user_content %}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                <span id="doc_type">Facture</span>
+                <small>
+                    <span id="doc_number">{{ bill.number }}</span> pour <i>{{ bill.client.companyName }}</i>
+                </small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li><a href="{{ path('myjobmanager_bill_list') }}"><i class="fa fa-eur"></i> Factures</a></li>
+                <li class="active">{{ bill.number }}</li>
+            </ol>
+
+
+            <div>
+                <button class="btn btn-success" id="generatePDF"><i class="fa fa-file-pdf-o"></i> PDF</button>
+            </div>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+
+            {% set client = bill.client %}
+            {{ include("MyJobManagerBundle:Devis:fullclient.html.twig") }}
+
+            <div class="box box-default collapsed-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Infos</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="collection">
+                        <div class="collection-item">Date de la facture : <span id="date" class="badge">{{ bill.creation|date('Y-m-d') }}</span></div>
+                        <div class="collection-item">Date de paiement attendue : <span class="badge">{{ bill.paimentDate|date('Y-m-d') }}</span></div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Description</div>
+                            <div class="panel-body">
+                                <div class="grey-text">{{ bill.description }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            {% if bill.refEstimate and bill.refEstimate|length > 0 %}
+                                <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#listEstimateModal">
+                                    Afficher les {{ bill.refEstimate|length }} devis lié(s) à cette facture
+                                </button>
+                                <div id="listEstimateModal" class="collapse">
+                                    {% for estimate in bill.refEstimate %}
+                                        <hr/>
+                                        <div class="row">
+                                            <div class="col-sm-4 text-center">
+                                                <a href="{{ path('myjobmanager_devis_view', {'id': estimate.id}) }}" class="btn btn-info">
+                                                    {{ estimate.number }} ({{ estimate.sendTime|date('d-m-Y') }})
+                                                </a>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p>
+                                    Pas de devis lié à cette facture
+                                </p>
+                            {% endif %}
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            {% if bill.refProject and bill.refProject|length > 0 %}
+                                {% for project in bill.refProject %}
+                                    <a class="btn btn-success" href="{{ path('myjobmanager_project_view', {'id': project.id}) }}">
+                                        Voir le projet : {{ project.name }}
+                                    </a>
+                                {% endfor %}
+                            {% else %}
+                                <p>
+                                    Pas de projet lié à cette facture
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <div class="box box-default collapsed-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title color-{{ bill.status }}">{{ status_fr[bill.status] }}
+                        {% if bill.status == "partially" %}
+                        ({{ paimentTotal }}/{{ totalTTC }}€)
+                        {% endif %}
+                    </h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    {% if bill.sendTime %}
+                        <h4 class="color-sent text-center">Date d'envoi : {{ bill.sendTime|date('d-m-Y') }}</h4>
+                    {%  endif %}
+                    <div class="row">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6">
+                            <h4 class="text-center">
+                                Liste des paiements ({{ paimentTotal }}€) :
+                            </h4>
+                            {% if bill.refPaiment|length > 0 %}
+                            <div class="row">
+                                {% for paiment in bill.refPaiment %}
+                                    <div class="col-sm-6 col-md-4 text-center">
+                                        <div class="well" style="background-color: lightgreen;border-radius: 15px;">
+                                            <h4>{{ paiment.amount }}€</h4>
+                                            <h5>{{ paiment.datePaiment|date('d-m-Y') }} / {{ paiment_fr[paiment.mode] }}</h5>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                                <div class="text-center">
+                                    <i>Aucun paiment...</i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+                    <div class="text-center">
+                        <hr/>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPaimentModal">
+                            Ajouter un paiement
+                        </button>
+                    </div>
+                    <div class="modal fade" id="addPaimentModal" tabindex="-1" role="dialog" aria-labelledby="addPaimentModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-center" id="addPaimentModalLabel">Ajouter un paiement</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" action="{{ path('myjobmanager_bill_add_paiment', {'id' : bill.id}) }}">
+                                        <div class="form-group row">
+                                            <label for="paiment_amount" class="col-sm-3 col-form-label">Montant</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" type="text" value="€" id="paiment_amount" name="amount" required="required">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="paiment_mode" class="col-sm-3 col-form-label">Mode de paiement</label>
+                                            <div class="col-sm-9">
+                                                <select id="paiment_mode" name="mode" required="required" class="form-control">
+                                                    <option value="cash" selected="selected">Comptant</option>
+                                                    <option value="cheque">Cheque</option>
+                                                    <option value="bank_transfer">Virement bancaire</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group text-center">
+                                            <button type="submit" class="btn btn-success">Enregistrer le paiement</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if bill.status == "canceled" %}
+                    <div class="box-footer text-center">
+                        <a class="btn btn-info" href="{{ path('myjobmanager_bill_status_set', {'id': bill.id, 'status': 'draft'}) }}">Restaurer le brouillon</a>
+                    </div>
+                {% elseif bill.status == "sent" %}
+                    <div class="box-footer">
+                        <a class="btn btn-warning" href="{{ path('myjobmanager_bill_status_set', {'id': bill.id, 'status': 'canceled'}) }}">Annuler la facture</a>
+                    </div>
+                {% elseif bill.status == "draft" %}
+                    <div class="box-footer">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <a class="btn btn-info" href="{{ path('myjobmanager_bill_status_set', {'id': bill.id, 'status': 'sent'}) }}">Facture envoyée</a>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <a class="btn btn-warning" href="{{ path('myjobmanager_bill_status_set', {'id': bill.id, 'status': 'canceled'}) }}">Annuler la facture</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Elements</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div id="lines">
+                        {% set lines = bill.lines %}
+                        {% set doc_id = bill.id %}
+                        {{ include("MyJobManagerBundle:Devis:linetab.html.twig") }}
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addLineModal">
+                        Ajouter une ligne ?
+                    </button>
+                    <div class="modal fade" id="addLineModal" tabindex="-1" role="dialog" aria-labelledby="addLineModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Ajouter une ligne</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    {{ include("MyJobManagerBundle:Devis:formline.html.twig") }}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- /.content -->
+
+        <div class="well">
+            <div> Total HT : <span id="totalHT" class="badge bg-green">{{ totalHT }}€</span></div>
+            <div> Total TTC : <span id="totalTTC" class="badge bg-green">{{ totalTTC }}€</span></div>
+            <div> Total TVA : <span class="badge bg-red">{{ totalTTC - totalHT }}€</span></div>
+        </div>
+        <div class="text-right">
+            <a href="{{ path('myjobmanager_bill_list') }}" class="btn btn-info"><i class="fa fa-list"></i> Retour à la liste des factures</a>
+        </div>
+    </div>
+    <!-- /.content-wrapper -->
+
+    <div id="user" style="display: none">
+        <div class="firstname">{{ user.firstname }}</div>
+        <div class="lastname">{{ user.lastname }}</div>
+        <div class="companyname">{{ user.companyname }}</div>
+        <div class="adress">{{ user.address }}</div>
+        <div class="zipcode">{{ user.zipcode }}</div>
+        <div class="city">{{ user.city }}</div>
+        <div class="country">{{ user.country }}</div>
+        <div class="phone">{{ user.phone }}</div>
+        <div class="mobile">{{ user.mobile }}</div>
+    </div>
+
+    <div id="client" style="display: none">
+        <div class="companyname">{{ bill.client.companyname }}</div>
+        <div class="adress">{{ bill.client.adress }}</div>
+        <div class="zipcode">{{ bill.client.zipcode }}</div>
+        <div class="city">{{ bill.client.city }}</div>
+        <div class="country">{{ bill.client.country }}</div>
+    </div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+    <script src="{{ asset('bundles/myjobmanager/assets/pdfmake/build/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('bundles/myjobmanager/js/generatePdf.js') }}"></script>
+{% endblock %}

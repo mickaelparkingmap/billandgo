@@ -1,0 +1,118 @@
+{% extends "MyJobManagerBundle::base.html.twig" %}
+
+{% block title %}{{ parent() }} - Liste des clients{% endblock %}
+
+{% block fos_user_content %}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                CLIENTS
+                <small>Liste des Clients</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li class="active">Clients</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Vos Clients</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <p class="text-center"><i>/* A venir : filtres */</i></p>
+                        {% set nbclient = 0 %}
+                        {% for client in list %}
+                            {%  set nbclient = nbclient + 1 %}
+                            <div class="col-md-6 col-lg-4 text-center third-block">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3>
+                                            {{ client.companyName }}
+                                            <a href="{{ path('myjobmanager_clients_view', {'id': client.id}) }}">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                        </h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <ul class="nav nav-pills nav-justified">
+                                            <li class="active">
+                                                <a data-toggle="tab" href="#cli-{{ nbclient }}-info">
+                                                    Infos
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#cli-{{ nbclient }}-doc">
+                                                    Docs/Projets
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#cli-{{ nbclient }}-con">
+                                                    Contacts
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div id="cli-{{ nbclient }}-info" class="tab-pane fade in active bg-info" >
+                                                <p>{{ client.adress }}</p>
+                                                <p>{{ client.zipcode }} {{ client.city }}, {{ client.country }}</p>
+                                            </div>
+                                            <div id="cli-{{ nbclient }}-doc" class="tab-pane fade in bg-info">
+                                                <p>/*A venir : lien vers chaque devis, projet et facture lié au client*/ </p>
+                                            </div>
+                                            <div id="cli-{{ nbclient }}-con" class="tab-pane fade in bg-info">
+                                                {% if client.contacts is empty %}
+                                                    <p>Aucun contact enregistré</p>
+                                                {% else %}
+                                                    <table class="table table-striped">
+                                                        <thead><tr>
+                                                            <th>Email</th>
+                                                            <th>Nom</th>
+                                                            <th>Prénom</th>
+                                                        </tr></thead>
+                                                    {% for contact in client.contacts %}
+                                                        <tr>
+                                                            <td>{{ contact.email }}</td>
+                                                            <td>{{ contact.firstname }}</td>
+                                                            <td>{{ contact.lastname }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </table>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="callout callout-info">
+                                <h4> <i class="fa fa-warning"></i> Aucun client enregistré <i class="fa fa-warning"></i> </h4>
+                                <p>Vous n'avez pas encore saisi de client, ne perdez pas de temps, <a href="#">Ajoutez votre premier client</a></p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="text-center">
+                        <a href="{{ path('myjobmanager_clients_add') }}" class="btn btn-success"><i class="fa fa-plus"></i> Ajouter un client</a>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+{% endblock fos_user_content %}

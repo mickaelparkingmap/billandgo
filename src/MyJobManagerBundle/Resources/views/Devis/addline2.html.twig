@@ -1,0 +1,14 @@
+{% extends "MyJobManagerBundle::base.html.twig" %}
+
+{% block title %}{{ parent() }} - {{ devis.id }}{% endblock %}
+
+{% block body %}
+
+    <h2>{{ devis.id }} : ajouter une ligne</h2>
+
+    {{ include("MyJobManagerBundle:Devis:formline.html.twig") }}
+
+    <a href="{{ path('myjobmanager_devis_view', {'id': devis.id}) }}">Retour au devis</a>
+    <a href="{{ path('myjobmanager_devis_list') }}">Retour à la liste</a>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+{{ form_errors(form) }}
+<div class="form-group" id="document_modal_client">
+    {{ form_label(form.refClient, "Pour le client :", {'label_attr': {'class': 'control-label'}}) }}
+    {{ form_errors(form.refClient) }}
+    {{ form_widget(form.refClient, {'attr': {'class': 'form-control'}}) }}
+    <div>
+        <span class="btn btn-success" id="document_modal_client_ok">Valider</span>
+    </div>
+</div>
+<div id="document_form_second">
+    <div class="form-group" id="document_modal_description">
+        {{ form_label(form.description, "Description :", {'label_attr': {'class': 'control-label'}}) }}
+        {{ form_errors(form.description) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group" id="document_modal_dates">
+        {{ form_label(form.delayDate, "Valide jusq'au :", {'label_attr': {'class': 'control-label'}}) }}
+        {{ form_errors(form.delayDate) }}
+        {{ form_widget(form.delayDate, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <!--<div class="form-group" id="document_modal_lines">
+        {# form_row(form.lines) #}
+        <a href="#" id="add_line" class="btn btn-default">Ajouter une ligne</a>
+        <div>
+            <span class="btn btn-danger" id="document_modal_description_back">Retour à la description</span>
+        </div>
+    </div>-->
+    <div class="form-group" id="document_modal_submit">
+        <span class="btn btn-danger" id="document_modal_client_back">Retour au choix du client</span>
+        {{ form_widget(form.save, {'attr': {'class': 'btn btn-success'}}) }}
+    </div>
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+</div>

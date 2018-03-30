@@ -1,0 +1,530 @@
+{% extends "MyJobManagerBundle::base.html.twig" %}
+
+{% block title %}{{ parent() }} - {{ project.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" type="text/css" rel="stylesheet"/>
+{% endblock %}
+
+{% block fos_user_content %}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                PROJETS
+                <small>
+                    <span id="doc_number">{{ project.name }}</span> pour <i>{{ project.refClient.companyName }}</i>
+                </small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li><a href="{{ path('myjobmanager_project_list') }}"><i class="fa fa-industry"></i> Projets</a></li>
+                <li class="active">{{ project.name }}</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+
+            {% if project.refClient != NULL %}
+                {% set client = project.refClient %}
+                {{ include("MyJobManagerBundle:Devis:fullclient.html.twig") }}
+            {% endif %}
+
+            <div class="box box-default collapsed-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Infos</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="collection">
+                        <div class="collection-item">Début du projet : <span id="date" class="badge">{{ project.begin|date('Y-m-d') }}</span></div>
+                        <div class="collection-item">Deadline : <span class="badge">{{ project.deadLine|date('Y-m-d') }}</span></div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Description</div>
+                            <div class="panel-body">
+                                <div class="grey-text">{{ project.description }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createBillModal">
+                                Créer une facture
+                            </button>
+                            <div class="modal fade text-center" id="createBillModal" tabindex="-1" role="dialog" aria-labelledby="createBillModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Créer une facture</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="well">
+                                                <form method="post" action="{{ path('myjobmanager_bill_create_from_project', {'project_id' : project.id}) }}">
+                                                    <div class="form-group row">
+                                                        <label for="bill_delay" class="col-sm-3 col-form-label">Date de paiement</label>
+                                                        <div class="col-sm-9">
+                                                            <input class="form-control" type="text" id="bill_delay" name="delay">
+                                                        </div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-success">Créer la facture</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box box-default collapsed-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Agenda</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <p class="grey-text">/* Agenda à venir...*/</p>
+                </div>
+                <!-- /.box-body -->
+            </div>
+
+            <div class="box box-default collapsed-box">
+                <div class="box-header with-border">
+                    {% set timeLeft = 0 %}
+                    {% set timeDone = 0 %}
+                    {% for line in project.refLines %}
+                        {% if line.status == "planned" %}
+                            {% set timeLeft = timeLeft + line.estimatedTime * line.quantity %}
+                        {% else %}
+                            {% set timeDone = timeDone + line.estimatedTime * line.quantity %}
+                        {% endif %}
+                    {% endfor %}
+                    <h3 class="box-title">TODO : <span class="orange-text">{{ timeLeft }}</span>/{{ timeLeft + timeDone }}h</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div id="lines">
+                        <table id="table_todo" class="table table-bordered table-hover dataTable">
+                            <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Quantité</th>
+                                <th>Prix HT</th>
+                                <th>Temps estimé</th>
+                                <th>Date de rendu</th>
+                                <th>Statut</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% set value = 0 %}
+                            {% for line in project.refLines %}
+                                {% if line.deadLine %}
+                                    {% set difference = date(date()).diff(line.deadLine) %}
+                                    {% set leftDays = difference.days %}
+                                {% endif %}
+                                <tr style="font-weight:bold">
+                                    <td>
+                                        {% if line.status == "validated" and line.refBill is empty %}
+                                            <input type="checkbox" name="select-line-{{ line.id }}" form="createProject" class="select-line">
+                                            <input type="checkbox" name="select-line-{{ line.id }}" form="createBill" class="select-line hidden">
+                                        {% endif %}
+                                        <span class="line-elt-name">{{ line.name }}</span>
+                                        <button type="button" data-toggle="modal" data-target="#editLine{{ line.id }}Modal">
+                                            Edit <i class="fa fa-arrows-v"></i>
+                                        </button>
+                                        <br/>
+                                        <span class="grey-text description" style="font-size:14px;font-weight: normal">{{ line.description }}</span>
+                                        <div class="modal fade" id="editLine{{ line.id }}Modal" tabindex="-1" role="dialog"
+                                             aria-labelledby="editLine{{ line.id }}ModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editLine{{ line.id }}ModalLabel">Modifier une ligne</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="well">
+                                                            <div class="row">
+                                                                <div class="col-xs-12">
+                                                                    <form action="" method="post" class="text-center">
+                                                                        <input type="hidden" name="id_line" value="{{ line.id }}">
+                                                                        <div class="form-group">
+                                                                            <label for="name">Nom</label>
+                                                                            <input type="text" name="name" value="{{ line.name }}" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="description">Description</label>
+                                                                            <input type="text" name="description" value="{{ line.description }}" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="quantity">Quantité</label>
+                                                                            <input type="number" name="quantity" value="{{ line.quantity }}" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="price">Prix</label>
+                                                                            <input type="number" name="price" value="{{ line.price }}" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="refTax">Taxes</label>
+                                                                            <select name="refTax">
+                                                                                <option value="">Veuillez choisir une taxe</option>
+                                                                                {% for tax in taxes %}
+                                                                                    <option value="{{ tax.id }}">{{ tax.name }} ({{ tax.percent }}%)</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="estimated_time">Temps estimé</label>
+                                                                            <input type="number" name="estimated_time" value="{{ line.estimatedTime }}" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="chrono_time">Temps passé</label>
+                                                                            <input type="number" name="chrono_time" value="{{ line.chronoTime }}" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="deadLine">Délai</label>
+                                                                            <input type="text" class="datepick form-control" name="deadLine" value="{{ line.deadLine|date('d-m-Y') }}">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <input type="submit" value="Editer la ligne">
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {{ line.quantity }}
+                                        {% if line.quantity > 1 %}
+                                            <br/>
+                                            <button type="button" data-toggle="modal" data-target="#splitLine{{ line.id }}Modal">
+                                                Split <i class="fa fa-arrows-v"></i>
+                                            </button>
+                                            <div class="modal fade" id="splitLine{{ line.id }}Modal" tabindex="-1" role="dialog"
+                                                 aria-labelledby="splitLine{{ line.id }}ModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="splitLine{{ line.id }}ModalLabel">Découper une ligne</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="well">
+                                                                <div class="row">
+                                                                    <div class="col-xs-12">
+                                                                        <form action="" method="post" class="text-right">
+                                                                            <input type="hidden" name="id_line" value="{{ line.id }}">
+                                                                            <input type="range" min="1" max="{{ line.quantity - 1 }}" value="1" name="split" id="line{{ line.id }}Slider"
+                                                                                   oninput="line{{ line.id }}SliderValue.value = line{{ line.id }}Slider.value">
+                                                                            <output class="text-center" type="text" id="line{{ line.id }}SliderValue" value="">1</output>
+                                                                            <input type="submit" value="Découper la ligne">
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if line.price %}
+                                            <span>{{ line.price * 1 }}€ * {{ line.quantity }}</span> = <span>{{ line.price * line.quantity }}€</span>
+                                            {% set value = value + line.price * line.quantity %}
+                                        {% endif %}
+                                        {% if line.refEstimate|first %}
+                                            <br/>
+                                            <a class="btn btn-info" href="{{ path("myjobmanager_document_view", {"id" : line.refEstimate|first.id}) }}" >
+                                                devis {{ line.refEstimate|first.number }}
+                                            </a>
+                                        {% endif %}
+                                        {% if line.refBill|first %}
+                                            <br/>
+                                            <a class="btn btn-info" href="{{ path("myjobmanager_document_view", {"id" : line.refBill|first.id}) }}" >
+                                                devis {{ line.refBill|first.number }}
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span>Estimé : {{ line.estimatedTime * line.quantity }}h</span>
+                                        <br/>
+                                        <span>Chronométré : {{ line.chronoTime }}h</span>
+                                    </td>
+                                    <td>
+                                        {% if line.deadLine %}
+                                            <span>{{ line.deadline|date('d-m-Y') }}</span>
+                                            <br/>
+                                            {% if leftDays <= 7 %}
+                                                <span class="btn btn-danger">
+                                                reste {{ leftDays }} jours
+                                                </span>
+                                            {% elseif leftDays <= 14 %}
+                                                <span class="btn btn-warning">
+                                                reste {{ leftDays }} jours
+                                                </span>
+                                            {% else %}
+                                                <span class="btn btn-info">
+                                                reste {{ leftDays }} jours
+                                                </span>
+                                            {% endif %}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    <td>
+                                        {% if line.status == "planned" %}
+                                            <span class="blue-text">{{line.status }}</span>
+                                            <br/>
+                                            <a class="btn btn-warning"
+                                               href="{{ path('myjobmanager_project_line_edit_status',
+                                                    {'id' : project.id, 'id_line' : line.id, 'status' : 'working'}) }}"
+                                            >
+                                                Au boulot !
+                                            </a>
+                                        {% elseif line.status == "working" %}
+                                            <span class="red-text">{{ line.status }}</span>
+                                            <br/>
+                                            <a class="btn btn-success"
+                                               href="{{ path('myjobmanager_project_line_edit_status',
+                                               {'id' : project.id, 'id_line' : line.id, 'status' : 'waiting'}) }}"
+                                            >
+                                                J'ai fini !
+                                            </a>
+                                        {% elseif line.status == "waiting" %}
+                                            <span class="green-text">En attente de validation</span>
+                                            <br/>
+                                            <a class="btn btn-danger"
+                                               href="{{ path('myjobmanager_project_line_edit_status',
+                                               {'id' : project.id, 'id_line' : line.id, 'status' : 'working'}) }}"
+                                            >
+                                                A revoir...
+                                            </a>
+                                            <a class="btn btn-success"
+                                               href="{{ path('myjobmanager_project_line_edit_status',
+                                               {'id' : project.id, 'id_line' : line.id, 'status' : 'validated'}) }}"
+                                            >
+                                                Validé !
+                                            </a>
+                                        {% else %}
+                                            <span class="green-text">{{line.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if line.status == "canceled" %}
+                                            <a href="{{ path('myjobmanager_project_line_edit_status',
+                                               {'id' : project.id, 'id_line' : line.id, 'status' : 'planned'}) }}"
+                                               title="rétablir"
+                                            >
+                                                <i class="fa fa-toggle-off text-danger"></i>
+                                            </a>
+                                            <br/>
+                                            <a href="{{ path('myjobmanager_line_detach_project', {'id': line.id}) }}">
+                                                <i class="fa fa-trash text-danger"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ path('myjobmanager_project_line_edit_status',
+                                            {'id' : project.id, 'id_line' : line.id, 'status' : 'canceled'}) }}"
+                                               title="annuler"
+                                            >
+                                                <i class="fa fa-toggle-on text-danger"></i>
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                Rien à faire ! :-O
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Quantité</th>
+                                <th>Prix HT</th>
+                                <th>Temps</th>
+                                <th>Date de rendu</th>
+                                <th>Statut</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addLineModal">
+                                Ajouter une todo ?
+                            </button>
+                            <div class="modal fade" id="addLineModal" tabindex="-1" role="dialog" aria-labelledby="addLineModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Ajouter une todo</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {{ include("MyJobManagerBundle:Devis:formline.html.twig") }}
+                                            <!--
+                                            <div class="well">
+                                                <div class="row">
+                                                    <div class="col-xs-12">
+                                                        {# form(form) #}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            -->
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createBillLinesModal" id="transfoButton">
+                                Transformer les lignes sélectionnées en facture
+                            </button>
+                            <div class="modal fade text-left" id="createBillLinesModal" tabindex="-1" role="dialog" aria-labelledby="createBillLinesModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="createBillLinesModalLabel">Créer un facture</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="post" action="{{ path('myjobmanager_bill_create_from_lines') }}" id="createBill">
+                                                <input type="hidden" name="estimate" value="{{ project.id }}">
+                                                <div class="form-group">
+                                                    <label class="control-label required" for="name">Description :</label>
+                                                    <input class="form-control" type="text" name="description" value="{{ project.description }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label required" for="name">Date limite de paiement :</label>
+                                                    <input id="bill_delay_2" class="form-control datepick" type="text" name="deadline">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="submit" class="btn-default btn" value="Créer une facture">
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- /.content -->
+        <div class="well">
+            {% if timeDone + timeLeft > 0 %}
+            <div class="progress">
+                <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="{{ (timeDone / (timeDone + timeLeft) * 100) | round }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ (timeDone / (timeDone + timeLeft) * 100) | round}}%">
+                    <span>{{ timeDone }}/{{ timeDone + timeLeft }}h ({{ (timeDone / (timeDone + timeLeft) * 100) | round}}%)</span>
+                </div>
+            </div>
+            {% endif %}
+            <p>
+                Valeur du projet : {{ value }}€ HT
+                {% if timeDone + timeLeft > 0 %}
+                    , soit {{ (value / (timeDone + timeLeft))|round() }}€/h
+                    dont {{ (timeDone / (timeDone + timeLeft) * value) | round}}€ validés
+                {% endif %}
+            </p>
+        </div>
+        <div class="text-right">
+            <a href="{{ path('myjobmanager_project_list') }}" class="btn btn-info"><i class="fa fa-list"></i> Retour à la liste des projets</a>
+        </div>
+    </div>
+    <!-- /.content-wrapper -->
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.fr.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#table_todo").DataTable(
+                {
+                    paging: false,
+                    "order": [[ 3, "asc" ]]
+                }
+            );
+        });
+        $('#myjobmanagerbundle_line_deadline').datepicker();
+        $('.datepick').datepicker();
+        $('#bill_creation').datepicker();
+        $('#bill_paiment').datepicker();
+        $("#transfoButton").hide();
+        linechecked = 0;
+        $('.select-line').click(function(){
+            if (this.checked) {
+                $("#transfoButton").show();
+                $(this).parent().children(".hidden").prop("checked", true);
+                linechecked++;
+            }
+            else {
+                $(this).parent().children(".hidden").prop("checked", false);
+                linechecked--;ƒ
+                if (linechecked < 1) {
+                    linechecked = 0;
+                    $("#transfoButton").hide();
+                }
+            }
+        });
+        nowDate = new Date();
+        nowDate.setMonth((nowDate.getMonth() + 1)%12);
+        delayDate = new Date(nowDate.getFullYear(), nowDate.getMonth() + 1, 0);
+        $('#bill_delay').datepicker('setDate', delayDate);
+        $('#bill_delay_2').datepicker('setDate', delayDate);
+    </script>
+{% endblock %}

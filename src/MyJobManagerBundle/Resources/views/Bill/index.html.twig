@@ -1,0 +1,165 @@
+{% extends "MyJobManagerBundle::base.html.twig" %}
+
+{% block title %}{{ parent() }} - Liste des Factures{% endblock %}
+
+{%
+set status_fr = {
+"canceled" : "annulé",
+"sent" : "envoyé",
+"paid" : "payé",
+"partially" : "partiellement payé",
+"draft" : "brouillon",
+"" : "statut inconnu"
+}
+%}
+
+{% block fos_user_content %}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                FACTURES
+                <small>Liste des Factures</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li class="active"><i class="fa fa-eur"></i> Factures</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Vos Factures</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <p class="text-center"><i>/* A venir : filtres */</i></p>
+                        {% set nbbill = 0 %}
+                        {% set totalHT = 0 %}
+                        {% set totalTTC = 0 %}
+                        {% for bill in list %}
+                            {% set subTotalHT = 0 %}
+                            {% set subTotalTTC = 0 %}
+                            {% for line in bill.lines %}
+                                {% set subTotalHT = subTotalHT + line.priceHT * line.quantity %}
+                                {% set subTotalTTC = subTotalTTC + line.priceTTC * line.quantity %}
+                            {% endfor %}
+                            {% set paimentTotal = 0 %}
+                            {% for paiment in bill.refPaiment %}
+                                {% set paimentTotal = paimentTotal + paiment.amount %}
+                            {% endfor %}
+                            {% set totalHT = totalHT + subTotalHT %}
+                            {% set totalTTC = totalTTC + subTotalTTC %}
+                            {% set nbbill = nbbill + 1 %}
+                            <div class="col-md-6 col-lg-4 text-center third-block bill-block">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="color-{{ bill.status }}">
+                                            {{ bill.number }}
+                                            <a href="{{ path('myjobmanager_bill_view', {'id': bill.id}) }}">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <ul class="nav nav-pills nav-justified">
+                                            <li class="active">
+                                                <a data-toggle="tab" href="#bill-{{ nbbill }}-desc">
+                                                    Description
+                                                    <br/>
+                                                    ({{ status_fr[bill.status] }})
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#bill-{{ nbbill }}-cli">
+                                                    Client
+                                                    <br/>
+                                                    ({{ bill.client.companyName }})
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#bill-{{ nbbill }}-fin">
+                                                    Financier
+                                                    <br/>
+                                                    ({{ paimentTotal }}/{{ subTotalTTC }}€)
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div id="bill-{{ nbbill }}-desc" class="tab-pane fade in active bg-info row">
+                                                <div class="col-md-6">
+                                                {% if bill.sendTime %}
+                                                    envoyée le {{ bill.sendTime|date('d-m-Y') }}
+                                                {% else %}
+                                                    créée le {{ bill.creation|date('d-m-Y') }}
+                                                {% endif %}
+                                                </div>
+                                                <p class="col-md-6">à payer pour le {{ bill.paimentDate|date('d-m-Y') }}</p>
+                                                <p>
+                                                    {{ bill.description|length > 300 ? bill.description|slice(0, 300) ~ '...' : bill.description  }}
+                                                </p>
+                                            </div>
+                                            <div id="bill-{{ nbbill }}-cli" class="tab-pane fade in bg-info">
+                                                <a href="{{ path('myjobmanager_clients_view', {'id': bill.client.id}) }}">{{ bill.client.companyName }}</a>
+                                                <p class="grey-text">/* contacts et rdv à venir */</p>
+                                            </div>
+                                            <div id="bill-{{ nbbill }}-fin" class="tab-pane fade in bg-info">
+                                                <p>HT : {{ subTotalHT }}€</p>
+                                                <p>TTC : {{ subTotalTTC }}€</p>
+                                                <p>Payé : {{ paimentTotal }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="callout callout-info">
+                                <h4> <i class="fa fa-warning"></i> Aucunes factures d'enregistrées <i class="fa fa-warning"></i> </h4>
+                                <p>Vous n'avez pas encore saisie de facture, ne perdez pas de temps, <a href="#">Ajoutez votre première facture</a></p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="text-center">
+                        <a href="{{ path('myjobmanager_bill_add') }}" class="btn btn-success"><i class="fa fa-plus"></i> Ajouter une facture</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Résumé</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div>
+                        <div> Total HT : <span class="badge bg-green">{{ totalHT }}€</span></div>
+                        <div> Total TTC : <span class="badge bg-green">{{ totalTTC }}€</span></div>
+                        <div> Total TVA : <span class="badge bg-red">{{ totalTTC - totalHT }}€</span></div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="text-center"><i>/* A venir :  détails, tri des paiements, progressions des paiements*/</i></div>
+                </div>
+            </div>
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+{% endblock fos_user_content %}

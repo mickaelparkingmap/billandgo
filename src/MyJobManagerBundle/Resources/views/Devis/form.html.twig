@@ -1,0 +1,63 @@
+{#{{ form(form) }}#}
+
+
+{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+{{ form_errors(form) }}
+<div class="form-group" id="estimate_modal_client">
+    {{ form_label(form.client, "Pour le client :", {'label_attr': {'class': 'control-label'}}) }}
+    {{ form_errors(form.client) }}
+    {{ form_widget(form.client, {'attr': {'class': 'form-control'}}) }}
+    <div>
+        <span class="btn btn-success" id="estimate_modal_client_ok">Valider</span>
+    </div>
+</div>
+<div class="form-group" id="estimate_modal_number">
+    {{ form_label(form.number, "Numero de devis", {'label_attr': {'class': 'control-label'}}) }}
+    {{ form_errors(form.number) }}
+    {{ form_widget(form.number, {'attr': {'class': 'form-control'}}) }}
+    <div>
+        <span class="btn btn-danger" id="estimate_modal_client_back">Retour au client</span>
+        <span class="btn btn-success" id="estimate_modal_number_ok">Valider</span>
+    </div>
+</div>
+<div class="row" id="estimate_modal_dates">
+    <div class="col-md-6">
+        <div class="form-group">
+            {{ form_label(form.creation, "Créé le :", {'label_attr': {'class': 'control-label'}}) }}
+            {{ form_errors(form.creation) }}
+            {{ form_widget(form.creation, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            {{ form_label(form.validity, "Valide jusq'au :", {'label_attr': {'class': 'control-label'}}) }}
+            {{ form_errors(form.validity) }}
+            {{ form_widget(form.validity, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+    <div class="col-md-12">
+        <span class="btn btn-danger" id="estimate_modal_number_back">Retour au numéro</span>
+        <span class="btn btn-success" id="estimate_modal_dates_ok">Valider</span>
+    </div>
+</div>
+<div class="form-group" id="estimate_modal_description">
+    {{ form_label(form.description, "Description :", {'label_attr': {'class': 'control-label'}}) }}
+    {{ form_errors(form.description) }}
+    {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+    <div>
+        <span class="btn btn-danger" id="estimate_modal_dates_back">Retour aux dates</span>
+        <span class="btn btn-success" id="estimate_modal_description_ok">Valider</span>
+    </div>
+</div>
+<div class="form-group" id="estimate_modal_lines">
+    {{ form_row(form.lines) }}
+    <a href="#" id="add_line" class="btn btn-default">Ajouter une ligne</a>
+    <div>
+        <span class="btn btn-danger" id="estimate_modal_description_back">Retour à la description</span>
+    </div>
+</div>
+<div class="form-group" id="estimate_modal_submit">
+    {{ form_widget(form.save, {'attr': {'class': 'btn btn-success'}}) }}
+</div>
+{{ form_rest(form) }}
+{{ form_end(form) }}

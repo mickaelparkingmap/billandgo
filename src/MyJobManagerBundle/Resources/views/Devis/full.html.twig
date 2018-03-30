@@ -1,0 +1,435 @@
+{% extends "MyJobManagerBundle::base.html.twig" %}
+
+{% block title %}{{ parent() }} - Devis {{ devis.number }}{% endblock %}
+
+{%
+    set status_fr = {
+        "canceled" : "annulé",
+        "accepted" : "accepté",
+        "sent" : "envoyé",
+        "refused" : "refusé",
+        "draft" : "brouillon",
+        "" : "inconnu"
+    }
+%}
+
+{% set modify = (devis.status == "draft") %}
+{% set type = "estimate" %}
+
+{% block fos_user_content %}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            <span id="doc_type">Devis</span>
+            <small>
+                <span id="doc_number">{{ devis.number }}</span><i> pour {{ devis.client.companyName }}</i>
+            </small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            <li><a href="{{ path('myjobmanager_devis_list') }}"><i class="fa fa-file-text-o"></i> Devis</a></li>
+            <li class="active">{{ devis.number }}</li>
+        </ol>
+
+
+        <div>
+            <button class="btn btn-success" id="generatePDF"><i class="fa fa-file-pdf-o"></i> PDF</button>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        {% set client = devis.client %}
+        {{ include("MyJobManagerBundle:Devis:fullclient.html.twig") }}
+
+        <div class="box box-default collapsed-box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Infos</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="collection">
+                    <div class="collection-item">Date de création : <span id="date" class="badge">{{ devis.creation|date('Y-m-d') }}</span></div>
+                    <div class="collection-item">Date de validité : <span class="badge">{{ devis.validity|date('Y-m-d') }}</span></div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Description</div>
+                        <div class="panel-body">
+                            <div class="grey-text">{{ devis.description }}</div>
+                        </div>
+                    </div>
+                </div>
+                {% if devis.refBill and devis.refBill|length > 0 %}
+                    <div class="text-center">
+                        <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#listBillModal">
+                            Afficher les {{ devis.refBill|length }} factures liée(s) à ce devis
+                        </button>
+                        <div id="listBillModal" class="collapse">
+                            {% for bill in devis.refBill %}
+                                <hr/>
+                                <div class="row">
+                                    <div class="col-sm-4 text-center">
+                                        <a href="{{ path('myjobmanager_bill_view', {'id': bill.id}) }}" class="btn btn-info">
+                                            {{ bill.number }} ({{ bill.sendTime|date('d-m-Y') }})
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            {% if modify %}
+                <div class="box-footer text-right">
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#editModal">
+                        Modifier ?
+                    </button>
+                    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-center" id="exampleModalLabel">Modifier description</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    {{ form(formEdit) }}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary btn-info" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="box box-default collapsed-box">
+            <div class="box-header with-border">
+                <h3 class="box-title color-{{ devis.status }}">{{ status_fr[devis.status] }}</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        {% if devis.sendTime %}
+                            <h4 class="color-sent">Date d'envoi : {{ devis.sendTime|date('d-m-Y') }}</h4>
+                        {%  endif %}
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        {% if devis.responseTime %}
+                            <h4 class="color-{{ devis.status }}">{{ status_fr[devis.status] }} le {{ devis.responseTime|date('d-m-Y') }}</h4>
+                        {%  endif %}
+                    </div>
+                </div>
+                <p class="text-center"><i>/* A venir : timeline des rdv et négociations passées */</i></p>
+
+            </div>
+            {% if devis.status == "refused" %}
+                <div class="box-footer text-center">
+                    <a class="btn btn-info" href="{{ path('myjobmanager_devis_status_set', {'id': devis.id, 'status': 'draft'}) }}">Annuler devis</a>
+                </div>
+            {% elseif devis.status == "canceled" %}
+                <div class="box-footer text-center">
+                    <a class="btn btn-info" href="{{ path('myjobmanager_devis_status_set', {'id': devis.id, 'status': 'draft'}) }}">Restaurer devis</a>
+                </div>
+            {% elseif devis.status == "sent" %}
+                <div class="box-footer row">
+                    <div class="col-sm-4">
+                        <a class="btn btn-success" href="{{ path('myjobmanager_devis_status_set', {'id': devis.id, 'status': 'accepted'}) }}">Devis accepté</a>
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        <a class="btn btn-warning" href="{{ path('myjobmanager_devis_status_set', {'id': devis.id, 'status': 'canceled'}) }}">Annuler devis</a>
+                    </div>
+                    <div class="col-sm-4 text-right">
+                        <a class="btn btn-danger" href="{{ path('myjobmanager_devis_status_set', {'id': devis.id, 'status': 'refused'}) }}">Devis refusé</a>
+                    </div>
+                </div>
+            {% elseif devis.status == "accepted" %}
+                <div class="box-footer row">
+                    <div class="col-sm-4">
+                        {% if devis.refProject and devis.refProject|length > 0 %}
+                            {% for project in devis.refProject %}
+                                <a class="btn btn-success" href="{{ path('myjobmanager_project_view', {'id': project.id}) }}">
+                                    Voir le projet : {{ project.name }}
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createProjectModal">
+                                Créer un projet
+                            </button>
+                            <div class="modal fade text-center" id="createProjectModal" tabindex="-1" role="dialog" aria-labelledby="createProjectModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="createProjectModalLabel">Créer un projet</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="well">
+                                                <form method="post" action="{{ path('myjobmanager_project_create_from_estimate', {'estimate_id' : devis.id}) }}">
+                                                    <div class="form-group row">
+                                                        <label for="project_name" class="col-sm-3 col-form-label">Nom</label>
+                                                        <div class="col-sm-9">
+                                                            <input class="form-control" type="text" value="Entrez le nom du projet" id="project_name" name="name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="project_deadline" class="col-sm-3 col-form-label">Deadline</label>
+                                                        <div class="col-sm-9">
+                                                            <input class="form-control" type="text" name="deadline" id="project_deadline">
+                                                        </div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-success">Créer le projet</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        <a class="btn btn-warning" href="{{ path('myjobmanager_devis_status_set', {'id': devis.id, 'status': 'canceled'}) }}">Annuler devis</a>
+                    </div>
+                    <div class="col-sm-4 text-right">
+                        {% if devis.refBill and devis.refBill|length > 0 %}
+                            {% set bills_count = 0 %}
+                            <div class="modal fade" id="listBillsModal" tabindex="-1" role="dialog" aria-labelledby="listBillsModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title text-center" id="createBillModalLabel">Liste des factures</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <table class="table table-striped text-left">
+                                                <thead>
+                                                <tr>
+                                                    <th>Numéro de facture</th>
+                                                    <th>Date d'envoi</th>
+                                                    <th>Statut</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for bill in devis.refBill %}
+                                                    {% set bills_count = bills_count + 1 %}
+                                                    <tr>
+                                                        <td>
+                                                            <a href="{{ path('myjobmanager_bill_view', {'id': bill.id}) }}" class="btn btn-info">
+                                                                {{ bill.number }}
+                                                            </a>
+                                                        </td>
+                                                        <td>{{ bill.sendTime }}</td>
+                                                        <td>{{ bill.status }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                            <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#createBillCollapse">
+                                                Créer une facture supplémentaire
+                                            </button>
+                                            <div id="createBillCollapse" class="collapse">
+                                                <hr/>
+                                                <form method="post" action="{{ path('myjobmanager_bill_create_from_estimate', {'estimate_id' : devis.id}) }}">
+                                                    <div class="form-group row">
+                                                        <label for="bill_number" class="col-sm-3 col-form-label">Numéro</label>
+                                                        <div class="col-sm-9">
+                                                            <input class="form-control" type="text" value="Entrez le numéro de facture" id="bill_number" name="number">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="form-group col-md-6">
+                                                            <label for="bill_creation">Date de la facture</label>
+                                                            <input class="form-control" type="text" name="bill_creation" id="bill_creation">
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label for="bill_paiment">Date de paiement</label>
+                                                            <input class="form-control" type="text" name="bill_paiment" id="bill_paiment">
+                                                        </div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-success">Créer la facture</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#listBillsModal">
+                                Liste des {{ bills_count }} facture(s)
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createBillModal">
+                                Créer une facture
+                            </button>
+                            <div class="modal fade text-center" id="createBillModal" tabindex="-1" role="dialog" aria-labelledby="createBillModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Créer une facture</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="well">
+                                                <form method="post" action="{{ path('myjobmanager_bill_create_from_estimate', {'estimate_id' : devis.id}) }}">
+                                                    <div class="form-group row">
+                                                        <label for="bill_number" class="col-sm-3 col-form-label">Numéro</label>
+                                                        <div class="col-sm-9">
+                                                            <input class="form-control" type="text" value="Entrez le numéro de facture" id="bill_number" name="number">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="form-group col-md-6">
+                                                            <label for="bill_creation">Date de la facture</label>
+                                                            <input class="form-control" type="text" name="bill_creation" id="bill_creation">
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label for="bill_paiment">Date de paiement</label>
+                                                            <input class="form-control" type="text" name="bill_paiment" id="bill_paiment">
+                                                        </div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-success">Créer la facture</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% elseif devis.status == "draft" %}
+                <div class="box-footer row">
+                    <div class="col-sm-6">
+                        <a class="btn btn-info" href="{{ path('myjobmanager_devis_status_set', {'id': devis.id, 'status': 'sent'}) }}">Devis envoyé</a>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <a class="btn btn-warning" href="{{ path('myjobmanager_devis_status_set', {'id': devis.id, 'status': 'canceled'}) }}">Annuler devis</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="box-footer text-center">
+                    <a class="btn btn-info" href="{{ path('myjobmanager_devis_status_set', {'id': devis.id, 'status': 'draft'}) }}">Restaurer devis</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <h3 class="box-title">Elements</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="lines">
+                    {% set lines = devis.lines %}
+                    {% set doc_id = devis.id %}
+                    {{ include("MyJobManagerBundle:Devis:linetab.html.twig") }}
+                </div>
+            </div>
+            {% if modify %}
+            <div class="box-footer">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addLineModal">
+                    Ajouter une ligne ?
+                </button>
+                <div class="modal fade" id="addLineModal" tabindex="-1" role="dialog" aria-labelledby="addLineModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Ajouter une ligne</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                {{ include("MyJobManagerBundle:Devis:formline.html.twig") }}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="well">
+            {% set totalHT = 0 %}
+            {% set totalTTC = 0 %}
+            {% for line in devis.lines %}
+                {% set totalHT = totalHT + line.priceHT * line.quantity %}
+                {% set totalTTC = totalTTC + line.priceTTC * line.quantity %}
+            {% endfor %}
+            <div> Total HT : <span id="totalHT" class="badge bg-green">{{ totalHT }}€</span></div>
+            <div> Total TTC : <span id="totalTTC" class="badge bg-green">{{ totalTTC }}€</span></div>
+            <div> Total TVA : <span class="badge bg-red">{{ totalTTC - totalHT }}€</span></div>
+        </div>
+        <div class="text-right">
+            <a href="{{ path('myjobmanager_devis_list') }}" class="btn btn-info"><i class="fa fa-list"></i> Retour à la liste des devis</a>
+        </div>
+    </section>
+</div>
+
+<div id="user" style="display: none">
+    <div class="firstname">{{ user.firstname }}</div>
+    <div class="lastname">{{ user.lastname }}</div>
+    <div class="companyname">{{ user.companyname }}</div>
+    <div class="adress">{{ user.address }}</div>
+    <div class="zipcode">{{ user.zipcode }}</div>
+    <div class="city">{{ user.city }}</div>
+    <div class="country">{{ user.country }}</div>
+    <div class="phone">{{ user.phone }}</div>
+    <div class="mobile">{{ user.mobile }}</div>
+</div>
+<div id="client" style="display: none">
+    <div class="companyname">{{ devis.client.companyname }}</div>
+    <div class="adress">{{ devis.client.adress }}</div>
+    <div class="zipcode">{{ devis.client.zipcode }}</div>
+    <div class="city">{{ devis.client.city }}</div>
+    <div class="country">{{ devis.client.country }}</div>
+</div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.fr.min.js"></script>
+    <script src="{{ asset('bundles/myjobmanager/assets/pdfmake/build/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('bundles/myjobmanager/js/generatePdf.js') }}"></script>
+    <script>
+        $('#myjobmanagerbundle_devis_creation').datepicker();
+        $('#myjobmanagerbundle_devis_validity').datepicker();
+        $('#bill_creation').datepicker();
+        $('#bill_paiment').datepicker();
+        $('#project_deadline').datepicker();
+    </script>
+{% endblock %}

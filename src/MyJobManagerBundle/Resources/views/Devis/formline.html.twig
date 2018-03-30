@@ -1,0 +1,109 @@
+<div class="well">
+    <div class="row">
+        <div class="col-xs-12">
+            {# form(form) #}
+            {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+            {{ form_errors(form) }}
+        </div>
+        <div class="col-xs-12">
+            <div class="form-group row">
+                {{ form_label(form.name, "Nom", {'label_attr': {'class': 'col-sm-3 col-form-label'}}) }}
+                {{ form_errors(form.name) }}
+                <div class="col-sm-9">
+                    {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Nom de la ligne'}}) }}
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="form-group row">
+                {{ form_label(form.description, "Description", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                {{ form_errors(form.description) }}
+                <div class="col-sm-9">
+                    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Description de la ligne'}}) }}
+                </div>
+            </div>
+        </div>
+        {% if form.deadline is defined %}
+            <div class="col-xs-12">
+                <div class="form-group row">
+                    {{ form_label(form.deadline, "Deadline", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+                    {{ form_errors(form.deadline) }}
+                    <div class="col-sm-9">
+                        {{ form_widget(form.deadline) }}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="col-xs-12">
+            <div class="form-group row">
+                {{ form_label(form.quantity, "Quantité :", {'label_attr': {'class': 'col-sm-3 col-form-label'}}) }}
+                {{ form_errors(form.quantity) }}
+                <div class="col-sm-9">
+                    {{ form_widget(form.quantity, {'attr': {'class': 'form-control', 'placeholder': '1'}}) }}
+                </div>
+            </div>
+        </div>
+        {% if form.estimatedTime is defined %}
+            <div class="col-xs-12">
+                <p>Par unité :</p>
+                <div class="row">
+                    <div class="col-sm-6 col-md-4">
+                        <div class="form-group">
+                            {{ form_label(form.estimatedTime, "Temps estimé", {'label_attr': {'class': 'control-label'}}) }}
+                            {{ form_errors(form.estimatedTime) }}
+                            {{ form_widget(form.estimatedTime, {'attr': {'class': 'form-control', 'placeholder': "Nombre d'heures"}}) }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="form-group">
+                            {{ form_label(form.price, "Prix", {'label_attr': {'class': 'control-label'}}) }}
+                            {{ form_errors(form.price) }}
+                            {{ form_widget(form.price, {'attr': {'class': 'form-control', 'placeholder': 'Prix'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-5">
+                        <div class="form-group">
+                            {{ form_label(form.refTax, "Taxe :", {'label_attr': {'class': 'control-label'}}) }}
+                            {{ form_errors(form.refTax) }}
+                            {{ form_widget(form.refTax) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-xs-12">
+                <p>Par unité :</p>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ form_label(form.price, "Prix", {'label_attr': {'class': 'control-label'}}) }}
+                            {{ form_errors(form.price) }}
+                            {{ form_widget(form.price, {'attr': {'class': 'form-control', 'placeholder': 'Prix'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {{ form_label(form.refTax, "Taxe :", {'label_attr': {'class': 'control-label'}}) }}
+                            {{ form_errors(form.refTax) }}
+                            {{ form_widget(form.refTax) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="col-xs-12">
+            <div class="form-group" id="estimate_modal_submit">
+                {{ form_widget(form.save, {'attr': {'class': 'btn btn-success'}}) }}
+            </div>
+        </div>
+        <div class="col-xs-12">
+            {{ form_rest(form) }}
+            {{ form_end(form) }}
+        </div>
+        {#
+        {{ form_label(form.name, "Intitulé :", {'label_attr': {'class': 'control-label'}}) }}
+        {{ form_errors(form.name) }}
+        {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+        #}
+    </div>
+</div>

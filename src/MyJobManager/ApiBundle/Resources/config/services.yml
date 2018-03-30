@@ -1,0 +1,4 @@
+services:
+#    my_job_manager_api.example:
+#        class: MyJobManager\ApiBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
