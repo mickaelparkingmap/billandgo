@@ -30,9 +30,9 @@
         <!-- Logo -->
         <a href="index2.html" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><img class="img-responsive img-profile-50" src="{% if user.getCompanyLogoPath() == null %}{{ asset("bundles/myjobmanager/img/myjobmanager-logo-.png") }}{% else %}{{ '/uploads/user/avatar/'~user.getCompanyLogoPath()}} {% endif %}" /> </span>
+            <span class="logo-mini"><img class="img-responsive img-profile-50" src="{% if user.getCompanyLogoPath() == null %}https://billandgo.fr/wp-content/uploads/2018/03/billgo-horizontal.png{% else %}{{ '/uploads/user/avatar/'~user.getCompanyLogoPath()}} {% endif %}" /> </span>
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-md"><img class="img-responsive img-profile-50" src="{% if user.getCompanyLogoPath() == null %}{{ asset("bundles/myjobmanager/img/myjobmanager-logo-white.png") }}{% else %}{{ '/uploads/user/avatar/'~user.getCompanyLogoPath()}} {% endif %}" /></span>
+            <span class="logo-md"><img class="img-responsive img-profile-50" src="{% if user.getCompanyLogoPath() == null %}https://billandgo.fr/wp-content/uploads/2018/03/billgo-horizontal.png{% else %}{{ '/uploads/user/avatar/'~user.getCompanyLogoPath()}} {% endif %}" /></span>
         </a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top">
@@ -260,7 +260,7 @@
                         <ul class="dropdown-menu">
                             <!-- User image -->
                             <li class="user-header">
-                                <img src="{% if user.getCompanyLogoPath() == null %}{{ asset("bundles/myjobmanager/img/myjobmanager-logo-white.png") }}{% else %}{{ '/uploads/user/avatar/'~user.getCompanyLogoPath()}} {% endif %}" class="img-thubmail img-profil" alt="User Image">
+                                <img src="{% if user.getCompanyLogoPath() == null %}https://billandgo.fr/wp-content/uploads/2018/03/billgo-horizontal.png{% else %}{{ '/uploads/user/avatar/'~user.getCompanyLogoPath()}} {% endif %}" class="img-thubmail img-profil" alt="User Image">
 
                                 <p>
                                     {{ user.firstname|upper }} {{ user.lastname |upper }}
