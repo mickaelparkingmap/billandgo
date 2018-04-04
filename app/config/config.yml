@@ -72,7 +72,7 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     #auth_mode: "%mailer_auth_mode%"
-    port: "%mailer_port%"
+    #port: "%mailer_port%"
     spool: { type: memory }
 
 fos_user:
