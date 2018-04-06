@@ -20,7 +20,7 @@ Description
 Contributing
 ------------
 
-Bill&Go is an Open Source with MIT Licence.
+Bill&Go is an Open Source with Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) Licence.
 
 About Us
 --------
