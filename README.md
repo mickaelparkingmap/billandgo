@@ -5,7 +5,7 @@
 Bill&Go
 ==================================
 
-@ 
+@ A web tools for freelance developers.
 
 
 Description
