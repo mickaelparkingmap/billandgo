@@ -2,6 +2,8 @@
     <img src="https://framework.iumio.com/images/bill&go-horizontal.png">
 </a></p>
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8347d0a6df4042a5b2695d0109b0d529)](https://www.codacy.com/app/billandgo-team/billandgo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=iumio/billandgo&amp;utm_campaign=Badge_Grade)
+
 Bill&Go
 ==================================
 
