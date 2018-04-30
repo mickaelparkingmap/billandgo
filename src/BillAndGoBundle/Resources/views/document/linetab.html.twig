@@ -1,0 +1,202 @@
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th style="min-width:100px;">Quantité</th>
+        <th style="min-width:100px;">Prix</th>
+        {% if document.type == "estimate" %}
+            <th style="min-width:100px;" class="color-grey">(Temps estimé)</th>
+        {% endif %}
+        <th style="min-width:100px">Statut</th>
+        <th style="min-width:50px;"></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for line in lines %}
+        {% set subTotalHT = line.price * line.quantity %}
+        {% set subTotalVat = line.refTax.percent * subTotalHT / 100 %}
+        <tr class="line-elt" style="font-weight:bold">
+            <td>
+                {% if line.status == "accepted" %}
+                    <input type="checkbox" name="select-line-{{ line.id }}" form="createProject" class="select-line">
+                    <input type="checkbox" name="select-line-{{ line.id }}" form="createBill" class="select-line hidden">
+                {% endif %}
+                <span class="line-elt-name">{{ line.name }}</span>
+                <br/>
+                <span class="grey-text description" style="font-size:14px;font-weight: normal">{{ line.description }}</span>
+            </td>
+            <td>
+                <span class="quantity">{{line.quantity }}</span>
+                {% if (line.quantity > 1) and modify %}
+                    <br/>
+                    <button type="button" data-toggle="modal" data-target="#splitLine{{ line.id }}Modal">
+                        Split <i class="fa fa-arrows-v"></i>
+                    </button>
+                    <div class="modal fade" id="splitLine{{ line.id }}Modal" tabindex="-1" role="dialog"
+                         aria-labelledby="splitLine{{ line.id }}ModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="splitLine{{ line.id }}ModalLabel">Découper une ligne</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="well">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <form action="" method="post" class="text-right">
+                                                    <input type="hidden" name="id_line" value="{{ line.id }}">
+                                                    <input type="range" min="1" max="{{ line.quantity - 1 }}" value="1" name="split" id="line{{ line.id }}Slider"
+                                                           oninput="line{{ line.id }}SliderValue.value = line{{ line.id }}Slider.value">
+                                                    <output class="text-center" type="text" id="line{{ line.id }}SliderValue" value="">1</output>
+                                                    <input type="submit" value="Découper la ligne">
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endif %}
+            </td>
+            <td>
+                <span class="uht">{{ line.price * 1 }}</span> * {{ line.quantity }} = <span class="tht">{{ subTotalHT }}</span>€ HT
+                <br/>
+                <span class="utc">{{ line.price + (line.refTax.percent * line.price / 100.0) }}</span> * {{ line.quantity }} = <span class="ttc">{{ subTotalVat + subTotalHT }}</span>€ TTC
+            </td>
+            {% if document.type == "estimate" %}
+                <td class="color-grey">
+                    {% if line.estimatedTime %}
+                        {% if line.estimatedTime > 0 %}
+                        {{ line.quantity }} * {{ line.estimatedTime }}h = {{ line.estimatedTime * line.quantity }}h
+                        <br/>
+                        soit {{ line.price / line.estimatedTime }}e/h
+                        {% else %}
+                            0h
+                        {% endif %}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            {% endif %}
+            <td>
+                {{ line.status }}
+                {% if line.refProject|first %}
+                    <a class="btn btn-info" href="{{ path("billandgo_project_view", {"id":line.refProject|first.id}) }}">
+                        {{ line.refProject|first.name }}
+                    </a>
+                {% endif %}
+                {% if document.type %}
+                    {% if line.refBill|first %}
+                        <a class="btn btn-info" href="{{ path("billandgo_document_view", {"id":line.refBill|first.id}) }}">
+                            {{ line.refBill|first.number }}
+                        </a>
+                    {% endif %}
+                {% else %}
+                    {% if line.refEstimate|first %}
+                        <a class="btn btn-info" href="{{ path("billandgo_document_view", {"id":line.refEstimate|first.id}) }}">
+                            {{ line.refEstimate|first.number }}
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </td>
+            <td>
+                {% if modify %}
+                    {% if document.type %}
+                        <a href="{{ path('billandgo_line_detach_estimate', {'id': line.id}) }}"><i class="fa fa-trash text-danger"></i></a>
+                    {% else %}
+                        <a href="{{ path('billandgo_line_detach_bill', {'id': line.id}) }}"><i class="fa fa-trash text-danger"></i></a>
+                    {% endif %}
+                    <button type="button" data-toggle="modal" data-target="#editLine{{ line.id }}Modal">
+                        Edit <i class="fa fa-arrows-v"></i>
+                    </button>
+                    <div class="modal fade" id="editLine{{ line.id }}Modal" tabindex="-1" role="dialog"
+                                    aria-labelledby="editLine{{ line.id }}ModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editLine{{ line.id }}ModalLabel">Modifier une ligne</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="well">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <form action="" method="post" class="text-center">
+                                                    <input type="hidden" name="id_line" value="{{ line.id }}">
+                                                    <div class="form-group">
+                                                        <label for="name">Nom</label>
+                                                        <input type="text" name="name" value="{{ line.name }}" class="form-control">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="description">Description</label>
+                                                        <input type="text" name="description" value="{{ line.description }}" class="form-control">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="quantity">Quantité</label>
+                                                        <input type="number" name="quantity" value="{{ line.quantity }}" class="form-control">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="price">Prix</label>
+                                                        <input type="number" name="price" value="{{ line.price }}" class="form-control">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="refTax">Taxes</label>
+                                                        <select name="refTax" class="form-control">
+                                                            <option value="">Veuillez choisir une taxe</option>
+                                                            {% for tax in taxes %}
+                                                                {% if tax == line.refTax %}
+                                                                    <option value="{{ tax.id }}" selected>{{ tax.name }} ({{ tax.percent }}%)</option>
+                                                                {% else %}
+                                                                    <option value="{{ tax.id }}">{{ tax.name }} ({{ tax.percent }}%)</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="estimated_time">Temps estimé</label>
+                                                        <input type="number" name="estimated_time" value="{{ line.estimatedTime }}" class="form-control">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="chrono_time">Temps passé</label>
+                                                        <input type="number" name="chrono_time" value="{{ line.chronoTime }}" class="form-control">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="deadLine">Délai</label>
+                                                        <input type="text" class="datepick form-control" name="deadLine" value="{{ line.deadLine|date('d-m-Y') }}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="submit" value="Editer la ligne">
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </td>
+        </tr>
+    {% else %}
+        <tr>Aucun élément ! :'(</tr>
+    {% endfor %}
+    {% if modify %}
+        <tr><td></td><td></td><td><i>Ajouter une ligne ?</i></td><td></td><td></td></tr>
+        {{ include("BillAndGoBundle:document:formline2.html.twig") }}
+    {% endif %}
+    </tbody>
+</table>

@@ -1,0 +1,478 @@
+#billandgobundle_devis,
+#billandgobundle_bill {
+    text-align: center;
+}
+#billandgobundle_devis_client,
+#billandgobundle_bill_client,
+#billandgobundle_project_client {
+    margin-bottom: 25px;
+}
+#billandgobundle_devis_number,
+#billandgobundle_bill_number,
+#billandgobundle_project_name,
+#billandgobundle_project_value,
+#billandgobundle_client_companyName,
+#billandgobundle_client_country {
+    width: 50%;
+    margin: 0 25% 25px;
+}
+#billandgobundle_devis_creation,
+#billandgobundle_devis_validity,
+#billandgobundle_bill_creation,
+#billandgobundle_bill_paimentDate,
+#billandgobundle_project_deadline {
+    width: 210px;
+    margin: 0 auto 25px;
+}
+#billandgobundle_devis_description,
+#billandgobundle_bill_description,
+#billandgobundle_project_description {
+    width: 100%;
+    height: 50px;
+    margin-bottom: 25px;
+}
+#billandgobundle_bill_lines>.form-group>div>.form-group:nth-child(3),
+#billandgobundle_billline>.form-group:nth-child(3),
+#billandgobundle_client_contacts>.form-group>div>.form-group:nth-child(4),
+#billandgobundle_client_contacts>.form-group>div>.form-group:nth-child(5) {
+    width: 20%;
+    float: left;
+}
+#billandgobundle_devis_lines>.form-group>div>.form-group:nth-child(1),
+#billandgobundle_devisline>.form-group:nth-child(1),
+#billandgobundle_bill_lines>.form-group>div>.form-group:nth-child(1),
+#billandgobundle_billline>.form-group:nth-child(1),
+#billandgobundle_project_todo>.form-group>div>.form-group:nth-child(1),
+#billandgobundle_todo>.form-group:nth-child(1),
+#billandgobundle_bill_lines>.form-group>div>.form-group:nth-child(4),
+#billandgobundle_billline>.form-group:nth-child(4),
+#billandgobundle_bill_lines>.form-group>div>.form-group:nth-child(5),
+#billandgobundle_billline>.form-group:nth-child(5),
+#billandgobundle_client_contacts>.form-group>div>.form-group:nth-child(3) {
+    width: 30%;
+    float: left;
+}
+
+#billandgobundle_client_contacts>.form-group>div>.form-group:nth-child(1),
+#billandgobundle_devis_lines>.form-group>div>.form-group:nth-child(3),
+#billandgobundle_devisline>.form-group:nth-child(3),
+#billandgobundle_devis_lines>.form-group>div>.form-group:nth-child(4),
+#billandgobundle_devisline>.form-group:nth-child(4),
+#billandgobundle_devis_lines>.form-group>div>.form-group:nth-child(5),
+#billandgobundle_devisline>.form-group:nth-child(5),
+#billandgobundle_devis_lines>.form-group>div>.form-group:nth-child(6),
+#billandgobundle_devisline>.form-group:nth-child(6),
+#billandgobundle_project_todo>.form-group>div>.form-group:nth-child(3),
+#billandgobundle_todo>.form-group:nth-child(3),
+#billandgobundle_project_todo>.form-group>div>.form-group:nth-child(4),
+#billandgobundle_todo>.form-group:nth-child(4),
+#billandgobundle_project_todo>.form-group>div>.form-group:nth-child(5),
+#billandgobundle_todo>.form-group:nth-child(5),
+#billandgobundle_project_todo>.form-group>div>.form-group:nth-child(6),
+#billandgobundle_todo>.form-group:nth-child(6),
+#billandgobundle_project_todo>.form-group>div>.form-group:nth-child(7),
+#billandgobundle_todo>.form-group:nth-child(7),
+#billandgobundle_project_todo>.form-group>div>.form-group:nth-child(8),
+#billandgobundle_todo>.form-group:nth-child(8),
+#billandgobundle_clientcontact>.form-group:nth-child(1),
+#billandgobundle_clientcontact>.form-group:nth-child(4) {
+    width: 50%;
+    float: left;
+}
+#billandgobundle_client_contacts>.form-group>div>.form-group:nth-child(2),
+#billandgobundle_clientcontact>.form-group:nth-child(2),
+#billandgobundle_clientcontact>.form-group:nth-child(5) {
+    width: 50%;
+    float: right;
+}
+#billandgobundle_devis_lines>.form-group>div>.form-group:nth-child(2),
+#billandgobundle_devisline>.form-group:nth-child(2),
+#billandgobundle_bill_lines>.form-group>div>.form-group:nth-child(2),
+#billandgobundle_billline>.form-group:nth-child(2),
+#billandgobundle_project_todo>.form-group>div>.form-group:nth-child(2),
+#billandgobundle_todo>.form-group:nth-child(2) {
+    width: 70%;
+    float: right;
+}
+#billandgobundle_devis_lines>.form-group>div>.form-group:nth-child(3),
+#billandgobundle_devisline>.form-group:nth-child(3),
+#billandgobundle_bill_lines>.form-group>div>.form-group:nth-child(3),
+#billandgobundle_billline>.form-group:nth-child(3),
+#billandgobundle_project_todo>.form-group>div>.form-group:nth-child(3),
+#billandgobundle_todo>.form-group:nth-child(3),
+#billandgobundle_client_contacts>.form-group>div>.form-group:nth-child(3) {
+    clear: both;
+}
+#billandgobundle_devis_lines>.form-group>div:after,
+#billandgobundle_devisline,
+#billandgobundle_bill_lines>.form-group>div:after,
+#billandgobundle_billline,
+#billandgobundle_project_todo>.form-group>div:after,
+#billandgobundle_todo{
+    clear: both;
+}
+#billandgobundle_devis_lines>.form-group>a,
+#billandgobundle_devisline_save,
+#billandgobundle_bill_lines>.form-group>a,
+#billandgobundle_billline_save,
+#billandgobundle_project_todo>.form-group>a,
+#billandgobundle_todo_save,
+#billandgobundle_client_contacts>.form-group>a {
+    margin-top:26px;
+    float: right;
+}
+
+.img-profil
+{
+    width: 100%!important;
+}
+
+.img-profile-50
+{
+    width: 100px!important;
+    margin: auto;
+    margin-top: 5px;
+}
+
+.color-refused {
+    color:red;
+}
+.color-accepted,
+.color-paid {
+    color:green;
+}
+.color-canceled {
+    color:darkred;
+}
+.color-sent,
+.color-partially {
+    color:blue;
+}
+.color-grey {
+    color:dimgrey;
+}
+h3 {
+    text-transform: capitalize;
+}
+.third-block.estimate-block>.panel {
+    height:370px;
+    overflow: hidden;
+}
+.third-block.estimate-block>.panel>.panel-body>.tab-content>div {
+    height:175px;
+    overflow: hidden;
+}
+
+.login-box-body, .register-box-body {
+    background: #ffffff47;
+    color: #fff;
+    font-size: 20px;
+}
+
+.login-page, .register-page {
+    background: url("../img/billandgo-nature.jpg") no-repeat no-repeat center;
+}
+
+.login-box input, .login-box textarea {
+    color: #fff;
+    background-color: #ffffff5e;
+    font-size: 17px;
+    border: none;
+}
+
+.login-box input:active:hover {
+
+}
+.login-box input::placeholder, .login-box textarea::placeholder, .login-box-body .form-control-feedback, .register-box-body .form-control-feedback, .login-box a {
+    color: #fff;
+}
+
+.login-box .forgot-pass {
+    padding: 10px 15px 10px 15px;
+}
+
+
+.login-box-msg {
+    font-size: 30px;
+}
+
+.login-box-message {
+    padding-bottom: 20px;
+}
+
+.login-register {
+    width: 70%;
+}
+
+.login-register .form-group {
+    width: 50%;
+    display: inline-table;
+    padding: 0px 20px 0px 20px;
+}
+
+.sidebar-menu>li {
+    padding: 0px 0px 7px 0px;
+}
+
+.main-sidebar {
+    padding-top: 150px;
+}
+
+.main-header .navbar {
+    height: 70px;
+}
+
+.img-billandgo-header {
+    background: url("../img/billgo-horizontal.png") no-repeat center;
+    height: 65px;
+    background-size: 150px;
+}
+
+.main-header .logo {
+    height: 150px;
+}
+
+.main-sidebar, .skin-blue .left-side {
+    background-color: #ffffff!important;
+    border-right: 2px solid #f2634f;
+}
+
+.skin-blue .main-header .logo, .skin-blue .main-header .logo:hover {
+    background-color: #f2634f!important;
+}
+
+.skin-blue .sidebar a {
+    color: #000000;
+}
+
+
+
+.skin-blue .main-header .navbar {
+    background-color: #FFFFFF;
+    border-left: 1px solid white;
+}
+
+.skin-blue .sidebar-menu>li:hover>a, .skin-blue .sidebar-menu>li.active>a, .skin-blue .sidebar-menu>li.menu-open>a {
+    background: #f3624f;
+}
+
+.skin-blue .sidebar-menu>li>.treeview-menu {
+
+    background: #ffffff;
+    border-bottom: 1px solid #f4624f;
+}
+
+.skin-blue .sidebar-menu>li>.treeview-menu li:hover {
+
+    background: #f4624f;
+}
+
+.skin-blue .sidebar-menu>li>.treeview-menu li a{
+    color: #000000;
+}
+
+.skin-blue .main-header li.user-header {
+    background-color: #f4624f;
+}
+
+.name-side {
+    padding-top: 13px;
+}
+.list-side
+{
+    list-style: none;
+    padding-left: 0px;
+}
+
+
+#navbar-primary .navbar-nav {
+    width: 100%;
+    text-align: center;
+}
+#navbar-primary .navbar-nav > li {
+    display: inline-block;
+    float: none;
+}
+#navbar-primary .navbar-nav > li > a {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.btn-logout {
+    color: #f3624f!important;
+    border: 1px solid #f3624f;
+    margin-top: 17px;
+    margin-right: 20px;
+
+}
+
+.btn-logout:hover {
+    color: #FFFFFF!important;
+    background-color: #f3624f;
+}
+
+.pside  {
+    border-radius: 74px;
+    width: 50px;
+    padding-bottom: 5px;
+    margin-top: 20px;
+}
+
+.skin-blue .main-header .navbar .sidebar-toggle {
+    color: #f3624f;
+    font-size: 25px;
+}
+
+.list-side li {
+    line-height: 25px;
+}
+
+
+.list-side .company-name-side {
+    font-size: 20px;
+}
+
+.skin-blue .main-header .navbar .sidebar-toggle:hover {
+    background-color: #f3624f;
+}
+
+.client-link-box-content a, .white-color {
+    color:white;
+}
+
+.box-client .tab-content .tab-pane {
+    padding: 15px 15px 15px 15px!important;
+    background-color: #fbfbfb;
+}
+
+.box-client .panel-body {
+    padding: 0px;
+}
+
+.bg-yellow-client .nav-pills>li.active>a{
+    border-top-color: #f39c12;
+    background-color: #f39c12;
+}
+
+.bg-green-client .nav-pills>li.active>a{
+    border-top-color: #00a65a;
+    background-color: #00a65a;
+}
+
+.bg-red-client .nav-pills>li.active>a{
+    border-top-color: #dd4b39 !important;
+    background-color: #dd4b39 !important;
+}
+
+.bg-blue-client .nav-pills>li.active>a{
+    border-top-color: #0073b7 !important;
+    background-color: #0073b7 !important;
+}
+
+.bg-black-client .nav-pills>li.active>a{
+    border-top-color: #111 !important;
+    background-color: #111 !important;
+}
+
+.bg-purple-client .nav-pills>li.active>a{
+    border-top-color: #605ca8 !important;
+    background-color: #605ca8 !important;
+}
+
+.sidebar-collapse .name-side {
+    white-space: nowrap;
+    width: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-collapse .company-name-side {
+    display: none;
+}
+
+.ppdashbboard {
+    position: relative;
+    top: 50px;
+}
+
+.prg-b {
+    font-size: 20px ;
+    position: relative;
+    top: 9px;
+}
+
+.progress-mod {
+    height: 40px;
+}
+
+
+.onlick {
+    cursor: pointer;
+}
+.column-link .info-box-content  {
+    padding-top: 35px;
+}
+
+
+.btn-outline {
+    background-color: transparent;
+    color: inherit;
+    transition: all .5s;
+}
+
+.btn-primary.btn-outline {
+    color: #428bca;
+}
+
+.btn-success.btn-outline {
+    color: #5cb85c;
+}
+
+.btn-group .btn-outline.active {
+    color:white;
+}
+
+.btn-info.btn-outline {
+    color: #5bc0de;
+}
+
+.btn-warning.btn-outline {
+    color: #f0ad4e;
+}
+
+.btn-danger.btn-outline {
+    color: #d9534f;
+}
+
+.btn-primary.btn-outline:hover,
+.btn-success.btn-outline:hover,
+.btn-info.btn-outline:hover,
+.btn-warning.btn-outline:hover,
+.btn-danger.btn-outline:hover {
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .login-register .form-group {
+        width: 100%;
+        display: block;
+    }
+}
+
+@media (max-width: 767px) {
+    .sidebar-menu {
+        padding-top: 80px;
+    }
+    .content-wrapper {
+        padding-top: 130px;
+    }
+
+
+}
+
+@media (max-width: 600px) {
+    .col-menor-logout {
+      display: none;
+    }
+}
+

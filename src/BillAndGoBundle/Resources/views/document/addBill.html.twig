@@ -1,0 +1,63 @@
+{% extends "BillAndGoBundle::base.html.twig" %}
+
+{% block title %}{{ parent() }} - Nouvelle Facture{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" type="text/css" rel="stylesheet"/>
+{% endblock %}
+
+{% block fos_user_content %}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Facture
+                <small>Nouvelle facture</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li><a href="{{ path('billandgo_devis_list') }}"><i class="fa fa-file-text-o"></i> Facture</a></li>
+                <li class="active"><i class="fa fa-plus"></i> Ajout</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Créez votre facture :</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-offset-2 col-lg-offset-3 col-md-8 col-lg-6 text-center">
+                            {{ include("BillAndGoBundle:document:formBill.html.twig") }}
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+{% endblock fos_user_content %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.fr.min.js"></script>
+    <script>
+        nowDate = new Date();
+        nowDate.setMonth((nowDate.getMonth() + 1)%12);
+        delayDate = new Date(nowDate.getFullYear(), nowDate.getMonth() + 1, 0);
+        $('#billandgobundle_document_delayDate').datepicker('setDate', delayDate);
+    </script>
+    <script src="{{ asset('bundles/billandgo/js/estimate.js') }}"></script>
+{% endblock %}

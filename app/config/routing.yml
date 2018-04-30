@@ -1,9 +1,9 @@
 my_job_manager_api:
-    resource: "@MyJobManagerApiBundle/Controller/"
+    resource: "@BillAndGoApiBundle/Controller/"
     type:     rest
 
 my_job_manager:
-    resource: "@MyJobManagerBundle/Controller/"
+    resource: "@BillAndGoBundle/Controller/"
     type:     annotation
     prefix:   /
 

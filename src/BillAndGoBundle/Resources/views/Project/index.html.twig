@@ -1,0 +1,229 @@
+{% extends "BillAndGoBundle::base.html.twig" %}
+
+{% block title %}{{ parent() }} - Liste des projets{% endblock %}
+
+{% block fos_user_content %}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Projets
+                <small>Hello! Voici la liste de vos projets</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li class="active"><i class="fa fa-industry"></i> Projets</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-yellow"><i class="fa fa-industry"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Nombre de projets</span>
+                            <span class="info-box-number">{{ list|length }}</span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('billandgo_project_add') }}'">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green"><i class="fa fa-plus"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text"><strong>Créer un nouveau projet</strong></span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+            </div>
+
+            <div class="row">
+
+                <!-- /.box-header -->
+
+                        {% set nbproject = 0 %}
+                        {% set totalValue = 0 %}
+                        {% set totalTimeLeft = 0 %}
+                        {% set totalTimeDone = 0 %}
+                {% set nbclient = 0 %}
+                {% set nbcolor = 0 %}
+                {% set maxcolor = 6 %}
+                {% set color = ['bg-yellow', 'bg-green', 'bg-purple', 'bg-black', 'bg-blue', 'bg-red'] %}
+                        {% for project in list %}
+                            {% set nbproject = nbproject + 1 %}
+                            {% set difference = date(project.deadLine).diff(date()) %}
+                            {% set leftDays = difference.days %}
+                            {% set timeLeft = 0 %}
+                            {% set timeDone = 0 %}
+                            {% set value = 0 %}
+                            {% for todo in project.refLines %}
+                                {% if todo.status == "planned" %}
+                                    {% set timeLeft = timeLeft + todo.estimatedTime * todo.quantity %}
+                                {% else %}
+                                    {% set timeDone = timeDone + todo.estimatedTime * todo.quantity %}
+                                {% endif %}
+                                {% set value = value + todo.price * todo.quantity %}
+                            {% endfor %}
+
+
+
+
+
+
+
+
+                            <div class="col-md-4">
+                                <!-- Widget: user widget style 1 -->
+                                <div class="box box-widget widget-user-2 box-client {{ color[nbcolor] }}-client">
+                                    <!-- Add the bg color to the header using any of the bg-* classes -->
+                                    <div class="widget-user-header  {{ color[nbcolor] }}">
+                                        <div class="widget-user-image" style="margin-top: -35px;">
+                                            <span class="img-circle"><i class="fa fa-industry fa-3x ppdashbboard" ></i> </span>
+                                        </div>
+                                        <!-- /.widget-user-image -->
+                                        <h3 class="widget-user-username"> {{ project.name }}</h3>
+                                        <h5 class="widget-user-desc">Projet</h5>
+                                        <h5 class="widget-user-desc">Valeur : {{ value }}€</h5>
+                                        <h5 class="widget-user-desc client-link-box-content"> <a href="{{ path('billandgo_project_view', {'id': project.id}) }}">
+                                                Voir la fiche projet
+                                            </a></h5>
+
+                                    </div>
+                                    <div class="box-footer no-padding">
+                                        <div class="panel-body">
+                                            <ul class="nav nav-pills nav-justified">
+                                                <li class="active">
+                                                    <a data-toggle="tab" href="#cli-{{ nbproject }}-info">
+                                                        Infos
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a data-toggle="tab" href="#cli-{{ nbproject }}-doc">
+                                                        Client
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a data-toggle="tab" href="#cli-{{ nbproject }}-con">
+                                                        TO DO
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                            <div class="tab-content">
+                                                <div id="cli-{{ nbproject }}-info" class="tab-pane fade in active bg-info" >
+                                                    <ul>
+                                                        <li><strong>Date de démarrage :</strong> {{ project.begin|date('d-m-Y') }}</li>
+                                                        <li><strong>Date de livraision :</strong>  {{ project.deadLine|date('d-m-Y') }}</li>
+                                                    </ul>
+                                                    <h5><strong>Description :</strong></h5>
+                                                    <p>
+                                                        {{ project.description|length > 300 ? project.description|slice(0, 300) ~ '...' : project.description  }}
+                                                    </p>
+                                                </div>
+                                                <div id="cli-{{ nbproject }}-doc" class="tab-pane fade in bg-info">
+                                                    <ul>
+                                                        <li>
+                                                            <strong>Client :</strong> <a href="{{ path('billandgo_clients_view', {'id': project.refClient.id}) }}">{{ project.refClient.companyName }}</a>
+                                                        </li>
+                                                    </ul>
+
+                                                    {% if project.refClient.contacts is not empty %}
+                                                        <table class="table table-striped">
+                                                            <thead><tr>
+                                                                <th>Email</th>
+                                                                <th>Nom</th>
+                                                                <th>Prénom</th>
+                                                            </tr></thead>
+                                                            {% for contact in project.refClient.contacts %}
+                                                                <tr>
+                                                                    <td><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></td>
+                                                                    <td>{{ contact.firstname }}</td>
+                                                                    <td>{{ contact.lastname }}</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </table>
+                                                    {% endif %}
+                                                </div>
+                                                <div id="cli-{{ nbproject }}-con" class="tab-pane fade in bg-info">
+
+                                                    {% if timeDone + timeLeft > 0 %}
+                                                        <div class="progress">
+                                                            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="{{ (timeDone / (timeDone + timeLeft) * 100) | round}}" aria-valuemin="0" aria-valuemax="" style="width: {{ (timeDone / (timeDone + timeLeft) * 100) | round}}%">
+                                                                <span>{{ timeDone }}/{{ timeDone + timeLeft }}h ({{ (timeDone / (timeDone + timeLeft) * 100) | round }}%)</span>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                    <p>
+                                                        Jours restant : <span class="badge bg-green" style="font-weight: bold;">{{ leftDays }}</span>
+                                                    </p>
+                                                    <p>
+                                                        <!-- A venir : évaluation de la faisabilité en fonction de la charge de travail, des autres projets, du temps moyen de travail... */-->
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.widget-user -->
+                            </div>
+                            {%  set nbcolor = nbcolor + 1 %}
+                            {% if nbcolor >= maxcolor %}
+                                {%  set nbcolor = 0 %}
+                            {% endif %}
+
+                            {% set totalValue = totalValue + value %}
+                            {% set totalTimeLeft = totalTimeLeft + timeLeft %}
+                            {% set totalTimeDone = totalTimeDone + timeDone %}
+                        {% else %}
+                            <div class="callout callout-info col-md-12">
+                                <h4>Aucun projets d'enregistrés </h4>
+                                <p>Vous n'avez pas encore saisi de projets</p>
+                            </div>
+                        {% endfor %}
+
+
+                <!-- /.box-body -->
+            </div>
+
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Résumé</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    {% if totalTimeDone + totalTimeLeft > 0 %}
+                        <h4>Progression de l'ensemble des tâches</h4>
+                        <div class="progress progress-mod">
+                            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="{{ (totalTimeDone / (totalTimeDone + totalTimeLeft) * 100) | round }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ (totalTimeDone / (totalTimeDone + totalTimeLeft) * 100) | round}}%">
+                                <span class="prg-b">{{ totalTimeDone }}/{{ totalTimeDone + totalTimeLeft }}h ({{ (totalTimeDone / (totalTimeDone + totalTimeLeft) * 100) | round}}%)</span>
+                            </div>
+                        </div>
+                        <ul>
+                            <li><strong>Charge de travail restante :</strong> <span class="badge bg-red" style="font-weight: bold;">{{ totalTimeLeft }} h</span></li>
+                            <li><strong>Valeur des projets en cours :</strong> <span class="badge bg-green" style="font-weight: bold;">{{ totalValue }} €</span></li>
+                            <li><strong>Charge de travail restante :</strong> <span class="badge bg-red" style="font-weight: bold;">{{ totalTimeLeft }}h</span></li>
+                            <li><strong>Coût par heure :</strong> Pour {{ totalTimeDone + totalTimeLeft }} h soit <span class="badge bg-green" style="font-weight: bold;">{{ totalValue / (totalTimeDone + totalTimeLeft)}}€ / h</span></li>
+                        </ul>
+                    {% else %}
+                        <ul>
+                            <li>Hello! Votre temps de travail est de 0 h.</li>
+                        </ul>
+                    {% endif %}
+                </div>
+                <!-- /.box-body -->
+                <!--<div class="box-footer">
+                    <div>/* détails et classement par date à venir*/</div>
+                </div>-->
+            </div>
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+
+{% endblock fos_user_content %}

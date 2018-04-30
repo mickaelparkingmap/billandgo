@@ -1,0 +1,1339 @@
+<!--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title></title>
+
+
+    <style></style>
+
+</head>
+{% if (type == "bill") %}
+    {% set lines = document.refLinesB %}
+{% else %}
+    {% set lines = document.refLines     %}
+{% endif %}
+
+<body style="-moz-box-sizing: border-box; -ms-text-size-adjust: 100%; -webkit-box-sizing: border-box; -webkit-text-size-adjust: 100%; Margin: 0; box-sizing: border-box; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; line-height: 1.3; margin: 0; min-width: 100%; padding: 0; text-align: left; width: 100% !important;">
+<style>
+    @media only screen {
+        html {
+            min-height: 100%;
+            background: #f3f3f3;
+        }
+    }
+
+    @media only screen and (max-width: 596px) {
+        .small-float-center {
+            margin: 0 auto !important;
+            float: none !important;
+            text-align: center !important;
+        }
+        .small-text-center {
+            text-align: center !important;
+        }
+        .small-text-left {
+            text-align: left !important;
+        }
+        .small-text-right {
+            text-align: right !important;
+        }
+    }
+
+    @media only screen and (max-width: 596px) {
+        .hide-for-large {
+            display: block !important;
+            width: auto !important;
+            overflow: visible !important;
+            max-height: none !important;
+            font-size: inherit !important;
+            line-height: inherit !important;
+        }
+    }
+
+    @media only screen and (max-width: 596px) {
+        table.body table.container .hide-for-large,
+        table.body table.container .row.hide-for-large {
+            display: table !important;
+            width: 100% !important;
+        }
+    }
+
+    @media only screen and (max-width: 596px) {
+        table.body table.container .callout-inner.hide-for-large {
+            display: table-cell !important;
+            width: 100% !important;
+        }
+    }
+
+    @media only screen and (max-width: 596px) {
+        table.body table.container .show-for-large {
+            display: none !important;
+            width: 0;
+            mso-hide: all;
+            overflow: hidden;
+        }
+    }
+
+    @media only screen and (max-width: 596px) {
+        table.body img {
+            width: auto;
+            height: auto;
+        }
+        table.body center {
+            min-width: 0 !important;
+        }
+        table.body .container {
+            width: 95% !important;
+        }
+        table.body .columns,
+        table.body .column {
+            height: auto !important;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+        }
+        table.body .columns .column,
+        table.body .columns .columns,
+        table.body .column .column,
+        table.body .column .columns {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        table.body .collapse .columns,
+        table.body .collapse .column {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        td.small-1,
+        th.small-1 {
+            display: inline-block !important;
+            width: 8.33333% !important;
+        }
+        td.small-2,
+        th.small-2 {
+            display: inline-block !important;
+            width: 16.66667% !important;
+        }
+        td.small-3,
+        th.small-3 {
+            display: inline-block !important;
+            width: 25% !important;
+        }
+        td.small-4,
+        th.small-4 {
+            display: inline-block !important;
+            width: 33.33333% !important;
+        }
+        td.small-5,
+        th.small-5 {
+            display: inline-block !important;
+            width: 41.66667% !important;
+        }
+        td.small-6,
+        th.small-6 {
+            display: inline-block !important;
+            width: 50% !important;
+        }
+        td.small-7,
+        th.small-7 {
+            display: inline-block !important;
+            width: 58.33333% !important;
+        }
+        td.small-8,
+        th.small-8 {
+            display: inline-block !important;
+            width: 66.66667% !important;
+        }
+        td.small-9,
+        th.small-9 {
+            display: inline-block !important;
+            width: 75% !important;
+        }
+        td.small-10,
+        th.small-10 {
+            display: inline-block !important;
+            width: 83.33333% !important;
+        }
+        td.small-11,
+        th.small-11 {
+            display: inline-block !important;
+            width: 91.66667% !important;
+        }
+        td.small-12,
+        th.small-12 {
+            display: inline-block !important;
+            width: 100% !important;
+        }
+        .columns td.small-12,
+        .column td.small-12,
+        .columns th.small-12,
+        .column th.small-12 {
+            display: block !important;
+            width: 100% !important;
+        }
+        table.body td.small-offset-1,
+        table.body th.small-offset-1 {
+            margin-left: 8.33333% !important;
+            Margin-left: 8.33333% !important;
+        }
+        table.body td.small-offset-2,
+        table.body th.small-offset-2 {
+            margin-left: 16.66667% !important;
+            Margin-left: 16.66667% !important;
+        }
+        table.body td.small-offset-3,
+        table.body th.small-offset-3 {
+            margin-left: 25% !important;
+            Margin-left: 25% !important;
+        }
+        table.body td.small-offset-4,
+        table.body th.small-offset-4 {
+            margin-left: 33.33333% !important;
+            Margin-left: 33.33333% !important;
+        }
+        table.body td.small-offset-5,
+        table.body th.small-offset-5 {
+            margin-left: 41.66667% !important;
+            Margin-left: 41.66667% !important;
+        }
+        table.body td.small-offset-6,
+        table.body th.small-offset-6 {
+            margin-left: 50% !important;
+            Margin-left: 50% !important;
+        }
+        table.body td.small-offset-7,
+        table.body th.small-offset-7 {
+            margin-left: 58.33333% !important;
+            Margin-left: 58.33333% !important;
+        }
+        table.body td.small-offset-8,
+        table.body th.small-offset-8 {
+            margin-left: 66.66667% !important;
+            Margin-left: 66.66667% !important;
+        }
+        table.body td.small-offset-9,
+        table.body th.small-offset-9 {
+            margin-left: 75% !important;
+            Margin-left: 75% !important;
+        }
+        table.body td.small-offset-10,
+        table.body th.small-offset-10 {
+            margin-left: 83.33333% !important;
+            Margin-left: 83.33333% !important;
+        }
+        table.body td.small-offset-11,
+        table.body th.small-offset-11 {
+            margin-left: 91.66667% !important;
+            Margin-left: 91.66667% !important;
+        }
+        table.body table.columns td.expander,
+        table.body table.columns th.expander {
+            display: none !important;
+        }
+        table.body .right-text-pad,
+        table.body .text-pad-right {
+            padding-left: 10px !important;
+        }
+        table.body .left-text-pad,
+        table.body .text-pad-left {
+            padding-right: 10px !important;
+        }
+        table.menu {
+            width: 100% !important;
+        }
+        table.menu td,
+        table.menu th {
+            width: auto !important;
+            display: inline-block !important;
+        }
+        table.menu.vertical td,
+        table.menu.vertical th,
+        table.menu.small-vertical td,
+        table.menu.small-vertical th {
+            display: block !important;
+        }
+        table.menu[align="center"] {
+            width: auto !important;
+        }
+        table.button.small-expand,
+        table.button.small-expanded {
+            width: 100% !important;
+        }
+        table.button.small-expand table,
+        table.button.small-expanded table {
+            width: 100%;
+        }
+        table.button.small-expand table a,
+        table.button.small-expanded table a {
+            text-align: center !important;
+            width: 100% !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        table.button.small-expand center,
+        table.button.small-expanded center {
+            min-width: 0;
+        }
+    }
+
+    @media only screen {
+        html {
+            min-height: 100%;
+            background: #f3f3f3;
+        }
+    }
+
+    @media only screen and (max-width: 596px) {
+        .small-float-center {
+            margin: 0 auto !important;
+            float: none !important;
+            text-align: center !important;
+        }
+        .small-text-center {
+            text-align: center !important;
+        }
+        .small-text-left {
+            text-align: left !important;
+        }
+        .small-text-right {
+            text-align: right !important;
+        }
+    }
+
+    @media only screen and (max-width: 596px) {
+        .hide-for-large {
+            display: block !important;
+            width: auto !important;
+            overflow: visible !important;
+            max-height: none !important;
+            font-size: inherit !important;
+            line-height: inherit !important;
+        }
+    }
+
+    @media only screen and (max-width: 596px) {
+        table.body table.container .hide-for-large,
+        table.body table.container .row.hide-for-large {
+            display: table !important;
+            width: 100% !important;
+        }
+    }
+
+    @media only screen and (max-width: 596px) {
+        table.body table.container .callout-inner.hide-for-large {
+            display: table-cell !important;
+            width: 100% !important;
+        }
+    }
+
+    @media only screen and (max-width: 596px) {
+        table.body table.container .show-for-large {
+            display: none !important;
+            width: 0;
+            mso-hide: all;
+            overflow: hidden;
+        }
+    }
+
+    @media only screen and (max-width: 596px) {
+        table.body img {
+            width: auto;
+            height: auto;
+        }
+        table.body center {
+            min-width: 0 !important;
+        }
+        table.body .container {
+            width: 95% !important;
+        }
+        table.body .columns,
+        table.body .column {
+            height: auto !important;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+        }
+        table.body .columns .column,
+        table.body .columns .columns,
+        table.body .column .column,
+        table.body .column .columns {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        table.body .collapse .columns,
+        table.body .collapse .column {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        td.small-1,
+        th.small-1 {
+            display: inline-block !important;
+            width: 8.33333% !important;
+        }
+        td.small-2,
+        th.small-2 {
+            display: inline-block !important;
+            width: 16.66667% !important;
+        }
+        td.small-3,
+        th.small-3 {
+            display: inline-block !important;
+            width: 25% !important;
+        }
+        td.small-4,
+        th.small-4 {
+            display: inline-block !important;
+            width: 33.33333% !important;
+        }
+        td.small-5,
+        th.small-5 {
+            display: inline-block !important;
+            width: 41.66667% !important;
+        }
+        td.small-6,
+        th.small-6 {
+            display: inline-block !important;
+            width: 50% !important;
+        }
+        td.small-7,
+        th.small-7 {
+            display: inline-block !important;
+            width: 58.33333% !important;
+        }
+        td.small-8,
+        th.small-8 {
+            display: inline-block !important;
+            width: 66.66667% !important;
+        }
+        td.small-9,
+        th.small-9 {
+            display: inline-block !important;
+            width: 75% !important;
+        }
+        td.small-10,
+        th.small-10 {
+            display: inline-block !important;
+            width: 83.33333% !important;
+        }
+        td.small-11,
+        th.small-11 {
+            display: inline-block !important;
+            width: 91.66667% !important;
+        }
+        td.small-12,
+        th.small-12 {
+            display: inline-block !important;
+            width: 100% !important;
+        }
+        .columns td.small-12,
+        .column td.small-12,
+        .columns th.small-12,
+        .column th.small-12 {
+            display: block !important;
+            width: 100% !important;
+        }
+        table.body td.small-offset-1,
+        table.body th.small-offset-1 {
+            margin-left: 8.33333% !important;
+            Margin-left: 8.33333% !important;
+        }
+        table.body td.small-offset-2,
+        table.body th.small-offset-2 {
+            margin-left: 16.66667% !important;
+            Margin-left: 16.66667% !important;
+        }
+        table.body td.small-offset-3,
+        table.body th.small-offset-3 {
+            margin-left: 25% !important;
+            Margin-left: 25% !important;
+        }
+        table.body td.small-offset-4,
+        table.body th.small-offset-4 {
+            margin-left: 33.33333% !important;
+            Margin-left: 33.33333% !important;
+        }
+        table.body td.small-offset-5,
+        table.body th.small-offset-5 {
+            margin-left: 41.66667% !important;
+            Margin-left: 41.66667% !important;
+        }
+        table.body td.small-offset-6,
+        table.body th.small-offset-6 {
+            margin-left: 50% !important;
+            Margin-left: 50% !important;
+        }
+        table.body td.small-offset-7,
+        table.body th.small-offset-7 {
+            margin-left: 58.33333% !important;
+            Margin-left: 58.33333% !important;
+        }
+        table.body td.small-offset-8,
+        table.body th.small-offset-8 {
+            margin-left: 66.66667% !important;
+            Margin-left: 66.66667% !important;
+        }
+        table.body td.small-offset-9,
+        table.body th.small-offset-9 {
+            margin-left: 75% !important;
+            Margin-left: 75% !important;
+        }
+        table.body td.small-offset-10,
+        table.body th.small-offset-10 {
+            margin-left: 83.33333% !important;
+            Margin-left: 83.33333% !important;
+        }
+        table.body td.small-offset-11,
+        table.body th.small-offset-11 {
+            margin-left: 91.66667% !important;
+            Margin-left: 91.66667% !important;
+        }
+        table.body table.columns td.expander,
+        table.body table.columns th.expander {
+            display: none !important;
+        }
+        table.body .right-text-pad,
+        table.body .text-pad-right {
+            padding-left: 10px !important;
+        }
+        table.body .left-text-pad,
+        table.body .text-pad-left {
+            padding-right: 10px !important;
+        }
+        table.menu {
+            width: 100% !important;
+        }
+        table.menu td,
+        table.menu th {
+            width: auto !important;
+            display: inline-block !important;
+        }
+        table.menu.vertical td,
+        table.menu.vertical th,
+        table.menu.small-vertical td,
+        table.menu.small-vertical th {
+            display: block !important;
+        }
+        table.menu[align="center"] {
+            width: auto !important;
+        }
+        table.button.small-expand,
+        table.button.small-expanded {
+            width: 100% !important;
+        }
+        table.button.small-expand table,
+        table.button.small-expanded table {
+            width: 100%;
+        }
+        table.button.small-expand table a,
+        table.button.small-expanded table a {
+            text-align: center !important;
+            width: 100% !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        table.button.small-expand center,
+        table.button.small-expanded center {
+            min-width: 0;
+        }
+    }
+</style>
+
+<table class="body" data-made-with-foundation="" style="Margin: 0; background: #f3f3f3; border-collapse: collapse; border-spacing: 0; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; height: 100%; line-height: 1.3; margin: 0; padding: 0; text-align: left; vertical-align: top; width: 100%;">
+    <tbody>
+    <tr style="padding: 0; text-align: left; vertical-align: top;">
+        <td class="float-center" align="center" valign="top" style="-moz-hyphens: auto; -webkit-hyphens: auto; Margin: 0 auto; border-collapse: collapse !important; color: #0a0a0a; float: none; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; hyphens: auto; line-height: 1.3; margin: 0 auto; padding: 0; text-align: center; vertical-align: top; word-wrap: break-word;">
+            <center data-parsed="" style="min-width: 580px; width: 100%;">
+                <table align="center" class="wrapper header float-center" style="Margin: 0 auto; background: #f5f5f5; border-collapse: collapse; border-spacing: 0; float: none; margin: 0 auto; padding: 0; text-align: center; vertical-align: top; width: 100%;">
+                    <tbody>
+                    <tr style="padding: 0; text-align: left; vertical-align: top;">
+                        <td class="wrapper-inner" style="-moz-hyphens: auto; -webkit-hyphens: auto; Margin: 0; border-collapse: collapse !important; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; hyphens: auto; line-height: 1.3; margin: 0; padding: 0; padding:0; text-align: left; vertical-align: top; word-wrap: break-word;">
+                            <table align="center" class="container" style="Margin: 20px auto 0 auto; background: #f5f5f5; border-collapse: collapse; border-spacing: 0; margin: 20px auto 0 auto; padding: 0; text-align: inherit; vertical-align: top; width: 580px; position: relative; box-shadow: 0px 3px 5px #dddddd;">
+                                <tbody>
+                                <tr style="padding: 0; text-align: left; vertical-align: top;">
+                                    <td style="-moz-hyphens: auto; -webkit-hyphens: auto; Margin: 0; border-collapse: collapse !important; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; hyphens: auto; line-height: 1.3; margin: 0; padding: 0; text-align: left; vertical-align: top; word-wrap: break-word;">
+                                        <table class="row collapse" style="border-collapse: collapse; border-spacing: 0; display: table; padding-right: 0; padding-bottom: 0; padding-left: 0; padding-top: 20px; position: relative; text-align: left; vertical-align: top; width: 100%;">
+                                            <tbody>
+                                            <tr style="padding: 0; text-align: left; vertical-align: top;">
+                                                <th class="small-6 large-6 columns first" style="Margin: 0 auto; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; line-height: 1.3; margin: 0 auto; padding: 0; padding-bottom: 0; padding-left: 0; padding-right: 0; text-align: left; width: 298px;">
+                                                    <table style="border-collapse: collapse; border-spacing: 0; padding: 0; text-align: left; vertical-align: top; width: 100%;">
+                                                        <tbody>
+                                                        <tr style="padding: 0; text-align: left; vertical-align: top;">
+                                                            <th style="Margin: 0; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; line-height: 1.3; margin: 0; padding: 0; text-align: left;">
+                                                                <img style="width:170px;" src="" style="-ms-interpolation-mode: bicubic; clear: both; display: block; max-width: 100%; outline: none; text-decoration: none; width: auto;">
+                                                            </th>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </th>
+                                                <th class="small-6 large-6 columns last" style="Margin: 0 auto; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; line-height: 1.3; margin: 0 auto; padding: 0; padding-bottom: 0; padding-left: 0; padding-right: 0; text-align: left; width: 298px;">
+                                                    <table style="border-collapse: collapse; border-spacing: 0; padding: 0; text-align: left; vertical-align: top; width: 100%;">
+                                                        <tbody>
+                                                        <tr style="padding: 0; text-align: left; vertical-align: top;">
+                                                            <th style="Margin: 0; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; line-height: 1.3; margin: 0; padding: 0; text-align: left;">
+                                                                <p class="text-right" style="Margin: 0; Margin-bottom: 10px; color: #fff; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; line-height: 1.3; margin: 0; margin-bottom: 0; padding: 0; text-align: right;"></p>
+                                                            </th>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </th>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                            <center data-parsed="" style="min-width: 580px; width: 100%;">
+                                <table align="center" class="menu float-center" style="Margin: 0 auto; border-collapse: collapse; border-spacing: 0; float: none; margin: 0 auto; padding: 0; text-align: center; vertical-align: top; width: 95% !important;">
+                                    <tbody>
+                                    <tr style="padding: 0; text-align: left; vertical-align: top;">
+                                        <td style="-moz-hyphens: auto; -webkit-hyphens: auto; Margin: 0; border-collapse: collapse !important; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; hyphens: auto; line-height: 1.3; margin: 0; padding: 0; text-align: left; vertical-align: top; word-wrap: break-word;">
+                                            <table style="border-collapse: collapse; border-spacing: 0; padding: 0; text-align: left; vertical-align: top;width:100%;">
+                                                <tbody>
+                                                <tr style="padding: 0; text-align: left; vertical-align: top;">
+                                                    <th class="menu-item float-center" style="Margin: 0 auto; color: #a9a9a9; float: none; font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: normal; line-height: 1; margin: 0 auto; padding: 10px; padding-right: 10px; text-align: center;">
+                                                        <p>généré par BillAndGo</p>
+                                                    </th>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </center>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </center>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+
+</body>
+
+</html>-->
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>{% block title %}Hello ! Votre devis est arrivé{% endblock %}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+
+    <link href='http://fonts.googleapis.com/css?family=Raleway:600,700,400' rel='stylesheet' type='text/css'>
+
+    <!--  General CSS  -->
+    <style type="text/css">
+        html{
+            width: 100%;
+        }
+
+        body{
+            width: 100%;
+            margin:0;
+            padding:0;
+            -webkit-font-smoothing: antialiased;
+            mso-margin-top-alt:0px;
+            mso-margin-bottom-alt:0px;
+            mso-padding-alt: 0px 0px 0px 0px;
+            background: #E7E7E7;
+        }
+
+        p,h1,h2,h3,h4{
+            margin-top:0;
+            margin-bottom:0;
+            padding-top:0;
+            padding-bottom:0;
+        }
+
+        table{
+            font-size: 14px;
+            border: 0;
+        }
+
+        img{
+            border: none!important;
+        }
+
+        .main_container {
+            max-width: 850px;
+            height: 100%;
+            background: #ffffff;
+            overflow: hidden;
+            margin: 80px auto 40px auto;
+            box-shadow: 0 0 7px #cdcccc;
+            -webkit-box-shadow: 0 0 7px #cdcccc;
+            -moz-box-shadow: 0 0 7px #cdcccc;
+            -o-box-shadow: 0 0 7px #cdcccc;
+        }
+    </style>
+
+    <!--  Responsive CSS  -->
+    <style type="text/css">
+        @media only screen and (max-width: 800px) {
+            body[yahoo] .quote_full_width {width:100% !important;}
+            body[yahoo] .quote_content_width {width:90% !important;}
+        }
+
+        @media only screen and (max-width: 640px) {
+            body[yahoo] .full_width {width:100% !important;}
+            body[yahoo] .content_width{width:80% !important;}
+            body[yahoo] .center_txt {text-align: center!important;}
+            body[yahoo] .post_sep {width:100% !important; height:60px !important;}
+            body[yahoo] .gal_sep {width:100% !important; height:40px !important;}
+            body[yahoo] .gal_img {width:100% !important;}
+            body[yahoo] .bb_space {height:90px !important;}
+
+        }
+    </style>
+</head>
+{% if (type == "bill") %}
+    {% set lines = document.refLinesB %}
+{% else %}
+    {% set lines = document.refLines     %}
+{% endif %}
+<body style="margin: 0; padding: 0;" yahoo="fix">
+
+<div class="main_container">
+<!--  billboard  -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#2a3647" style="background-size: cover; -webkit-background-size: cover; -moz-background-size: cover -o-background-size: cover; background-position: bottom center; background-repeat: no-repeat; background-color:#ffffff;">
+
+    <!--  header  -->
+    <tr>
+        <td>
+            <table width="600" cellpadding="0" cellspacing="0" align="center" border="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; border:0; text-align:center;" class="content_width">
+                <!--  spacing  -->
+                <tr>
+                    <td width="100%" height="10">&nbsp;</td>
+                </tr>
+                <!--  end spacing  -->
+
+                <!--  Logo  -->
+                <tr>
+                    <td>
+                        <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150"  alt="" title="" border="0" style="border:0; display:inline_block;"/>
+                    </td>
+                </tr>
+                <!--  end logo  -->
+
+                <!--  spacing  -->
+                <tr>
+                    <td width="100%" height="10">&nbsp;</td>
+                </tr>
+                <!--  end spacing  -->
+
+                <!--  vertical separator  -->
+                <tr>
+                    <td>
+                        <table width="600" height="1" align="center" bgcolor="#343f53" border="0"  cellpadding="0" cellspacing="0"style="height:1px!important; width:600px; background-color:#343f53; padding:0; border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+                            <tr>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <!--  end vertical separator  -->
+            </table>
+        </td>
+    </tr>
+    <!--  end header  -->
+
+    <!--  spacing  -->
+    <tr>
+        <td height="50">&nbsp;</td>
+    </tr>
+    <!--  end spacing  -->
+
+    <!--  caption  -->
+    <tr>
+        <td>
+            <table width="600" cellpadding="0" cellspacing="0" align="center" class="content_width" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+                <tr>
+                    <td>
+                        <table width="450" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="content_width" align="left">
+                            <tr>
+                                <td style="color: #000; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 600; letter-spacing:1px;">Bonjour {{ contact.firstname|capitalize }} {{ contact.lastname|capitalize }}, <br> vous avez reçu {% if (type == "bill") %}la facture{% else %}le devis{% endif %} {{ document.number }} de la part de  <b>{{ user.companyname }}</b> ({{ user.firstname|capitalize }} {{ user.lastname|capitalize }}). <br> Vous pouvez {% if (type == "bill") %}la{% else %}le{% endif %} consulter ci-dessous </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <!--  spacing  -->
+    <tr>
+        <td height="70" width="100%">&nbsp;</td>
+    </tr>
+    <!--  end spacing  -->
+</table><!--  end billboard  -->
+
+<!--  features section  -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#fbfbfb" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+
+<tr>
+    <td>
+    <table align="center" class="container float-center" style="Margin: 0 auto; background: #fbfbfb; border-collapse: collapse; border-spacing: 0; float: none; margin: 0 auto; padding: 0; text-align: center; vertical-align: top; width: 580px;">
+        <tbody>
+        <tr style="padding: 0; text-align: left; vertical-align: top;">
+            <td style="-moz-hyphens: auto; -webkit-hyphens: auto; Margin: 0; border-collapse: collapse !important; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; hyphens: auto; line-height: 1.3; margin: 0; padding: 0; text-align: left; vertical-align: top; word-wrap: break-word;">
+                <table class="spacer" style="border-collapse: collapse; border-spacing: 0; padding: 0; text-align: left; vertical-align: top; width: 100%;">
+                    <tbody>
+                    <tr style="padding: 0; text-align: left; vertical-align: top;">
+                        <td height="60px" style="-moz-hyphens: auto; -webkit-hyphens: auto; Margin: 0; border-collapse: collapse !important; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; hyphens: auto; line-height: 60px; margin: 0; mso-line-height-rule: exactly; padding: 0; text-align: left; vertical-align: top; word-wrap: break-word;">&nbsp;</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="row" style="border-collapse: collapse; border-spacing: 0; display: table; padding: 0; position: relative; text-align: left; vertical-align: top; width: 100%;">
+                    <tbody>
+                    <tr style="padding: 0; text-align: left; vertical-align: top;">
+                        <th style="padding-left:25px;">
+                            <img src=""/>
+                            <h3><b>{{ user.companyname }}</b></h3>
+                            {% if user.siret %}
+                                <h4><i>SIRET : {{ user.siret }}</i></h4>
+                            {% endif %}
+                            <p style="font-weight: normal">
+                                {{ user.firstname|capitalize }} {{ user.lastname|capitalize }}<br/>
+                                {{ user.address }}<br/>
+                                {{ user.city }}<br/>
+                                <a href="tel:{{ user.phone }}">{{ user.phone }}</a>
+                                {% if (user.phone and user.mobile) %} / {% endif %}
+                                <a href="tel:{{ user.mobile }}">{{ user.mobile }}</a>
+                            </p>
+                            <br>
+                            <br>
+                        </th>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="row" style="border-collapse: collapse; border-spacing: 0; display: table; padding: 0; position: relative; text-align: left; vertical-align: top; width: 100%;">
+                    <tbody>
+                    <tr style="padding: 0; text-align: left; vertical-align: top;">
+                        <th class="small-12 large-12 columns first last" style="Margin: 0 auto; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; line-height: 1.3; margin: 0 auto; padding: 0; padding-bottom: 45px; padding-left: 25px; padding-right: 25px; text-align: left; width: 564px;">
+                            <table style="border-collapse: collapse; border-spacing: 0; padding: 0; text-align: left; vertical-align: top; width: 100%;">
+                                <tbody>
+                                <tr style="padding: 0; text-align: left; vertical-align: top;">
+                                    <th style="Margin: 0; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; line-height: 1.3; margin: 0; padding: 0; text-align: left;">
+                                        {% block contentmail %}
+                                            <h1 style="Margin: 0; Margin-bottom: 10px; color: inherit; font-family: Helvetica, Arial, sans-serif; font-size: 34px; font-weight: normal; line-height: 1.3; margin: 0; margin-bottom: 10px; padding: 0; text-align: right; word-wrap: normal;">
+                                                {% if (type == "bill") %}
+                                                    Facture
+                                                {% else %}
+                                                    Devis
+                                                {% endif %}
+                                                {{ document.number }}
+                                            </h1>
+                                            <br>
+                                            <br>
+                                            <h2 style="text-align:right">
+                                                {{ document.HT + document.VAT }}€ TTC
+                                            </h2>
+                                            <br>
+                                            <br>
+                                            <table class="row" style="border-collapse: collapse; border-spacing: 0; display: table; padding: 0; position: relative; text-align: left; vertical-align: top; width: 100%;">
+                                                <thead>
+                                                <th>Desig</th>
+                                                <th>Qu. & Prix</th>
+                                                <th>Taxes</th>
+                                                <th>Sous-total</th>
+                                                </thead>
+                                                <tbody>
+                                                {% for line in lines %}
+                                                    <tr style="padding: 0; text-align: left;border-top-style: solid; border-top-color: #a9a9a9; border-top-width: 1px;">
+                                                        <td>
+                                                            <b>{{ line.name }}</b><br/>
+                                                            <i style="font-size: 12px;">{{ line.description }}</i>
+                                                        </td>
+                                                        <td style="min-width:200px;">
+                                                            {{ line.quantity }} x {{ line.price }}€ = {{ line.quantity * line.price }}€ HT
+                                                        </td>
+                                                        <td>
+                                                            TVA : {{ line.refTax.percent }}%
+                                                        </td>
+                                                        <td style="text-align:right;min-width:100px;">
+                                                            <b>{{ line.quantity * line.price * (1 + line.refTax.percent / 100) }}€ TTC</b>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                                <tr style="padding: 0; text-align: left;border-top-style: solid; border-top-color: #a9a9a9; border-top-width: 1px;height:50px;">
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        TOTAL :
+                                                    </td>
+                                                    <td style="text-align:right">
+                                                        {{ document.HT + document.VAT }}€ TTC
+                                                    </td>
+                                                </tr>
+                                                {% if ( type == "bill" and document.sumPaiments > 0) %}
+                                                    <tr style="padding: 0; text-align: left;border-top-style: solid; border-top-color: #a9a9a9; border-top-width: 1px;height:50px;">
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td style="font-size:14px;">
+                                                            <i>paiements antérieurs</i>
+                                                        </td>
+                                                        <td style="text-align:right">
+                                                            - {{document.sumPaiments }}€
+                                                        </td>
+                                                    </tr>
+                                                {% endif %}
+                                                {% if (type == "bill") %}
+                                                    <tr style="padding: 0; text-align: left;border-top-style: solid; border-top-color: #a9a9a9; border-top-width: 1px;height:50px;">
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>
+                                                            <b>RESTE A PAYER :</b>
+                                                        </td>
+                                                        <td style="text-align:right">
+                                                            <b>{{ document.HT + document.VAT - document.sumPaiments }}€</b>
+                                                        </td>
+                                                    </tr>
+                                                {% endif %}
+                                                </tbody>
+                                            </table>
+
+                                        {% endblock %}
+                                    </th>
+                                    <th class="expander" style="Margin: 0; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; line-height: 1.3; margin: 0; padding: 0 !important; text-align: left; visibility: hidden; width: 0;"></th>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </th>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <table class="row" style="border-collapse: collapse; border-spacing: 0; display: table; padding: 0; position: relative; text-align: left; vertical-align: top; width: 100%;">
+                    <tbody>
+                    <tr style="padding: 0; text-align: left; vertical-align: top;">
+                        <td style="padding-left: 25px;">
+                            <h3>
+                            Date limite de
+                            {% if (type == "bill") %}
+                                paiement
+                            {% else %}
+                                validité
+                            {% endif %}
+                            : {{ document.delayDate|date('d-m-Y') }}
+                            </h3>
+                        </td>
+                    </tr>
+                    {% if user.iban %}
+                        <tr style="padding: 0; text-align: left; vertical-align: top;">
+                            <td style="padding-left: 25px;">
+                                IBAN : {{ user.iban }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </td>
+            </tr>
+        <tr>
+            <td width="100%" height="70">&nbsp;</td>
+        </tr>
+
+        </tbody>
+    </table>
+
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#fff" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+
+
+        <!--  spacing  -->
+    <tr>
+        <td width="100%" height="50">&nbsp;</td>
+    </tr>
+    <!--  end spacing  -->
+
+    <tr>
+        <td>
+            <table width="600" align="center" border="0" cellpadding="0" cellspacing="0" style="text-align:center;" class="content_width">
+                <!--  section title  -->
+                <tr>
+                    <td style="color: #414d5f; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; letter-spacing:.5px; text-transform:uppercase;">Contact</td>
+                </tr>
+                <!--  end section title  -->
+
+                <!--  spacing  -->
+                <tr>
+                    <td width="100%" height="20">&nbsp;</td>
+                </tr>
+                <!--  end spacing  -->
+
+                <!--  vertical separator  -->
+                <tr>
+                    <td>
+                        <table width="1" height="20" align="center" bgcolor="#e9e9e9" border="0"  cellpadding="0" cellspacing="0"style="height:20px!important; padding:0; border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+                            <tr>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <!--  end vertical separator  -->
+
+                <!--  horizontal separator  -->
+                <tr>
+                    <td>
+                        <table width="100%" height="1" align="center" bgcolor="#e9e9e9" border="0"  cellpadding="0" cellspacing="0"style="padding:0;border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+                            <tr>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <!--  end horizontal separator  -->
+
+                <!--  features  -->
+                <tr>
+                    <td>
+                        <table width="394" cellpadding="0" align="left" cellspacing="0"style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full_width">
+                            <tr>
+                                <td>
+
+                                    <!--  feature 1  -->
+                                    <table width="187" cellpadding="0" align="left" cellspacing="0"style="text-align:center; border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full_width">
+                                        <tr>
+                                            <td width="100%" height="20"></td>
+                                        </tr><tr>
+                                            <td style="color: #495d79; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; text-transform: uppercase;">E-mail</td>
+                                        </tr>
+                                        <tr>
+                                            <td width="100%" height="40"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <p style="color: #7187a7; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 14px; line-height:24px; letter-spacing:.5px; font-weight: 400;"> <a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!--  end feature 1  -->
+
+                                    <!--  spacing  -->
+                                    <table height="40" align="left" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="post_sep">
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                    </table>
+
+                                    <!--  feature 2  -->
+                                    {% if user.phone %}
+                                    <table width="187" cellpadding="0" align="right" cellspacing="0"style="text-align:center; border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full_width">
+                                      <tr>
+                                            <td width="100%" height="20"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="color: #495d79; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; text-transform: uppercase;">Téléphone</td>
+                                        </tr>
+                                        <tr>
+                                            <td width="100%" height="40"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <p style="color: #7187a7; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 14px; line-height:24px; letter-spacing:.5px; font-weight: 400;"> <a href="tel:{{ user.phone }}">{{ user.phone }}</a></p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    {% endif %}
+                                    <!--  end feature 2  -->
+
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!--  spacing  -->
+                        <table height="40" align="left" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="post_sep">
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </table>
+                        <!--  end spacing  -->
+
+                        <!--  feature 3  -->
+                        {% if user.mobile %}
+                        <table width="187" align="right" cellpadding="0" cellspacing="0"style="text-align:center; border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full_width">
+                            <tr>
+                                <td width="100%" height="20"></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #495d79; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700;  text-transform: uppercase;">Mobile</td>
+                            </tr>
+                            <tr>
+                                <td width="100%" height="40"></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p style="color: #7187a7; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 14px; line-height:24px; letter-spacing:.5px; font-weight: 400;"> <a href="tel:{{ user.mobile }}">{{ user.mobile }}</a></p>
+                                </td>
+                            </tr>
+                        </table>
+                        {% endif %}
+                        <!--  end feature 3  -->
+                    </td>
+                </tr>
+                <!--  end features  -->
+
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="100%" height="50"></td>
+    </tr>
+
+
+
+
+
+
+
+</table><!--  end features section  -->
+
+
+<!--  take action  -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#fbfbfb" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; background: #526178; background: -webkit-gradient(linear, left top, color-stop(0%,#55647b), color-stop(100%,#414d60)); background: -webkit-linear-gradient(bottom, #55647b 0%, #414d60 100%); background: -moz-linear-gradient(bottom, #55647b 0%, #414d60 100%); background: -ms-linear-gradient(bottom, #55647b 0%, #414d60 100%); background: -o-linear-gradient(bottom, #55647b 0%, #414d60 100%); background: linear-gradient(bottom, #55647b 0%, #414d60 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#55647b', endColorstr='#414d60',GradientType=1 ); text-align:center;">
+
+    <!--  spacing  -->
+    <tr>
+        <td width="100%" height="100">&nbsp;</td>
+    </tr>
+    <!--  end spacing  -->
+
+    <!--  take action text  -->
+
+    {% if type == "estimate" %}
+
+    <tr>
+        <td>
+            <table width="500" align="center" border="0" cellpadding="0" cellspacing="0" class="content_width">
+                <tr>
+                    <td style="color: #fff; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 16px; text-align:center; font-weight: 600;"> Vous pouvez accepter le devis en cliquant ci-dessous</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <!--  end take action text  -->
+
+    <!--  spacing  -->
+    <tr>
+        <td width="100%" height="50">&nbsp;</td>
+    </tr>
+    <!--  end spacing  -->
+
+    <!--  take action btn  -->
+    <tr>
+        <td align="center">
+            <table width="150" cellpadding="0" cellspacing="0" align="center" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; background: #ffffff;">
+                <tr>
+                    <td width="100%" height="20"></td>
+                </tr>
+                <tr>
+                    <td>
+
+                        <table width="100%" cellpadding="0" cellspacing="0" align="center" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; text-align:center;">
+                            <tr>
+                                <td align="center" style="text-align:center;">
+                                    <a href="{{ url('billandgo_document_email_accept', {'doc_id': document.id, 'token': rand, 'answer': 1}) }}" style="display:block; width:100%; color: #3d4959; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600;text-decoration:none;">J'accepte le devis</a>
+                                    </a>
+                                </td>
+                            </tr>
+
+                        </table>
+
+                    </td>
+
+                </tr>
+                <tr>
+                    <td width="100%" height="20"></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+        {% else %}
+            <tr>
+                <td>
+                    <table width="500" align="center" border="0" cellpadding="0" cellspacing="0" class="content_width">
+                        <tr>
+                            <td style="color: #fff; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 16px; text-align:center; font-weight: 600;"> Vous pouvez télécharger cet élément en version PDF</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+    {% endif %}
+    <tr>
+        <td width="100%" height="20">&nbsp;</td>
+    </tr>
+    <tr>
+        <td align="center">
+            <table width="150" cellpadding="0" cellspacing="0" align="center" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; background: #ffffff;">
+                <tr>
+                    <td width="100%" height="20"></td>
+                </tr>
+                <tr>
+                    <td>
+
+                        <table width="100%" cellpadding="0" cellspacing="0" align="center" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; text-align:center;">
+                            <tr>
+                                <td align="center" style="text-align:center;">
+                                    <a href="#" style="display:block; width:100%; color: #3d4959; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600;text-decoration:none;">Télécharger en PDF</a>
+                                    </a>
+                                </td>
+                            </tr>
+
+                        </table>
+
+                    </td>
+
+                </tr>
+                <tr>
+                    <td width="100%" height="20"></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <!--  end take action btn  -->
+
+    <!--  spacing  -->
+    <tr>
+        <td width="100%" height="100">&nbsp;</td>
+    </tr>
+    <!--  end spacing  -->
+</table>
+<!--  end take action  -->
+
+<!--  footer  -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#fff" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+
+    <tr>
+        <td>
+            <!--  footer top block  -->
+            <table width="600" align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; border:0px;" class="content_width">
+                <!--  spacing  -->
+                <tr>
+                    <td width="100%" height="40">&nbsp;</td>
+                </tr>
+                <!--  end spacing  -->
+
+                <!--  content  -->
+                <tr>
+                    <td>
+                        <!--  footer logo  -->
+                        <table align="left" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full_width center_txt">
+                            <tr>
+                                <td>
+                                    <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150" alt="" title="" border="0" style="border:0; display:inline_block;">
+                                </td>
+                            </tr>
+                        </table>
+                        <!--  end logo  -->
+
+                        <!--  spacing  -->
+                        <table height="40" align="left" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full_width">
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </table>
+                        <!--  end spacing  -->
+
+                        <!--  footer links  -->
+                        <table align="right" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full_width center_txt">
+                            <tr>
+                                <td style="color: #414d5f; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 14px; letter-spacing:0.5px; font-weight: 400;">
+                                    <a href="https://billandgo.fr" style="color: #414d60; text-decoration:none;">Site web</a>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <a href="https://blog.billandgo.fr" style="color: #414d60; text-decoration:none;">Blog</a>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <a href="https://app.billandgo.fr/" style="color: #414d60; text-decoration:none;">Mentions Légales</a>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <a href="https://iumio.com" style="color: #414d60; text-decoration:none;">iumio</a>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--  end footer links  -->
+                    </td>
+                </tr>
+                <!--  content  -->
+
+                <!--  spacing  -->
+                <tr>
+                    <td width="100%" height="40">&nbsp;</td>
+                </tr>
+                <!--  end spacing  -->
+
+                <!--  vertical separator  -->
+                <tr>
+                    <td>
+                        <table width="600" height="1" align="center" bgcolor="#e5e5e5" border="0"  cellpadding="0" cellspacing="0"style="height:1px!important; width:600px; background-color:#e5e5e5; padding:0; border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+                            <tr>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <!--  end vertical separator  -->
+            </table>
+            <!--  end footer top block  -->
+
+            <!--  footer bottom block  -->
+            <table width="600" align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="content_width">
+                <tr>
+                    <td width="100%" height="40"></td>
+                </tr>
+                <!--  end spacing  -->
+
+                <!--  content  -->
+                <tr>
+                    <td>
+                        <!--  copyrights  -->
+                        <table align="left" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full_width center_txt">
+                            <tr>
+                                <td style="color: #414d5f; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 12px; letter-spacing:.5px; font-weight: 400;">
+                                    © {{ "now"|date("Y") }} <a href="https://billandgo.fr" target="_blank" style="color: #414d5f; font-weight: 600; text-decoration:none;">Bill&Go</a>. All Rights Reserved - <small>Bill&Go is an <a href="https://iumio.com">iumio component</a></small>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--  end copyrights  -->
+
+                        <!--  spacing  -->
+                        <table height="40" align="left" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full_width">
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </table>
+                        <!--  end spacing  -->
+
+                    </td>
+                </tr>
+                <!--  end content  -->
+
+                <!--  spacing  -->
+                <tr>
+                    <td width="100%" height="40">&nbsp;</td>
+                </tr>
+                <!--  end spacing  -->
+            </table>
+            <!--  end footer bottom block  -->
+        </td>
+    </tr>
+</table>
+<!--  end footer  -->
+</div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th style="min-width:100px;">Quantité</th>
+        <th style="min-width:100px;">Prix Unitaire</th>
+        <th style="min-width:100px;">Prix</th>
+        {% if type == "estimate" %}
+        <th style="min-width:100px;" class="color-grey">(Temps estimé)</th>
+        {% endif %}
+        {% if modify %}
+        <th style="min-width:50px;"></th>
+        {% endif %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for line in lines %}
+        {% set subTotalHT = line.priceHT * line.quantity %}
+        {% set subTotalTTC = line.priceTTC * line.quantity %}
+        <tr class="line-elt" style="font-weight:bold">
+            <td>
+                <span class="line-elt-name">{{ line.name }}</span>
+                <br/>
+                <span class="grey-text description" style="font-size:14px;font-weight: normal">{{ line.description }}</span>
+            </td>
+            <td class="quantity">
+                {{line.quantity }}
+            </td>
+            <td>
+                <span class="uht">{{ line.priceHt }}</span>€ HT
+                <br/>
+                <span class="utc">{{ line.priceTtc }}</span>€ TTC</td>
+            <td>
+                <span class="tht">{{ subTotalHT }}</span>€ HT
+                <br/>
+                <span class="ttc">{{ subTotalTTC }}</span>€ TTC
+            </td>
+            {% if type == "estimate" %}
+            <td class="color-grey">
+                {% if line.estimatedTime %}
+                    {{ line.quantity }} * {{ line.estimatedTime }}h = {{ line.estimatedTime * line.quantity }}h
+                    <br/>
+                    soit {{ line.priceHT / line.estimatedTime }}e/h
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            {% endif %}
+            {% if modify %}
+            <td>
+                {% if type == "estimate" %}
+                    <a href="{{ path('billandgo_devis_delete_line', {'id': doc_id, 'line': line.id}) }}"><i class="fa fa-trash text-danger"></i></a>
+                {% elseif type == "bill" %}
+                    <a href="{{ path('billandgo_bill_delete_line', {'id': doc_id, 'line': line.id}) }}"><i class="fa fa-trash text-danger"></i></a>
+                {% endif %}
+            </td>
+            {% endif %}
+        </tr>
+    {% else %}
+        Aucun élément ! :'(
+    {% endfor %}
+    </tbody>
+</table>

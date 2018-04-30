@@ -1,0 +1,176 @@
+{% extends "BillAndGoBundle::base.html.twig" %}
+
+{% block title %}{{ parent() }} - Liste des devis{% endblock %}
+
+{%
+    set status_fr = {
+        "canceled" : "annulé",
+        "accepted" : "accepté",
+        "sent" : "envoyé",
+        "refused" : "refusé",
+        "draft" : "brouillon",
+        "" : "statut inconnu"
+    }
+%}
+
+{% block fos_user_content %}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Devis
+                <small>Liste des Devis</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li class="active"><i class="fa fa-file-text-o"></i> Devis</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Vos Devis</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <p class="text-center"><i>/* A venir : filtres*/</i></p>
+                        {% set nbestimate = 0 %}
+                        {% set totalHT = 0 %}
+                        {% set totalTTC = 0 %}
+                        {% for estimate in list %}
+                            {% set subTotalHT = 0 %}
+                            {% set subTotalTTC = 0 %}
+                            {% for line in estimate.lines %}
+                                {% set subTotalHT = subTotalHT + line.priceHT * line.quantity %}
+                                {% set subTotalTTC = subTotalTTC + line.priceTTC * line.quantity %}
+                            {% endfor %}
+                            {% set totalHT = totalHT + subTotalHT %}
+                            {% set totalTTC = totalTTC + subTotalTTC %}
+                            {% set nbestimate = nbestimate + 1 %}
+                            <div class="col-md-6 col-lg-4 text-center third-block estimate-block">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="color-{{ estimate.status }}">
+                                            {{ estimate.number }}
+                                            <a href="{{ path('billandgo_devis_view', {'id': estimate.id}) }}">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <ul class="nav nav-pills nav-justified">
+                                            <li class="active">
+                                                <a data-toggle="tab" href="#estimate-{{ nbestimate }}-desc">
+                                                    Description
+                                                    <br/>
+                                                    ({{ status_fr[estimate.status] }})
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#estimate-{{ nbestimate }}-cli">
+                                                    Client
+                                                    <br/>
+                                                    ({{ estimate.client.companyName }})
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#estimate-{{ nbestimate }}-fin">
+                                                    Financier
+                                                    <br/>
+                                                    ({{ subTotalTTC }}€)
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div id="estimate-{{ nbestimate }}-desc" class="tab-pane fade in active bg-info">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <p>créé le {{ estimate.creation|date('d-m-Y') }}</p>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        {% if estimate.responseTime %}
+                                                            <p class="color-{{ estimate.status }}">
+                                                                {{ status_fr[estimate.status] }} le {{ estimate.responseTime|date('d-m-Y') }}
+                                                            </p>
+                                                        {% elseif estimate.sendTime %}
+                                                            <p class="color-sent">
+                                                                Date d'envoi : {{ estimate.sendTime|date('d-m-Y') }}
+                                                            </p>
+                                                        {% else %}
+                                                            <p>
+                                                                valide jusqu'au {{ estimate.validity|date('d-m-Y') }}
+                                                            </p>
+                                                        {%  endif %}
+                                                    </div>
+                                                </div>
+                                                <p>
+                                                    {{ estimate.description|length > 300 ? estimate.description|slice(0, 300) ~ '...' : estimate.description  }}
+                                                </p>
+                                            </div>
+                                            <div id="estimate-{{ nbestimate }}-cli" class="tab-pane fade in bg-info">
+                                                <a href="{{ path('billandgo_clients_view', {'id': estimate.client.id}) }}">{{ estimate.client.companyName }}</a>
+                                                <p class="grey-text">/* contacts et rdv à venir */</p>
+                                            </div>
+                                            <div id="estimate-{{ nbestimate }}-fin" class="tab-pane fade in bg-info">
+                                                <p>HT : {{ subTotalHT }}€</p>
+                                                <p>TTC : {{ subTotalTTC }}€</p>
+                                                <p></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="col-sm-12">
+                                <div class="callout callout-warning text-center">
+                                    <h4> <i class="fa fa-warning"></i> Aucun devis enregistré <i class="fa fa-warning"></i> </h4>
+                                    <p>Vous n'avez pas encore saisi de devis, ne perdez pas de temps, <a href="#">Ajoutez votre premier devis</a></p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="text-center">
+                        <a href="{{ path('billandgo_devis_add') }}" class="btn btn-success"><i class="fa fa-plus"></i> Ajouter un devis</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Résumé</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div>
+                        <div> Total HT : <span class="badge bg-green">{{ totalHT }}€</span></div>
+                        <div> Total TTC : <span class="badge bg-green">{{ totalTTC }}€</span></div>
+                        <div> Total TVA : <span class="badge bg-red">{{ totalTTC - totalHT }}€</span></div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="text-center"><i>/* A venir :  détails, brouillon/envoyé/validé/annulé*/</i></div>
+                </div>
+            </div>
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+{% endblock fos_user_content %}

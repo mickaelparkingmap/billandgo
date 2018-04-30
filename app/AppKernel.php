@@ -22,12 +22,12 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new AppBundle\AppBundle(),
-            new MyJobManagerBundle\MyJobManagerBundle(),
-            new MyJobManager\ApiBundle\MyJobManagerApiBundle(),
-	        new FOS\UserBundle\FOSUserBundle(),
+            new BillAndGoBundle\BillAndGoBundle(),
+            new BillAndGo\ApiBundle\BillAndGoApiBundle(),
             new FOS\RestBundle\FOSRestBundle(),
             new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
+            new FOS\UserBundle\FOSUserBundle()
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

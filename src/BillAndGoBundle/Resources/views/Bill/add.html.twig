@@ -1,0 +1,57 @@
+{% extends "BillAndGoBundle::base.html.twig" %}
+
+{% block title %}{{ parent() }} - Nouvelle Facture{% endblock %}
+
+{% block fos_user_content %}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                FACTURES
+                <small>Nouvelle Facture</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li><a href="{{ path('billandgo_bill_list') }}"><i class="fa fa-eur"></i> Factures</a></li>
+                <li class="active"><i class="fa fa-plus"></i> Ajout</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Créez votre facture :</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-offset-2 col-lg-offset-3 col-md-8 col-lg-6 text-center">
+                            {{ include("BillAndGoBundle:Bill:form.html.twig") }}
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+{% endblock fos_user_content %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.fr.min.js"></script>
+    <script>
+        $('#billandgobundle_bill_creation').datepicker();
+        $('#billandgobundle_bill_paimentDate').datepicker();
+    </script>
+    <script src="{{ asset('bundles/billandgo/js/bill.js') }}"></script>
+{% endblock %}

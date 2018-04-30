@@ -1,0 +1,140 @@
+{% trans_default_domain 'FOSUserBundle' %}
+{% block fos_user_content %}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Profil
+                <small>Hello, {{ user.firstname|capitalize }} {{ user.lastname |upper }}, voici les informations de votre profile</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><i class="fa fa-wrench"></i> Profil</li>
+                <li class="active"><i class="fa fa-legal"></i> Informations</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+
+            <div class="row">
+                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link onlick" onclick="location.href='{{ path('fos_user_profile_edit') }}'">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green"><i class="fa fa-edit"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text"><strong>Editer votre profil</strong></span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <!-- Widget: user widget style 1 -->
+                    <div class="box box-widget widget-user-2 box-client bg-yellow-client">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="widget-user-header  bg-yellow">
+                            <div class="widget-user-image">
+                                <img class="img-circle" src="{{ asset('bundles/billandgo/img/client.png') }}" alt="Client Avatar">
+                            </div>
+                            <!-- /.widget-user-image -->
+                            <h3 class="widget-user-username"> {{ user.firstname|capitalize }} {{ user.lastname |upper }}</h3>
+                            <h5 class="widget-user-desc">Utilisateur</h5>
+                        </div>
+                        <div class="box-footer no-padding">
+                            <div class="panel-body">
+                                <ul class="nav nav-pills nav-justified">
+                                    <li class="active">
+                                        <a data-toggle="tab" href="#cli-1-info">
+                                            Infos
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" href="#cli-2-con">
+                                            Infos bancaire
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="cli-1-info" class="tab-pane fade in active bg-info" >
+                                        <ul>
+                                            <li><strong>Nom d'utilisateur : </strong>{{user.username}}</li>
+                                            <li><strong>Email : </strong>{{user.email}}</li>
+                                            <li><strong>Mobile : </strong>{{user.mobile}}</li>
+                                            <li><strong>Dernière connexion : </strong>{{user.lastlogin|date('d/m/Y à H:i:s')}}</li>
+                                        </ul>
+                                    </div>
+                                    <div id="cli-2-con" class="tab-pane fade in bg-info">
+                                        <ul>
+                                            <li><strong>Banque : </strong>{% if user.banque == null %} Non défini {% else %} {{user.banque }} {% endif %}</li>
+                                            <li><strong>IBAN : </strong>{% if user.iban == null %} Non défini {% else %} {{user.iban }} {% endif %}</li>
+                                            <li><strong>BIC : </strong>{% if user.bic == null %} Non défini {% else %} {{user.bic }} {% endif %}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.widget-user -->
+                </div>
+
+                <div class="col-md-6">
+                    <!-- Widget: user widget style 1 -->
+                    <div class="box box-widget widget-user-2 box-client bg-green-client">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="widget-user-header  bg-green">
+                            <div class="widget-user-image">
+                                <img class="img-circle" src="{% if user.getCompanyLogoPath() == null %}{{ asset('bundles/billandgo/img/default_building.png') }}{% else %}{{ '/uploads/user/avatar/'~user.getCompanyLogoPath()}} {% endif %}" alt="Société">
+                            </div>
+                            <!-- /.widget-user-image -->
+                            <h3 class="widget-user-username"> {{user.companyname|upper}}</h3>
+                            <h5 class="widget-user-desc">Société</h5>
+                        </div>
+                        <div class="box-footer no-padding">
+                            <div class="panel-body">
+                                <ul class="nav nav-pills nav-justified">
+                                    <li class="active">
+                                        <a data-toggle="tab" href="#cli-3-info">
+                                            Caractéristique
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" href="#cli-4-con">
+                                            Localisation
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="cli-3-info" class="tab-pane fade in active bg-info" >
+                                        <ul>
+                                            <li><strong>Nom : </strong>{{user.companyname}}</li>
+                                            <li><strong>Siret : </strong>{% if user.siret == null %} Non défini {% else %} {{user.siret }} {% endif %}</li>
+                                        </ul>
+                                    </div>
+                                    <div id="cli-4-con" class="tab-pane fade in bg-info">
+                                        <ul>
+                                            <li><strong>Adresse : </strong>{{user.address}}</li>
+                                            <li><strong>Code postal : </strong>{{user.zipcode}}</li>
+                                            <li><strong>Ville & Pays : </strong>{{ user.city }} {{ user.country }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.widget-user -->
+                </div>
+
+                <!-- /.col -->
+            </div>
+
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+
+{% endblock %}
+

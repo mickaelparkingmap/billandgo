@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('bundles/billandgo/img/apple-touch-icon.png') }}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('bundles/billandgo/img/favicon-32x32.png') }}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('bundles/billandgo/img/favicon-16x16.png') }}" />
+    <link rel="manifest" href="{{ asset('bundles/billandgo/img/site.webmanifest') }}" />
+    <link rel="mask-icon" href="{{ asset('bundles/billandgo/img/safari-pinned-tab.svg') }}" color="#f26941" />
+    <link rel="shortcut icon" href="{{ asset('bundles/billandgo/img/favicon.ico') }}" />
+    <meta name="msapplication-TileColor" content="#2b5797" />
+    <meta name="msapplication-config" content="{{ asset('bundles/billandgo/img/browserconfig.xml') }}" />
+    <meta name="theme-color" content="#ffffff">
+    <link rel="icon" type="image/x-icon" href="{{ asset('bundles/billandgo/img/favicon.ico') }}"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Bill&Go - Réinitialisation de mot de passe </title>
+
+
+</head>
+
+<body class="login">
+<div>
+    <a class="hiddenanchor" id="signup"></a>
+    <a class="hiddenanchor" id="signin"></a>
+
+    <div class="login_wrapper">
+        <div class="animate form login_form">
+            <section class="login_content">
+                {% block fos_user_content %}
+                    {% include "FOSUserBundle:Resetting:reset_content.html.twig" %}
+                {% endblock fos_user_content %}
+            </section>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+

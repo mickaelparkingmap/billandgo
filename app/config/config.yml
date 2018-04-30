@@ -2,8 +2,8 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
-    - { resource: "@MyJobManagerBundle/Resources/config/services.yml" }
-    - { resource: "@MyJobManagerApiBundle/Resources/config/services.yml" }
+    - { resource: "@BillAndGoBundle/Resources/config/services.yml" }
+    - { resource: "@BillAndGoApiBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -79,32 +79,32 @@ fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
     use_username_form_type: false
-    user_class: MyJobManagerBundle\Entity\User
+    user_class: BillAndGoBundle\Entity\User
     service:
             mailer: fos_user.mailer.twig_swift
     from_email:
-            address:        myjobmanager@iumio.com
-            sender_name:    MyJobManager
+            address:        billandgo@iumio.com
+            sender_name:    BillAndGo
     registration:
             confirmation:
                 enabled: true
-                template:   MyJobManagerBundle:Registration:email.txt.twig
+                template:   BillAndGoBundle:Registration:email.txt.twig
                 from_email:
-                        address:        myjobmanager@iumio.com
-                        sender_name:    MyJobManager
+                        address:        billandgo@iumio.com
+                        sender_name:    BillAndGo
             form:
-                type: MyJobManagerBundle\Form\RegistrationType
+                type: BillAndGoBundle\Form\RegistrationType
     resetting:
                 email:
                     from_email: # Use this node only if you don't want the global email address for the resetting email
-                        address:        myjobmanager@iumio.com
-                        sender_name:    MyJobManager                    
-                    #template:   MyJobManagerBundle:Resetting:email.html.twig
+                        address:        billandgo@iumio.com
+                        sender_name:    BillAndGo
+                    #template:   BillAndGoBundle:Resetting:email.html.twig
     profile:
             form:
-                type: MyJobManagerBundle\Form\ProfileType
+                type: BillAndGoBundle\Form\ProfileType
               #  form:
-               #     type: MyJobManagerBundle\Form\RegistrationType
+               #     type: BillAndGoBundle\Form\RegistrationType
 
 fos_rest:
     routing_loader:
@@ -114,9 +114,9 @@ fos_rest:
 
 fos_oauth_server:
     db_driver:           orm
-    client_class:        MyJobManager\ApiBundle\Entity\Oauth_client
-    access_token_class:  MyJobManager\ApiBundle\Entity\AccessToken
-    refresh_token_class: MyJobManager\ApiBundle\Entity\RefreshToken
-    auth_code_class:     MyJobManager\ApiBundle\Entity\AuthCode
+    client_class:        BillAndGo\ApiBundle\Entity\Oauth_client
+    access_token_class:  BillAndGo\ApiBundle\Entity\AccessToken
+    refresh_token_class: BillAndGo\ApiBundle\Entity\RefreshToken
+    auth_code_class:     BillAndGo\ApiBundle\Entity\AuthCode
     service:
         user_provider: fos_user.user_provider.username             # This property will be used when valid credentials are given to load the user upon access token creation
