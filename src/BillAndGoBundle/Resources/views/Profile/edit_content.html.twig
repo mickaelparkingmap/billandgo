@@ -114,50 +114,6 @@
                                     </div>
                                 </div>
 
-
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <h4 class="text-success">Information bancaires</h4>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-
-                                            <label>Banque</label>
-                                            <div class="input-group">
-                                        <span class="input-group-addon">
-                                        <i class="fa fa-info fa fa-university"></i>
-                                        </span>
-                                                {{ form_widget(form.banque, {'attr': {'class': 'form-control'}}) }}
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>IBAN</label>
-                                            <div class="input-group">
-                                        <span class="input-group-addon">
-                                        <i class="fa fa fa-italic"></i>
-                                        </span>
-                                                {{ form_widget(form.iban, {'attr': {'class': 'form-control'}}) }}
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>BIC</label>
-                                            <div class="input-group">
-                                        <span class="input-group-addon">
-                                        <i class="fa fa-info fa fa-italic"></i>
-                                        </span>
-                                                {{ form_widget(form.bic, {'attr': {'class': 'form-control'}}) }}
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                </div>
                             </div>
                         </div>
                         <!-- /.widget-user -->
@@ -177,6 +133,7 @@
                                 <h5 class="widget-user-desc">Sociéte</h5>
                             </div>
                             <div class="box-footer">
+                                <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Nom de la société</label>
@@ -227,6 +184,53 @@
                                     </div>
                                 </div>
                             </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h4 class="text-success">Information bancaires</h4>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+
+                                            <label>Banque</label>
+                                            <div class="input-group">
+                                        <span class="input-group-addon">
+                                        <i class="fa fa-info fa fa-university"></i>
+                                        </span>
+                                                {{ form_widget(form.banque, {'attr': {'class': 'form-control'}}) }}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>IBAN</label>
+                                            <div class="input-group">
+                                        <span class="input-group-addon">
+                                        <i class="fa fa fa-italic"></i>
+                                        </span>
+                                                {{ form_widget(form.iban, {'attr': {'class': 'form-control'}}) }}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>BIC</label>
+                                            <div class="input-group">
+                                        <span class="input-group-addon">
+                                        <i class="fa fa-info fa fa-italic"></i>
+                                        </span>
+                                                {{ form_widget(form.bic, {'attr': {'class': 'form-control'}}) }}
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
                         </div>
                         <!-- /.widget-user -->
                 </div>
