@@ -13,14 +13,12 @@ namespace BillAndGoBundle\Controller;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
-use FOS\UserBundle\Form\Factory\FactoryInterface;
 use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
 use FOS\OAuthServerBundle\Util\LegacyFormHelper;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,15 +48,17 @@ class ProfileController extends BaseController
         ));
     }
 
+
+
     /**
      * Edit the user.
      *
      * @param Request $request
-     *
      * @return Response
      */
     public function editAction(Request $request)
     {
+
         $user = $this->getUser();
         if (!is_object($user) || !$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
@@ -74,7 +74,7 @@ class ProfileController extends BaseController
         }
 
         $form = $this->get('form.factory')->createBuilder(FormType::class, $user)
-            ->add('email', LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\EmailType'), array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control')))
+            ->add('email', EmailType::class, array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control')))
             ->add('username', null, array('label' => 'Nom d\'utilisateur', 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control')))
             ->add('companyname', null, array('label' => 'Nom de votre société', 'attr'  => array('class' => 'form-control')))
             ->add('firstname', null, array('label' => 'Prénom', 'attr'  => array('class' => 'form-control')))

@@ -39,11 +39,6 @@
         <!-- Logo -->
         <div class="logo">
             <div class="row">
-                <!-- mini logo for sidebar mini 50x50 pixels -->
-                <!--<span class="logo-mini"><img class="img-responsive img-profile-50" src="{% if user.getCompanyLogoPath() == null %}https://billandgo.fr/wp-content/uploads/2018/03/billgo-horizontal.png{% else %}{{ '/uploads/user/avatar/'~user.getCompanyLogoPath()}} {% endif %}" /> </span>
-                <!-- logo for regular state and mobile devices -->
-                <!--<span class="logo-md"><img class="img-responsive img-profile-50" src="{% if user.getCompanyLogoPath() == null %}https://billandgo.fr/wp-content/uploads/2018/03/billgo-horizontal.png{% else %}{{ '/uploads/user/avatar/'~user.getCompanyLogoPath()}} {% endif %}" /></span>
-                -->
                 <div class="col-md-12 text-left">
                     <ul class="list-side">
                         <li>
@@ -418,7 +413,7 @@
                         </ul>
                     </li>
                 {% endif %}
-                <li class="treeview">
+                <li class="">
                 <a href="{{ path('fos_user_security_logout') }}">
                     <i class="fa fa-sign-out"></i>
                     <span>Se déconnecter</span>
@@ -638,6 +633,8 @@
     <script src="{{ asset('bundles/billandgo/js/adminlte.min.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/js/script.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/js/generatePdf.js') }}"></script>
+{% endblock %}
+{% block advanced_javascripts %}
 {% endblock %}
 </body>
 </html>

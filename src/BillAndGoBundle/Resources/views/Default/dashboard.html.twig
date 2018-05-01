@@ -42,7 +42,7 @@
                 <!-- fix for small devices only -->
                 <div class="clearfix visible-sm-block"></div>
 
-                <div class="col-md-3 col-sm-6 col-xs-12 onlick" onclick="location.href='{{ path('billandgo_bill_list') }}'">
+                <div class="col-md-3 col-sm-6 col-xs-12 onlick" onclick="location.href='{{ path('billandgo_bill_index') }}'">
                     <div class="info-box">
                         <span class="info-box-icon bg-green"><i class="fa fa-briefcase"></i></span>
                         <div class="info-box-content">
@@ -138,7 +138,7 @@
                             <div class="row">
                                 <div class="col-md-8">
                                     <p class="text-center">
-                                        <strong>Sales: 1 Jan, 2014 - 30 Jul, 2014</strong>
+                                        <strong>Statistiques du 01/{{ 'now'|date('m/Y') }} au {{ enddate }}</strong>
                                     </p>
 
                                     <div class="chart">
@@ -154,24 +154,24 @@
                                     </p>
 
                                     <div class="progress-group">
-                                        <span class="progress-text">Add Products to Cart</span>
-                                        <span class="progress-number"><b>160</b>/200</span>
+                                        <span class="progress-text">Facture(s) payée(s)</span>
+                                        <span class="progress-number"><b>{{ billpaidm }}</b>/{{ billtotalm }}</span>
 
                                         <div class="progress sm">
-                                            <div class="progress-bar progress-bar-aqua" style="width: 80%"></div>
+                                            <div class="progress-bar progress-bar-aqua" style="width: {% if billtotalm > 0 %}{{ billpaidm * 100 / billtotalm }}{% else %}0{% endif %}%"></div>
                                         </div>
                                     </div>
                                     <!-- /.progress-group -->
                                     <div class="progress-group">
-                                        <span class="progress-text">Complete Purchase</span>
-                                        <span class="progress-number"><b>310</b>/400</span>
+                                        <span class="progress-text">Devis accepté(s)</span>
+                                        <span class="progress-number"><b>{{ quotesacceptm }}</b>/{{ quotestotalm }}</span>
 
                                         <div class="progress sm">
-                                            <div class="progress-bar progress-bar-red" style="width: 80%"></div>
+                                            <div class="progress-bar progress-bar-red" style="width: {% if quotestotalm > 0 %}{{ quotesacceptm * 100 / quotestotalm }}{% else %}0{% endif %}%"></div>
                                         </div>
                                     </div>
                                     <!-- /.progress-group -->
-                                    <div class="progress-group">
+                                    <!--<div class="progress-group">
                                         <span class="progress-text">Visit Premium Page</span>
                                         <span class="progress-number"><b>480</b>/800</span>
 
@@ -180,7 +180,7 @@
                                         </div>
                                     </div>
                                     <!-- /.progress-group -->
-                                    <div class="progress-group">
+                                    <!--<div class="progress-group">
                                         <span class="progress-text">Send Inquiries</span>
                                         <span class="progress-number"><b>250</b>/500</span>
 
@@ -199,9 +199,9 @@
                             <div class="row">
                                 <div class="col-sm-3 col-xs-6">
                                     <div class="description-block border-right">
-                                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 17%</span>
-                                        <h5 class="description-header">$35,210.43</h5>
-                                        <span class="description-text">TOTAL REVENUE</span>
+                                        <!--<span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 17%</span>-->
+                                        <h5 class="description-header">0</h5>
+                                        <span class="description-text">Total des paiements</span>
                                     </div>
                                     <!-- /.description-block -->
                                 </div>

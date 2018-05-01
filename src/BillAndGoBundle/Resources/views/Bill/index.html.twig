@@ -20,8 +20,8 @@ set status_fr = {
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                FACTURES
-                <small>Liste des Factures</small>
+                Factures
+                <small>Voici la liste de vos factures</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
@@ -122,8 +122,8 @@ set status_fr = {
                             </div>
                         {% else %}
                             <div class="callout callout-info">
-                                <h4> <i class="fa fa-warning"></i> Aucunes factures d'enregistrées <i class="fa fa-warning"></i> </h4>
-                                <p>Vous n'avez pas encore saisie de facture, ne perdez pas de temps, <a href="#">Ajoutez votre première facture</a></p>
+                                <h4>Aucunes factures d'enregistrées </h4>
+                                <p>Vous n'avez pas encore saisie de facture.</p>
                             </div>
                         {% endfor %}
                     </div>
@@ -144,6 +144,7 @@ set status_fr = {
                     </div>
                 </div>
                 <!-- /.box-header -->
+
                 <div class="box-body">
                     <div>
                         <div> Total HT : <span class="badge bg-green">{{ totalHT }}€</span></div>

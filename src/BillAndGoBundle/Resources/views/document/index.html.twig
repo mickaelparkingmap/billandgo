@@ -553,6 +553,7 @@ set status_fr = {
                                                     </ul>
 
                                                     <h5><strong>Envoyez votre {{ min_fr }} à un des contact ci-dessous :</strong> </h5>
+                                                    {% if doc.refClient.contacts|length > 0 %}
                                                     <div class="row">
                                                         <form action="{{ path("billandgo_document_send_email", {"doc_id": doc.id}) }}" method="get">
                                                             <div class="form-group col-md-6 col-xs-12">
@@ -570,6 +571,9 @@ set status_fr = {
                                                             </div>
                                                         </form>
                                                     </div>
+                                                    {% else %}
+                                                        Aucun contact
+                                                    {% endif %}
                                                 </div>
                                                 <div id="cli-{{ doc.number }}-doc" class="tab-pane fade in bg-info">
                                                     <p>

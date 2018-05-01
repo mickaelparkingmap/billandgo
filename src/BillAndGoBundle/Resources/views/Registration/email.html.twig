@@ -1,17 +1,21 @@
 {% trans_default_domain 'FOSUserBundle' %}
 {% block subject %}
-    {% autoescape false %}
-        {{ 'resetting.email.subject'|trans({'%username%': user.username}) }}
-    {% endautoescape %}
+{%- autoescape false -%}
+Hello {{ user.firstname|capitalize }}, Confirmez votre compte sur Bill&Go
+{%- endautoescape -%}
 {% endblock %}
+
 {% block body_text %}
+{% autoescape false %}
+{{ 'registration.email.message'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}) }}
+{% endautoescape %}
 {% endblock %}
 {% block body_html %}
 
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>{% block title %}Hello ! Votre devis est arrivé{% endblock %}</title>
+        <title>{% block title %}Hello ! Confirmez votre compte sur Bill&Go{% endblock %}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
 
@@ -84,12 +88,6 @@
     </head>
     <body style="margin: 0; padding: 0;" yahoo="fix">
 
-    {% autoescape false %}
-        {{ 'resetting.email.message'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}) }}
-    {% endautoescape %}
-
-
-
     <div class="main_container">
         <!--  billboard  -->
         <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#2a3647" style="background-size: cover; -webkit-background-size: cover; -moz-background-size: cover -o-background-size: cover; background-position: bottom center; background-repeat: no-repeat; background-color:#ffffff;">
@@ -148,7 +146,9 @@
                             <td>
                                 <table width="450" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="content_width" align="left">
                                     <tr>
-                                        <td style="color: #000; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 600; letter-spacing:1px;">Bonjour {{ user.firstname|capitalize }} {{ user.lastname|capitalize }}, <br> vous avez reçu  </td>
+                                        <td style="color: #000; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 600; letter-spacing:1px;">Hello {{ user.firstname|capitalize }}, <br>
+                                            Nous vous remercions de vous êtes inscriptions au service Bill&Go <br> <br>
+                                             Pour profiter de l'ensemble du service, vous devez confimer votre compte en cliquant sur le bouton ci-dessous :</td>
                                     </tr>
                                 </table>
                             </td>
@@ -165,165 +165,6 @@
         </table><!--  end billboard  -->
 
         <!--  features section  -->
-        <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#fbfbfb" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
-
-            <tr>
-                <td>
-
-
-                    <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#fff" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
-
-
-                        <!--  spacing  -->
-                        <tr>
-                            <td width="100%" height="50">&nbsp;</td>
-                        </tr>
-                        <!--  end spacing  -->
-
-                        <tr>
-                            <td>
-                                <table width="600" align="center" border="0" cellpadding="0" cellspacing="0" style="text-align:center;" class="content_width">
-                                    <!--  section title  -->
-                                    <tr>
-                                        <td style="color: #414d5f; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; letter-spacing:.5px; text-transform:uppercase;">Contact</td>
-                                    </tr>
-                                    <!--  end section title  -->
-
-                                    <!--  spacing  -->
-                                    <tr>
-                                        <td width="100%" height="20">&nbsp;</td>
-                                    </tr>
-                                    <!--  end spacing  -->
-
-                                    <!--  vertical separator  -->
-                                    <tr>
-                                        <td>
-                                            <table width="1" height="20" align="center" bgcolor="#e9e9e9" border="0"  cellpadding="0" cellspacing="0"style="height:20px!important; padding:0; border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
-                                                <tr>
-                                                    <td></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <!--  end vertical separator  -->
-
-                                    <!--  horizontal separator  -->
-                                    <tr>
-                                        <td>
-                                            <table width="100%" height="1" align="center" bgcolor="#e9e9e9" border="0"  cellpadding="0" cellspacing="0"style="padding:0;border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
-                                                <tr>
-                                                    <td></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <!--  end horizontal separator  -->
-
-                                    <!--  features  -->
-                                    <tr>
-                                        <td>
-                                            <table width="394" cellpadding="0" align="left" cellspacing="0"style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full_width">
-                                                <tr>
-                                                    <td>
-
-                                                        <!--  feature 1  -->
-                                                        <table width="187" cellpadding="0" align="left" cellspacing="0"style="text-align:center; border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full_width">
-                                                            <tr>
-                                                                <td width="100%" height="20"></td>
-                                                            </tr><tr>
-                                                                <td style="color: #495d79; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; text-transform: uppercase;">E-mail</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td width="100%" height="40"></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <p style="color: #7187a7; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 14px; line-height:24px; letter-spacing:.5px; font-weight: 400;"> <a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                        <!--  end feature 1  -->
-
-                                                        <!--  spacing  -->
-                                                        <table height="40" align="left" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="post_sep">
-                                                            <tr>
-                                                                <td>&nbsp;</td>
-                                                            </tr>
-                                                        </table>
-
-                                                        <!--  feature 2  -->
-                                                        {% if user.phone %}
-                                                            <table width="187" cellpadding="0" align="right" cellspacing="0"style="text-align:center; border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full_width">
-                                                                <tr>
-                                                                    <td width="100%" height="20"></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td style="color: #495d79; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; text-transform: uppercase;">Téléphone</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td width="100%" height="40"></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <p style="color: #7187a7; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 14px; line-height:24px; letter-spacing:.5px; font-weight: 400;"> <a href="tel:{{ user.phone }}">{{ user.phone }}</a></p>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        {% endif %}
-                                                        <!--  end feature 2  -->
-
-                                                    </td>
-                                                </tr>
-                                            </table>
-
-                                            <!--  spacing  -->
-                                            <table height="40" align="left" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="post_sep">
-                                                <tr>
-                                                    <td>&nbsp;</td>
-                                                </tr>
-                                            </table>
-                                            <!--  end spacing  -->
-
-                                            <!--  feature 3  -->
-                                            {% if user.mobile %}
-                                                <table width="187" align="right" cellpadding="0" cellspacing="0"style="text-align:center; border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full_width">
-                                                    <tr>
-                                                        <td width="100%" height="20"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="color: #495d79; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700;  text-transform: uppercase;">Mobile</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="100%" height="40"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <p style="color: #7187a7; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 14px; line-height:24px; letter-spacing:.5px; font-weight: 400;"> <a href="tel:{{ user.mobile }}">{{ user.mobile }}</a></p>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            {% endif %}
-                                            <!--  end feature 3  -->
-                                        </td>
-                                    </tr>
-                                    <!--  end features  -->
-
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="100%" height="50"></td>
-                        </tr>
-
-
-
-
-
-
-
-                    </table><!--  end features section  -->
-
-
                     <!--  take action  -->
                     <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#fbfbfb" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; background: #526178; background: -webkit-gradient(linear, left top, color-stop(0%,#55647b), color-stop(100%,#414d60)); background: -webkit-linear-gradient(bottom, #55647b 0%, #414d60 100%); background: -moz-linear-gradient(bottom, #55647b 0%, #414d60 100%); background: -ms-linear-gradient(bottom, #55647b 0%, #414d60 100%); background: -o-linear-gradient(bottom, #55647b 0%, #414d60 100%); background: linear-gradient(bottom, #55647b 0%, #414d60 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#55647b', endColorstr='#414d60',GradientType=1 ); text-align:center;">
 
@@ -334,72 +175,12 @@
                         <!--  end spacing  -->
 
                         <!--  take action text  -->
-
-                        {% if type == "estimate" %}
-
-                            <tr>
-                                <td>
-                                    <table width="500" align="center" border="0" cellpadding="0" cellspacing="0" class="content_width">
-                                        <tr>
-                                            <td style="color: #fff; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 16px; text-align:center; font-weight: 600;"> Vous pouvez accepter le devis en cliquant ci-dessous</td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <!--  end take action text  -->
-
-                            <!--  spacing  -->
-                            <tr>
-                                <td width="100%" height="50">&nbsp;</td>
-                            </tr>
-                            <!--  end spacing  -->
-
-                            <!--  take action btn  -->
-                            <tr>
-                                <td align="center">
-                                    <table width="150" cellpadding="0" cellspacing="0" align="center" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; background: #ffffff;">
-                                        <tr>
-                                            <td width="100%" height="20"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-
-                                                <table width="100%" cellpadding="0" cellspacing="0" align="center" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; text-align:center;">
-                                                    <tr>
-                                                        <td align="center" style="text-align:center;">
-                                                            <a href="" style="display:block; width:100%; color: #3d4959; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600;text-decoration:none;">J'accepte le devis</a>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-
-                                                </table>
-
-                                            </td>
-
-                                        </tr>
-                                        <tr>
-                                            <td width="100%" height="20"></td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td>
-                                    <table width="500" align="center" border="0" cellpadding="0" cellspacing="0" class="content_width">
-                                        <tr>
-                                            <td style="color: #fff; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 16px; text-align:center; font-weight: 600;"> Vous pouvez télécharger cet élément en version PDF</td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        {% endif %}
                         <tr>
                             <td width="100%" height="20">&nbsp;</td>
                         </tr>
                         <tr>
                             <td align="center">
-                                <table width="150" cellpadding="0" cellspacing="0" align="center" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; background: #ffffff;">
+                                <table width="250" cellpadding="0" cellspacing="0" align="center" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; background: #ffffff;">
                                     <tr>
                                         <td width="100%" height="20"></td>
                                     </tr>
@@ -409,7 +190,7 @@
                                             <table width="100%" cellpadding="0" cellspacing="0" align="center" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; text-align:center;">
                                                 <tr>
                                                     <td align="center" style="text-align:center;">
-                                                        <a href="#" style="display:block; width:100%; color: #3d4959; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600;text-decoration:none;">Télécharger en PDF</a>
+                                                        <a href="{{ confirmationUrl }}" style="display:block; width:100%; color: #3d4959; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600;text-decoration:none;">Je confirme mon inscription</a>
                                                         </a>
                                                     </td>
                                                 </tr>
@@ -446,6 +227,7 @@
                                     <tr>
                                         <td width="100%" height="40">&nbsp;</td>
                                     </tr>
+
                                     <!--  end spacing  -->
 
                                     <!--  content  -->
@@ -557,12 +339,4 @@
 
 
 
-
-
-
 {% endblock %}
-
-
-
-
-

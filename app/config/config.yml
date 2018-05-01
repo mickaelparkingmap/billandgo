@@ -84,25 +84,26 @@ fos_user:
             mailer: fos_user.mailer.twig_swift
     from_email:
             address:        billandgo@iumio.com
-            sender_name:    BillAndGo
+            sender_name:    Bill&Go Service
     registration:
             confirmation:
                 enabled: true
-                template:   BillAndGoBundle:Registration:email.txt.twig
+                template:   BillAndGoBundle:Registration:email.html.twig
                 from_email:
                         address:        billandgo@iumio.com
-                        sender_name:    BillAndGo
+                        sender_name:    Bill&Go Service
             form:
                 type: BillAndGoBundle\Form\RegistrationType
     resetting:
                 email:
                     from_email: # Use this node only if you don't want the global email address for the resetting email
                         address:        billandgo@iumio.com
-                        sender_name:    BillAndGo
-                    #template:   BillAndGoBundle:Resetting:email.html.twig
+                        sender_name:    Bill&Go Service
+                    template:   BillAndGoBundle:Resetting:email.html.twig
     profile:
             form:
                 type: BillAndGoBundle\Form\ProfileType
+
               #  form:
                #     type: BillAndGoBundle\Form\RegistrationType
 

@@ -7,11 +7,12 @@
             <h1>
                 Edition du profil
                 <small>
-                    <span id="doc_number"></span> {{ user.firstname|capitalize }} {{ user.lastname |upper }} <i></i>
+                    <span id="doc_number"></span> Hello, Vous pouvez ici modifier les informations de votre profil<i></i>
                 </small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="{{ path('billandgo_project_list') }}"><i class="fa fa-user"></i> Profil</a></li>
+                <li class="active"><i class="fa fa-edit"></i> Edition</li>
             </ol>
         </section>
 
@@ -19,182 +20,237 @@
         <section class="content">
             {{ form_start(form, { 'action': path('fos_user_profile_edit'), 'attr': { 'class': 'fos_user_profile_edit' } }) }}
             <div class="row">
+                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('fos_user_profile_show') }}'">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-yellow"><i class="fa fa-eye"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text"><strong>Voir votre profil</strong></span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link "  id="submitform">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green"><i class="fa fa-save"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text "><strong>Mettre à jour votre profil</strong></span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+            </div>
+
+
+
+            <div class="row">
                 {{ form_row(form._token) }}
-                <div class="col-md-12">
-                    <button type="button" class="btn btn-primary btn-transparent"  style="margin: 10px 0px 10px 0px" onclick="location.href='{{ path('fos_user_profile_show') }}'"><i class="fa fa-arrow-left"></i> &nbsp; Retour à votre profil</button>
-                    <input type="submit" value="Mettre à jour le profil" class="btn btn-success" />
-                </div>
                 <div class="col-md-12">
                     {{ form_errors(form) }}
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-6">
 
-                    <div class="box box-warning ">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Informations générales</h3>
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
-                            <img class="profile-user-img img-responsive img-circle" src="{{ asset('bundles/billandgo/img/default_user.png') }}" alt="Photo profil utilisateur">
-                            <br>
-                                <!-- text input -->
-                                <div class="form-group">
-                                    <label>Nom </label>
-                                    {{ form_widget(form.lastname, {'attr': {'class': 'form-control'}}) }}
-                                </div>
-                                <div class="form-group">
-                                    <label>Prénom</label>
-                                    {{ form_widget(form.firstname, {'attr': {'class': 'form-control'}}) }}
-                                </div>
-                                <div class="form-group">
-                                    <label>Nom d'utilisateur</label>
-                                    {{ form_widget(form.username, {'attr': {'class': 'form-control'}}) }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon">@</span>
-                                        {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                        <!-- Widget: user widget style 1 -->
+                        <div class="box box-widget widget-user">
+                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                            <div class="widget-user-header bg-black" style="background: url('{{ asset('bundles/billandgo/img/street.png') }}') center center;">
+                                <h3 class="widget-user-username">{{ user.firstname|capitalize }} {{ user.lastname|capitalize }}</h3>
+                                <h5 class="widget-user-desc">Utilisateur</h5>
+                            </div>
+                            <div class="widget-user-image">
+                                <img class="img-circle" src="{{ asset('bundles/billandgo/img/default_user.png') }}" alt="User Avatar">
+                            </div>
+                            <div class="box-footer">
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Nom </label>
+                                            {{ form_widget(form.lastname, {'attr': {'class': 'form-control'}}) }}
+                                        </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Prénom</label>
+                                            {{ form_widget(form.firstname, {'attr': {'class': 'form-control'}}) }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Nom d'utilisateur</label>
+                                            {{ form_widget(form.username, {'attr': {'class': 'form-control'}}) }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">@</span>
+                                                {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                                            </div>
 
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Mobile</label>
-                                    <div class="input-group">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Mobile</label>
+                                            <div class="input-group">
                                         <span class="input-group-addon">
                                         <i class="fa fa-mobile"></i>
                                         </span>
-                                        {{ form_widget(form.mobile, {'attr': {'class': 'form-control'}}) }}
+                                                {{ form_widget(form.mobile, {'attr': {'class': 'form-control'}}) }}
+                                            </div>
+
+                                        </div>
                                     </div>
-
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Téléphone</label>
-                                    <div class="input-group">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Téléphone</label>
+                                            <div class="input-group">
                                         <span class="input-group-addon">
                                         <i class="fa fa-phone"></i>
                                         </span>
-                                        {{ form_widget(form.phone, {'attr': {'class': 'form-control'}}) }}
+                                                {{ form_widget(form.phone, {'attr': {'class': 'form-control'}}) }}
+                                            </div>
+
+                                        </div>
                                     </div>
-
-                                </div>
-                        </div>
-                        <!-- /.box-body -->
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="box box-warning ">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Société</h3>
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
-                            <img class="profile-user-img img-responsive img-thubmail" src="{% if user.getCompanyLogoPath() == null %}{{ asset('bundles/billandgo/img/default_building.png') }}{% else %}{{ '/uploads/user/avatar/'~user.getCompanyLogoPath()}} {% endif %}" alt="Photo société">
-                            <div class="form-group">
-                                <label>Modifier le logo</label>
-                                {{ form_widget(form.company_logo, {'attr': {'class': 'form-control'}}) }}
-                            </div>
-                            <br>
-
-                                <div class="form-group">
-                                    <label>Nom de la société</label>
-                                    {{ form_widget(form.companyname, {'attr': {'class': 'form-control'}}) }}
-                                </div>
-                                <!-- text input -->
-                                <div class="form-group">
-                                    <label>Siret</label>
-                                    {{ form_widget(form.siret, {'attr': {'class': 'form-control'}}) }}
                                 </div>
 
-                                <div class="form-group">
-                                    <label>Adresse</label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon">
-                                        <i class="fa fa-street"></i>
-                                        </span>
-                                        {{ form_widget(form.address, {'attr': {'class': 'form-control'}}) }}
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h4 class="text-success">Information bancaires</h4>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
 
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Code postal</label>
-                                    {{ form_widget(form.zip_code, {'attr': {'class': 'form-control'}}) }}
-
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Ville</label>
-                                    {{ form_widget(form.city, {'attr': {'class': 'form-control'}}) }}
-                                </div>
-                                <div class="form-group">
-                                    <label>Pays</label>
-                                    {{ form_widget(form.country, {'attr': {'class': 'form-control'}}) }}
-                                </div>
-
-                        </div>
-                        <!-- /.box-body -->
-                    </div>
-                </div>
-                <div class="col-md-3">
-
-                    <div class="box box-warning ">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Informations bancaire</h3>
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
-                            <div class="text-center center-block"><i class="fa fa-credit-card fa-2x text-center"></i></div>
-                            <br>
-
-                                <!-- text input -->
-                                <div class="form-group">
-
-                                    <label>Banque</label>
-                                    <div class="input-group">
+                                            <label>Banque</label>
+                                            <div class="input-group">
                                         <span class="input-group-addon">
                                         <i class="fa fa-info fa fa-university"></i>
                                         </span>
-                                        {{ form_widget(form.banque, {'attr': {'class': 'form-control'}}) }}
+                                                {{ form_widget(form.banque, {'attr': {'class': 'form-control'}}) }}
+                                            </div>
+
+                                        </div>
                                     </div>
-
-                                </div>
-
-                                <div class="form-group">
-                                    <label>IBAN</label>
-                                    <div class="input-group">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>IBAN</label>
+                                            <div class="input-group">
                                         <span class="input-group-addon">
                                         <i class="fa fa fa-italic"></i>
                                         </span>
-                                        {{ form_widget(form.iban, {'attr': {'class': 'form-control'}}) }}
+                                                {{ form_widget(form.iban, {'attr': {'class': 'form-control'}}) }}
+                                            </div>
+
+                                        </div>
                                     </div>
-
-                                </div>
-
-                                <div class="form-group">
-                                    <label>BIC</label>
-                                    <div class="input-group">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>BIC</label>
+                                            <div class="input-group">
                                         <span class="input-group-addon">
                                         <i class="fa fa-info fa fa-italic"></i>
                                         </span>
-                                        {{ form_widget(form.bic, {'attr': {'class': 'form-control'}}) }}
+                                                {{ form_widget(form.bic, {'attr': {'class': 'form-control'}}) }}
+                                            </div>
+
+                                        </div>
                                     </div>
 
                                 </div>
+                            </div>
                         </div>
-                        <!-- /.box-body -->
-                    </div>
-                </div>
+                        <!-- /.widget-user -->
 
+                </div>
+                <div class="col-md-6">
+
+                        <!-- Widget: user widget style 1 -->
+                        <div class="box box-widget widget-user-2">
+                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                            <div class="widget-user-header bg-yellow" style="background: url('{{ asset('bundles/billandgo/img/chair.png') }}') center center;">
+                                <div class="widget-user-image">
+                                    <img class="img-circle" src="{% if user.getCompanyLogoPath() == null %}{{ asset('bundles/billandgo/img/default_building.png') }}{% else %}{{ '/uploads/user/avatar/'~user.getCompanyLogoPath()}} {% endif %}" alt="Company Avatar">
+                                </div>
+                                <!-- /.widget-user-image -->
+                                <h3 class="widget-user-username">{{ user.companyname }}</h3>
+                                <h5 class="widget-user-desc">Sociéte</h5>
+                            </div>
+                            <div class="box-footer">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Nom de la société</label>
+                                        {{ form_widget(form.companyname, {'attr': {'class': 'form-control'}}) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Siret</label>
+                                        {{ form_widget(form.siret, {'attr': {'class': 'form-control'}}) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Adresse</label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon">
+                                        <i class="fa fa-street"></i>
+                                        </span>
+                                            {{ form_widget(form.address, {'attr': {'class': 'form-control'}}) }}
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Code postal</label>
+                                        {{ form_widget(form.zip_code, {'attr': {'class': 'form-control'}}) }}
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Ville</label>
+                                        {{ form_widget(form.city, {'attr': {'class': 'form-control'}}) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Pays</label>
+                                        {{ form_widget(form.country, {'attr': {'class': 'form-control'}}) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Modifier le logo</label>
+                                        {{ form_widget(form.company_logo, {'attr': {'class': 'form-control'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.widget-user -->
+                </div>
             </div>
             {{ form_end(form) }}
 
             <!-- /.col -->
         </section>
     </div>
+
+    {% block advanced_javascripts %}
+        <script src="{{ asset('bundles/billandgo/assets/jquery/dist/jquery.min.js') }}"></script>
+        <script type="text/javascript">
+
+
+                $(document).ready(function() {
+                    $(document).on('click', "#submitform", function (e) {
+                        e.preventDefault();
+                        console.log("dede")
+                        $("form.fos_user_profile_edit").submit();
+                    });
+                });
+        </script>
+    {% endblock %}
 
 
 

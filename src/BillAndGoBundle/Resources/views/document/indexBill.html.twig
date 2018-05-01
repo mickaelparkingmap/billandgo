@@ -32,8 +32,8 @@ set status_fr = {
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Factures
-                <small>Liste des factures</small>
+               Factures
+                <small>Voici la liste de vos factures</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
@@ -44,10 +44,29 @@ set status_fr = {
         <!-- Main content -->
         <section class="content">
 
+            <div class="row">
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-yellow"><i class="fa fa-briefcase"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Nombre de factures</span>
+                            <span class="info-box-number">{{ list|length }}</span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('billandgo_bill_add') }}'">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green"><i class="fa fa-plus"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text"><strong>Créer une nouvelle facture</strong></span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+            </div>
             {# to be paid #}
             <div class="box box-default">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Vos factures</h3>
+                    <h3 class="box-title">Vos factures en cours</h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div>
@@ -55,13 +74,16 @@ set status_fr = {
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
-                        <p class="text-center"><i>/* A venir : filtres*/</i></p>
+                        <!--<p class="text-center"><i>/* A venir : filtres*/</i></p>-->
                         {% set nbdoc = 0 %}
                         {% set totalHT = 0 %}
                         {% set totalVat = 0 %}
                         {% set draws = [] %}
                         {% set transformed = [] %}
                         {% set canceled = [] %}
+                        {% set nbcolor = 0 %}
+                        {% set maxcolor = 6 %}
+                        {% set color = ['bg-yellow', 'bg-green', 'bg-purple', 'bg-black', 'bg-blue', 'bg-red'] %}
                         {% for doc in list %}
                             {% if doc.status == "draw" %}
                                 {% set draws = draws|merge([doc]) %}
@@ -73,175 +95,189 @@ set status_fr = {
                                 {% set totalHT = totalHT + doc.HT %}
                                 {% set totalVat = totalVat + doc.VAT %}
                                 {% set nbdoc = nbdoc + 1 %}
-                                <div class="col-md-6 col-lg-4 text-center third-block estimate-block">
-                                    <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h3 class="color-{{ doc.status }}">
-                                            <a href="{{ path('billandgo_document_view', {'id': doc.id}) }}">
-                                                {{ doc.number }}
-                                            </a>
-                                        </h3>
-                                        <h4 class="color-{{ doc.status }}">
-                                            pour
-                                            <a href="{{ path('billandgo_clients_view', {'id': doc.refClient.id}) }}">
-                                                {{ doc.refClient.companyName }}
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <ul class="nav nav-pills nav-justified">
-                                            <li class="active">
-                                                <a data-toggle="tab" href="#estimate-{{ doc.id }}-desc">
-                                                    Description
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a data-toggle="tab" href="#estimate-{{ doc.id }}-pai">
-                                                    {{ doc.sumPaiments }}€ payés
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a data-toggle="tab" href="#estimate-{{ doc.id }}-fin">
-                                                    {{ doc.HT + doc.VAT }}€ TTC
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        <div class="tab-content">
-                                            <div id="estimate-{{ doc.id }}-desc" class="tab-pane fade in active bg-info">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        Envoyé le :
-                                                        <br/>
-                                                        {{ doc.sentDate|date('d-m-Y') }}
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        {% if doc.answerDate %}
-                                                            {{ status_fr[doc.status] }} le {{ doc.answerDate|date('d-m-Y') }}
-                                                        {% else %}
-                                                            Délai de paiement :
-                                                            <br/>
-                                                            {{ doc.delayDate|date('d-m-Y') }}
-                                                        {%  endif %}
-                                                    </div>
-                                                </div>
-                                                <p>
-                                                    {{ doc.description|length > 300 ? doc.description|slice(0, 300) ~ '...' : doc.description  }}
-                                                </p>
+                                <div class="col-md-4 estimate-{{ doc.status }}">
+                                    <!-- Widget: user widget style 1 -->
+                                    <div class="box box-widget widget-user-2 box-client {{ color[nbcolor] }}-client">
+                                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                                        <div class="widget-user-header  {{ color[nbcolor] }}">
+                                            <div class="widget-user-image">
+                                                <span class="img-circle"><i class="fa fa-file-o fa-3x ppdashbboard" ></i> </span>
                                             </div>
-                                            <div id="estimate-{{ doc.id }}-pai" class="tab-pane fade in bg-info">
-                                                <div class="row">
-                                                    <div class="col-xs-12">
-                                                        {% for paiment in doc.refPaiment %}
-                                                            <div class="col-sm-6 text-left">
-                                                                {{ paiment.datePaiment|date('Y-m-d') }}
-                                                            </div>
-                                                            <div class="col-sm-6 text-right">
-                                                                <a href="{{ path('billandgo_paiment_show', { 'id': paiment.id }) }}">
-                                                                    {{ paiment.amount }}€
-                                                                </a>
-                                                            </div>
-                                                        {% else %}
+                                            <!-- /.widget-user-image -->
+                                            <h3 class="widget-user-username"> {{ doc.number }} </h3>
+                                            <h5 class="widget-user-desc">Status : <strong> {{ status_fr[doc.status]|lower }}</strong></h5>
+                                            <h5 class="widget-user-desc"> Client :  <a href="{{ path('billandgo_clients_view', {'id': doc.refClient.id}) }}" class="white-color">{{ doc.refClient.companyName }}</a></h5>
+                                            <h5 class="widget-user-desc">Total : <strong>  {{ doc.HT + doc.VAT }}€ TTC</strong></h5>
+                                            <h5 class="widget-user-desc">Payé : <strong>  {{ doc.sumPaiments }}€ </strong></h5>
+                                            <h5 class="widget-user-desc client-link-box-content"> <a href="{{ path('billandgo_document_view', {'id': doc.id}) }}">
+                                                    Voir la {{ min_fr }}
+                                                </a></h5>
+                                        </div>
+                                        <div class="box-footer no-padding">
+                                            <div class="panel-body">
+                                                <ul class="nav nav-pills nav-justified">
+                                                    <li class="active">
+                                                        <a data-toggle="tab" href="#cli-{{ doc.number }}-info">
+                                                            Infos
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-toggle="tab" href="#cli-{{ doc.number }}-doc">
+                                                            Description
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-toggle="tab" href="#cli-{{ doc.number }}-con">
+                                                            Total
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <div class="tab-content">
+                                                    <div id="cli-{{ doc.number }}-info" class="tab-pane fade in active bg-info" >
+
+                                                        <ul>
+                                                            <li><strong>Date d'envoi :</strong> {{ doc.sentDate|date('d-m-Y') }} </li>
+                                                            {% if doc.answerDate %}
+                                                                <li><strong>{{ status_fr[doc.status] }} :</strong> {{ doc.answerDate|date('d-m-Y') }}</li>
+                                                            {% else %}
+                                                            <li><strong>Délai de paiement :</strong> {{ doc.delayDate|date('d-m-Y') }}</li>
+                                                            {%  endif %}
+                                                        </ul>
+
+                                                        <h5><strong>Paiement : </strong></h5>
+                                                        <div class="row">
                                                             <div class="col-xs-12">
-                                                                Aucun paiement
+                                                            <table class="table table-striped">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>Date</th>
+                                                                    <th>Montant</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                {% for paiment in doc.refPaiment %}
+                                                                    <tr>
+                                                                        <td>{{ paiment.datePaiment|date('d-m-Y') }}</td>
+                                                                        <td>  <a href="{{ path('billandgo_paiment_show', { 'id': paiment.id }) }}">
+                                                                                {{ paiment.amount }}€
+                                                                            </a></td>
+                                                                    </tr>
+                                                                {% else %}
+                                                                    <tr>
+                                                            <td colspan="2">
+                                                                Aucun paiement reçu
+                                                            </td>
+                                                                    </tr>
+                                                                {% endfor %}
+                                                                </tbody>
+
+                                                            </table>
+
                                                             </div>
-                                                        {% endfor %}
-                                                    </div>
-                                                    <div class="col-sm-12 text-center">
-                                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createPaimentModal-{{ doc.id }}">
-                                                            Créer un paiment
-                                                        </button>
-                                                        <div class="modal fade text-center" id="createPaimentModal-{{ doc.id }}" tabindex="-1" role="dialog" aria-labelledby="createPaimentModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title" id="createPaimentModalLabel">Créer un paiment</h5>
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                            <span aria-hidden="true">&times;</span>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <div class="well">
-                                                                            <form method="post" action="{{ path('billandgo_paiment_add_from_bill', {'id' : doc.id}) }}">
-                                                                                <div class="form-group row">
-                                                                                    <label for="project_name" class="col-sm-3 col-form-label">Date</label>
-                                                                                    <div class="col-sm-9">
-                                                                                        <input class="form-control datepick" type="text" value="{{ "now"|date("m/d/Y") }}" id="paimentDate" name="paimentDate">
-                                                                                    </div>
+                                                            <div class="col-sm-12 text-center">
+                                                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createPaimentModal-{{ doc.id }}">
+                                                                    Créer un paiment
+                                                                </button>
+                                                                <div class="modal fade text-center" id="createPaimentModal-{{ doc.id }}" tabindex="-1" role="dialog" aria-labelledby="createPaimentModalLabel" aria-hidden="true">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title" id="createPaimentModalLabel">Créer un paiment</h5>
+                                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                    <span aria-hidden="true">&times;</span>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <div class="well">
+                                                                                    <form method="post" action="{{ path('billandgo_paiment_add_from_bill', {'id' : doc.id}) }}">
+                                                                                        <div class="form-group row">
+                                                                                            <label for="project_name" class="col-sm-3 col-form-label">Date</label>
+                                                                                            <div class="col-sm-9">
+                                                                                                <input class="form-control datepick" type="text" value="{{ "now"|date("m/d/Y") }}" id="paimentDate" name="paimentDate">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group row">
+                                                                                            <label for="project_deadline" class="col-sm-3 col-form-label">Montant</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <input class="form-control" type="number" step="0.01" name="paimentAmount" id="paimentAmount">
+                                                                                            </div>
+                                                                                            <div class="col-sm-3">
+                                                                                                <select  name="paimentMode" class="form-control">
+                                                                                                    <option value="cash">en liquide</option>
+                                                                                                    <option value="cheque">par chèque</option>
+                                                                                                    <option value="order">par virement</option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <button type="submit" class="btn btn-success">Créer le paiment</button>
+                                                                                    </form>
                                                                                 </div>
-                                                                                <div class="form-group row">
-                                                                                    <label for="project_deadline" class="col-sm-3 col-form-label">Montant</label>
-                                                                                    <div class="col-sm-6">
-                                                                                        <input class="form-control" type="number" step="0.01" name="paimentAmount" id="paimentAmount">
-                                                                                    </div>
-                                                                                    <div class="col-sm-3">
-                                                                                        <select  name="paimentMode" class="form-control">
-                                                                                            <option value="cash">en liquide</option>
-                                                                                            <option value="cheque">par chèque</option>
-                                                                                            <option value="order">par virement</option>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <button type="submit" class="btn btn-success">Créer le paiment</button>
-                                                                            </form>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                            <div id="estimate-{{ doc.id }}-fin" class="tab-pane fade in bg-info">
-                                                <div class="row">
-                                                    <div class="col-sm-6">
-                                                        HT : {{ doc.HT }}€
+
+
+
+                                                    <div id="cli-{{ doc.number }}-doc" class="tab-pane fade in bg-info">
+                                                        <p>
+                                                            {{ doc.description|length > 300 ? doc.description|slice(0, 300) ~ '...' : doc.description  }}
+                                                        </p>
                                                     </div>
-                                                    <div class="col-sm-6">
-                                                        HT : {{ doc.HT + doc.VAT }}€
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    {% for line in doc.refLinesB %}
+                                                    <div id="cli-{{ doc.number }}-con" class="tab-pane fade in bg-info">
                                                         <div class="row">
-                                                            <div class="col-md-4">
-                                                                {{ line.name }}
-                                                                <span class="badge badge-success">
-                                                                    {{ (line.refTax.percent + 100) / 100 * (line.price * line.quantity) }}€ TTC
-                                                                </span>
-                                                            </div>
-                                                            <div class="col-md-4 col-sm-6">
-                                                                {% if line.refEstimate|first %}
-                                                                    <a class="btn btn-info" href="{{ path("billandgo_document_view", {"id":line.refEstimate|first.id}) }}">
-                                                                        {{ line.refEstimate|first.number }}
-                                                                    </a>
-                                                                {% endif %}
-                                                            </div>
-                                                            <div class="col-md-4 col-sm-6">
-                                                                {% if line.refProject|first %}
-                                                                    <a class="btn btn-info" href="{{ path("billandgo_project_view", {"id":line.refProject|first.id}) }}">
-                                                                        {{ line.refProject|first.name }}
-                                                                    </a>
-                                                                {% endif %}
-                                                            </div>
+                                                            <ul>
+                                                                <li><strong>Total (hors taxes) :</strong> {{ doc.HT }}€ HT</li>
+                                                                <li><strong>Total (toutes taxes comprises) :</strong>  {{ doc.HT + doc.VAT }}€ TTC</li>
+                                                            </ul>
                                                         </div>
-                                                    {% endfor %}
+                                                        <div>
+                                                            <h5>Détails : </h5>
+                                                            <table class="table table-striped">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>Nom</th>
+                                                                    <th>Tarif</th>
+                                                                </tr>
+                                                                </thead>
+                                                                {% for line in doc.refLinesB %}
+                                                                    <tr>
+                                                                        <td>{{ line.name }}</td>
+                                                                        <td>{{ (line.refTax.percent + 100) / 100 * (line.price * line.quantity) }}€ TTC</td>
+                                                                    </tr>
+                                                                {% endfor %}
+
+                                                            </table>
+
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- /.widget-user -->
                                 </div>
-                                </div>
+                                {%  set nbcolor = nbcolor + 1 %}
+                                {% if nbcolor >= maxcolor %}
+                                    {%  set nbcolor = 0 %}
+                                {% endif %}
+
+
+
+
                             {% endif %}
                         {% else %}
                             <div class="col-sm-12">
                                 <div class="callout callout-warning text-center">
-                                    <h4> <i class="fa fa-warning"></i> Aucune facture enregistrée <i class="fa fa-warning"></i> </h4>
+                                    <h4> Aucune facture enregistrée  </h4>
                                     <p>
-                                        Vous n'avez pas encore saisi de facture, ne perdez pas de temps,
-                                        <a href="{{ path('billandgo_bill_add') }}">Ajoutez votre première facture</a>
+                                        Vous n'avez pas encore saisi de facture
                                     </p>
                                 </div>
                             </div>
@@ -250,16 +286,20 @@ set status_fr = {
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">
-                    <div> Total HT : <span class="badge bg-green">{{ totalHT }}€</span></div>
-                    <div> Total TTC : <span class="badge bg-green">{{ totalVat + totalHT }}€</span></div>
-                    <div> Total TVA : <span class="badge bg-red">{{ totalVat }}€</span></div>
+                    <h5 class="text-center"><strong>Information(s) complémentaires(s)</strong></h5>
+                    <div class="row center-block text-center">
+                        <div class="col-md-4"> Total HT : <span class="badge bg-green">{{ totalHT }}€</span></div>
+                        <div class="col-md-4">Total TTC : <span class="badge bg-green">{{ totalVat + totalHT }}€</span></div>
+                        <div class="col-md-4">Total TVA : <span class="badge bg-red">{{ totalVat }}€</span></div>
+                    </div>
+
                 </div>
             </div>
 
             {# brouillons #}
             <div class="box box-default collapsed-box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Vos brouillons</h3>
+                    <h3 class="box-title">Vos brouillons ({{ draws|length }})</h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
                     </div>
@@ -267,100 +307,133 @@ set status_fr = {
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
+                        {% set nbcolor = 0 %}
+                        {% set maxcolor = 6 %}
+                        {% set color = ['bg-yellow', 'bg-green', 'bg-purple', 'bg-black', 'bg-blue', 'bg-red'] %}
                         {% for doc in draws %}
-                            <div class="col-md-6 col-lg-4 text-center third-block estimate-block">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            <h3 class="color-{{ doc.status }}">
-                                                <a href="{{ path('billandgo_document_view', {'id': doc.id}) }}">
-                                                    {{ doc.number }}
-                                                </a>
-                                            </h3>
-                                            <h4 class="color-{{ doc.status }}">
-                                                pour
-                                                <a href="{{ path('billandgo_clients_view', {'id': doc.refClient.id}) }}">
-                                                    {{ doc.refClient.companyName }}
-                                                </a>
-                                            </h4>
+                            <div class="col-md-4 estimate-{{ doc.status }}">
+                                <!-- Widget: user widget style 1 -->
+                                <div class="box box-widget widget-user-2 box-client {{ color[nbcolor] }}-client">
+                                    <!-- Add the bg color to the header using any of the bg-* classes -->
+                                    <div class="widget-user-header  {{ color[nbcolor] }}">
+                                        <div class="widget-user-image">
+                                            <span class="img-circle"><i class="fa fa-file-o fa-3x ppdashbboard" ></i> </span>
                                         </div>
+                                        <!-- /.widget-user-image -->
+                                        <h3 class="widget-user-username"> {{ doc.number }} </h3>
+                                        <h5 class="widget-user-desc">Status : <strong> {{ status_fr[doc.status]|lower }}</strong></h5>
+                                        <h5 class="widget-user-desc"> Client :  <a href="{{ path('billandgo_clients_view', {'id': doc.refClient.id}) }}" class="white-color">{{ doc.refClient.companyName }}</a></h5>
+                                        <h5 class="widget-user-desc">Total : <strong>  {{ doc.HT + doc.VAT }}€ TTC</strong></h5>
+                                        <h5 class="widget-user-desc">Payé : <strong>  {{ doc.sumPaiments }}€ </strong></h5>
+                                        <h5 class="widget-user-desc client-link-box-content"> <a href="{{ path('billandgo_document_view', {'id': doc.id}) }}">
+                                                Voir la {{ min_fr }}
+                                            </a></h5>
+                                    </div>
+                                    <div class="box-footer no-padding">
                                         <div class="panel-body">
                                             <ul class="nav nav-pills nav-justified">
                                                 <li class="active">
-                                                    <a data-toggle="tab" href="#estimate-{{ doc.number }}-stat">
-                                                        {{ status_fr[doc.status] }}
+                                                    <a data-toggle="tab" href="#cli-{{ doc.number }}-info">
+                                                        Infos
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a data-toggle="tab" href="#estimate-{{ doc.number }}-desc">
+                                                    <a data-toggle="tab" href="#cli-{{ doc.number }}-doc">
                                                         Description
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a data-toggle="tab" href="#estimate-{{ doc.number }}-fin">
-                                                        {{ doc.HT + doc.VAT }}€ TTC
+                                                    <a data-toggle="tab" href="#cli-{{ doc.number }}-con">
+                                                        Total
                                                     </a>
                                                 </li>
                                             </ul>
                                             <div class="tab-content">
-                                                <div id="estimate-{{ doc.number }}-stat" class="tab-pane fade in active bg-info">
-                                                    <p>
-                                                        Créé le :
-                                                        <br/>
-                                                        {{ doc.sentDate|date('d-m-Y') }}
-                                                    </p>
-                                                    <div style="margin:15px;">
-                                                        <form action="{{ path("billandgo_document_send_email", {"doc_id": doc.id}) }}" method="get">
-                                                                    <div class="form-group"style="float:left;width:70%;">
-                                                                        <select dir="rtl" class="form-control" name="contact" style="background-color: #00c0ef;color:#fff;">
-                                                                            {% for contact in doc.refClient.contacts %}
-                                                                                <option value="{{ contact.id }}">{{ contact.email }}</option>
-                                                                            {% endfor %}
-                                                                        </select>
-                                                                    </div>
-                                                                    <button type="submit" class="btn btn-info" style="float:left;width: 30%;">
+                                                <div id="cli-{{ doc.number }}-info" class="tab-pane fade in active bg-info" >
+
+                                                    <ul>
+                                                        <li><strong>Date de création :</strong> {{ doc.sentDate|date('d-m-Y') }} </li>
+                                                    </ul>
+
+                                                    <h5><strong>Envoyez votre {{ min_fr }} à un des contact ci-dessous :</strong> </h5>
+                                                    {% if doc.refClient.contacts|length > 0 %}
+                                                        <div class="row">
+                                                            <form action="{{ path("billandgo_document_send_email", {"doc_id": doc.id}) }}" method="get">
+                                                                <div class="form-group col-md-6 col-xs-12">
+
+                                                                    <select dir="rtl" class="form-control {{ color[nbcolor] }}" name="contact" style="color:#fff;">
+                                                                        {% for contact in doc.refClient.contacts %}
+                                                                            <option value="{{ contact.id }}">{{ contact.email }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-6 col-xs-12">
+                                                                    <button type="submit" class="btn {{ color[nbcolor] }} btn-outline center-block">
                                                                         <i class="fa fa-envelope"></i> Envoyer
                                                                     </button>
-                                                        </form>
-                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    {% else %}
+                                                        Aucun contact
+                                                    {% endif %}
                                                 </div>
-                                                <div id="estimate-{{ doc.number }}-desc" class="tab-pane fade in bg-info">
+
+
+
+                                                <div id="cli-{{ doc.number }}-doc" class="tab-pane fade in bg-info">
                                                     <p>
                                                         {{ doc.description|length > 300 ? doc.description|slice(0, 300) ~ '...' : doc.description  }}
                                                     </p>
                                                 </div>
-                                                <div id="estimate-{{ doc.number }}-fin" class="tab-pane fade in bg-info">
+                                                <div id="cli-{{ doc.number }}-con" class="tab-pane fade in bg-info">
                                                     <div class="row">
-                                                        <div class="col-sm-6">
-                                                            HT : {{ doc.HT }}€
-                                                        </div>
-                                                        <div class="col-sm-6">
-                                                            HT : {{ doc.HT + doc.VAT }}€
-                                                        </div>
+                                                        <ul>
+                                                            <li><strong>Total (hors taxes) :</strong> {{ doc.HT }}€ HT</li>
+                                                            <li><strong>Total (toutes taxes comprises) :</strong>  {{ doc.HT + doc.VAT }}€ TTC</li>
+                                                        </ul>
                                                     </div>
                                                     <div>
-                                                        {% for line in doc.refLines %}
-                                                            <div {% if (line.refProject|first or line.refBill|first) %}class="color-grey"{% endif %} >
-                                                                {% if (line.refProject|first or line.refBill|first) %}<em>{% endif %}
-                                                                    {{ line.name }}
-                                                                    {% if (line.refProject|first or line.refBill|first) %}</em>{% endif %}
-                                                                <span class="badge badge-success">
-                                                                {{ (line.refTax.percent + 100) / 100 * (line.price * line.quantity) }}€ TTC
-                                                            </span>
-                                                            </div>
-                                                        {% endfor %}
+                                                        <h5>Détails : </h5>
+                                                        <table class="table table-striped">
+                                                            <thead>
+                                                            <tr>
+                                                                <th>Nom</th>
+                                                                <th>Tarif</th>
+                                                            </tr>
+                                                            </thead>
+                                                            {% for line in doc.refLinesB %}
+                                                                <tr>
+                                                                    <td>{{ line.name }}</td>
+                                                                    <td>{{ (line.refTax.percent + 100) / 100 * (line.price * line.quantity) }}€ TTC</td>
+                                                                </tr>
+                                                            {% endfor %}
+
+                                                        </table>
+
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <!-- /.widget-user -->
+                            </div>
+                            {%  set nbcolor = nbcolor + 1 %}
+                            {% if nbcolor >= maxcolor %}
+                                {%  set nbcolor = 0 %}
+                            {% endif %}
+
+
+
+
+
                         {% else %}
                             <div class="col-sm-12">
                                 <div class="callout callout-warning text-center">
-                                    <h4> <i class="fa fa-warning"></i> Aucune facture enregistrée <i class="fa fa-warning"></i> </h4>
+                                    <h4> Aucune facture enregistrée </h4>
                                     <p>
-                                        Vous n'avez pas encore saisi de facture, ne perdez pas de temps,
-                                        <a href="{{ path('billandgo_bill_add') }}">Ajoutez votre première facture</a>
+                                        Vous n'avez pas encore saisi de facture
                                     </p>
                                 </div>
                             </div>
@@ -373,7 +446,7 @@ set status_fr = {
             {# transformed #}
             <div class="box box-default collapsed-box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Vos factures payées</h3>
+                    <h3 class="box-title">Vos factures payées ({{ transformed|length }})</h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
                     </div>
@@ -381,116 +454,138 @@ set status_fr = {
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
+                            {% set nbcolor = 0 %}
+                            {% set maxcolor = 6 %}
+                            {% set color = ['bg-yellow', 'bg-green', 'bg-purple', 'bg-black', 'bg-blue', 'bg-red'] %}
                         {% for doc in transformed %}
-                            <div class="col-md-6 col-lg-4 text-center third-block estimate-block">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h3 class="color-{{ doc.status }}">
-                                            <a href="{{ path('billandgo_document_view', {'id': doc.id}) }}">
-                                                {{ doc.number }}
-                                            </a>
-                                        </h3>
-                                        <h4 class="color-{{ doc.status }}">
-                                            pour
-                                            <a href="{{ path('billandgo_clients_view', {'id': doc.refClient.id}) }}">
-                                                {{ doc.refClient.companyName }}
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <ul class="nav nav-pills nav-justified">
-                                            <li class="active">
-                                                <a data-toggle="tab" href="#estimate-{{ doc.id }}-desc">
-                                                    Description
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a data-toggle="tab" href="#estimate-{{ doc.id }}-pai">
-                                                    {{ doc.sumPaiments }}€ payés
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a data-toggle="tab" href="#estimate-{{ doc.id }}-fin">
-                                                    {{ doc.HT + doc.VAT }}€ TTC
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        <div class="tab-content">
-                                            <div id="estimate-{{ doc.id }}-desc" class="tab-pane fade in active bg-info">
-                                                <p>
-                                                    Envoyé le {{ doc.sentDate|date('d-m-Y') }}
-                                                </p>
-                                                <p>
-                                                    {{ doc.description|length > 300 ? doc.description|slice(0, 300) ~ '...' : doc.description  }}
-                                                </p>
+                                <div class="col-md-4 estimate-{{ doc.status }}">
+                                    <!-- Widget: user widget style 1 -->
+                                    <div class="box box-widget widget-user-2 box-client {{ color[nbcolor] }}-client">
+                                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                                        <div class="widget-user-header  {{ color[nbcolor] }}">
+                                            <div class="widget-user-image">
+                                                <span class="img-circle"><i class="fa fa-file-o fa-3x ppdashbboard" ></i> </span>
                                             </div>
-                                            <div id="estimate-{{ doc.id }}-pai" class="tab-pane fade in bg-info">
-                                                <div class="row">
-                                                    <div class="col-xs-12">
-                                                        {% for paiment in doc.refPaiment %}
-                                                            <div class="col-sm-6 text-left">
-                                                                {{ paiment.datePaiment|date('Y-m-d') }}
-                                                            </div>
-                                                            <div class="col-sm-6 text-right">
-                                                                <a href="{{ path('billandgo_paiment_show', { 'id': paiment.id }) }}">
-                                                                    {{ paiment.amount }}€
-                                                                </a>
-                                                            </div>
-                                                        {% else %}
-                                                            <div class="col-xs-12">
-                                                                Aucun paiement
-                                                            </div>
-                                                        {% endfor %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div id="estimate-{{ doc.id }}-fin" class="tab-pane fade in bg-info">
-                                                <div class="row">
-                                                    <div class="col-sm-6">
-                                                        HT : {{ doc.HT }}€
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        HT : {{ doc.HT + doc.VAT }}€
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    {% for line in doc.refLinesB %}
+                                            <!-- /.widget-user-image -->
+                                            <h3 class="widget-user-username"> {{ doc.number }} </h3>
+                                            <h5 class="widget-user-desc">Status : <strong> {{ status_fr[doc.status]|lower }}</strong></h5>
+                                            <h5 class="widget-user-desc"> Client :  <a href="{{ path('billandgo_clients_view', {'id': doc.refClient.id}) }}" class="white-color">{{ doc.refClient.companyName }}</a></h5>
+                                            <h5 class="widget-user-desc">Total : <strong>  {{ doc.HT + doc.VAT }}€ TTC</strong></h5>
+                                            <h5 class="widget-user-desc">Payé : <strong>  {{ doc.sumPaiments }}€ </strong></h5>
+                                            <h5 class="widget-user-desc client-link-box-content"> <a href="{{ path('billandgo_document_view', {'id': doc.id}) }}">
+                                                    Voir la {{ min_fr }}
+                                                </a></h5>
+                                        </div>
+                                        <div class="box-footer no-padding">
+                                            <div class="panel-body">
+                                                <ul class="nav nav-pills nav-justified">
+                                                    <li class="active">
+                                                        <a data-toggle="tab" href="#cli-{{ doc.number }}-info">
+                                                            Infos
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-toggle="tab" href="#cli-{{ doc.number }}-doc">
+                                                            Description
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-toggle="tab" href="#cli-{{ doc.number }}-con">
+                                                            Total
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <div class="tab-content">
+                                                    <div id="cli-{{ doc.number }}-info" class="tab-pane fade in active bg-info" >
+
+                                                        <ul>
+                                                            <li><strong>Date d'envoi :</strong> {{ doc.sentDate|date('d-m-Y') }} </li>
+                                                        </ul>
+
+                                                        <h5><strong>Paiement : </strong></h5>
                                                         <div class="row">
-                                                            <div class="col-md-4">
-                                                                {{ line.name }}
-                                                                <span class="badge badge-success">
-                                                                    {{ (line.refTax.percent + 100) / 100 * (line.price * line.quantity) }}€ TTC
-                                                                </span>
-                                                            </div>
-                                                            <div class="col-md-4 col-sm-6">
-                                                                {% if line.refEstimate|first %}
-                                                                    <a class="btn btn-info" href="{{ path("billandgo_document_view", {"id":line.refEstimate|first.id}) }}">
-                                                                        {{ line.refEstimate|first.number }}
-                                                                    </a>
-                                                                {% endif %}
-                                                            </div>
-                                                            <div class="col-md-4 col-sm-6">
-                                                                {% if line.refProject|first %}
-                                                                    <a class="btn btn-info" href="{{ path("billandgo_project_view", {"id":line.refProject|first.id}) }}">
-                                                                        {{ line.refProject|first.name }}
-                                                                    </a>
-                                                                {% endif %}
+                                                            <div class="col-xs-12">
+                                                                <table class="table table-striped">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th>Date</th>
+                                                                        <th>Montant</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    {% for paiment in doc.refPaiment %}
+                                                                        <tr>
+                                                                            <td>{{ paiment.datePaiment|date('d-m-Y') }}</td>
+                                                                            <td>  <a href="{{ path('billandgo_paiment_show', { 'id': paiment.id }) }}">
+                                                                                    {{ paiment.amount }}€
+                                                                                </a></td>
+                                                                        </tr>
+                                                                    {% else %}
+                                                                        <tr>
+                                                                            <td colspan="2">
+                                                                                Aucun paiement reçu
+                                                                            </td>
+                                                                        </tr>
+                                                                    {% endfor %}
+                                                                    </tbody>
+
+                                                                </table>
+
                                                             </div>
                                                         </div>
-                                                    {% endfor %}
+                                                    </div>
+
+
+
+                                                    <div id="cli-{{ doc.number }}-doc" class="tab-pane fade in bg-info">
+                                                        <p>
+                                                            {{ doc.description|length > 300 ? doc.description|slice(0, 300) ~ '...' : doc.description  }}
+                                                        </p>
+                                                    </div>
+                                                    <div id="cli-{{ doc.number }}-con" class="tab-pane fade in bg-info">
+                                                        <div class="row">
+                                                            <ul>
+                                                                <li><strong>Total (hors taxes) :</strong> {{ doc.HT }}€ HT</li>
+                                                                <li><strong>Total (toutes taxes comprises) :</strong>  {{ doc.HT + doc.VAT }}€ TTC</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div>
+                                                            <h5>Détails : </h5>
+                                                            <table class="table table-striped">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>Nom</th>
+                                                                    <th>Tarif</th>
+                                                                </tr>
+                                                                </thead>
+                                                                {% for line in doc.refLinesB %}
+                                                                    <tr>
+                                                                        <td>{{ line.name }}</td>
+                                                                        <td>{{ (line.refTax.percent + 100) / 100 * (line.price * line.quantity) }}€ TTC</td>
+                                                                    </tr>
+                                                                {% endfor %}
+
+                                                            </table>
+
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- /.widget-user -->
                                 </div>
-                            </div>
+                                {%  set nbcolor = nbcolor + 1 %}
+                                {% if nbcolor >= maxcolor %}
+                                    {%  set nbcolor = 0 %}
+                                {% endif %}
+
                         {% else %}
                             <div class="col-sm-12">
                                 <div class="callout callout-warning text-center">
-                                    <h4> <i class="fa fa-warning"></i> Aucune facture enregistrée <i class="fa fa-warning"></i> </h4>
+                                    <h4> Aucune facture enregistrée </h4>
                                     <p>
-                                        Vous n'avez pas encore saisi de facture, ne perdez pas de temps,
-                                        <a href="{{ path('billandgo_bill_add') }}">Ajoutez votre première facture</a>
+                                        Vous n'avez pas encore saisi de facture
                                     </p>
                                 </div>
                             </div>
@@ -503,7 +598,7 @@ set status_fr = {
             {# canceled #}
             <div class="box box-default collapsed-box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Vos factures annulées</h3>
+                    <h3 class="box-title">Vos factures annulées ({{ canceled|length }})</h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
                     </div>
@@ -511,84 +606,101 @@ set status_fr = {
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
-                        {% for doc in canceled %}
-                            <div class="col-md-6 col-lg-4 text-center third-block estimate-block">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h3 class="color-{{ doc.status }}">
-                                            <a href="{{ path('billandgo_document_view', {'id': doc.id}) }}">
-                                                {{ doc.number }}
-                                            </a>
-                                        </h3>
-                                        <h4 class="color-{{ doc.status }}">
-                                            pour
-                                            <a href="{{ path('billandgo_clients_view', {'id': doc.refClient.id}) }}">
-                                                {{ doc.refClient.companyName }}
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <ul class="nav nav-pills nav-justified">
-                                            <li class="active">
-                                                <a data-toggle="tab" href="#estimate-{{ doc.id }}-desc">
-                                                    Description
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a data-toggle="tab" href="#estimate-{{ doc.id }}-fin">
-                                                    {{ doc.HT + doc.VAT }}€ TTC
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        <div class="tab-content">
-                                            <div id="estimate-{{ doc.id }}-desc" class="tab-pane fade in active bg-info">
-                                                <p>
-                                                    créé le {{ doc.sentDate|date('d-m-Y') }}
-                                                </p>
-                                                <p>
-                                                    {{ doc.description|length > 300 ? doc.description|slice(0, 300) ~ '...' : doc.description  }}
-                                                </p>
-                                            </div>
-                                            <div id="estimate-{{ doc.id }}-fin" class="tab-pane fade in bg-info">
-                                                <div class="row">
-                                                    <div class="col-sm-6">
-                                                        HT : {{ doc.HT }}€
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        HT : {{ doc.HT + doc.VAT }}€
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    {% for line in doc.refLinesB %}
-                                                        <div class="row">
-                                                            <div class="col-md-4">
-                                                                {{ line.name }}
-                                                                <span class="badge badge-success">
-                                                                    {{ (line.refTax.percent + 100) / 100 * (line.price * line.quantity) }}€ TTC
-                                                                </span>
-                                                            </div>
-                                                            <div class="col-md-4 col-sm-6">
-                                                                {% if line.refEstimate|first %}
-                                                                    <a class="btn btn-info" href="{{ path("billandgo_document_view", {"id":line.refEstimate|first.id}) }}">
-                                                                        {{ line.refEstimate|first.number }}
-                                                                    </a>
-                                                                {% endif %}
-                                                            </div>
-                                                            <div class="col-md-4 col-sm-6">
-                                                                {% if line.refProject|first %}
-                                                                    <a class="btn btn-info" href="{{ path("billandgo_project_view", {"id":line.refProject|first.id}) }}">
-                                                                        {{ line.refProject|first.name }}
-                                                                    </a>
-                                                                {% endif %}
-                                                            </div>
-                                                        </div>
-                                                    {% endfor %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+
+
+    {% set nbcolor = 0 %}
+    {% set maxcolor = 6 %}
+    {% set color = ['bg-yellow', 'bg-green', 'bg-purple', 'bg-black', 'bg-blue', 'bg-red'] %}
+    {% for doc in canceled %}
+        <div class="col-md-4 estimate-{{ doc.status }}">
+            <!-- Widget: user widget style 1 -->
+            <div class="box box-widget widget-user-2 box-client {{ color[nbcolor] }}-client">
+                <!-- Add the bg color to the header using any of the bg-* classes -->
+                <div class="widget-user-header  {{ color[nbcolor] }}">
+                    <div class="widget-user-image">
+                        <span class="img-circle"><i class="fa fa-file-o fa-3x ppdashbboard" ></i> </span>
+                    </div>
+                    <!-- /.widget-user-image -->
+                    <h3 class="widget-user-username"> {{ doc.number }} </h3>
+                    <h5 class="widget-user-desc">Status : <strong> {{ status_fr[doc.status]|lower }}</strong></h5>
+                    <h5 class="widget-user-desc"> Client :  <a href="{{ path('billandgo_clients_view', {'id': doc.refClient.id}) }}" class="white-color">{{ doc.refClient.companyName }}</a></h5>
+                    <h5 class="widget-user-desc">Total : <strong>  {{ doc.HT + doc.VAT }}€ TTC</strong></h5>
+                    <h5 class="widget-user-desc">Payé : <strong>  {{ doc.sumPaiments }}€ </strong></h5>
+                    <h5 class="widget-user-desc client-link-box-content"> <a href="{{ path('billandgo_document_view', {'id': doc.id}) }}">
+                            Voir la {{ min_fr }}
+                        </a></h5>
+                </div>
+                <div class="box-footer no-padding">
+                    <div class="panel-body">
+                        <ul class="nav nav-pills nav-justified">
+                            <li class="active">
+                                <a data-toggle="tab" href="#cli-{{ doc.number }}-info">
+                                    Infos
+                                </a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#cli-{{ doc.number }}-doc">
+                                    Description
+                                </a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#cli-{{ doc.number }}-con">
+                                    Total
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="cli-{{ doc.number }}-info" class="tab-pane fade in active bg-info" >
+
+                                <ul>
+                                    <li><strong>Date de création :</strong> {{ doc.sentDate|date('d-m-Y') }} </li>
+                                </ul>
+                            </div>
+
+
+
+                            <div id="cli-{{ doc.number }}-doc" class="tab-pane fade in bg-info">
+                                <p>
+                                    {{ doc.description|length > 300 ? doc.description|slice(0, 300) ~ '...' : doc.description  }}
+                                </p>
+                            </div>
+                            <div id="cli-{{ doc.number }}-con" class="tab-pane fade in bg-info">
+                                <div class="row">
+                                    <ul>
+                                        <li><strong>Total (hors taxes) :</strong> {{ doc.HT }}€ HT</li>
+                                        <li><strong>Total (toutes taxes comprises) :</strong>  {{ doc.HT + doc.VAT }}€ TTC</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5>Détails : </h5>
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Nom</th>
+                                            <th>Tarif</th>
+                                        </tr>
+                                        </thead>
+                                        {% for line in doc.refLinesB %}
+                                            <tr>
+                                                <td>{{ line.name }}</td>
+                                                <td>{{ (line.refTax.percent + 100) / 100 * (line.price * line.quantity) }}€ TTC</td>
+                                            </tr>
+                                        {% endfor %}
+
+                                    </table>
+
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.widget-user -->
+        </div>
+        {%  set nbcolor = nbcolor + 1 %}
+        {% if nbcolor >= maxcolor %}
+            {%  set nbcolor = 0 %}
+        {% endif %}
                         {% endfor %}
                     </div>
                 </div>

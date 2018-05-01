@@ -11,38 +11,34 @@
 
 namespace BillAndGoBundle\Form;
 
+use BillAndGoBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
-
 class ProfileType extends AbstractType
 {
     /**
      * @var string
      */
     private $class;
-
-
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $this->buildUserForm($builder, $options);
-
         $constraintsOptions = array(
             'message' => 'fos_user.current_password.invalid',
         );
-
         if (!empty($options['validation_groups'])) {
             $constraintsOptions['groups'] = array(reset($options['validation_groups']));
         }
-
         $builder
-            ->add('email', \FOS\OAuthServerBundle\Util\LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\EmailType'), array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control')))
+            ->add('email',EmailType::class, array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control')))
             ->add('username', null, array('label' => 'Nom d\'utilisateur', 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control')))
             ->add('companyname', null, array('label' => 'Nom de votre société', 'attr'  => array('class' => 'form-control')))
             ->add('firstname', null, array('label' => 'Prénom', 'attr'  => array('class' => 'form-control')))
@@ -54,33 +50,27 @@ class ProfileType extends AbstractType
             ->add('phone', null, array('label' => 'Numéro de téléphone fixe', 'attr'  => array('class' => 'form-control')))
             ->add('phone', null, array('label' => 'Numéro de téléphone fixe', 'attr'  => array('class' => 'form-control')))
             ->add('mobile', null, array('label' => 'Numéro de téléphone mobile', 'attr'  => array('class' => 'form-control')))
-            ->add('plainPassword', \FOS\OAuthServerBundle\Util\LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\RepeatedType'), array(
-                'type' => \FOS\OAuthServerBundle\Util\LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\PasswordType'),
+            ->add('plainPassword', RepeatedType::class, array(
+                'type' => PasswordType::class,
                 'options' => array('translation_domain' => 'FOSUserBundle'),
                 'first_options' => array('label' => 'form.password', 'attr'  => array('class' => 'form-control')),
                 'second_options' => array('label' => 'form.password_confirmation', 'attr'  => array('class' => 'form-control')),
                 'invalid_message' => 'fos_user.password.mismatch',
             ));
-
     }
-
     /**
      * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => $this->class,
+            'data_class' => User::class,
             'csrf_token_id' => 'profile',
             // BC for SF < 2.8
             'intention' => 'profile',
         ));
     }
 
-    public function getParent()
-    {
-        return 'FOSUserBundle';
-    }
 
     // BC for SF < 3.0
     /**
@@ -90,7 +80,6 @@ class ProfileType extends AbstractType
     {
         return $this->getBlockPrefix();
     }
-
     /**
      * {@inheritdoc}
      */
@@ -98,7 +87,6 @@ class ProfileType extends AbstractType
     {
         return 'fos_user_profile';
     }
-
     /**
      * Builds the embedded form representing the user.
      *
@@ -109,10 +97,7 @@ class ProfileType extends AbstractType
     {
         $builder
             ->add('username', null, array('label' => 'form.username', 'translation_domain' => 'FOSUserBundle'))
-            ->add('company', null, array('label' => 'form.company', 'translation_domain' => 'FOSUserBundle'))
-            ->add('email', \FOS\OAuthServerBundle\Util\LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\EmailType'), array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle'))
+            ->add('email', EmailType::class, array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle'))
         ;
     }
-
-
 }

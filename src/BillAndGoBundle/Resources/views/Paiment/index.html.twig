@@ -11,7 +11,7 @@
         <section class="content-header">
             <h1>
                 Paiements
-                <small>Liste des paiements</small>
+                <small>Voici la liste des paiements</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
@@ -21,79 +21,278 @@
 
         <!-- Main content -->
         <section class="content">
-            <div class="box box-default">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Vos Paiements</h3>
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                    </div>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-yellow"><i class="fa fa-eur"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Nombre de paiement</span>
+                            <span class="info-box-number">{{ paiments|length }}</span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('billandgo_paiment_add') }}'">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green"><i class="fa fa-plus"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text"><strong>Ajouter un nouveau paiement</strong></span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+            </div>
                     <div class="row">
-                        <p class="text-center"><i>/* A venir : filtres*/</i></p>
                         {% set nbPaiments = 0 %}
                         {% set total = 0 %}
+                        {% set nbcolor = 0 %}
+                        {% set maxcolor = 6 %}
+                        {% set color = ['bg-yellow', 'bg-green', 'bg-purple', 'bg-black', 'bg-blue', 'bg-red'] %}
                         {% for paiment in paiments %}
                             {% set total = total + paiment.amount %}
                             {% set nbPaiments = nbPaiments + 1 %}
-                            <div class="col-md-6 col-lg-4 text-center">
-                                <div class="well">
-                                    <h3>
-                                        <a href="{{ path('billandgo_paiment_show', { 'id': paiment.id }) }}">{{ paiment.amount }}€</a>
-                                    </h3>
-                                    <p>{% if paiment.datePaiment %}{{ paiment.datePaiment|date('Y-m-d') }}{% endif %}</p>
-                                    <p>{{ paiment.mode }}</p>
-                                    <p>
+
+                            <div class="col-lg-3 col-xs-6">
+                                <!-- small box -->
+                                <div class="small-box {{ color[nbcolor] }}">
+                                    <div class="inner">
+                                        <h3>{{ paiment.amount }} €</h3>
+
+                                        <p>Type de paiement : {{ paiment.mode|capitalize }}</p>
+                                        <p>Date de paiement : {% if paiment.datePaiment %}{{ paiment.datePaiment|date('d-m-Y') }}{% else %}Non renseigné{% endif %}</p>
                                         {% if paiment.refBill|first %}
-                                            <a href="{{ path('billandgo_document_view', {'id' : paiment.refBill|first.id}) }}">{{ paiment.refBill|first.number }}</a>
+                                        <p>Référence facture : <a style="color: white" href="{{ path('billandgo_document_view', {'id' : paiment.refBill|first.id}) }}">{{ paiment.refBill|first.number }}</a></p>
                                         {% endif %}
-                                    </p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-euro"></i>
+                                    </div>
+                                    <a href="{{ path('billandgo_paiment_show', { 'id': paiment.id }) }}" class="small-box-footer">Plus d'information <i class="fa fa-arrow-circle-right"></i></a>
                                 </div>
                             </div>
+                            {%  set nbcolor = nbcolor + 1 %}
+                            {% if nbcolor >= maxcolor %}
+                                {%  set nbcolor = 0 %}
+                            {% endif %}
                         {% else %}
                             <div class="col-sm-12">
                                 <div class="callout callout-warning text-center">
-                                    <h4> <i class="fa fa-warning"></i> Aucun paiment enregistré <i class="fa fa-warning"></i> </h4>
+                                    <h4> Aucun paiment enregistré </h4>
                                     <p>
-                                        Vous n'avez pas encore saisi de paiment, ne perdez pas de temps,
-                                        <a href="{{ path('billandgo_paiment_add') }}">Ajoutez votre premier paiment</a>
+                                        Vous n'avez pas encore saisi de paiement
                                     </p>
                                 </div>
                             </div>
                         {% endfor %}
                     </div>
-                </div>
-                <!-- /.box-body -->
-                <div class="box-footer">
-                    <div class="text-center">
-                        <a href="{{ path('billandgo_paiment_add') }}" class="btn btn-success">
-                            <i class="fa fa-plus"></i> Ajouter un paiment
-                        </a>
-                    </div>
-                </div>
-            </div>
+
 
             <div class="box box-default">
                 <div class="box-header with-border">
                     <h3 class="box-title">Résumé</h3>
+                <br>
+                    <br>
+
+                    <h4><strong>Vous pouvez suivre les statistiques de vos paiements au fur des mois</strong></h4>
+                        <div class="box-header with-border">
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div id="bar-chart" style="height: 300px;"></div>
+                        </div>
+
+                        <!-- /.box-body-->
+
+
+
+
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div>
+
+                    <h4><strong>Détails</strong></h4>
+                    <ul>
+                        <li><strong>Totaux des paiements :</strong> <span class="badge bg-green">{{ total }}€</span></li>
+                        <li><strong>Nombres de paiements :</strong> {{ nbPaiments }}</li>
+                    </ul>
                 </div>
                 <!-- /.box-header -->
-                <div class="box-body">
-                    <div>
-                        <div> Total : <span class="badge bg-green">{{ total }}€</span></div>
-                        <div> Nombres de paiements : {{ nbPaiments }}</div>
-                    </div>
-                </div>
+
                 <!-- /.box-body -->
             </div>
 
         </section>
         <!-- /.content -->
     </div>
+
+    {% block advanced_javascripts %}
+        <!-- FLOT CHARTS -->
+        <script src="{{ asset('bundles/billandgo/assets/Flot/jquery.flot.js') }}"></script>
+        <!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
+        <script src="{{ asset('bundles/billandgo/assets/Flot/jquery.flot.resize.js') }}"></script>
+        <!-- FLOT PIE PLUGIN - also used to draw donut charts -->
+        <script src="{{ asset('bundles/billandgo/assets/Flot/jquery.flot.pie.js') }}"></script>
+        <!-- FLOT CATEGORIES PLUGIN - Used to draw bar charts -->
+        <script src="{{ asset('bundles/billandgo/assets/Flot/jquery.flot.categories.js') }}"></script>
+
+        <script type="text/javascript">
+            $(function () {
+                /*
+                 * Flot Interactive Chart
+                 * -----------------------
+                 */
+                // We use an inline data source in the example, usually data would
+                // be fetched from a server
+
+                /*
+                 * END INTERACTIVE CHART
+                 */
+
+
+                /*
+                 * BAR CHART
+                 * ---------
+                 */
+
+                var m = [];
+
+                {% set array2 = [] %}
+                {% for paiment in paiments %}
+
+                {% if  paiment.datePaiment|date('m') == 1 %}
+
+                {% if 'Janvier' in array2|keys %}
+                {% set array2 = array2|merge({ 'Janvier': array2['Janvier'] + paiment.amount}) %}
+                {% else %}
+                {% set array2 = array2|merge({ 'Janvier': paiment.amount}) %}
+                {% endif %}
+
+                {% elseif  paiment.datePaiment|date('m') == 2 %}
+                {% if 'Février' in array2|keys %}
+                {% set array2 = array2|merge({ 'Février': array2['Février'] + paiment.amount}) %}
+                {% else %}
+                {% set array2 = array2|merge({ 'Février': paiment.amount}) %}
+                {% endif %}
+
+                {% elseif  paiment.datePaiment|date('m') == 3 %}
+                {% if 'Mars' in array2|keys %}
+                {% set array2 = array2|merge({ 'Mars': array2['Mars'] + paiment.amount}) %}
+                {% else %}
+                {% set array2 = array2|merge({ 'Mars': paiment.amount}) %}
+                {% endif %}
+
+                {% elseif  paiment.datePaiment|date('m') == 4 %}
+                {% if 'Avril' in array2|keys %}
+                {% set array2 = array2|merge({ 'Avril': array2['Avril'] + paiment.amount}) %}
+                {% else %}
+                {% set array2 = array2|merge({ 'Avril': paiment.amount}) %}
+                {% endif %}
+
+                {% elseif  paiment.datePaiment|date('m') == 5 %}
+                {% if 'Mai' in array2|keys %}
+                {% set array2 = array2|merge({ 'Mai': array2['Mai'] + paiment.amount}) %}
+                {% else %}
+                {% set array2 = array2|merge({ 'Mai': paiment.amount}) %}
+                {% endif %}
+
+                {% elseif  paiment.datePaiment|date('m') == 6 %}
+                {% if 'Juin' in array2|keys %}
+                {% set array2 = array2|merge({ 'Juin': array2['Juin'] + paiment.amount}) %}
+                {% else %}
+                {% set array2 = array2|merge({ 'Juin': paiment.amount}) %}
+                {% endif %}
+
+                {% elseif  paiment.datePaiment|date('m') == 7 %}
+                {% if 'Juillet' in array2|keys %}
+                {% set array2 = array2|merge({ 'Juillet': array2['Juillet'] + paiment.amount}) %}
+                {% else %}
+                {% set array2 = array2|merge({ 'Juillet': paiment.amount}) %}
+                {% endif %}
+
+                {% elseif  paiment.datePaiment|date('m') == 8 %}
+
+                {% if 'Août' in array2|keys %}
+                {% set array2 = array2|merge({ 'Août': array2['Août'] + paiment.amount}) %}
+                {% else %}
+                {% set array2 = array2|merge({ 'Août': paiment.amount}) %}
+                {% endif %}
+
+                {% elseif  paiment.datePaiment|date('m') == 9 %}
+                {% if 'Septembre' in array2|keys %}
+                {% set array2 = array2|merge({ 'Septembre': array2['Septembre'] + paiment.amount}) %}
+                {% else %}
+                {% set array2 = array2|merge({ 'Septembre': paiment.amount}) %}
+                {% endif %}
+
+                {% elseif  paiment.datePaiment|date('m') == 10 %}
+                {% if 'Octobre' in array2|keys %}
+                {% set array2 = array2|merge({ 'Octobre': array2['Octobre'] + paiment.amount}) %}
+                {% else %}
+                {% set array2 = array2|merge({ 'Octobre': paiment.amount}) %}
+                {% endif %}
+
+                {% elseif  paiment.datePaiment|date('m') == 11 %}
+                {% if 'Novembre' in array2|keys %}
+                {% set array2 = array2|merge({ 'Novembre': array2['Novembre'] + paiment.amount}) %}
+                {% else %}
+                {% set array2 = array2|merge({ 'Novembre': paiment.amount}) %}
+                {% endif %}
+
+                {% elseif  paiment.datePaiment|date('m') == 12 %}
+                {% if 'Décembre' in array2|keys %}
+                {% set array2 = array2|merge({ 'Décembre': array2['Décembre'] + paiment.amount}) %}
+                {% else %}
+                {% set array2 = array2|merge({ 'Décembre': paiment.amount}) %}
+                {% endif %}
+                {% endif %}
+
+                {% endfor %}
+                var bar_data = {
+                    data : [
+                        {% for key,value in array2 %}
+                        ['{{ key }}', '{{ value }}'],
+                        {% endfor %}
+                    ],
+                    color: '#3c8dbc'
+                };
+                $.plot('#bar-chart', [bar_data], {
+                    grid  : {
+                        borderWidth: 1,
+                        borderColor: '#f3f3f3',
+                        tickColor  : '#f3f3f3'
+                    },
+                    series: {
+                        bars: {
+                            show    : true,
+                            barWidth: 0.5,
+                            align   : 'center'
+                        }
+                    },
+                    xaxis : {
+                        mode      : 'categories',
+                        tickLength: 0
+                    }
+                })
+                /* END BAR CHART */
+
+
+            });
+
+            /*
+             * Custom Label formatter
+             * ----------------------
+             */
+            function labelFormatter(label, series) {
+                return '<div style="font-size:13px; text-align:center; padding:2px; color: #fff; font-weight: 600;">'
+                    + label
+                    + '<br>'
+                    + Math.round(series.percent) + '%</div>'
+            }
+        </script>
+
+    {% endblock %}
     <!-- /.content-wrapper -->
+
 
 {% endblock fos_user_content %}

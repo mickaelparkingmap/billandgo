@@ -452,6 +452,15 @@ h3 {
     color: #fff;
 }
 
+div.success {
+    color: white;
+    background-color: #00a659;
+    padding: 20px 20px 20px 20px;
+    box-sizing: border-box;
+    position: relative;
+    left: 20px;
+}
+
 @media (max-width: 768px) {
     .login-register .form-group {
         width: 100%;
@@ -465,6 +474,10 @@ h3 {
     }
     .content-wrapper {
         padding-top: 130px;
+    }
+    div.success {
+        left: 0px;
+        top: 120px;
     }
 
 
