@@ -11,39 +11,81 @@
             <h1>
                 <span>Paiement</span>
                 <small>
-                    <span id="doc_number">{{ paiment.amount }}€</span>
-                    {% if paiment.refBill|first %} de <i>{{ paiment.refBill|first.refClient.companyName }}</i>{% endif %}
+                    <span id="doc_number">Détails du paiement n°{{ paiment.id }}</span>
                 </small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-                <li><a href="{{ path('billandgo_estimate_index') }}"><i class="fa fa-file-text-o"></i> Paiments</a></li>
+                <li><a href="#"><i class="fa fa-file-text-o"></i> Paiments</a></li>
                 <li class="active">{{ paiment.amount }}</li>
             </ol>
         </section>
 
         <!-- Main content -->
         <section class="content">
-
-            <div class="well">
-                <h2>
-                    {{ paiment.amount }}€
-                </h2>
-                <p>{% if paiment.datePaiment %}{{ paiment.datePaiment|date('Y-m-d') }}{% endif %}</p>
-                <p>{{ paiment.mode }}</p>
-                <p>
-                    {% if paiment.refBill|first %}
-                        <a href="{{ path('billandgo_document_view', {'id' : paiment.refBill|first.id}) }}">{{ paiment.refBill|first.number }}</a>
-                    {% endif %}
-                </p>
-                <div>
-                    {{ form_start(delete_form) }}
-                    <input type="submit" value="Supprimer">
-                    {{ form_end(delete_form) }}
-                </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('billandgo_paiment_index') }}'">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-yellow"><i class="fa fa-backward"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text"><strong>Liste des paiements</strong></span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
             </div>
-            <div class="text-right">
-                <a href="{{ path('billandgo_paiment_index') }}" class="btn btn-info"><i class="fa fa-list"></i> Retour à la liste des paiements</a>
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <!-- Widget: user widget style 1 -->
+                    <div class="box box-widget widget-user-2">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="widget-user-header bg-yellow" style="background: url('/bundles/billandgo/img/bourse.jpg') center center;">
+                            <div class="widget-user-image" style="margin-top: -35px;">
+                               <i class="fa fa-euro fa-3x ppdashbboard"></i>
+                            </div>
+                            <!-- /.widget-user-image -->
+                            <h2 class="widget-user-username" style="font-size: 30px">{{ paiment.amount }}€</h2>
+                            <h4 class="widget-user-desc">{% if paiment.datePaiment %}Paiement effectué le {{ paiment.datePaiment|date('d/m/Y') }}{% endif %}</h4>
+                        </div>
+                        <div class="box-footer">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4><strong>Détails</strong></h4>
+                                    <ul>
+                                        {% set paymenttype = "Non connu" %}
+                                        {% if paiment.mode == "order" %}
+                                            {% set paymenttype = "virement bancaire" %}
+                                        {% elseif paiment.mode == "cash" %}
+                                            {% set paymenttype = "espèce" %}
+                                        {% elseif paiment.mode == "cheque" %}
+                                            {% set paymenttype = "chèque" %}
+                                        {% endif %}
+
+                                        <li><strong>Paiement effectué par </strong>{{ paymenttype }}</li>
+                                        <li><strong>Référence facture : </strong>{% if paiment.refBill|first %}<a href="{{ path('billandgo_document_view', {'id' : paiment.refBill|first.id}) }}">{{ paiment.refBill|first.number }}</a>{% endif %}</li>
+                                        <li><strong>Client : </strong>  {% if paiment.refBill|first %}  <a href="{{ path('billandgo_clients_view', {'id': paiment.refBill|first.refClient.id}) }}">{{ paiment.refBill|first.refClient.companyName }}</a>{% endif %}</li>
+                                    </ul>
+                                </div>
+
+
+                                <div class="col-md-6">
+                                    <h4><strong>Actions</strong></h4>
+                                    {{ form_start(delete_form) }}
+                                    <div class="form-group pull-left">
+                                        <input type="submit" value="Supprimer" class="btn btn-danger form-control col-md-3 btn-outline">
+                                    </div>
+
+                                    {{ form_end(delete_form) }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!-- /.widget-user -->
+                </div>
             </div>
         </section>
     </div>

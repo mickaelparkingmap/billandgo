@@ -10,6 +10,7 @@
 namespace BillAndGoBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -31,7 +32,7 @@ class LineEstimateType extends AbstractType
         $this->_uid = $options['uid'];
         $builder
             ->add('name', TextType::class)
-            ->add('description', TextType::class)
+            ->add('description', TextareaType::class)
             ->add('quantity', IntegerType::class)
             ->add('price', NumberType::class, array(
                 'required' => true

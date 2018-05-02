@@ -1,24 +1,45 @@
 
-<div class="box box-default collapsed-box">
-    <div class="box-header with-border">
-        <h3 class="box-title">{{ client.companyName }}</h3>
-        <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+    <!-- Widget: user widget style 1 -->
+    <div class="box box-widget widget-user-2 box-client bg-green-client">
+        <!-- Add the bg color to the header using any of the bg-* classes -->
+        <div class="widget-user-header  bg-green">
+            <div class="widget-user-image">
+                <img class="img-circle" src="{{ asset('bundles/billandgo/img/client.png') }}" alt="Client Avatar">
+            </div>
+            <!-- /.widget-user-image -->
+            <h3 class="widget-user-username">{{ client.companyName }}</h3>
+            <h5 class="widget-user-desc">Client</h5>
+            <h5 class="widget-user-desc client-link-box-content"> <a href="{{ path('billandgo_clients_view', {'id': client.id}) }}">
+                    Voir la fiche client
+                </a></h5>
+
+        </div>
+        <div class="box-footer no-padding">
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="cli-1-info" class="tab-pane fade in active bg-info">
+                        <h5>Contact(s)</h5>
+                        {% if client.contacts is empty %}
+                            <p><strong>Aucun contact enregistré</strong></p>
+                        {% else %}
+                            <table class="table table-striped">
+                                <thead><tr>
+                                    <th>Email</th>
+                                    <th>Nom</th>
+                                    <th>Prénom</th>
+                                </tr></thead>
+                                {% for contact in client.contacts %}
+                                    <tr>
+                                        <td><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></td>
+                                        <td>{{ contact.firstname }}</td>
+                                        <td>{{ contact.lastname }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- /.box-header -->
-    <div class="box-body">
-        <a class="btn btn-info" href="{{ path('billandgo_clients_view', {'id': client.id}) }}">
-            Voir <i class="fa fa-eye"></i>
-        </a>
-        <ul>
-            {% for contact in client.contacts %}
-                <li>{{ contact.firstname }} {{ contact.lastname }}</li>
-            {% else %}
-                <p class="red-text">Aucun contact... En ajouter ?</p>
-            {% endfor %}
-        </ul>
 
-    </div>
-    <!-- /.box-body -->
-</div>

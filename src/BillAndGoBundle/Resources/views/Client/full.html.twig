@@ -9,7 +9,7 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Clients
+                Client
                 <small>{{ client.companyName }}</small>
             </h1>
             <ol class="breadcrumb">
@@ -23,123 +23,168 @@
 
         <!-- Main content -->
         <section class="content">
-
-
-
-            <div class="box box-default collapsed-box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Infos</h3>
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
-                    </div>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <p>{{ client.adress }}</p>
-                    <p>{{ client.zipcode }} {{ client.city }}, {{ client.country }}</p>
-                    <p class="text-center"><i>/* A venir : informations financières, etc */</i></p>
-                </div>
-                <!-- /.box-body -->
+            <div class="row">
+            <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('billandgo_clients_list') }}'">
+                <div class="info-box">
+                    <span class="info-box-icon bg-black"><i class="fa fa-list"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text"><strong>Liste des clients</strong></span>
+                    </div><!-- /.info-box-content -->
+                </div><!-- /.info-box -->
+            </div><!-- /.col -->
+            <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('billandgo_clients_add') }}'">
+                <div class="info-box">
+                    <span class="info-box-icon bg-green"><i class="fa fa-plus"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text"><strong>Créer un client</strong></span>
+                    </div><!-- /.info-box-content -->
+                </div><!-- /.info-box -->
+            </div><!-- /.col -->
             </div>
-            <div class="box box-default collapsed-box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Agenda</h3>
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
-                    </div>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <p class="grey-text center-align">/* A venir : agenda lié au client */</p>
-                </div>
-                <!-- /.box-body -->
-            </div>
-            <div class="box box-default">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Contacts</h3>
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                    </div>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>Contact</th>
-                            <th>Email</th>
-                            <th>Telephone</th>
-                            <th>Mobile</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for contact in client.contacts %}
-                            <tr>
-                                <td>{{ contact.firstname }} {{ contact.lastname }}</td>
-                                <td>
-                                    <a href="mailto:{{ contact.email }}">@</a>
-                                    {{ contact.email }}
-                                </td>
-                                <td>
-                                    <a href="tel:{{ contact.phone }}"><i class="fa fa-phone"></i></a>
-                                    {{ contact.phone }}
-                                </td>
-                                <td>
-                                    <a href="tel:{{ contact.mobile }}"><i class="fa fa-mobile-phone"></i></a>
-                                    {{ contact.mobile }}
-                                </td>
-                                <td>
-                                    <a href="{{ path('billandgo_client_delete_contact', {'id': client.id, 'contact': contact.id}) }}">
-                                        <i class="fa fa-trash text-danger"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% else %}
-                            <p>Pas de contact</p>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <!-- /.box-body -->
-                <div class="box-footer">
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addContactModal">
-                        Ajouter un contact ?
-                    </button>
-                    <div class="modal fade" id="addContactModal" tabindex="-1" role="dialog" aria-labelledby="addContactModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="addContactModalLabel">Ajouter un contact</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <!-- Widget: user widget style 1 -->
+                    <div class="box box-widget widget-user">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="widget-user-header bg-aqua-active">
+                            <h3 class="widget-user-username">{{ client.companyName }}</h3>
+                            <h5 class="widget-user-desc">Client</h5>
+                        </div>
+                        <div class="widget-user-image">
+                            <img class="img-circle" src="{{ asset('bundles/billandgo/img/client.png') }}" alt="Client Avatar">
+                        </div>
+                        <div class="box-footer">
+                            <div class="row">
+                                <div class="col-sm-4 border-right">
+                                    <div class="description-block">
+                                        <h5 class="description-header">?</h5>
+                                        <span class="description-text">Devis</span>
+                                    </div>
+                                    <!-- /.description-block -->
                                 </div>
-                                <div class="modal-body">
-                                    <div class="well">
-                                        <div class="row">
-                                            <div class="col-xs-12">
-                                                {{ form(form) }}
+                                <!-- /.col -->
+                                <div class="col-sm-4 border-right">
+                                    <div class="description-block">
+                                        <h5 class="description-header">?</h5>
+                                        <span class="description-text">Projet(s)</span>
+                                    </div>
+                                    <!-- /.description-block -->
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-sm-4">
+                                    <div class="description-block">
+                                        <h5 class="description-header">?</h5>
+                                        <span class="description-text">Facture(s)</span>
+                                    </div>
+                                    <!-- /.description-block -->
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                    </div>
+                    <!-- /.widget-user -->
+                </div>
+                <div class="col-md-8">
+                    <!-- Widget: user widget style 1 -->
+                    <div class="box box-widget widget-user-2">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="widget-user-header bg-yellow">
+                            <div class="widget-user-image"  style="margin-top: -35px;">
+                               <i class="fa fa-3x fa-info ppdashbboard"></i>
+                            </div>
+                            <!-- /.widget-user-image -->
+                            <h3 class="widget-user-username">Informations</h3>
+                            <h5 class="widget-user-desc">sur ce client</h5>
+                        </div>
+                        <div class="box-footer no-padding">
+                            <ul class="nav nav-stacked">
+                                <li>
+                                    <a href="#"><strong>Adresse :</strong> {{ client.adress }} {{ client.zipcode }} {{ client.city }}, {{ client.country }}</a>
+                                </li>
+                                <li><a href="#"><strong>Contact(s) :</strong>
+                                        {% if client.contacts|length > 0 %}
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th>Nom & Prénom</th>
+                                                <th>Email</th>
+                                                <th>Télephone</th>
+                                                <th>Mobile</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for contact in client.contacts %}
+                                                <tr>
+                                                    <td>{{ contact.firstname }} {{ contact.lastname }}</td>
+                                                    <td>
+                                                        <a href="mailto:{{ contact.email }}">{{ contact.email }}</a>
+
+                                                    </td>
+                                                    <td>
+                                                        <a href="tel:{{ contact.phone }}"><i class="fa fa-phone"></i> {{ contact.phone }}</a>
+
+                                                    </td>
+                                                    <td>
+                                                        <a href="tel:{{ contact.mobile }}"><i class="fa fa-mobile-phone"></i> {{ contact.mobile }}</a>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-danger btn-outline" href="{{ path('billandgo_client_delete_contact', {'id': client.id, 'contact': contact.id}) }}">
+                                                           Supprimer
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                            {% else %}
+                                                <p>Aucun contact</p>
+                                                {% endif %}
+                                    </a>
+                                    <button type="button" class="btn btn-success btn-outline center-block" data-toggle="modal" data-target="#addContactModal">
+                                        Ajouter un nouveau contact
+                                    </button>
+                                    <br>
+                                    <div class="modal fade" id="addContactModal" tabindex="-1" role="dialog" aria-labelledby="addContactModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title text-center" id="addContactModalLabel">Ajouter un nouveau contact</h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                        <div class="row rowcontact">
+                                                            <div class="col-xs-12">
+                                                                {{ form(form) }}
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-danger btn-outline" data-dismiss="modal">Fermer</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                </div>
-                            </div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
+                    <!-- /.widget-user -->
                 </div>
             </div>
-            <div class="box box-default collapsed-box">
+
+           <!-- <div class="box box-default collapsed-box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Projets et documents</h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
                     </div>
                 </div>
-                <!-- /.box-header -->
+
                 <div class="box-body">
                     <ul class="nav nav-pills nav-justified">
                         <li class="active">
@@ -170,14 +215,11 @@
                         </div>
                     </div>
                 </div>
-                <!-- /.box-body -->
-            </div>
+
+            </div>-->
         </section>
         <!-- /.content -->
 
-        <div class="text-right">
-            <a href="{{ path('billandgo_clients_list') }}" class="btn btn-info"><i class="fa fa-list"></i> Retour à la liste des clients</a>
-        </div>
     </div>
     <!-- /.content-wrapper -->
 

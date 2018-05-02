@@ -3,6 +3,7 @@
 namespace BillAndGoBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -35,7 +36,7 @@ class PaimentType extends AbstractType
                 'multiple'     => false,
                 'placeholder' => 'Sélectionnez une facture :'
             ))
-            ->add('amount')
+            ->add('amount', NumberType::class)
             ->add('datePaiment', DateTimeType::class, array(
                 'required' => 'true',
                 'widget' => 'single_text',
@@ -44,12 +45,12 @@ class PaimentType extends AbstractType
             ))
             ->add('mode', ChoiceType::class, array(
                 'choices' => array(
-                    'liquide' => 'cash',
-                    'cheque' => 'cheque',
-                    'virement' => 'order'
+                    'Espèces' => 'cash',
+                    'Cheque' => 'cheque',
+                    'Virement bancaire' => 'order'
                 )
             ))
-            ->add('save', SubmitType::class)
+            ->add('save', SubmitType::class, array('attr'  => array('class' =>'form-control'), 'label' => "Valider"))
         ;
     }
     

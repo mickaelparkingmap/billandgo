@@ -18,12 +18,12 @@ class ClientContact2Type extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('firstname', TextType::class)
-            ->add('lastname', TextType::class)
-            ->add('email', EmailType::class)
-            ->add('phone', IntegerType::class)
-            ->add('mobile', IntegerType::class)
-            ->add('save', SubmitType::class)
+            ->add('firstname', TextType::class, array('label' => 'Prénom'))
+            ->add('lastname', TextType::class, array('label' => 'Nom'))
+            ->add('email', EmailType::class, array('label' => 'E-mail'))
+            ->add('phone', TextType::class, array('label' => 'Téléphone'))
+            ->add('mobile', TextType::class, array('label' => 'Mobile'))
+            ->add('save', SubmitType::class, array('label' => 'Valider', 'attr' => array("class" => "btn btn-success btn-outline pull-right")))
         ;
     }
     

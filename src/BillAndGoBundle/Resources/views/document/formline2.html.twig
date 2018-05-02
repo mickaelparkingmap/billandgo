@@ -1,4 +1,5 @@
 <tr class="line-elt">
+    <td></td>
     <div class="hidden">
         {# form(form) #}
         {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
@@ -13,10 +14,9 @@
     </td>
     <td>
         <div class="form-group row">
-            {{ form_label(form.quantity, "Quantité :", {'label_attr': {'class': 'col-sm-6 col-form-label'}}) }}
             {{ form_errors(form.quantity) }}
             <div class="col-sm-6">
-                {{ form_widget(form.quantity, {'attr': {'class': 'form-control', 'placeholder': '1'}}) }}
+                {{ form_widget(form.quantity, {'attr': {'class': 'form-control', 'placeholder': 'Quantité'}}) }}
             </div>
         </div>
     </td>
@@ -40,7 +40,7 @@
         <div class="form-group">
             {# form_label(form.description, "Description", {'label_attr': {'class': 'col-sm-3 control-label'}}) #}
             {{ form_errors(form.description) }}
-            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Description de la ligne'}}) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control textdesc', 'placeholder': 'Description de la ligne'}}) }}
         </div>
     </td>
     <td>
@@ -55,7 +55,7 @@
     <td>
         <div class="col-xs-12">
             <div class="form-group" id="estimate_modal_submit">
-                {{ form_widget(form.save, {'attr': {'class': 'btn btn-success', }}) }}
+                {{ form_widget(form.save, {'attr': {'class': 'btn btn-success btn-outline', }}) }}
             </div>
         </div>
     </td>
@@ -63,9 +63,5 @@
         {{ form_rest(form) }}
         {{ form_end(form) }}
     </div>
-        {#
-        {{ form_label(form.name, "Intitulé :", {'label_attr': {'class': 'control-label'}}) }}
-        {{ form_errors(form.name) }}
-        {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
-        #}
+
 </tr>

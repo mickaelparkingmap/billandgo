@@ -26,11 +26,21 @@ $(document).ready(function() {
         //check if name
         $("#client_modal_location").hide();
         $("#client_modal_contacts").show();
+    });
+    $("#client_modal_contacts_ok").click(function (e) {
+        //check if name
+        $("#client_modal_location").hide();
+        $("#client_modal_contacts").hide();
         $("#client_modal_submit").show();
     });
     $("#client_modal_location_back").click(function (e) {
         $("#client_modal_contacts").hide();
         $("#client_modal_location").show();
+        $("#client_modal_submit").hide();
+    });
+
+    $("#client_modal_submit_back").click(function (e) {
+        $("#client_modal_contacts").show();
         $("#client_modal_submit").hide();
     });
 
@@ -51,7 +61,7 @@ $(document).ready(function() {
 
     function client_addcontact($client_container) {
         var client_template = $client_container.attr('data-prototype')
-                .replace(/__name__label__/g, 'Ligne n°' + (client_index+1))
+                .replace(/__name__label__/g, 'Contact n°' + (client_index+1))
                 .replace(/__name__/g,        client_index)
             ;
         var $client_prototype = $(client_template);
@@ -62,7 +72,7 @@ $(document).ready(function() {
     }
 
     function client_addDeleteLink($client_prototype) {
-        var $client_deleteLink = $('<a href="#" class="btn btn-danger">Supprimer</a>');
+        var $client_deleteLink = $('<a href="#" class="btn btn-danger btn-outline btn-delete">Supprimer</a>');
         $client_prototype.append($client_deleteLink);
         $client_deleteLink.click(function(e) {
             $client_prototype.remove();

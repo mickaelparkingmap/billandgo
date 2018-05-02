@@ -9,34 +9,45 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                PROJETS
-                <small>Nouveau Projet</small>
+                Projets
+                <small>Créer votre nouveau projet</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-                <li><a href="{{ path('billandgo_bill_list') }}"><i class="fa fa-align-left"></i> Projets</a></li>
+                <li><a href="{{ path('billandgo_project_list') }}"><i class="fa fa-align-left"></i> Projets</a></li>
                 <li class="active"><i class="fa fa-plus"></i> Ajout</li>
             </ol>
         </section>
 
         <!-- Main content -->
         <section class="content">
-            <div class="box box-default">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Créez votre projet :</h3>
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                    </div>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <div class="row">
-                        <div class="col-md-offset-2 col-lg-offset-3 col-md-8 col-lg-6 text-center">
-                            {{ include("BillAndGoBundle:Project:form.html.twig") }}
+
+            <div class="row">
+                <div class=" col-md-offset-3 col-md-6">
+
+                    <!-- Widget: user widget style 1 -->
+                    <div class="box box-widget widget-user-2">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="widget-user-header bg-green" style="background: url('{{ asset('bundles/billandgo/img/bill.jpg') }}') center center;">
+                            <div class="widget-user-image" style="margin-top: -35px;">
+                                <i class="fa fa-briefcase fa-3x ppdashbboard"></i>
+                            </div>
+                            <!-- /.widget-user-image -->
+                            <h5 class="widget-user-username">Nouveau</h5>
+                            <h5 class="widget-user-desc">Projet</h5>
+                            <h5 class="widget-user-desc"><em>Suivez les étapes afin de créer un nouveau projet</em></h5>
+                        </div>
+                        <div class="box-footer">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{ include("BillAndGoBundle:Project:form.html.twig") }}
+                                </div>
+
+                            </div>
                         </div>
                     </div>
+                    <!-- /.widget-user -->
                 </div>
-                <!-- /.box-body -->
             </div>
         </section>
         <!-- /.content -->

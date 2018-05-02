@@ -48,7 +48,6 @@ class ProfileType extends AbstractType
             ->add('city', null, array('label' => 'Ville', 'attr'  => array('class' => 'form-control')))
             ->add('country', null, array('label' => 'Pays', 'attr'  => array('class' => 'form-control')))
             ->add('phone', null, array('label' => 'Numéro de téléphone fixe', 'attr'  => array('class' => 'form-control')))
-            ->add('phone', null, array('label' => 'Numéro de téléphone fixe', 'attr'  => array('class' => 'form-control')))
             ->add('mobile', null, array('label' => 'Numéro de téléphone mobile', 'attr'  => array('class' => 'form-control')))
             ->add('plainPassword', RepeatedType::class, array(
                 'type' => PasswordType::class,

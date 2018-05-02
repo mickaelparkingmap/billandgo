@@ -770,7 +770,10 @@ class DocumentController extends Controller
                 $document->setAnswerDate(new \DateTime());
                 $document->setStatus("accepted");
                 $this->linesStatus($document, "accepted");
-                return new Response("merci d'avoir accepté !");
+                return $this->render("BillAndGoBundle:document:accepted.html.twig",
+                    array(
+                        "type" => "devis",
+                    ));
             }
             else if (($answer == 0) && ($document->getStatus() == "estimated")) {
                 $document->setAnswerDate(new \DateTime());

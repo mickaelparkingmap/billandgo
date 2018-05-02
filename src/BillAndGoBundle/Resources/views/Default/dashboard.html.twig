@@ -74,7 +74,7 @@
                             {% set nbcolor = 0 %}
                             {% set maxcolor = 6 %}
                             {% set color = ['bg-yellow', 'bg-green', 'bg-purple', 'bg-black', 'bg-blue', 'bg-red'] %}
-                            {% for p in projects if nbp < 4 %}
+                            {% for p in projects if nbp < 3 %}
                                 <div class="col-md-4 onlick" onclick="location.href='{{ path('billandgo_project_view', {'id': p.id}) }}'">
                                     <!-- Widget: user widget style 1 -->
                                     <div class="box box-widget widget-user-2 box-client {{ color[nbcolor] }}-client">

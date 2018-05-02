@@ -2,6 +2,15 @@
 
 {% block title %}{{ parent() }} - Liste des projets{% endblock %}
 
+{%
+    set status_fr = {
+    "planned" : "Programmé",
+    "canceled" : "Annulé",
+    "working" : "En cours",
+    "waiting" : "En attente de validation",
+    "" : "statut inconnu"
+}
+%}
 {% block fos_user_content %}
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -86,6 +95,7 @@
                                         <h3 class="widget-user-username"> {{ project.name }}</h3>
                                         <h5 class="widget-user-desc">Projet</h5>
                                         <h5 class="widget-user-desc">Valeur : {{ value }}€</h5>
+
                                         <h5 class="widget-user-desc client-link-box-content"> <a href="{{ path('billandgo_project_view', {'id': project.id}) }}">
                                                 Voir la fiche projet
                                             </a></h5>
@@ -106,7 +116,7 @@
                                                 </li>
                                                 <li>
                                                     <a data-toggle="tab" href="#cli-{{ nbproject }}-con">
-                                                        TO DO
+                                                        Tâches
                                                     </a>
                                                 </li>
                                             </ul>
@@ -148,12 +158,34 @@
                                                 <div id="cli-{{ nbproject }}-con" class="tab-pane fade in bg-info">
 
                                                     {% if timeDone + timeLeft > 0 %}
+                                                        <h5><strong>Progression</strong></h5>
+                                                        <p>{{ timeDone }} h travaillé(s) sur {{ timeDone + timeLeft }} h </p>
                                                         <div class="progress">
                                                             <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="{{ (timeDone / (timeDone + timeLeft) * 100) | round}}" aria-valuemin="0" aria-valuemax="" style="width: {{ (timeDone / (timeDone + timeLeft) * 100) | round}}%">
-                                                                <span>{{ timeDone }}/{{ timeDone + timeLeft }}h ({{ (timeDone / (timeDone + timeLeft) * 100) | round }}%)</span>
+                                                                <span class="text-black">{{ (timeDone / (timeDone + timeLeft) * 100) | round }}%</span>
                                                             </div>
                                                         </div>
                                                     {% endif %}
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Tâche</th>
+                                                            <th>Status</th>
+                                                        </tr>
+                                                        {% for todo in project.refLines %}
+                                                            <tr>
+                                                                <td>{{ todo.name }}</td>
+                                                                <td>{{ status_fr[todo.status]|capitalize }}</td>
+
+                                                            </tr>
+                                                            {% else %}
+                                                        <tr>
+                                                            <td colspan="2" class="text-center">Aucune tâche</td>
+                                                        </tr>
+
+                                                        {% endfor %}
+
+
+                                                    </table>
                                                     <p>
                                                         Jours restant : <span class="badge bg-green" style="font-weight: bold;">{{ leftDays }}</span>
                                                     </p>
@@ -197,9 +229,11 @@
                 <div class="box-body">
                     {% if totalTimeDone + totalTimeLeft > 0 %}
                         <h4>Progression de l'ensemble des tâches</h4>
+
+                        <p>{{ totalTimeDone }} h travaillé sur {{ totalTimeDone + totalTimeLeft }} h </p>
                         <div class="progress progress-mod">
                             <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="{{ (totalTimeDone / (totalTimeDone + totalTimeLeft) * 100) | round }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ (totalTimeDone / (totalTimeDone + totalTimeLeft) * 100) | round}}%">
-                                <span class="prg-b">{{ totalTimeDone }}/{{ totalTimeDone + totalTimeLeft }}h ({{ (totalTimeDone / (totalTimeDone + totalTimeLeft) * 100) | round}}%)</span>
+                                <span class="prg-b">{{ (totalTimeDone / (totalTimeDone + totalTimeLeft) * 100) | round}}%</span>
                             </div>
                         </div>
                         <ul>

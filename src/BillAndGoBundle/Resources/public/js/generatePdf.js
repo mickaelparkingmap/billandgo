@@ -5,12 +5,12 @@
 $(document).ready(function () {
 
     var gen = false;
+    $("#generatePDF").unbind('click').bind('click');
     $("#generatePDF").click(function (e) {
-        if (gen === true)
+        e.preventDefault();
+        if (gen == true)
             return (false);
         gen = true;
-        console.log("LEL");
-        e.preventDefault();
         var typePdf = $("#doc_type").text();
         var ref_inter = $("#doc_number").text();
         var user_firstname = $("#user .firstname").text();
@@ -27,6 +27,9 @@ $(document).ready(function () {
         var client_country = $("#client .country").text();
         var client_zip = $("#client .zipcode").text();
         var date = $("#date").text();
+
+        var numfac = $(this).attr("attr-num");
+        var companyfac = $(this).attr("attr-companyname");
 
 
         var lines = [
@@ -199,8 +202,9 @@ $(document).ready(function () {
             }*/
             };
             // open the PDF in a new window
-            pdfMake.createPdf(docDefinition).download();
+            pdfMake.createPdf(docDefinition).download(numfac+'_'+companyfac);
             gen = false;
+            return (false);
         });
 
 

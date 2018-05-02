@@ -47,7 +47,7 @@ class ProjectType extends AbstractType
                 'multiple'     => false,
                 'placeholder' => 'Sélectionnez un client :'
             ))
-            ->add('save', SubmitType::class)
+            ->add('save', SubmitType::class, array('label' => 'Oui'))
         ;
     }
 

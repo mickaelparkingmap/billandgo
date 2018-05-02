@@ -6,63 +6,97 @@ Ville
 Pays
 #}
 
-
-{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+{{ form_start(form, {'attr': {'class': ''}}) }}
 {{ form_errors(form) }}
-<div class="form-group" id="client_modal_name">
-    {{ form_label(form.companyName, "Nom de l'entreprise", {'label_attr': {'class': 'control-label'}}) }}
-    {{ form_errors(form.companyName) }}
-    {{ form_widget(form.companyName, {'attr': {'class': 'form-control'}}) }}
-    <div>
-        <span class="btn btn-success" id="client_modal_name_ok">Valider</span>
-    </div>
-</div>
-<div class="form-group" id="client_modal_country">
-    {{ form_label(form.country, "Pays :", {'label_attr': {'class': 'control-label'}}) }}
-    {{ form_errors(form.country) }}
-    {{ form_widget(form.country, {'attr': {'class': 'form-control'}}) }}
-    <div>
-        <span class="btn btn-danger" id="client_modal_name_back">Retour au nom de l'entreprise</span>
-        <span class="btn btn-success" id="client_modal_country_ok">Valider</span>
-    </div>
-</div>
-<div class="row" id="client_modal_location">
-    <div class="col-sm-12">
-        <div class="form-group" id="client_modal_location_adress">
-            {{ form_label(form.adress, "Adresse : ", {'label_attr': {'class': 'control-label'}}) }}
-            {{ form_errors(form.adress) }}
-            {{ form_widget(form.adress, {'attr': {'class': 'form-control'}}) }}
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group" id="client_modal_location_zipcode">
-            {{ form_label(form.zipcode, "Zipcode : ", {'label_attr': {'class': 'control-label'}}) }}
-            {{ form_errors(form.zipcode) }}
-            {{ form_widget(form.zipcode, {'attr': {'class': 'form-control'}}) }}
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group" id="client_modal_location_city">
-            {{ form_label(form.city, "Ville :", {'label_attr': {'class': 'control-label'}}) }}
-            {{ form_errors(form.city) }}
-            {{ form_widget(form.city, {'attr': {'class': 'form-control'}}) }}
-        </div>
-    </div>
+
+<div class="form-group row" id="client_modal_name">
     <div class="col-md-12">
-        <span class="btn btn-danger" id="client_modal_country_back">Retour au pays</span>
-        <span class="btn btn-success" id="client_modal_location_ok">Valider</span>
+        <h4> {{ form_label(form.companyName, "Nom de l'entreprise", {'label_attr': {'class': 'control-label'}}) }}</h4>
+    </div>
+    <div class="col-md-6">
+        {{ form_errors(form.companyName) }}
+        {{ form_widget(form.companyName, {'attr': {'class': 'form-control text-left nomargin'}}) }}
+    </div>
+
+    <div class="col-md-6">
+        <span class="btn btn-success btn-outline" id="client_modal_name_ok">Suivant <i class="fa fa-arrow-right"></i> </span>
     </div>
 </div>
 
-<div class="form-group" id="client_modal_contacts">
-    {{ form_row(form.contacts) }}
-    <a href="#" id="add_contact" class="btn btn-default">Ajouter un contact</a>
-    <div>
-        <span class="btn btn-danger" id="client_modal_location_back">Retour à l'adresse</span>
+
+<div class="form-group row text-center" id="client_modal_country">
+    <div class="col-md-12">
+        <h4> {{ form_label(form.country, "Pays :", {'label_attr': {'class': 'control-label'}}) }}</h4>
+        {{ form_errors(form.country) }}
+        {{ form_widget(form.country, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="col-md-6">
+        <span class="btn btn-danger btn-outline" id="client_modal_name_back"><i class="fa fa-arrow-left"></i> Précedent</span>
+    </div>
+    <div class="col-md-6">
+        <span class="btn btn-success btn-outline" id="client_modal_country_ok">Suivant <i class="fa fa-arrow-right"></i> </span>
     </div>
 </div>
-<div class="form-group" id="client_modal_submit">
-    {{ form_widget(form.save, {'attr': {'class': 'btn btn-success'}}) }}
+
+<div class="form-group row text-center" id="client_modal_location">
+    <div class="col-md-12" id="client_modal_location_zipcode">
+        <h4> {{ form_label(form.adress, "Adresse : ", {'label_attr': {'class': 'control-label'}}) }}</h4>
+        {{ form_errors(form.adress) }}
+        {{ form_widget(form.adress, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="col-md-6" id="client_modal_location">
+        <h4>  {{ form_label(form.zipcode, "Code postal : ", {'label_attr': {'class': 'control-label'}}) }} </h4>
+        {{ form_errors(form.zipcode) }}
+        {{ form_widget(form.zipcode, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="col-md-6" id="client_modal_location_city">
+        <h4>  {{ form_label(form.city, "Ville :", {'label_attr': {'class': 'control-label'}}) }}</h4>
+        {{ form_errors(form.city) }}
+        {{ form_widget(form.city, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="col-md-6">
+        <span class="btn btn-danger btn-outline" id="client_modal_country_back"><i class="fa fa-arrow-left"></i> Précédent</span>
+    </div>
+    <div class="col-md-6">
+        <span class="btn btn-success btn-outline" id="client_modal_location_ok">Suivant <i class="fa fa-arrow-right"></i> </span>
+    </div>
 </div>
+
+<div class="form-group row text-center" id="client_modal_contacts">
+    <div class="col-md-12">
+        <div class="form-contact-client">
+            {{ form_row(form.contacts) }}
+        </div>
+
+    </div>
+    <div class="col-md-4">
+        <span class="btn btn-default btn-outline" id="add_contact"><i class="fa fa-plus"></i> Ajouter un contact</span>
+    </div>
+    <div class="col-md-4">
+        <span class="btn btn-danger btn-outline" id="client_modal_location_back">Précédent <i class="fa fa-arrow-left"></i> </span>
+    </div>
+    <div class="col-md-4">
+        <span class="btn btn-success btn-outline" id="client_modal_contacts_ok">Suivant <i class="fa fa-arrow-right"></i> </span>
+    </div>
+</div>
+
+
+<div class="form-group row text-center" id="client_modal_submit">
+    <div class="col-md-12">
+        <h4> Souhaitez-vous vraiment créer ce client ?</h4>
+    </div>
+    <div class="col-md-4">
+        <span class="btn btn-outline" id="client_modal_submit_back"><i class="fa fa-arrow-left"></i> Précédent</span>
+    </div>
+    <div class="col-md-4">
+        <span class="btn btn-danger btn-outline" onclick="location.href='{{ path('billandgo_clients_list') }}'"><i class="fa fa-remove"></i> Annuler</span>
+    </div>
+    <div class="col-md-4">
+        {{ form_widget(form.save, {'attr': {'class': 'btn btn-success btn-outline'}}) }}
+    </div>
+</div>
+
 {{ form_rest(form) }}
 {{ form_end(form) }}
+

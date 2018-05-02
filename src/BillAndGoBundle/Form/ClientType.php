@@ -34,7 +34,7 @@ class ClientType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true
             ))
-            ->add('save', SubmitType::class)
+            ->add('save', SubmitType::class, array('label' => 'Terminée'))
         ;
     }
     

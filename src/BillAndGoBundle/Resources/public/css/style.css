@@ -452,7 +452,7 @@ h3 {
     color: #fff;
 }
 
-div.success {
+div.success, div.notice {
     color: white;
     background-color: #00a659;
     padding: 20px 20px 20px 20px;
@@ -461,6 +461,119 @@ div.success {
     left: 20px;
 }
 
+.billadngocollapse {
+    color: white;
+    font-size: 20px;
+    position: absolute;
+    top: 10px;
+    right: 13px;
+}
+
+.rowcontact #billandgobundle_clientcontact>.form-group{
+    padding: 0px 10px 0px 10px;
+}
+
+.checkmod {
+    width: 30px;
+    height: 30px;
+    margin: auto;
+}
+.checkmod input {
+    display: none;
+}
+.checkmod input:checked + .box {
+    background-color: #b3ffb7;
+}
+.checkmod input:checked + .box:after {
+    top: 0;
+}
+.checkmod .box {
+    width: 100%;
+    height: 100%;
+    transition: all 1.1s cubic-bezier(0.19, 1, 0.22, 1);
+    border: 2px solid #0000001a;
+    background-color: #e6e6e6;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+.br {
+    border-right: 1px solid #6d6b6d;
+}
+
+.text-medium {
+    font-size: 18px;
+}
+
+.form-contact-client .form-group{
+    padding: 0px 20px 0px 15px;
+}
+
+.form-contact-client .btn-delete {
+
+}
+
+.form-contact-client #billandgobundle_client_contacts {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+
+.form-contact-client [id*='billandgobundle_client_contacts_'] .form-group {
+    width: 100%!important;
+}
+
+#billandgobundle_client_contacts>.form-group>a {
+    margin: 0!important;
+    width: 100%!important;
+}
+
+.nomargin {
+    margin: 0px!important;
+    width: 100% !important;
+}
+
+.row-modified .col-md-12 {
+    padding-bottom: 5px;
+}
+
+.textdesc { resize: vertical; }
+.checkmod .box:after {
+    width: 20px;
+    height: 20px;
+    content: '';
+    position: absolute;
+    border-left: 4.5px solid;
+    border-bottom: 4.5px solid;
+    border-color: #40c540;
+    transform: rotate(-45deg) translate3d(0, 0, 0);
+    transform-origin: center center;
+    transition: all 1.1s cubic-bezier(0.19, 1, 0.22, 1);
+    left: 0;
+    right: 0;
+    top: 200%;
+    bottom: 5%;
+    margin: auto;
+}
+
+
+
+.tohide {
+    display: none;
+}
 @media (max-width: 768px) {
     .login-register .form-group {
         width: 100%;

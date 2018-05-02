@@ -35,7 +35,7 @@
                     <div class="info-box">
                         <span class="info-box-icon bg-green"><i class="fa fa-plus"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text"><strong>Ajouter un nouveau paiement</strong></span>
+                            <span class="info-box-text"><strong>Nouveau paiement</strong></span>
                         </div><!-- /.info-box-content -->
                     </div><!-- /.info-box -->
                 </div><!-- /.col -->
@@ -56,7 +56,16 @@
                                     <div class="inner">
                                         <h3>{{ paiment.amount }} €</h3>
 
-                                        <p>Type de paiement : {{ paiment.mode|capitalize }}</p>
+                                        {% set paymenttype = "Non connu" %}
+                                        {% if paiment.mode == "order" %}
+                                            {% set paymenttype = "Virement bancaire" %}
+                                        {% elseif paiment.mode == "cash" %}
+                                            {% set paymenttype = "Espèce" %}
+                                        {% elseif paiment.mode == "cheque" %}
+                                            {% set paymenttype = "Chèque" %}
+                                        {% endif %}
+
+                                        <p>Type de paiement : {{ paymenttype }}</p>
                                         <p>Date de paiement : {% if paiment.datePaiment %}{{ paiment.datePaiment|date('d-m-Y') }}{% else %}Non renseigné{% endif %}</p>
                                         {% if paiment.refBill|first %}
                                         <p>Référence facture : <a style="color: white" href="{{ path('billandgo_document_view', {'id' : paiment.refBill|first.id}) }}">{{ paiment.refBill|first.number }}</a></p>

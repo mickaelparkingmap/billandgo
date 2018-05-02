@@ -1,11 +1,17 @@
-{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+{{ form_start(form, {'attr': {'class': ''}}) }}
 {{ form_errors(form) }}
-<div class="form-group" id="document_modal_client">
-    {{ form_label(form.refClient, "Pour le client :", {'label_attr': {'class': 'control-label'}}) }}
-    {{ form_errors(form.refClient) }}
-    {{ form_widget(form.refClient, {'attr': {'class': 'form-control'}}) }}
-    <div>
-        <span class="btn btn-success" id="document_modal_client_ok">Valider</span>
+
+<div class="form-group row" id="document_modal_client">
+    <div class="col-md-12">
+        <h4>{{ form_label(form.refClient, "Client", {'label_attr': {'class': 'control-label'}}) }}</h4>
+    </div>
+    <div class="col-md-6">
+        {{ form_errors(form.refClient) }}
+        {{ form_widget(form.refClient, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="col-md-6">
+        <span class="btn btn-success btn-outline" id="document_modal_client_ok">Suivant <i class="fa fa-arrow-right"></i> </span>
     </div>
 </div>
 <div id="document_form_second">
@@ -19,17 +25,9 @@
         {{ form_errors(form.delayDate) }}
         {{ form_widget(form.delayDate, {'attr': {'class': 'form-control'}}) }}
     </div>
-
-    <!--<div class="form-group" id="document_modal_lines">
-        {# form_row(form.lines) #}
-        <a href="#" id="add_line" class="btn btn-default">Ajouter une ligne</a>
-        <div>
-            <span class="btn btn-danger" id="document_modal_description_back">Retour à la description</span>
-        </div>
-    </div>-->
     <div class="form-group" id="document_modal_submit">
-        <span class="btn btn-danger" id="document_modal_client_back">Retour au choix du client</span>
-        {{ form_widget(form.save, {'attr': {'class': 'btn btn-success'}}) }}
+        <span class="btn btn-danger btn-outline" id="document_modal_client_back"><i class="fa fa-arrow-left"></i> Précédent</span>
+        {{ form_widget(form.save, {'label' : 'Créer la facture', 'attr': {'class': 'btn btn-success btn-outline'}}) }}
     </div>
     {{ form_rest(form) }}
     {{ form_end(form) }}

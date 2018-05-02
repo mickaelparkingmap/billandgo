@@ -1,46 +1,80 @@
 {#{{ form(form) }}#}
 
 
-{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+{{ form_start(form, {'attr': {'class': ''}}) }}
 {{ form_errors(form) }}
-<div class="form-group" id="project_modal_client">
-    {{ form_label(form.refClient, "Pour le client :", {'label_attr': {'class': 'control-label'}}) }}
-    {{ form_errors(form.refClient) }}
-    {{ form_widget(form.refClient, {'attr': {'class': 'form-control'}}) }}
-    <div>
-        <span class="btn btn-success" id="project_modal_client_ok">Valider</span>
+
+<div class="form-group row" id="project_modal_client">
+    <div class="col-md-12">
+        <h4>{{ form_label(form.refClient, "Client", {'label_attr': {'class': 'control-label'}}) }}</h4>
+    </div>
+    <div class="col-md-6">
+        {{ form_errors(form.refClient) }}
+        {{ form_widget(form.refClient, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="col-md-6">
+        <span class="btn btn-success btn-outline" id="project_modal_client_ok">Suivant <i class="fa fa-arrow-right"></i> </span>
     </div>
 </div>
-<div class="form-group" id="project_modal_name">
-    {{ form_label(form.name, "Nom du projet", {'label_attr': {'class': 'control-label'}}) }}
-    {{ form_errors(form.name) }}
-    {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
-    <div>
-        <span class="btn btn-danger" id="project_modal_client_back">Retour au client</span>
-        <span class="btn btn-success" id="project_modal_name_ok">Valider</span>
+
+
+<div class="form-group row text-center" id="project_modal_name">
+    <div class="col-md-12">
+        <h4>{{ form_label(form.name, "Nom du projet", {'label_attr': {'class': 'control-label'}}) }}</h4>
+        {{ form_errors(form.name) }}
+        {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="col-md-6">
+        <span class="btn btn-danger btn-outline" id="project_modal_client_back"><i class="fa fa-arrow-left"></i> Précedent</span>
+    </div>
+    <div class="col-md-6">
+        <span class="btn btn-success btn-outline" id="project_modal_name_ok">Suivant <i class="fa fa-arrow-right"></i> </span>
     </div>
 </div>
-<div class="form-group" id="project_modal_dates">
-    {{ form_label(form.deadline, "Deadline :", {'label_attr': {'class': 'control-label'}}) }}
-    {{ form_errors(form.deadline) }}
-    {{ form_widget(form.deadline, {'attr': {'class': 'form-control'}}) }}
-    <div>
-        <span class="btn btn-danger" id="project_modal_name_back">Retour au nom</span>
-        <span class="btn btn-success" id="project_modal_dates_ok">Valider</span>
+
+<div class="form-group row text-center" id="project_modal_dates">
+    <div class="col-md-12">
+        <h4> {{ form_label(form.deadline, "Deadline :", {'label_attr': {'class': 'control-label'}}) }}</h4>
+        {{ form_errors(form.deadline) }}
+        {{ form_widget(form.deadline, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="col-md-6">
+        <span class="btn btn-danger btn-outline" id="project_modal_name_back"><i class="fa fa-arrow-left"></i> Précédent</span>
+    </div>
+    <div class="col-md-6">
+        <span class="btn btn-success btn-outline" id="project_modal_dates_ok">Suivant <i class="fa fa-arrow-right"></i> </span>
     </div>
 </div>
-<div class="form-group" id="project_modal_description">
-    {{ form_label(form.description, "Description :", {'label_attr': {'class': 'control-label'}}) }}
-    {{ form_errors(form.description) }}
-    {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
-    <div>
-        <span class="btn btn-danger" id="project_modal_dates_back">Retour aux dates</span>
-        <span class="btn btn-success" id="project_modal_description_ok">Valider</span>
+
+<div class="form-group row text-center" id="project_modal_description">
+    <div class="col-md-12">
+        <h4> {{ form_label(form.description, "Description :", {'label_attr': {'class': 'control-label'}}) }}</h4>
+        {{ form_errors(form.description) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="col-md-6">
+        <span class="btn btn-danger btn-outline" id="project_modal_dates_back"><i class="fa fa-arrow-left"></i> Précédent</span>
+    </div>
+    <div class="col-md-6">
+        <span class="btn btn-success btn-outline" id="project_modal_description_ok">Valider <i class="fa fa-arrow-right"></i> </span>
     </div>
 </div>
-<div class="form-group" id="project_modal_submit">
-    {{ form_widget(form.save, {'attr': {'class': 'btn btn-success'}}) }}
+
+<div class="form-group row text-center" id="project_modal_submit">
+    <div class="col-md-12">
+        <h4> Souhaitez-vous vraiment créer ce projet ?</h4>
+    </div>
+    <div class="col-md-4">
+        <span class="btn btn-outline" id="project_modal_description_back"><i class="fa fa-arrow-left"></i> Précédent</span>
+    </div>
+    <div class="col-md-4">
+        <span class="btn btn-danger btn-outline" onclick="location.href='{{ path('billandgo_project_list') }}'"><i class="fa fa-remove"></i> Annuler</span>
+    </div>
+    <div class="col-md-4">
+        {{ form_widget(form.save, {'attr': {'class': 'btn btn-success btn-outline'}}) }}
+    </div>
 </div>
+
 {{ form_rest(form) }}
 {{ form_end(form) }}
-

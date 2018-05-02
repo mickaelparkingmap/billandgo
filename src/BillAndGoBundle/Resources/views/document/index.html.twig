@@ -490,7 +490,7 @@ set status_fr = {
             {# brouillons #}
             <div class="box box-default collapsed-box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">{{ draws|length }} brouillon{% if draws|length > 1 %}s{% endif %}</h3>
+                    <h3 class="box-title">brouillon{% if draws|length > 1 %}s{% endif %} ({{ draws|length }})</h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse">
                             {% if draws|length > 0 %}<i class="fa fa-plus"></i>{% endif %}
@@ -657,7 +657,7 @@ set status_fr = {
             <div class="box box-default collapsed-box">
                 <div class="box-header with-border">
                     {% if type == 'estimate' %}
-                        <h3 class="box-title">{{ transformed|length }} devis transformé{% if transformed|length > 1 %}s{% endif %}</h3>
+                        <h3 class="box-title">Devis transformé{% if transformed|length > 1 %}s{% endif %} ({{ transformed|length }})</h3>
                     {% elseif type == 'bill' %}
                         <h3 class="box-title">Vos factures payées</h3>
                     {% endif %}
@@ -811,7 +811,7 @@ set status_fr = {
             <div class="box box-default collapsed-box">
                 <div class="box-header with-border">
                     <h3 class="box-title">
-                        {{ canceled|length }} devis annulé{% if canceled|length > 1 %}s{% endif %}/refusé{% if canceled|length > 1 %}s{% endif %}
+                        Devis annulé{% if canceled|length > 1 %}s{% endif %}/refusé{% if canceled|length > 1 %}s{% endif %} ({{ canceled|length }})
                     </h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse">
@@ -1035,8 +1035,7 @@ set status_fr = {
                                 <div class="callout callout-warning text-center">
                                     <h4> Aucun {{ min_fr }} enregistré </h4>
                                     <p>
-                                        Vous n'avez pas encore saisi de {{ min_fr }}, ne perdez pas de temps,
-                                        <a href="{{ path('billandgo_estimate_add') }}">Ajoutez votre premier {{ min_fr }}</a>
+                                        Vous n'avez pas encore saisi de {{ min_fr }}
                                     </p>
                                 </div>
                             </div>

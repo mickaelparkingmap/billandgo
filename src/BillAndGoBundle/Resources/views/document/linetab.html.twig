@@ -1,6 +1,7 @@
 <table class="table table-striped">
     <thead>
     <tr>
+        <th>-</th>
         <th>Nom</th>
         <th style="min-width:100px;">Quantité</th>
         <th style="min-width:100px;">Prix</th>
@@ -18,9 +19,16 @@
         <tr class="line-elt" style="font-weight:bold">
             <td>
                 {% if line.status == "accepted" %}
-                    <input type="checkbox" name="select-line-{{ line.id }}" form="createProject" class="select-line">
+                    <label class="checkmod">
+                        <input type="checkbox" name="select-line-{{ line.id }}" form="createProject" class="select-line">
+                        <div class="box"></div>
+                    </label>
+
                     <input type="checkbox" name="select-line-{{ line.id }}" form="createBill" class="select-line hidden">
                 {% endif %}
+            </td>
+            <td>
+
                 <span class="line-elt-name">{{ line.name }}</span>
                 <br/>
                 <span class="grey-text description" style="font-size:14px;font-weight: normal">{{ line.description }}</span>
@@ -29,15 +37,15 @@
                 <span class="quantity">{{line.quantity }}</span>
                 {% if (line.quantity > 1) and modify %}
                     <br/>
-                    <button type="button" data-toggle="modal" data-target="#splitLine{{ line.id }}Modal">
-                        Split <i class="fa fa-arrows-v"></i>
+                    <button type="button" data-toggle="modal" data-target="#splitLine{{ line.id }}Modal" class="btn btn-primary btn-outline ">
+                        Découper la ligne <i class="fa fa-cut"></i>
                     </button>
                     <div class="modal fade" id="splitLine{{ line.id }}Modal" tabindex="-1" role="dialog"
                          aria-labelledby="splitLine{{ line.id }}ModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="splitLine{{ line.id }}ModalLabel">Découper une ligne</h5>
+                                    <h4 class="modal-title text-center" id="splitLine{{ line.id }}ModalLabel">Découper une ligne</h4>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -51,14 +59,14 @@
                                                     <input type="range" min="1" max="{{ line.quantity - 1 }}" value="1" name="split" id="line{{ line.id }}Slider"
                                                            oninput="line{{ line.id }}SliderValue.value = line{{ line.id }}Slider.value">
                                                     <output class="text-center" type="text" id="line{{ line.id }}SliderValue" value="">1</output>
-                                                    <input type="submit" value="Découper la ligne">
+                                                    <input type="submit" value="Découper la ligne" class="btn btn-success btn-outline">
                                                 </form>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-secondary btn-danger btn-outline" data-dismiss="modal">Fermer</button>
                                 </div>
                             </div>
                         </div>
@@ -67,19 +75,19 @@
                 {% endif %}
             </td>
             <td>
-                <span class="uht">{{ line.price * 1 }}</span> * {{ line.quantity }} = <span class="tht">{{ subTotalHT }}</span>€ HT
+                <span class="uht"> {{ line.quantity }} x {{ line.price * 1 }}</span> = <span class="tht">{{ subTotalHT }}</span> € HT
                 <br/>
-                <span class="utc">{{ line.price + (line.refTax.percent * line.price / 100.0) }}</span> * {{ line.quantity }} = <span class="ttc">{{ subTotalVat + subTotalHT }}</span>€ TTC
+                <span class="utc">{{ line.quantity }} x {{ line.price + (line.refTax.percent * line.price / 100.0) }}</span>  = <span class="ttc">{{ subTotalVat + subTotalHT }}</span> € TTC
             </td>
             {% if document.type == "estimate" %}
                 <td class="color-grey">
                     {% if line.estimatedTime %}
                         {% if line.estimatedTime > 0 %}
-                        {{ line.quantity }} * {{ line.estimatedTime }}h = {{ line.estimatedTime * line.quantity }}h
+                        {{ line.quantity }} x {{ line.estimatedTime }} h = {{ line.estimatedTime * line.quantity }} h
                         <br/>
-                        soit {{ line.price / line.estimatedTime }}e/h
+                        soit {{ line.price / line.estimatedTime }} € / h
                         {% else %}
-                            0h
+                            0 h
                         {% endif %}
                     {% else %}
                         -
@@ -87,7 +95,20 @@
                 </td>
             {% endif %}
             <td>
-                {{ line.status }}
+                {%
+                    set status_new_fr = {
+                    "draw" : "brouillon",
+                    "estimated" : "devisé",
+                    "accepted" : "accepté",
+                    "billed" : "facturé",
+                    "canceled" : "annulé",
+                    "refused" : "refusé",
+                    "partially" : "partiellement payé",
+                    "paid" : "payé",
+                    "" : "inconnu"
+                }
+                %}
+                {{ status_new_fr[document.status]|capitalize  }}
                 {% if line.refProject|first %}
                     <a class="btn btn-info" href="{{ path("billandgo_project_view", {"id":line.refProject|first.id}) }}">
                         {{ line.refProject|first.name }}
@@ -110,19 +131,19 @@
             <td>
                 {% if modify %}
                     {% if document.type %}
-                        <a href="{{ path('billandgo_line_detach_estimate', {'id': line.id}) }}"><i class="fa fa-trash text-danger"></i></a>
+                        <a class="btn btn-danger btn-outline" href="{{ path('billandgo_line_detach_estimate', {'id': line.id}) }}"> Supprimer <i class="fa fa-trash text-danger"></i></a>
                     {% else %}
-                        <a href="{{ path('billandgo_line_detach_bill', {'id': line.id}) }}"><i class="fa fa-trash text-danger"></i></a>
+                        <a class="btn btn-danger btn-outline" href="{{ path('billandgo_line_detach_bill', {'id': line.id}) }}">Supprimer <i class="fa fa-trash text-danger"></i></a>
                     {% endif %}
-                    <button type="button" data-toggle="modal" data-target="#editLine{{ line.id }}Modal">
-                        Edit <i class="fa fa-arrows-v"></i>
+                    <button type="button" class="btn btn-warning btn-outline" data-toggle="modal" data-target="#editLine{{ line.id }}Modal">
+                        Editer <i class="fa fa-gears"></i>
                     </button>
                     <div class="modal fade" id="editLine{{ line.id }}Modal" tabindex="-1" role="dialog"
                                     aria-labelledby="editLine{{ line.id }}ModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="editLine{{ line.id }}ModalLabel">Modifier une ligne</h5>
+                                    <h4 class="modal-title text-center" id="editLine{{ line.id }}ModalLabel">Edition de la ligne</h4>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -139,7 +160,9 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="description">Description</label>
-                                                        <input type="text" name="description" value="{{ line.description }}" class="form-control">
+                                                        <textarea class="textdesc form-control" name="description">
+                                                            {{ line.description }}
+                                                        </textarea>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="quantity">Quantité</label>
@@ -175,7 +198,7 @@
                                                         <input type="text" class="datepick form-control" name="deadLine" value="{{ line.deadLine|date('d-m-Y') }}">
                                                     </div>
                                                     <div class="form-group">
-                                                        <input type="submit" value="Editer la ligne">
+                                                        <input type="submit" value="Editer la ligne" class="btn btn-success btn-outline">
                                                     </div>
                                                 </form>
                                             </div>
@@ -183,7 +206,7 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-secondary btn-danger btn-outline" data-dismiss="modal">Fermer</button>
                                 </div>
                             </div>
                         </div>
@@ -192,10 +215,10 @@
             </td>
         </tr>
     {% else %}
-        <tr>Aucun élément ! :'(</tr>
+        <tr>Aucun élément</tr>
     {% endfor %}
     {% if modify %}
-        <tr><td></td><td></td><td><i>Ajouter une ligne ?</i></td><td></td><td></td></tr>
+        <tr><td colspan="6" class="text-center"><h4>Vous pouvez ajouter une ligne si vous le souhaitez</h4></td></tr>
         {{ include("BillAndGoBundle:document:formline2.html.twig") }}
     {% endif %}
     </tbody>
