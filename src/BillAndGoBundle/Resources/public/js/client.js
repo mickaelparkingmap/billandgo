@@ -1,3 +1,16 @@
+/**
+ *
+ *  * This is an iumio component [https://iumio.com]
+ *  *
+ *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
+ *  *
+ *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
+ *  *
+ *  * To get more information about licence, please check the licence file
+ *
+ */
+
+
 $(document).ready(function() {
     $("#client_modal_country").hide();
     $("#client_modal_location").hide();

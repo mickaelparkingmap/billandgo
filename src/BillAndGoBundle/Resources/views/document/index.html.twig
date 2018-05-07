@@ -62,6 +62,13 @@ set status_fr = {
                         </div><!-- /.info-box-content -->
                     </div><!-- /.info-box -->
                 </div><!-- /.col -->
+                {% if user.plan == null and limitation == false %}
+                    <div class="col-md-12 ">
+                        <div class="callout callout-info">
+                            <h5><i class="fa fa-info"></i> Vous utilisez actuellement de la version gratuite de Bill&Go et vous avez dépassé le quotat imposé. Si vous souhaitez profiter de fonctionnalités payantes et la suppression de ce message, Veuillez nous contacter <a href=" https://billandgo.fr/edition-premium/">ici</a></h5>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
             {# good #}
             <div class="box box-default">
@@ -84,7 +91,6 @@ set status_fr = {
                     <hr>
 
                     <div class="row">
-
 
                         {% set nbdoc = 0 %}
                         {% set totalHT = 0 %}
@@ -552,7 +558,7 @@ set status_fr = {
                                                         <li><strong>Date de validité : </strong>{{ doc.delayDate|date('d-m-Y') }}</li>
                                                     </ul>
 
-                                                    <h5><strong>Envoyez votre {{ min_fr }} à un des contact ci-dessous :</strong> </h5>
+                                                    <h5><strong>Envoyez votre {{ min_fr }} à un des contacts ci-dessous :</strong> </h5>
                                                     {% if doc.refClient.contacts|length > 0 %}
                                                     <div class="row">
                                                         <form action="{{ path("billandgo_document_send_email", {"doc_id": doc.id}) }}" method="get">

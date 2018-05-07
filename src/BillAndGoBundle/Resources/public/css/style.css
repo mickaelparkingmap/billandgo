@@ -24,6 +24,23 @@
     width: 210px;
     margin: 0 auto 25px;
 }
+
+.box-edited {
+    position: inherit;
+    border-radius: 0px;
+    background: #ffffff00;
+    border-top: none;
+    margin-bottom: 0px;
+    width: 100%;
+    box-shadow: none;
+}
+
+.box-edited button{
+    position: absolute;
+    color: white;
+    right: 30px;
+}
+
 #billandgobundle_devis_description,
 #billandgobundle_bill_description,
 #billandgobundle_project_description {
@@ -173,7 +190,7 @@ h3 {
     background: url("../img/billandgo-nature.jpg") no-repeat no-repeat center;
 }
 
-.login-box input, .login-box textarea {
+.login-box input, .login-box textarea, .login-box select {
     color: #fff;
     background-color: #ffffff5e;
     font-size: 17px;
@@ -201,7 +218,7 @@ h3 {
 }
 
 .login-register {
-    width: 70%;
+    width: 60%;
 }
 
 .login-register .form-group {
@@ -276,7 +293,15 @@ h3 {
 }
 
 .name-side {
-    padding-top: 13px;
+    padding-top: 20px;
+    padding-left: 15px;
+}
+
+.jobtype-side {
+    font-weight: 600;
+}
+.jobtype-side, .company-name-side {
+    padding-top: 8px;
 }
 .list-side
 {
@@ -327,10 +352,14 @@ h3 {
     line-height: 25px;
 }
 
-
-.list-side .company-name-side {
-    font-size: 20px;
+.inline-block-e {
+    display: inline-block;
 }
+
+.list-side .company-name-side, .list-side .jobtype-side {
+    font-size: 18px;
+}
+
 
 .skin-blue .main-header .navbar .sidebar-toggle:hover {
     background-color: #f3624f;
@@ -386,7 +415,7 @@ h3 {
     text-overflow: ellipsis;
 }
 
-.sidebar-collapse .company-name-side {
+.sidebar-collapse .company-name-side, .sidebar-collapse .jobtype-side {
     display: none;
 }
 
@@ -570,6 +599,10 @@ div.success, div.notice {
 }
 
 
+.login-footer {
+    color: #544f4f;
+    text-align: center;
+}
 
 .tohide {
     display: none;

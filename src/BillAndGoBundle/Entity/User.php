@@ -1,5 +1,17 @@
 <?php
-// src/AppBundle/Entity/User.php
+
+/**
+ *
+ *  * This is an iumio component [https://iumio.com]
+ *  *
+ *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
+ *  *
+ *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
+ *  *
+ *  * To get more information about licence, please check the licence file
+ *
+ */
+
 
 namespace BillAndGoBundle\Entity;
 
@@ -7,8 +19,6 @@ use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
-
-
 
 /**
  * @ORM\Entity
@@ -117,11 +127,39 @@ class User extends BaseUser
     /**
      * @var string
      *
+     * @ORM\Column(name="plan", type="text", length=65535, nullable=true)
+     */
+    private $plan;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="iban", type="text", length=65535, nullable=true)
      */
     private $iban;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="jobtype", type="string", length=255, nullable=true)
+     */
+    private $jobtype;
 
+    /**
+     * @return string
+     */
+    public function getJobtype()
+    {
+        return $this->jobtype;
+    }
+
+    /**
+     * @param string $jobtype
+     */
+    public function setJobtype($jobtype)
+    {
+        $this->jobtype = $jobtype;
+    }
 
 
     /**
@@ -437,6 +475,24 @@ class User extends BaseUser
         return $this->iban;
     }
 
+    /**
+     * @return string
+     */
+    public function getPlan()
+    {
+        return $this->plan;
+    }
+
+    /**
+     * @param string $plan
+     */
+    public function setPlan($plan)
+    {
+        $this->plan = $plan;
+    }
+
+
+
     /**** *****/
 
 
@@ -497,6 +553,65 @@ class User extends BaseUser
 
 
 
+    /**
+     * @ORM\Column(name="user_skin", type="string", length=255, nullable=true)
+     */
+    protected $userSkinPath;
+
+    /**
+     * @Assert\File(
+     *     maxSize = "5M",
+     *     mimeTypes = {"image/jpeg", "image/gif", "image/png", "image/tiff"},
+     *     maxSizeMessage = "The maxmimum allowed file size is 5MB.",
+     *     mimeTypesMessage = "Only the filetypes image are allowed.")
+     */
+    protected $user_skin;
+
+    protected $userSkinTemp;
+
+    /**
+     * @return mixed
+     */
+    public function getUserSkinPath()
+    {
+        return $this->userSkinPath;
+    }
+
+    /**
+     * @param mixed $userSkinPath
+     */
+    public function setUserSkinPath($userSkinPath)
+    {
+        $this->userSkinPath = $userSkinPath;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserSkin()
+    {
+        return $this->user_skin;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getUserSkinTemp()
+    {
+        return $this->userSkinTemp;
+    }
+
+    /**
+     * @param mixed $userSkinTemp
+     */
+    public function setUserSkinTemp($userSkinTemp)
+    {
+        $this->userSkinTemp = $userSkinTemp;
+    }
+
+
+
 
 
     /*
@@ -513,6 +628,10 @@ class User extends BaseUser
             $filename = sha1(uniqid(mt_rand(), true));
             $this->companyLogoPath = $filename.'.'.$this->getCompanyLogo()->guessExtension();
         }
+        elseif (null !== $this->user_skin) {
+            $filename = sha1(uniqid(mt_rand(), true));
+            $this->userSkinPath = $filename.'.'.$this->getUserSkin()->guessExtension();
+        }
     }
 
     /**
@@ -524,25 +643,47 @@ class User extends BaseUser
     public function upload()
     {
         // The file property can be empty if the field is not required
-        if (null === $this->company_logo) {
+        /*if (null === $this->company_logo && null === $this->user_skin) {
             return;
+        }*/
+
+       if (null !== $this->company_logo) {
+            // check if we have an old image
+            if (isset($this->companyLogoTemp)) {
+                // delete the old image
+                if (file_exists($this->getUploadRootDir("company") . "/" . $this->companyLogoTemp)) {
+                    unlink($this->getUploadRootDir("company") . "/" . $this->companyLogoTemp);
+                }
+                // clear the temp image path
+                $this->companyLogoTemp = null;
+            }
+
+            $this->getCompanyLogo()->move(
+                $this->getUploadRootDir("company"),
+                $this->companyLogoPath
+            );
+
+            $this->company_logo = null;
         }
+        if (null !== $this->user_skin) {
+            // check if we have an old image
+            if (isset($this->userSkinTemp)) {
+                // delete the old image
+                if (file_exists($this->getUploadRootDir("user") . "/" . $this->userSkinTemp)) {
+                    unlink($this->getUploadRootDir("user") . "/" . $this->userSkinTemp);
+                }
+                // clear the temp image path
+                $this->userSkinTemp = null;
+            }
+            $this->getUserSkin()->move(
+                $this->getUploadRootDir("user"),
+                $this->userSkinPath
+            );
 
-        // check if we have an old image
-        if (isset($this->companyLogoTemp)) {
-            // delete the old image
-            unlink($this->getUploadRootDir()."/".$this->companyLogoTemp);
-            // clear the temp image path
-            $this->companyLogoTemp = null;
+            // Clean up the file property as you won't need it anymore
+
+            $this->user_skin = null;
         }
-
-        $this->getCompanyLogo()->move(
-            $this->getUploadRootDir(),
-            $this->companyLogoPath
-        );
-
-        // Clean up the file property as you won't need it anymore
-        $this->company_logo = null;
     }
 
     /**
@@ -563,29 +704,64 @@ class User extends BaseUser
         }
     }
 
+
+    /**
+     * Sets avatar.
+     *
+     * @param UploadedFile User skin $user_skin
+     */
+    public function setUserSkin(UploadedFile $user_skin = null)
+    {
+        $this->user_skin = $user_skin;
+        // check if we have an old image path
+        if (isset($this->userSkinPath)) {
+            // store the old name to delete after the update
+            $this->userSkinTemp = $this->userSkinPath;
+            $this->userSkinPath = null;
+        } else {
+            $this->userSkinPath = 'initial';
+        }
+    }
+
     public function getAbsolutePath()
     {
-        return null === $this->companyLogoPath
-            ? null
-            : $this->getUploadRootDir().'/'.$this->companyLogoPath;
+
+        if (null !== $this->companyLogoPath) {
+            return $this->getUploadRootDir("company").'/'.$this->companyLogoPath;
+        }
+        if (null !== $this->userSkinPath) {
+            return $this->getUploadRootDir("user").'/'.$this->userSkinPath;
+        }
+        return null;
     }
 
     public function getWebPath()
     {
-        return null === $this->companyLogoPath
-            ? null
-            : $this->getUploadDir().'/'.$this->companyLogoPath;
+        if (null !== $this->companyLogoPath) {
+            return $this->getUploadDir("company").'/'.$this->companyLogoPath;
+        }
+        if (null !== $this->userSkinPath) {
+            return $this->getUploadDir("user").'/'.$this->userSkinPath;
+        }
+        return null;
     }
 
-    public function getUploadDir()
+    public function getUploadDir($type)
     {
-        return 'uploads/user/avatar';
+        if ("company" === $type) {
+            return 'uploads/user/company';
+        }
+        if ("user" === $type) {
+            return 'uploads/user/avatar';
+        }
+        return null;
+
     }
 
-    protected function getUploadRootDir()
+    protected function getUploadRootDir($type)
     {
         // On retourne le chemin relatif vers l'image pour notre code PHP
-        return __DIR__.'/../../../web/'.$this->getUploadDir();
+        return __DIR__.'/../../../web/'.$this->getUploadDir($type);
     }
 
     public function __toString()

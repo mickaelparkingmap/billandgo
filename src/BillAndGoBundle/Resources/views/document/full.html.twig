@@ -626,12 +626,19 @@ set status_fr = {
         <div class="firstname">{{ user.firstname }}</div>
         <div class="lastname">{{ user.lastname }}</div>
         <div class="companyname">{{ user.companyname }}</div>
+        <div class="email">{{ user.email }}</div>
         <div class="adress">{{ user.address }}</div>
         <div class="zipcode">{{ user.zipcode }}</div>
         <div class="city">{{ user.city }}</div>
         <div class="country">{{ user.country }}</div>
         <div class="phone">{{ user.phone }}</div>
         <div class="mobile">{{ user.mobile }}</div>
+        <div class="siret">{{ user.siret }}</div>
+        <div class="plan">{{ user.plan }}</div>
+        <div class="bank-name">{{ user.banque }}</div>
+        <div class="iban">{{ user.iban }}</div>
+        <div class="bic">{{ user.bic }}</div>
+        <div class="date-pdf">{{ 'now'|date('d/m/Y') }}</div>
     </div>
     <div id="client" style="display: none">
         <div class="companyname">{{ document.refClient.companyname }}</div>
@@ -710,6 +717,6 @@ set status_fr = {
             }
         );
 
-        var imgDoc = '{{ asset('uploads/user/avatar/'~user.getCompanyLogoPath ) }}';
+        var imgDoc = '{{ asset('uploads/user/company/'~user.getCompanyLogoPath ) }}';
     </script>
 {% endblock %}

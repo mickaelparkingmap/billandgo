@@ -5,8 +5,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
     <title>
-        {% block title %} Bill&Go {% endblock %}
+        {% block title %} Bill&Go - Gérer efficacement votre administratif {% endblock %}
     </title>
+    <meta name="description" content="Outil web destiné aux freelances/ micro-entrepreneurs développeur afin de simplifier leur gestion administrative" />
+    <meta name="keywords" content="Freelance, micro-entrepreneur, administratif, gestion administrative, temps, papier, compta, projets, devis, factures, taxes, iumio">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('bundles/billandgo/img/apple-touch-icon.png') }}" />
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('bundles/billandgo/img/favicon-32x32.png') }}" />
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('bundles/billandgo/img/favicon-16x16.png') }}" />
@@ -17,6 +19,7 @@
     <meta name="msapplication-config" content="{{ asset('bundles/billandgo/img/browserconfig.xml') }}" />
     <meta name="theme-color" content="#ffffff">
     <link rel="icon" type="image/x-icon" href="{{ asset('bundles/billandgo/img/favicon.ico') }}"/>
+
     <!-- CSS  -->
     {% block stylesheets %}
         <link href="{{ asset('bundles/billandgo/assets/bootstrap/dist/css/bootstrap.min.css') }}" type="text/css" rel="stylesheet"/>
@@ -31,7 +34,22 @@
         <link href="{{ asset('bundles/billandgo/css/AdminLTE.min.css') }}" type="text/css" rel="stylesheet"/>
         <link href="{{ asset('bundles/billandgo/css/style.css') }}" type="text/css" rel="stylesheet"/>
     {% endblock %}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118804156-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-118804156-2');
+    </script>
+
 </head>
+{% set status_jobtype_fr = {
+"freelance" : "Freelance",
+"self-entrepreneur" : "Micro-entrepreneur",
+}
+%}
 <body class="hold-transition skin-blue sidebar-mini">
 
 <div class="wrapper">
@@ -39,15 +57,22 @@
         <!-- Logo -->
         <div class="logo">
             <div class="row">
+
                 <div class="col-md-12 text-left">
-                    <ul class="list-side">
-                        <li>
-                            <img class="img-rounded img-responsive pside" src="{{ asset('bundles/billandgo/img/default_user.png') }}" />
+                    <ul class="list-side user-panel">
+                        <li class="image inline-block-e">
+                            <img class="img-circle" src="{% if user.getUserSkinPath() is null %}{{ asset('bundles/billandgo/img/default_user.png') }}{% else %}{{ '/uploads/user/avatar/'~user.getUserSkinPath()}} {% endif %}" />
                         </li>
-                        <li class="name-side">
+                        <li class="name-side inline-block-e">
                             {{ user.lastname |capitalize }}  {{ user.firstname|capitalize }}
                         </li>
-                        <li class="company-name-side"> <small><strong>{{ user.companyName }}</strong></small></li>
+                        {% if user.jobtype is not null %}
+                            <li class="jobtype-side"><small>
+                                {{status_jobtype_fr[user.jobtype]}}
+                                </small>
+                            </li>
+                        {% endif %}
+                        <li class="company-name-side"> <small>{{ user.companyName }}</small></li>
                     </ul>
                 </div>
 
@@ -408,7 +433,7 @@
                         </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="{{ path('billandgo_tax_create') }}"><i class="fa fa-plus"></i> Mettre à jour les taxes</a></li>
+                            <li><a href="{{ path('billandgo_tax_create') }}"><i class="fa fa-refresh"></i> Mettre à jour les taxes</a></li>
                             <li><a href="{{ path('billandgo_tax_index') }}"><i class="fa fa-legal"></i> Liste des taxes</a></li>
                         </ul>
                     </li>
@@ -636,5 +661,21 @@
 {% endblock %}
 {% block advanced_javascripts %}
 {% endblock %}
+{% if user.plan == "billandgo_paid_plan" %}
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/5af07ec15f7cdf4f0533ee81/default';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+        })();
+    </script>
+    <!--End of Tawk.to Script-->
+{% endif %}
+
 </body>
 </html>

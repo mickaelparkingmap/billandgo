@@ -1,9 +1,22 @@
 <?php
 
+/**
+ *
+ *  * This is an iumio component [https://iumio.com]
+ *  *
+ *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
+ *  *
+ *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
+ *  *
+ *  * To get more information about licence, please check the licence file
+ *
+ */
+
 
 namespace BillAndGoBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use FOS\OAuthServerBundle\Util\LegacyFormHelper;
@@ -36,6 +49,12 @@ class RegistrationType extends AbstractType
                 'invalid_message' => 'fos_user.password.mismatch',
             ))
             ->add('companyname', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Nom de votre société')))
+            ->add('job_type', ChoiceType::class, array(
+                'choices' => array(
+                    'Freelance' => 'freelance',
+                    'Micro-entrepreneur' => 'self-entrepreneur'
+                ), 'attr'  => array('class' => 'form-control'), 'required' => false, 'placeholder' => 'Votre status', 'label' => false
+            ))
         ;
     }
 

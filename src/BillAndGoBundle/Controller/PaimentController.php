@@ -1,5 +1,18 @@
 <?php
 
+/**
+ *
+ *  * This is an iumio component [https://iumio.com]
+ *  *
+ *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
+ *  *
+ *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
+ *  *
+ *  * To get more information about licence, please check the licence file
+ *
+ */
+
+
 namespace BillAndGoBundle\Controller;
 
 use BillAndGoBundle\Entity\Document;
@@ -8,6 +21,7 @@ use PhpParser\Comment\Doc;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use BillAndGoBundle\Form\PaimentType;
@@ -175,4 +189,5 @@ class PaimentController extends Controller
             ->getForm()
         ;
     }
+
 }

@@ -1,5 +1,6 @@
 <?php
 
+
 /*
  * This file is part of the FOSUserBundle package.
  *
@@ -13,6 +14,7 @@ namespace BillAndGoBundle\Form;
 
 use BillAndGoBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -49,6 +51,12 @@ class ProfileType extends AbstractType
             ->add('country', null, array('label' => 'Pays', 'attr'  => array('class' => 'form-control')))
             ->add('phone', null, array('label' => 'Numéro de téléphone fixe', 'attr'  => array('class' => 'form-control')))
             ->add('mobile', null, array('label' => 'Numéro de téléphone mobile', 'attr'  => array('class' => 'form-control')))
+            ->add('job_type', ChoiceType::class, array(
+                'choices' => array(
+                    'Freelance' => 'freelance',
+                    'Micro-entrepreneur' => 'self-entrepreneur'
+                ), 'attr'  => array('class' => 'form-control'), 'required' => false, 'placeholder' => 'Non défini'
+            ))
             ->add('plainPassword', RepeatedType::class, array(
                 'type' => PasswordType::class,
                 'options' => array('translation_domain' => 'FOSUserBundle'),

@@ -4,7 +4,7 @@
     {{ form_errors(form) }}
         <div class="col-md-6">
             <div class="form-group " id="paiment_modal_bill">
-                {{ form_label(form.refBill, "Pour la facture :", {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_label(form.refBill, "Facture :", {'label_attr': {'class': 'control-label'}}) }}
                 {{ form_errors(form.refBill) }}
                 {{ form_widget(form.refBill, {'attr': {'class': 'form-control'}}) }}
             </div>
@@ -19,7 +19,7 @@
         </div>
 <div class="col-md-6">
     <div class="form-group" id="paiment_modal_datePaiment">
-        {{ form_label(form.datePaiment, "Date du paiment :", {'label_attr': {'class': 'control-label'}}) }}
+        {{ form_label(form.datePaiment, "Date de paiement :", {'label_attr': {'class': 'control-label'}}) }}
         {{ form_errors(form.datePaiment) }}
         {{ form_widget(form.datePaiment, {'attr': {'class': 'form-control'}}) }}
     </div>

@@ -1,5 +1,18 @@
 <?php
 
+/**
+ *
+ *  * This is an iumio component [https://iumio.com]
+ *  *
+ *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
+ *  *
+ *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
+ *  *
+ *  * To get more information about licence, please check the licence file
+ *
+ */
+
+
 namespace BillAndGoBundle\Controller;
 
 use BillAndGoBundle\Entity\Line;
@@ -29,11 +42,13 @@ class ProjectController extends Controller
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
         }
+
         $manager = $this->getDoctrine()->getManager();
         $list_project = $manager->getRepository('BillAndGoBundle:Project')->findByRefUser($user);
         return $this->render('BillAndGoBundle:Project:index.html.twig', array(
             'list' => $list_project,
-            'user' => $user
+            'user' => $user,
+            'limitation' =>  $this->getLimitation("project")
         ));
     }
 
@@ -87,7 +102,7 @@ class ProjectController extends Controller
      * call by viewAction
      * edit, add or split lines in the project
      *
-     * @param int $id id of current projet
+     * @param int $id id of current project
      * @param Request $req request sent to viewAction
      * @param User $user current user
      * @param Project $project current project
@@ -153,6 +168,9 @@ class ProjectController extends Controller
             $ar401 = ["disconnected"];
             return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
         }
+        if (false === $this->getLimitation("project")) {
+            return $this->redirect($this->generateUrl("billandgo_limitation"));
+        }
         $manager = $this->getDoctrine()->getManager();
         $project = new Project();
         $form = $this->createForm(ProjectType::class, $project, array('uid' => $user->getId()));
@@ -185,6 +203,11 @@ class ProjectController extends Controller
             $ar401 = ["disconnected"];
             return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
         }
+
+        if (false === $this->getLimitation("project")) {
+            return $this->redirect($this->generateUrl("billandgo_limitation"));
+        }
+
         $manager = $this->getDoctrine()->getManager();
         $estimate = $manager->getRepository('BillAndGoBundle:Document')->find($estimateID);
         if (!($estimate) || !($estimate->getType())) {
@@ -437,5 +460,48 @@ class ProjectController extends Controller
         }
         $ar404 = ["doesn't exist"];
         return new Response(json_encode($ar404), 404);
+    }
+
+
+    public function getLimitation($type) {
+        $user = $this->getUser();
+        if (!is_object($user)) { // || !$user instanceof UserInterface
+            throw new AccessDeniedException('This user does not have access to this section.');
+        }
+
+        $manager = $this->getDoctrine()->getManager();
+        $projects = ($manager->getRepository('BillAndGoBundle:Project')->findByRefUser($user));
+        $bills = ($manager->getRepository('BillAndGoBundle:Document')->findAllBill($user->getId()));
+        $quotes = ($estimates = $manager->getRepository('BillAndGoBundle:Document')->findAllEstimate($user->getId()));
+        $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
+        if ($user->getPlan() != "billandgo_paid_plan") {
+            switch ($type) {
+                case 'project' :
+                    if (count($projects) >= 15) {
+                        return (false);
+                    }
+                    return (true);
+                    break;
+                case 'bill' :
+                    if (count($bills) >= 15) {
+                        return (false);
+                    }
+                    return (true);
+                    break;
+                case 'quote' :
+                    if (count($quotes) >= 15) {
+                        return (false);
+                    }
+                    return (true);
+                    break;
+                case 'client' :
+                    if (count($clients) >= 15) {
+                        return (false);
+                    }
+                    return (true);
+                    break;
+            }
+        }
+        return (true);
     }
 }

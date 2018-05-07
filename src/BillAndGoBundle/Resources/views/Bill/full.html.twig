@@ -192,8 +192,8 @@
                                             <label for="paiment_mode" class="col-sm-3 col-form-label">Mode de paiement</label>
                                             <div class="col-sm-9">
                                                 <select id="paiment_mode" name="mode" required="required" class="form-control">
-                                                    <option value="cash" selected="selected">Comptant</option>
-                                                    <option value="cheque">Cheque</option>
+                                                    <option value="cash" selected="selected">Espèces</option>
+                                                    <option value="cheque">Chèque</option>
                                                     <option value="bank_transfer">Virement bancaire</option>
                                                 </select>
                                             </div>
@@ -285,17 +285,23 @@
         </div>
     </div>
     <!-- /.content-wrapper -->
-
     <div id="user" style="display: none">
         <div class="firstname">{{ user.firstname }}</div>
         <div class="lastname">{{ user.lastname }}</div>
         <div class="companyname">{{ user.companyname }}</div>
+        <div class="email">{{ user.email }}</div>
         <div class="adress">{{ user.address }}</div>
         <div class="zipcode">{{ user.zipcode }}</div>
         <div class="city">{{ user.city }}</div>
         <div class="country">{{ user.country }}</div>
         <div class="phone">{{ user.phone }}</div>
         <div class="mobile">{{ user.mobile }}</div>
+        <div class="siret">{{ user.siret }}</div>
+        <div class="plan">{{ user.plan }}</div>
+        <div class="bank-name">{{ user.banque }}</div>
+        <div class="iban">{{ user.iban }}</div>
+        <div class="bic">{{ user.bic }}</div>
+        <div class="date-pdf">{{ 'now'|date('d/m/Y') }}</div>
     </div>
 
     <div id="client" style="display: none">

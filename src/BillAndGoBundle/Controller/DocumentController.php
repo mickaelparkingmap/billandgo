@@ -1,5 +1,18 @@
 <?php
 
+/**
+ *
+ *  * This is an iumio component [https://iumio.com]
+ *  *
+ *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
+ *  *
+ *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
+ *  *
+ *  * To get more information about licence, please check the licence file
+ *
+ */
+
+
 namespace BillAndGoBundle\Controller;
 
 use BillAndGoBundle\Entity\Numerotation;
@@ -7,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use BillAndGoBundle\Entity\User;
 use BillAndGoBundle\Entity\Document;
 use BillAndGoBundle\Entity\Line;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\Form\Form;
 use BillAndGoBundle\Form\LineEstimateType;
 use BillAndGoBundle\Form\LineBillType;
@@ -46,7 +60,8 @@ class DocumentController extends Controller
         return $this->render('BillAndGoBundle:document:index.html.twig', array(
             'list' => $estimates,
             'user' => $user,
-            'type' => 'estimate'
+            'type' => 'estimate',
+            'limitation' =>  $this->getLimitation("quote")
         ));
     }
 
@@ -70,7 +85,8 @@ class DocumentController extends Controller
         return $this->render('BillAndGoBundle:document:indexBill.html.twig', array(
             'list' => $bills,
             'user' => $user,
-            'type' => 'bill'
+            'type' => 'bill',
+            'limitation' =>  $this->getLimitation("bill")
         ));
     }
 
@@ -133,7 +149,7 @@ class DocumentController extends Controller
      * edit, add or split lines in the document
      * or edit document
      *
-     * @param int $id id of current projet
+     * @param int $id id of current project
      * @param Request $req request sent to viewAction
      * @param User $user current user
      * @param Document $document current document
@@ -373,6 +389,10 @@ class DocumentController extends Controller
             $ar401 = ["disconnected"];
             return new Response(json_encode($ar401), 401);
         }
+
+        if (false === $this->getLimitation("quote")) {
+            return $this->redirect($this->generateUrl("billandgo_limitation"));
+        }
         $manager = $this->getDoctrine()->getManager();
 
         $numerotationArray = $manager->getRepository("BillAndGoBundle:Numerotation")->findByRefUser($user);
@@ -429,6 +449,11 @@ class DocumentController extends Controller
             $ar401 = ["disconnected"];
             return new Response(json_encode($ar401), 401);
         }
+
+        if (false === $this->getLimitation("bill")) {
+            return $this->redirect($this->generateUrl("billandgo_limitation"));
+        }
+
         $manager = $this->getDoctrine()->getManager();
 
         $numerotationArray = $manager->getRepository("BillAndGoBundle:Numerotation")->findByRefUser($user);
@@ -482,6 +507,10 @@ class DocumentController extends Controller
             $ar401 = ["disconnected"];
             return new Response(json_encode($ar401), 401);
         }
+        if (false === $this->getLimitation("bill")) {
+            return $this->redirect($this->generateUrl("billandgo_limitation"));
+        }
+
         $post = $req->request->all();
         $lines_id = array();
         foreach ($post as $post_id => $post_elt) {
@@ -783,5 +812,47 @@ class DocumentController extends Controller
             }
         }
         return new Response("401");
+    }
+
+    public function getLimitation($type) {
+        $user = $this->getUser();
+        if (!is_object($user)) { // || !$user instanceof UserInterface
+            throw new AccessDeniedException('This user does not have access to this section.');
+        }
+
+        $manager = $this->getDoctrine()->getManager();
+        $projects = ($manager->getRepository('BillAndGoBundle:Project')->findByRefUser($user));
+        $bills = ($manager->getRepository('BillAndGoBundle:Document')->findAllBill($user->getId()));
+        $quotes = ($estimates = $manager->getRepository('BillAndGoBundle:Document')->findAllEstimate($user->getId()));
+        $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
+        if ($user->getPlan() != "billandgo_paid_plan") {
+            switch ($type) {
+                case 'project' :
+                    if (count($projects) >= 15) {
+                        return (false);
+                    }
+                    return (true);
+                    break;
+                case 'bill' :
+                    if (count($bills) >= 15) {
+                        return (false);
+                    }
+                    return (true);
+                    break;
+                case 'quote' :
+                    if (count($quotes) >= 15) {
+                        return (false);
+                    }
+                    return (true);
+                    break;
+                case 'client' :
+                    if (count($clients) >= 15) {
+                        return (false);
+                    }
+                    return (true);
+                    break;
+            }
+        }
+        return (true);
     }
 }

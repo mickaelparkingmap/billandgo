@@ -7,6 +7,8 @@
     <title>
         {% block title %} Bill&Go - Un e-mail de confirmation vous a été envoyé{% endblock %}
     </title>
+    <meta name="description" content="Outil web destiné aux freelances/ micro-entrepreneurs développeur afin de simplifier leur gestion administrative" />
+    <meta name="keywords" content="Freelance, micro-entrepreneur, administratif, gestion administrative, temps, papier, compta, projets, devis, factures, taxes, iumio">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('bundles/billandgo/img/apple-touch-icon.png') }}" />
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('bundles/billandgo/img/favicon-32x32.png') }}" />
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('bundles/billandgo/img/favicon-16x16.png') }}" />
@@ -36,6 +38,16 @@
 
         <!-- Google Font -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118804156-2"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'UA-118804156-2');
+        </script>
+
     {% endblock %}
 
 </head>
@@ -61,6 +73,9 @@
     </div>
     <!-- /.login-box-body -->
 </div>
+<footer class="text-right login-footer">
+    <strong>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go.</strong> All rights reserved. - <small>Bill&Go is an <a href="https://iumio.com">iumio component</a></small>
+</footer>
 
 {% block javascripts %}
     <script src="{{ asset('bundles/billandgo/assets/jquery/dist/jquery.min.js') }}"></script>

@@ -18,6 +18,7 @@ use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
 use FOS\OAuthServerBundle\Util\LegacyFormHelper;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -90,34 +91,19 @@ class ProfileController extends BaseController
             ->add('phone', null, array('label' => 'Numéro de téléphone fixe', 'attr'  => array('class' => 'form-control')))
             ->add('mobile', null, array('label' => 'Numéro de téléphone mobile', 'attr'  => array('class' => 'form-control')))
             ->add('company_logo', null , array('label' => 'Logo', 'attr'  => array('class' => 'form-control'), 'required' => false))
+            ->add('user_skin', null , array('label' => 'Photo de profil', 'attr'  => array('class' => 'form-control'), 'required' => false))
+            ->add('job_type', ChoiceType::class, array(
+                'choices' => array(
+                    'Freelance' => 'freelance',
+                    'Micro-entrepreneur' => 'self-entrepreneur'
+                ), 'attr'  => array('class' => 'form-control'), 'required' => false,  'placeholder' => 'Non défini'
+            ))
             ->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $manager = $this->getDoctrine()->getManager();
-            //$usercurrent = $_SESSION['user_last_mjm_photo'];
-
-           /* if (!empty($file) || ($file != NULL)) {
-                $pathweb = $this->get('kernel')->getRootDir() . '/../web';
-                if (!is_dir($pathweb . "/mjm_company_logo") || !file_exists($pathweb . "/mjm_company_logo"))
-                    mkdir($pathweb . "/mjm_company_logo");
-                $dest = new \DateTime();
-                $dest = ($dest->format("YmdHis")) . "mjm" . uniqid("mjm");
-                $pathlogo = $pathweb . "/mjm_company_logo/" . $dest . $file->getClientOriginalName();
-
-                if (($usercurrent != NULL || $usercurrent != "") && ($usercurrent != $dest. $file->getClientOriginalName()))
-                {
-                    unlink($pathweb. "/mjm_company_logo/".$usercurrent);
-                }
-                move_uploaded_file($file, $pathlogo);
-                $user->setCompanyLogo($dest. $file->getClientOriginalName());
-            }
-            else
-            {
-                $user->setCompanyLogo($usercurrent);
-            }*/
-
 
             /** @var $userManager UserManagerInterface */
             $userManager = $this->get('fos_user.user_manager');
@@ -151,4 +137,5 @@ class ProfileController extends BaseController
         $extension_upload = strtolower(  substr(  strrchr($_FILES['icone']['name'], '.')  ,1)  );
         if ( in_array($extension_upload,$extensions_valides) ) exit( "Extension correcte");
     }
+
 }

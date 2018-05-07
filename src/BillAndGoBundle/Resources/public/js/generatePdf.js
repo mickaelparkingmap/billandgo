@@ -1,7 +1,22 @@
 /**
+ *
+ *  * This is an iumio component [https://iumio.com]
+ *  *
+ *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
+ *  *
+ *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
+ *  *
+ *  * To get more information about licence, please check the licence file
+ *
+ */
+
+
+
+/**
  * Created by kevinhuron on 18/07/2017.
  * Generate PDF in JS - Here Whe generate the Bill and the Quote and MORE
  */
+
 $(document).ready(function () {
 
     var gen = false;
@@ -21,16 +36,26 @@ $(document).ready(function () {
         var user_country = $("#user .country").text();
         var user_zip = $("#user .zipcode").text();
         var user_phone = $("#user .phone").text();
+        var user_siret = $("#user .siret").text();
+        var user_plan = $("#user .plan").text();
+        var user_email = $("#user .email").text();
+        var user_mobile = $("#user .mobile").text();
+        var pdf_date = $("#user .date-pdf").text();
+
+        var user_bankname = $("#user .bank-name").text();
+        var user_bic = $("#user .bic").text();
+        var user_iban = $("#user .iban").text();
+
         var client_companyname = $("#client .companyname").text();
         var client_adress = $("#client .adress").text();
         var client_city = $("#client .city").text();
         var client_country = $("#client .country").text();
         var client_zip = $("#client .zipcode").text();
+
         var date = $("#date").text();
 
         var numfac = $(this).attr("attr-num");
-        var companyfac = $(this).attr("attr-companyname");
-
+        var companyfac =  $("#generatePDF").attr("attr-company");
 
         var lines = [
             [
@@ -76,13 +101,43 @@ $(document).ready(function () {
             ]
         ];
         $(".line-elt" ).each(function() {
-            var elt = [
-                {text: $(this).find(".line-elt-name").text() + '\n' + $(this).find(".description").text(), italics: false, bold: false, fontSize: 10, color: 'gray', margin: [5, 2]},
-                {text: $(this).find(".quantity").text(), italics: false, bold: false, fontSize: 10, margin: [2, 2], alignment: 'right'},
-                {text: $(this).find(".uht").text() + '€  HT \n' + $(this).find(".utc").text() + '€ TTC', italics: false, bold: false, fontSize: 8, margin: [2, 2], alignment: 'right'},
-                {text: $(this).find(".tht").text() + '€  HT \n' + $(this).find(".ttc").text() + '€ TTC', italics: false, bold: false, fontSize: 8, margin: [2, 2], alignment: 'right'}
-            ];
-            lines.push(elt);
+            if ($(this).find(".utc").text() != "") {
+                var elt = [
+                    {
+                        text: $(this).find(".line-elt-name").text() + '\n' + $(this).find(".description").text(),
+                        italics: false,
+                        bold: false,
+                        fontSize: 10,
+                        color: 'gray',
+                        margin: [5, 2]
+                    },
+                    {
+                        text: $(this).find(".quantity").text(),
+                        italics: false,
+                        bold: false,
+                        fontSize: 10,
+                        margin: [2, 2],
+                        alignment: 'right'
+                    },
+                    {
+                        text: $(this).find(".uht").text() + '€  HT \n' + $(this).find(".utc").text() + '€ TTC',
+                        italics: false,
+                        bold: false,
+                        fontSize: 8,
+                        margin: [2, 2],
+                        alignment: 'right'
+                    },
+                    {
+                        text: $(this).find(".tht").text() + '€  HT \n' + $(this).find(".ttc").text() + '€ TTC',
+                        italics: false,
+                        bold: false,
+                        fontSize: 8,
+                        margin: [2, 2],
+                        alignment: 'right'
+                    }
+                ];
+                lines.push(elt);
+            }
         });
         lines.push(
             [
@@ -104,7 +159,7 @@ $(document).ready(function () {
                         columns: [
                             {
                                 image: imgNew,
-                                width: 200
+                                width: 70
                             },
                             {
                                 text: [
@@ -154,7 +209,7 @@ $(document).ready(function () {
                             {
                                 text: [
                                     {
-                                        text: '\n Date :\t', alignment: 'left',
+                                        text: '\n Date : '+pdf_date+'\t', alignment: 'left',
                                         fontSize: 10, bold: false, color: 'grey'
                                     },
                                     {
@@ -186,20 +241,42 @@ $(document).ready(function () {
                                 ]
                             }
                         ]
+                    },
+                    {columns: [{text: '\n'}]},
+                    {
+                        columns: [
+                            {
+                                text: [
+                                    {text: ((typePdf !== "Devis")? 'Détails bancaires \n' : ''), italics: false, bold: false, fontSize: 13, color: 'grey'},
+                                    {text: ((typePdf !== "Devis")?'Banque : '+ user_bankname +'\n IBAN : '+user_iban+'\n SWIFT/BIC : '+user_bic : ''), italics: false, bold: false, fontSize: 10}
+                                ]
+                            }
+                        ]
+                    },
+                    {columns: [{text: '\n'}]},
+                    {
+                        columns: [
+                            {
+                                text: [
+                                    {text: 'Contact \n', italics: false, bold: false, fontSize: 13, color: 'grey'},
+                                    {text: user_firstname.toUpperCase() + ' ' + user_lastname.toUpperCase() +'\n Email : '+user_email+'\n '+((user_phone == "")? "" : 'Téléphone : '+user_phone+'\n') +((user_mobile == "")? "" : 'Mobile : '+user_mobile+'\n'), italics: false, bold: false, fontSize: 10}
+                                ]
+                            }
+                        ]
                     }
-                ]/*,
+                ],
             footer: {
                 columns: [
                     {
                         text: [
                             {
-                                text: 'Aznotis - 815 242 235 - 6 Allée Andrea 93140 BONDY', italics: false, bold: true,
+                                text: (user_firstname).toUpperCase()+' '+ (user_lastname).toUpperCase() +' - '+ (user_companyname) + (((user_siret) == "")? "" : " - "+user_siret)+' - '+ user_adress+ ' '+ user_zip + ' '+ user_city + ', '+user_country+((user_plan != "billandgo_paid_plan")? '\n Document généré par la solution Bill&Go, un composant de iumio\n https://billandgo.fr - https://iumio.com' : ''), italics: false, bold: true,
                                 fontSize: 6, alignment: 'center'
                             }
                         ]
                     }
                 ]
-            }*/
+            }
             };
             // open the PDF in a new window
             pdfMake.createPdf(docDefinition).download(numfac+'_'+companyfac);
@@ -211,6 +288,8 @@ $(document).ready(function () {
 
     });
 });
+
+
 
 /**
  * Converts image URLs to dataURL schema using Javascript only.

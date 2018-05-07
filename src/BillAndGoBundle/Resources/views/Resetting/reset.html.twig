@@ -6,8 +6,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
     <title>
-        {% block title %} >Bill&Go - Réinitialisation de mot de passe {% endblock %}
+        {% block title %} Bill&Go - Réinitialisation de mot de passe {% endblock %}
     </title>
+    <meta name="description" content="Outil web destiné aux freelances/ micro-entrepreneurs développeur afin de simplifier leur gestion administrative" />
+    <meta name="keywords" content="Freelance, micro-entrepreneur, administratif, gestion administrative, temps, papier, compta, projets, devis, factures, taxes, iumio">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('bundles/billandgo/img/apple-touch-icon.png') }}" />
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('bundles/billandgo/img/favicon-32x32.png') }}" />
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('bundles/billandgo/img/favicon-16x16.png') }}" />
@@ -38,6 +40,16 @@
         <!-- Google Font -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     {% endblock %}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118804156-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-118804156-2');
+    </script>
+
 </head>
 
 <body class="hold-transition login-page">
@@ -50,7 +62,7 @@
     <!-- /.login-logo -->
     <div class="login-box-body">
         <p class="login-box-msg"><strong>Hello</strong></p>
-        <p class="login-box-message"><small>Veuillez renseignez votre nouveau mot de passe afin qu'il soit pris en compte</small></p>
+        <p class="login-box-message"><small>Veuillez renseigner votre nouveau mot de passe afin qu'il soit pris en compte</small></p>
 
         {% block fos_user_content %}
             {% include "FOSUserBundle:Resetting:reset_content.html.twig" %}
@@ -68,6 +80,9 @@
     </div>
     <!-- /.login-box-body -->
 </div>
+<footer class="text-right login-footer">
+    <strong>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go.</strong> All rights reserved. - <small>Bill&Go is an <a href="https://iumio.com">iumio component</a></small>
+</footer>
 
 {% block javascripts %}
     <script src="{{ asset('bundles/billandgo/assets/jquery/dist/jquery.min.js') }}"></script>

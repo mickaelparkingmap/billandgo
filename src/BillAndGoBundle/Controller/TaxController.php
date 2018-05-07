@@ -1,11 +1,25 @@
 <?php
 
+/**
+ *
+ *  * This is an iumio component [https://iumio.com]
+ *  *
+ *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
+ *  *
+ *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
+ *  *
+ *  * To get more information about licence, please check the licence file
+ *
+ */
+
+
 namespace BillAndGoBundle\Controller;
 
 use BillAndGoBundle\Entity\Tax;
 use BillAndGoBundle\BillAndGoBundle;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 
 class TaxController extends Controller
 {
@@ -88,5 +102,45 @@ class TaxController extends Controller
         }
         $manager->flush();
         return $this->redirectToRoute("billandgo_tax_index");
+    }
+
+    public function getLimitation($type) {
+        $user = $this->getUser();
+        if (!is_object($user)) { // || !$user instanceof UserInterface
+            throw new AccessDeniedException('This user does not have access to this section.');
+        }
+
+        $manager = $this->getDoctrine()->getManager();
+        $projects = ($manager->getRepository('BillAndGoBundle:Project')->findByRefUser($user));
+        $bills = ($manager->getRepository('BillAndGoBundle:Document')->findAllBill($user->getId()));
+        $quotes = ($estimates = $manager->getRepository('BillAndGoBundle:Document')->findAllEstimate($user->getId()));
+        $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
+        switch ($type) {
+            case 'project' :
+                if (count($projects) >= 15) {
+                    return (false);
+                }
+                return (true);
+                break;
+            case 'bill' :
+                if (count($bills) >= 15) {
+                    return (false);
+                }
+                return (true);
+                break;
+            case 'quote' :
+                if (count($quotes) >= 15) {
+                    return (false);
+                }
+                return (true);
+                break;
+            case 'client' :
+                if (count($clients) >= 15) {
+                    return (false);
+                }
+                return (true);
+                break;
+        }
+        return (true);
     }
 }

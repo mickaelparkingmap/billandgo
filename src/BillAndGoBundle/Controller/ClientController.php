@@ -1,5 +1,18 @@
 <?php
 
+/**
+ *
+ *  * This is an iumio component [https://iumio.com]
+ *  *
+ *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
+ *  *
+ *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
+ *  *
+ *  * To get more information about licence, please check the licence file
+ *
+ */
+
+
 namespace BillAndGoBundle\Controller;
 
 use BillAndGoBundle\Entity\Client;
@@ -30,7 +43,8 @@ class ClientController extends Controller
         }
         return $this->render('BillAndGoBundle:Client:index.html.twig', array(
             'list' => $clients,
-            'user' => $user
+            'user' => $user,
+            'limitation' =>  $this->getLimitation("client")
         ));
     }
 
@@ -116,6 +130,11 @@ class ClientController extends Controller
         if (!is_object($user)) {
             throw new AccessDeniedException('This user does not have access to this section.');
         }
+
+        if (false === $this->getLimitation("client")) {
+            return $this->redirect($this->generateUrl("billandgo_limitation"));
+        }
+
         $client = new Client();
         $form = $this->createForm(ClientType::class, $client);
         if ($req->isMethod('POST')) {
@@ -146,6 +165,7 @@ class ClientController extends Controller
         if (!is_object($user)) { // || !$user instanceof UserInterface
             throw new AccessDeniedException('This user does not have access to this section.');
         }
+
         if ($id > 0) {
             $manager = $this->getDoctrine()->getManager();
             $client = $manager->getRepository('BillAndGoBundle:Client')->find($id);
@@ -210,5 +230,47 @@ class ClientController extends Controller
             }
         }
         return $this->redirect($this->generateUrl("billandgo_clients_list"));
+    }
+
+    public function getLimitation($type) {
+        $user = $this->getUser();
+        if (!is_object($user)) { // || !$user instanceof UserInterface
+            throw new AccessDeniedException('This user does not have access to this section.');
+        }
+
+        $manager = $this->getDoctrine()->getManager();
+        $projects = ($manager->getRepository('BillAndGoBundle:Project')->findByRefUser($user));
+        $bills = ($manager->getRepository('BillAndGoBundle:Document')->findAllBill($user->getId()));
+        $quotes = ($estimates = $manager->getRepository('BillAndGoBundle:Document')->findAllEstimate($user->getId()));
+        $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
+        if ($user->getPlan() != "billandgo_paid_plan") {
+            switch ($type) {
+                case 'project' :
+                    if (count($projects) >= 15) {
+                        return (false);
+                    }
+                    return (true);
+                    break;
+                case 'bill' :
+                    if (count($bills) >= 15) {
+                        return (false);
+                    }
+                    return (true);
+                    break;
+                case 'quote' :
+                    if (count($quotes) >= 15) {
+                        return (false);
+                    }
+                    return (true);
+                    break;
+                case 'client' :
+                    if (count($clients) >= 15) {
+                        return (false);
+                    }
+                    return (true);
+                    break;
+            }
+        }
+        return (true);
     }
 }

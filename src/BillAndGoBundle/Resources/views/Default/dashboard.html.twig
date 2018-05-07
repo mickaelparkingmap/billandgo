@@ -9,8 +9,9 @@
         <section class="content-header">
             <h1>
                 Dashboard
-                <small>Bienvenue sur votre panneau de board. Retrouvez les informations nécéssaires ici.</small>
+                <small>Bienvenue sur votre tableau de bord. Retrouvez les statistiques globales de votre entreprise.</small>
             </h1>
+
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
                 <li class="active">Dashboard</li>
@@ -20,11 +21,19 @@
         <!-- Main content -->
         <section class="content">
             <div class="row">
+                {% if user.plan == null %}
+                <div class="col-md-12 box box-edited">
+                    <div class="callout callout-info">
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                        <h5><i class="fa fa-info"></i> Vous utilisez actuellement de la version gratuite de Bill&Go. Vous êtes limité à 15 factures, 15 projets, 15 devis et 15 clients (<a href=" https://billandgo.fr/limitation-edition-standard/">Voir les limitation de la version standard</a>). <br> Si vous souhaitez profiter de fonctionnalités payantes et la suppression de ce message, Veuillez nous contacter <a href=" https://billandgo.fr/edition-premium/">ici</a></h5>
+                    </div>
+                </div>
+                {% endif %}
                 <div class="col-md-3 col-sm-6 col-xs-12 onlick " onclick="location.href='{{ path('billandgo_project_list') }}'">
                     <div class="info-box">
                         <span class="info-box-icon bg-aqua"><i class="fa fa-industry"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Projet</span>
+                            <span class="info-box-text">Projets</span>
                             <span class="info-box-number">{{ project }}</span>
                         </div><!-- /.info-box-content -->
                     </div><!-- /.info-box -->
@@ -64,7 +73,7 @@
 
             <div class="box box-default">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Vos Projets en cours (max 3)</h3>
+                    <h3 class="box-title">Les derniers projets en cours <small>(Limité à 3)</small></h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div>
@@ -102,7 +111,7 @@
                                 {% endif %}
                             {% else %}
                                 <div class="callout callout-info">
-                                    <h4>Oups! Aucun projet en cours </h4>
+                                    <h4>Oups! Vous n'avez aucun projet en cours </h4>
                                 </div>
                             {% endfor %}
                         </div>
@@ -119,7 +128,7 @@
                             <div class="box-tools pull-right">
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                                 </button>
-                                <div class="btn-group">
+                               <!-- <div class="btn-group">
                                     <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
                                         <i class="fa fa-wrench"></i></button>
                                     <ul class="dropdown-menu" role="menu">
@@ -129,7 +138,7 @@
                                         <li class="divider"></li>
                                         <li><a href="#">Separated link</a></li>
                                     </ul>
-                                </div>
+                                </div>-->
                                 <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                             </div>
                         </div>
@@ -150,7 +159,7 @@
                                 <!-- /.col -->
                                 <div class="col-md-4">
                                     <p class="text-center">
-                                        <strong>Goal Completion</strong>
+                                        <strong>Historiques</strong>
                                     </p>
 
                                     <div class="progress-group">
@@ -195,46 +204,45 @@
                             <!-- /.row -->
                         </div>
                         <!-- ./box-body -->
-                        <div class="box-footer">
+                        <!--<div class="box-footer">
                             <div class="row">
                                 <div class="col-sm-3 col-xs-6">
                                     <div class="description-block border-right">
-                                        <!--<span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 17%</span>-->
+
                                         <h5 class="description-header">0</h5>
                                         <span class="description-text">Total des paiements</span>
                                     </div>
-                                    <!-- /.description-block -->
+
                                 </div>
-                                <!-- /.col -->
+
                                 <div class="col-sm-3 col-xs-6">
                                     <div class="description-block border-right">
                                         <span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> 0%</span>
                                         <h5 class="description-header">$10,390.90</h5>
                                         <span class="description-text">TOTAL COST</span>
                                     </div>
-                                    <!-- /.description-block -->
+
                                 </div>
-                                <!-- /.col -->
+
                                 <div class="col-sm-3 col-xs-6">
                                     <div class="description-block border-right">
                                         <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>
                                         <h5 class="description-header">$24,813.53</h5>
                                         <span class="description-text">TOTAL PROFIT</span>
                                     </div>
-                                    <!-- /.description-block -->
+
                                 </div>
-                                <!-- /.col -->
+
                                 <div class="col-sm-3 col-xs-6">
                                     <div class="description-block">
                                         <span class="description-percentage text-red"><i class="fa fa-caret-down"></i> 18%</span>
                                         <h5 class="description-header">1200</h5>
                                         <span class="description-text">GOAL COMPLETIONS</span>
                                     </div>
-                                    <!-- /.description-block -->
                                 </div>
                             </div>
-                            <!-- /.row -->
-                        </div>
+
+                        </div>-->
                         <!-- /.box-footer -->
                     </div>
                     <!-- /.box -->
