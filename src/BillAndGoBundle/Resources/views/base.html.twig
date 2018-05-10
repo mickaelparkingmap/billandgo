@@ -764,8 +764,6 @@
     <script src="{{ asset('bundles/billandgo/js/script.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/js/generatePdf.js') }}"></script>
 {% endblock %}
-{% block advanced_javascripts %}
-{% endblock %}
 {% if user.plan == "billandgo_paid_plan" %}
     <!--Start of Tawk.to Script-->
     <script type="text/javascript">
@@ -782,5 +780,7 @@
     <!--End of Tawk.to Script-->
 {% endif %}
 
+{% block advanced_javascripts %}
+{% endblock %}
 </body>
 </html>

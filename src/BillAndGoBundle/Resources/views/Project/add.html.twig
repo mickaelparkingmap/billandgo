@@ -60,11 +60,10 @@
     {{ parent() }}
 
     <script src="{{ asset('bundles/billandgo/js/project.google.agenda.js') }}"></script>
-    <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()"
-            onreadystatechange="if (this.readyState === 'complete') this.onload()">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.fr.min.js"></script>
     <script>
         $('#billandgobundle_project_deadline').datepicker();
     </script>
     <script src="{{ asset('bundles/billandgo/js/project.js') }}"></script>
+    <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()">
 {% endblock %}

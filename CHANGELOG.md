@@ -26,7 +26,13 @@ https://iumio.com
 - Add a loader for each page
 - Bug fixes
 
+## [1.2.1] - 2018-05-10
+
+- Fix breaking google agenda script
+
+
 [STABLE RELEASE]: https://github.com/iumio/billandgo
 [1.2.0]: https://github.com/iumio/billandgo/releases/tag/v1.2.0
+[1.2.1]: https://github.com/iumio/billandgo/releases/tag/v1.2.1
 
 
