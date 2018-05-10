@@ -1,0 +1,133 @@
+{% extends "BillAndGoBundle::base.html.twig" %}
+
+{% block title %}{{ parent() }} - Liste des clients{% endblock %}
+{% block advanced_stylesheets %}
+    <link href="{{ asset('bundles/billandgo/assets/fullcalendar/dist/fullcalendar.css') }}" type="text/css" rel="stylesheet"/>
+{% endblock %}
+{% block fos_user_content %}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Agenda
+                <small>Voici votre agenda</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li class="active">Agenda</li>
+            </ol>
+        </section>
+
+
+        <!-- Main content -->
+        <section class="content">
+
+            <div class="row">
+                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link"  id="authorize-button" style="display: none;">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green"><i class="fa fa-sign-in"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text"><strong>Connectez-vous (Google)</strong></span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link"  id="signout-button" style="display: none;">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-red"><i class="fa fa-sign-out"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text"><strong>Déconnectez-vous (Google) </strong></span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+            </div>
+
+
+            <div class="row" >
+                <div class="col-md-12">
+                    <div class="loading-element col-md-12" style="display: none"><div class="load-elem">Récupération des évènements...</div></div>
+                    <div id="calendar"></div>
+
+                </div>
+
+            </div>
+            <div class="row row_pre_event">
+                <div class="col-md-12"><h3>Vos évènements à venir</h3></div>
+            </div>
+            <hr/>
+            <div class="row" id="row_event_append">
+
+            </div>
+        </section>
+
+        <div id="eventContent" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title text-center ">Détails de l'évènement</h4>
+                    </div>
+                    <div class="modal-body">
+                        <ul>
+                            <li> Titre : <span id="eventTitle"></span></li>
+                            <li> Début : <span id="startTime"></span></li>
+                            <li> Fin : <span id="endTime"></span></li>
+                            <li> Description : <span id="eventInfo"></span></li>
+                            <li> Lieu : <span id="eventLocation"></span></li>
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" class="btn btn-default btn-info btn-outline" href="" id="eventLink" target="_blank">Voir sur Google Agenda</a>
+                        <button type="button" class="btn btn-default btn-danger btn-outline" data-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- /.content-wrapper -->
+
+{% endblock fos_user_content %}
+
+{% block advanced_javascripts %}
+
+    <script src="{{ asset('bundles/billandgo/assets/fullcalendar/dist/fullcalendar.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/assets/fullcalendar/dist/locale/fr.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/js/google.agenda.js') }}"></script>
+
+    <script type="text/javascript">
+
+        $(window).on('load', function () {
+            if (1 === gastatus) {
+                $(".loading-element").show();
+            }
+        });
+        $(document).ready(function () {
+
+
+            setTimeout(function () {
+                if (1 === gastatus) {
+                    addEvent();
+                }
+            }, 2500);
+
+        });
+
+        $(document).on('click', ".fc-next-button, .fc-prev-button, .fc-right button", function(){
+            addEvent();
+        });
+
+    </script>
+
+    <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()"
+            onreadystatechange="if (this.readyState === 'complete') this.onload()">
+
+    </script>
+
+{% endblock %}

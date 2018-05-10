@@ -25,6 +25,58 @@
     margin: 0 auto 25px;
 }
 
+.lines, #lines {
+    overflow-x: auto;
+}
+
+.skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side {
+    background-color: transparent!important;
+}
+
+.validform
+{
+    position: relative;
+    top: 62%;
+    text-align: center;
+    width: 90%;
+    margin: 20px auto;
+    color: #f14f79;
+    font-size: 23px;
+    text-transform: none!important;
+}
+
+.load-elem {
+    position: relative;
+    top: 70%;
+    text-align: center;
+    width: 90%;
+    margin: 20px auto;
+    color: #f14f79;
+    font-size: 17px;
+    text-transform: none!important;
+}
+
+.loading-element {
+    position: absolute;
+    left: 0px;
+    top: 200px;
+    width: 100%;
+    height: 50%;
+    z-index: 9999;
+    background: url(../img/loader.gif) center no-repeat #ffffff0a;
+}
+
+.se-pre-con {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url('../img/loader.gif') center no-repeat #fff;
+}
+
+
 .box-edited {
     position: inherit;
     border-radius: 0px;

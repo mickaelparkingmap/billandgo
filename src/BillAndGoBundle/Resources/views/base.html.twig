@@ -34,6 +34,8 @@
         <link href="{{ asset('bundles/billandgo/css/AdminLTE.min.css') }}" type="text/css" rel="stylesheet"/>
         <link href="{{ asset('bundles/billandgo/css/style.css') }}" type="text/css" rel="stylesheet"/>
     {% endblock %}
+    {% block advanced_stylesheets %}
+    {% endblock %}
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118804156-2"></script>
     <script>
@@ -51,6 +53,9 @@
 }
 %}
 <body class="hold-transition skin-blue sidebar-mini">
+{% block loader %}
+    <div class="se-pre-con"> <h3 class="validform">Chargement de la page...</h3> </div>
+{% endblock %}
 
 <div class="wrapper">
     <header class="main-header">
@@ -423,6 +428,15 @@
                         <li><a href="{{ path('fos_user_profile_edit') }}"><i class="fa fa-edit"></i> Editer votre profil</a></li>
                     </ul>
                 </li>
+                <li>
+                    <a href="{{ path('billandgo_organizer_show') }}">
+                        <i class="fa fa-calendar"></i>
+                        <span>Agenda (via Google)</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                </li>
                 {% if user.id == 1 %}
                     <li class="treeview">
                         <a href="#">
@@ -628,7 +642,7 @@
 
     <footer class="main-footer">
         <div class="pull-right hidden-xs">
-            <b>Version</b> 1.1.0
+            <b>Version</b> 1.2.0
         </div>
         <strong>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go.</strong> All rights reserved. - <small>Bill&Go is an <a href="https://iumio.com">iumio component</a></small>
     </footer>
@@ -641,6 +655,97 @@
 {% block javascripts %}
     <script src="{{ asset('bundles/billandgo/assets/jquery/dist/jquery.min.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/assets/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            document.getElementsByClassName("se-pre-con")[0].style.display = "none";
+
+        };
+
+        var formatingDate  = function(date) {
+            var type = 0;
+            if ("undefined" !== typeof date.dateTime) {
+                type = 1;
+                date = new Date(date.dateTime);
+            }
+            else {
+                date = new Date(date.date);
+            }
+
+            var monthNames = [
+                "Janvier", "Février", "Mars",
+                "Avril", "Mai", "Juin", "Juillet",
+                "Août", "Septembre", "Octobre",
+                "Novembre", "Décembre"
+            ];
+
+            var day = date.getDate();
+            var monthIndex = date.getMonth();
+            var year = date.getFullYear();
+
+            if (1 === type) {
+                var h = date.getHours();
+                if (h < 10) {
+                    h = '0' + h;
+                }
+                var i = date.getMinutes();
+                if (i < 10) {
+                    i = '0' + i;
+                }
+                var s = date.getSeconds();
+                if (s < 10) {
+                    s = '0' + s;
+                }
+                return day + ' ' + monthNames[monthIndex] + ' ' + year+ ' à '+ h+':'+i+':'+s;
+            }
+            else {
+                return day + ' ' + monthNames[monthIndex] + ' ' + year;
+            }
+        };
+
+
+        var formatingDate2  = function(date) {
+            var type = 0;
+            if ("undefined" !== typeof date.dateTime) {
+                type = 1;
+                date = new Date(date.dateTime);
+            }
+            else {
+                date = new Date(date.date);
+            }
+
+            var day = date.getDate();
+            if (day < 10) {
+                day = '0' + day;
+            }
+            var monthIndex = date.getMonth() + 1;
+            if (monthIndex < 10) {
+                monthIndex = '0' + monthIndex;
+            }
+            var year = date.getFullYear();
+
+            if (1 === type) {
+                var h = date.getHours();
+                if (h < 10) {
+                    h = '0' + h;
+                }
+                var i = date.getMinutes();
+                if (i < 10) {
+                    i = '0' + i;
+                }
+                var s = date.getSeconds();
+                if (s < 10) {
+                    s = '0' + s;
+                }
+                //return (date.toUTCString());
+                return (year + '-' + (monthIndex) + '-' + day+ 'T'+ h+':'+i+':'+s);
+            }
+            else {
+                //return (date.toUTCString());
+                return (year + '-' + (monthIndex) + '-' + day);
+            }
+        };
+
+    </script>
     <script type="text/javascript">
         $.widget.bridge('uibutton', $.ui.button);
     </script>

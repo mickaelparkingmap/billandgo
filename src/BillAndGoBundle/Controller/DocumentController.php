@@ -737,18 +737,30 @@ class DocumentController extends Controller
             $ar401 = ['wrong user'];
             return new Response(json_encode($ar401), 401);
         }
+
+        $readableType = "";
         if ($document->getType()) {
             $type = "estimate";
+            $readableType = "Devis";
             $rand = random_int(1, 1000000000);
         }
         else {
+            $readableType = "Facture";
             $type = "bill";
             $rand = 0;
         }
 
+        if ($user->getPlan() != "billandgo_paid_plan") {
+            $sender = array('billandgo@iumio.com' => "Bill&Go Service");
+        }
+        else {
+            $sender = array($user->getEmail() => ucfirst(strtolower($user->getFirstname()))
+                . " ". ucfirst(strtolower($user->getLastname())));
+        }
+
         $message = \Swift_Message::newInstance()
-            ->setSubject(ucfirst($type)." : ".$document->getNumber()." de ".$user->getCompanyName())
-            ->setFrom(array('billandgo@iumio.com' => "Bill&Go Service"))
+            ->setSubject($readableType." : ".$document->getNumber()." de ".$user->getCompanyName())
+            ->setFrom($sender)
             ->setTo($contact->getEmail())
             ->setBody(
                 $this->renderView(

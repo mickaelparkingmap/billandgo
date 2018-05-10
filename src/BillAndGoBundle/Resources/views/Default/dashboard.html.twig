@@ -78,6 +78,7 @@
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div>
                     <div class="box-body">
+                        <hr/>
                         <div class="row">
                             {% set nbp = 0 %}
                             {% set nbcolor = 0 %}
@@ -119,6 +120,32 @@
 
                 </div>
             </div>
+
+
+
+
+
+
+            <div class="box box-default" id="row_google_agenda" path-elem="{{ path('billandgo_organizer_show') }}">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Vos évènements à venir <small>(Limité à 4)</small></h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                    <div class="box-body">
+                        <hr/>
+                        <div class="row" id="row_event_append">
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+
+
             <div class="row">
                 <div class="col-md-12">
                     <div class="box">
@@ -257,3 +284,8 @@
 
 
 {% endblock fos_user_content %}
+{% block advanced_javascripts %}
+    <script src="{{ asset('bundles/billandgo/js/dashboard.google.agenda.js') }}"></script>
+    <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()"
+            onreadystatechange="if (this.readyState === 'complete') this.onload()">
+{% endblock %}
