@@ -87,7 +87,7 @@
 
 <div class="main_container">
 <!--  billboard  -->
-<table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#2a3647" style="background-size: cover; -webkit-background-size: cover; -moz-background-size: cover -o-background-size: cover; background-position: bottom center; background-repeat: no-repeat; background-color:#ffffff;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff" style="background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-position: bottom center; background-repeat: no-repeat; background-color:#ffffff;">
 
     <!--  header  -->
     <tr>
@@ -103,11 +103,11 @@
                 <tr>
                     <td>
                         {% if user.plan != "billandgo_paid_plan" %}
-                        <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150"  alt="" title="" border="0" style="border:0; display:inline_block;"/>
+                        <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150"  alt="" title="" border="0" style="border:0; display:inline-block;"/>
                         {% elseif user.getUserSkinPath() is not null %}
-                            <img src="{{ app.request.getSchemeAndHttpHost() ~ '/uploads/user/company/' ~ user.getCompanyLogoPath() }} " width="150"  alt="" title="" border="0" style="border:0; display:inline_block;"/>
+                            <img src="{{ app.request.getSchemeAndHttpHost() ~ '/uploads/user/company/' ~ user.getCompanyLogoPath() }} " width="150"  alt="" title="" border="0" style="border:0; display:inline-block;"/>
                         {% else %}
-                            <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150"  alt="" title="" border="0" style="border:0; display:inline_block;"/>
+                            <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150"  alt="" title="" border="0" style="border:0; display:inline-block;"/>
                         {% endif %}
                     </td>
                 </tr>
@@ -651,11 +651,11 @@
                             <tr>
                                 <td>
                                     {% if user.plan != "billandgo_paid_plan" %}
-                                    <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150"  alt="" title="" border="0" style="border:0; display:inline_block;"/>
+                                    <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150"  alt="" title="" border="0" style="border:0; display:inline-block;"/>
                                     {% elseif user.getUserSkinPath() is not null %}
-                                        <img src="{{ app.request.getSchemeAndHttpHost() ~ '/uploads/user/company/' ~ user.getCompanyLogoPath() }} " width="150"  alt="" title="" border="0" style="border:0; display:inline_block;"/>
+                                        <img src="{{ app.request.getSchemeAndHttpHost() ~ '/uploads/user/company/' ~ user.getCompanyLogoPath() }} " width="150"  alt="" title="" border="0" style="border:0; display:inline-block;"/>
                                     {% else %}
-                                        <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150"  alt="" title="" border="0" style="border:0; display:inline_block;"/>
+                                        <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150"  alt="" title="" border="0" style="border:0; display:inline-block;"/>
                                     {% endif %}
                                 </td>
 

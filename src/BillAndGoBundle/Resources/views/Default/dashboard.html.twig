@@ -2,6 +2,10 @@
 
 {% block title %}{{ parent() }} - Dashboard{% endblock %}
 
+{% block advanced_stylesheets %}
+    <link rel="stylesheet" href="{{ asset('bundles/billandgo/assets/morris.js/morris.css') }}">
+{% endblock %}
+
 {% block fos_user_content %}
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -95,7 +99,7 @@
                                             </div>
                                             <!-- /.widget-user-image -->
                                             <h3 class="widget-user-username"> Projet {{ p.name|capitalize }} </h3>
-                                            <h5 class="widget-user-desc">Deadline : <span class="badge">{{ p.deadLine|date('d-m-Y') }}</span></h5>
+                                            <h5 class="widget-user-desc">Deadline : <span class="">{{ p.deadLine|date('d-m-Y') }}</span></h5>
 
                                         </div>
                                         <div class="box-footer no-padding">
@@ -142,141 +146,70 @@
                 </div>
             </div>
 
-
-
-
-
             <div class="row">
                 <div class="col-md-12">
-                    <div class="box">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Vos statistiques du mois</h3>
+                    <!-- solid sales graph -->
+                    <div class="box box-solid bg-teal-gradient">
+                        <div class="box-header">
+                            <i class="fa fa-th"></i>
+
+                            <h3 class="box-title">Statistiques du 01/{{ 'now'|date('m/Y') }} au {{ enddate }}</h3>
 
                             <div class="box-tools pull-right">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                <button type="button" class="btn bg-teal btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
                                 </button>
-                               <!-- <div class="btn-group">
-                                    <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                                        <i class="fa fa-wrench"></i></button>
-                                    <ul class="dropdown-menu" role="menu">
-                                        <li><a href="#">Action</a></li>
-                                        <li><a href="#">Another action</a></li>
-                                        <li><a href="#">Something else here</a></li>
-                                        <li class="divider"></li>
-                                        <li><a href="#">Separated link</a></li>
-                                    </ul>
-                                </div>-->
-                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                <button type="button" class="btn bg-teal btn-sm" data-widget="remove"><i class="fa fa-times"></i>
+                                </button>
                             </div>
                         </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
+                        <div class="box-body border-radius-none">
+                            <div class="chart" id="line-chart" style="height: 250px;"></div>
+                        </div>
+                        <!-- /.box-body -->
+                        <div class="box-footer no-border">
                             <div class="row">
-                                <div class="col-md-8">
-                                    <p class="text-center">
-                                        <strong>Statistiques du 01/{{ 'now'|date('m/Y') }} au {{ enddate }}</strong>
-                                    </p>
-
-                                    <div class="chart">
-                                        <!-- Sales Chart Canvas -->
-                                        <canvas id="salesChart" style="height: 180px; width: 1083px;" width="2166" height="360"></canvas>
-                                    </div>
-                                    <!-- /.chart-responsive -->
-                                </div>
-                                <!-- /.col -->
-                                <div class="col-md-4">
-                                    <p class="text-center">
-                                        <strong>Historiques</strong>
-                                    </p>
-
+                                <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
                                     <div class="progress-group">
                                         <span class="progress-text">Facture(s) payée(s)</span>
-                                        <span class="progress-number"><b>{{ billpaidm }}</b>/{{ billtotalm }}</span>
+                                        <span class="progress-number text-green"><b>{{ billpaidm }}</b>/{{ billtotalm }}</span>
 
                                         <div class="progress sm">
-                                            <div class="progress-bar progress-bar-aqua" style="width: {% if billtotalm > 0 %}{{ billpaidm * 100 / billtotalm }}{% else %}0{% endif %}%"></div>
+                                            <div class="progress-bar progress-bar-aqua bg-teal" style="width: {% if billtotalm > 0 %}{{ billpaidm * 100 / billtotalm }}{% else %}0{% endif %}%"></div>
                                         </div>
                                     </div>
+
+                                    <div class="knob-label"><strong>Factures payées</strong></div>
+                                </div>
+                                <!-- ./col -->
+                                <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
                                     <!-- /.progress-group -->
                                     <div class="progress-group">
                                         <span class="progress-text">Devis accepté(s)</span>
-                                        <span class="progress-number"><b>{{ quotesacceptm }}</b>/{{ quotestotalm }}</span>
+                                        <span class="progress-number text-green"><b>{{ quotesacceptm }}</b>/{{ quotestotalm }}</span>
 
                                         <div class="progress sm">
-                                            <div class="progress-bar progress-bar-red" style="width: {% if quotestotalm > 0 %}{{ quotesacceptm * 100 / quotestotalm }}{% else %}0{% endif %}%"></div>
+                                            <div class="progress-bar progress-bar-aqua bg-teal" style="width: {% if quotestotalm > 0 %}{{ quotesacceptm * 100 / quotestotalm }}{% else %}0{% endif %}%"></div>
                                         </div>
                                     </div>
-                                    <!-- /.progress-group -->
-                                    <!--<div class="progress-group">
-                                        <span class="progress-text">Visit Premium Page</span>
-                                        <span class="progress-number"><b>480</b>/800</span>
 
-                                        <div class="progress sm">
-                                            <div class="progress-bar progress-bar-green" style="width: 80%"></div>
-                                        </div>
-                                    </div>
-                                    <!-- /.progress-group -->
-                                    <!--<div class="progress-group">
-                                        <span class="progress-text">Send Inquiries</span>
-                                        <span class="progress-number"><b>250</b>/500</span>
-
-                                        <div class="progress sm">
-                                            <div class="progress-bar progress-bar-yellow" style="width: 80%"></div>
-                                        </div>
-                                    </div>
-                                    <!-- /.progress-group -->
+                                    <div class="knob-label"><strong>Devis acceptés</strong></div>
                                 </div>
-                                <!-- /.col -->
+                                <!-- ./col -->
+                                <!--<div class="col-xs-4 text-center">
+                                    <input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60"
+                                           data-fgColor="#39CCCC">
+
+                                    <div class="knob-label">In-Store</div>
+                                </div>-->
+                                <!-- ./col -->
                             </div>
                             <!-- /.row -->
                         </div>
-                        <!-- ./box-body -->
-                        <!--<div class="box-footer">
-                            <div class="row">
-                                <div class="col-sm-3 col-xs-6">
-                                    <div class="description-block border-right">
-
-                                        <h5 class="description-header">0</h5>
-                                        <span class="description-text">Total des paiements</span>
-                                    </div>
-
-                                </div>
-
-                                <div class="col-sm-3 col-xs-6">
-                                    <div class="description-block border-right">
-                                        <span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> 0%</span>
-                                        <h5 class="description-header">$10,390.90</h5>
-                                        <span class="description-text">TOTAL COST</span>
-                                    </div>
-
-                                </div>
-
-                                <div class="col-sm-3 col-xs-6">
-                                    <div class="description-block border-right">
-                                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>
-                                        <h5 class="description-header">$24,813.53</h5>
-                                        <span class="description-text">TOTAL PROFIT</span>
-                                    </div>
-
-                                </div>
-
-                                <div class="col-sm-3 col-xs-6">
-                                    <div class="description-block">
-                                        <span class="description-percentage text-red"><i class="fa fa-caret-down"></i> 18%</span>
-                                        <h5 class="description-header">1200</h5>
-                                        <span class="description-text">GOAL COMPLETIONS</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>-->
                         <!-- /.box-footer -->
                     </div>
                     <!-- /.box -->
                 </div>
-                <!-- /.col -->
             </div>
-
         </section>
         <!-- /.content -->
     </div>
@@ -285,6 +218,13 @@
 
 {% endblock fos_user_content %}
 {% block advanced_javascripts %}
+    <script src="{{ asset('bundles/billandgo/assets/jquery-slimscroll/jquery.slimscroll.min.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/assets/fastclick/lib/fastclick.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/assets/jquery-knob/js/jquery.knob.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/assets/jquery-sparkline/dist/jquery.sparkline.min.js') }}"></script>
+
+
+
     <script src="{{ asset('bundles/billandgo/js/dashboard.google.agenda.js') }}"></script>
     <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
 

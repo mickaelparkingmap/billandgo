@@ -329,18 +329,6 @@
                                             <span>{{ line.price * 1 }}€ x {{ line.quantity }}</span> = <span>{{ line.price * line.quantity }}€</span>
                                             {% set value = value + line.price * line.quantity %}
                                         {% endif %}
-                                        {% if line.refEstimate|first %}
-                                            <br/>
-                                            <a class="btn btn-info" href="{{ path("billandgo_document_view", {"id" : line.refEstimate|first.id}) }}" >
-                                                devis {{ line.refEstimate|first.number }}
-                                            </a>
-                                        {% endif %}
-                                        {% if line.refBill|first %}
-                                            <br/>
-                                            <a class="btn btn-info" href="{{ path("billandgo_document_view", {"id" : line.refBill|first.id}) }}" >
-                                                devis {{ line.refBill|first.number }}
-                                            </a>
-                                        {% endif %}
                                     </td>
                                     <td>
                                         <span>Estimé : {{ line.estimatedTime * line.quantity }}h</span>
@@ -424,6 +412,18 @@
                                                title="annuler" class="btn btn-danger btn-outline">
                                                 <i class="fa fa-toggle-on text-danger"></i>
                                                 Annuler
+                                            </a>
+                                        {% endif %}
+                                        {% if line.refEstimate|first %}
+                                            <br/>
+                                            <a class="btn btn-info btn-outline" href="{{ path("billandgo_document_view", {"id" : line.refEstimate|first.id}) }}" >
+                                                Voir le devis {{ line.refEstimate|first.number }}
+                                            </a>
+                                        {% endif %}
+                                        {% if line.refBill|first %}
+                                            <br/>
+                                            <a class="btn btn-info btn-outline" href="{{ path("billandgo_document_view", {"id" : line.refBill|first.id}) }}" >
+                                                Voir le devis {{ line.refBill|first.number }}
                                             </a>
                                         {% endif %}
                                     </td>
@@ -596,7 +596,7 @@
             }
             else {
                 $(this).parent().children(".hidden").prop("checked", false);
-                linechecked--;ƒ
+                linechecked--;
                 if (linechecked < 1) {
                     linechecked = 0;
                     $("#transfoButton").hide();

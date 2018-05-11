@@ -1,7 +1,6 @@
 <?php
 
 /**
- *
  *  * This is an iumio component [https://iumio.com]
  *  *
  *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
@@ -9,7 +8,6 @@
  *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
  *  *
  *  * To get more information about licence, please check the licence file
- *
  */
 
 
@@ -32,9 +30,11 @@ class OrganizerController extends Controller
             throw new AccessDeniedException('This user does not have access to this section.');
         }
 
-        return $this->render('BillAndGoBundle:Default:limited.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:Default:limited.html.twig', array(
             'user' => $user,
-        ));
+            )
+        );
     }
 
     /**
@@ -46,12 +46,15 @@ class OrganizerController extends Controller
         if (!is_object($user)) { // || !$user instanceof UserInterface
             throw new AccessDeniedException('This user does not have access to this section.');
         }
-        return $this->render('BillAndGoBundle:Organizer:index.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:Organizer:index.html.twig', array(
             'user' => $user
-        ));
+            )
+        );
     }
 
-    public function getLimitation($type) {
+    public function getLimitation($type) 
+    {
         $user = $this->getUser();
         if (!is_object($user)) { // || !$user instanceof UserInterface
             throw new AccessDeniedException('This user does not have access to this section.');
@@ -64,29 +67,29 @@ class OrganizerController extends Controller
         $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
         if ($user->getPlan() != "billandgo_paid_plan") {
             switch ($type) {
-                case 'project' :
-                    if (count($projects) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'project' :
+                if (count($projects) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
-                case 'bill' :
-                    if (count($bills) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'bill' :
+                if (count($bills) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
-                case 'quote' :
-                    if (count($quotes) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'quote' :
+                if (count($quotes) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
-                case 'client' :
-                    if (count($clients) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'client' :
+                if (count($clients) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
             }
         }

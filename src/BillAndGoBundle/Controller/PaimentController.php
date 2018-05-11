@@ -1,7 +1,6 @@
 <?php
 
 /**
- *
  *  * This is an iumio component [https://iumio.com]
  *  *
  *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
@@ -9,7 +8,6 @@
  *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
  *  *
  *  * To get more information about licence, please check the licence file
- *
  */
 
 
@@ -37,7 +35,7 @@ class PaimentController extends Controller
     /**
      * Lists all paiment entities.
      *
-     * @Route("/", name="billandgo_paiment_index")
+     * @Route("/",    name="billandgo_paiment_index")
      * @Method("GET")
      */
     public function indexAction()
@@ -49,18 +47,20 @@ class PaimentController extends Controller
         }
         $em = $this->getDoctrine()->getManager();
         $paiments = $em->getRepository('BillAndGoBundle:Paiment')->findByRefUser($user);
-        return $this->render('BillAndGoBundle:Paiment:index.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:Paiment:index.html.twig', array(
             'paiments' => $paiments,
             'user' => $user
-        ));
+            )
+        );
     }
 
     /**
      * add a paiment
      *
      * @Route("/add", name="billandgo_paiment_add")
-     * @param Request $req
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @param         Request $req
+     * @return        \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function addAction(Request $req)
     {
@@ -88,19 +88,21 @@ class PaimentController extends Controller
                 }
             }
         }
-        return $this->render('BillAndGoBundle:Paiment:add.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:Paiment:add.html.twig', array(
             'form' => $form->createView(),
             'user' => $user
-        ));
+            )
+        );
     }
 
     /**
      * add a paiment
      *
      * @Route("/add/{id}", name="billandgo_paiment_add_from_bill")
-     * @param Request $req
-     * @param int $id
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @param              Request $req
+     * @param              int     $id
+     * @return             \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function addFromBillAction(Request $req, int $id)
     {
@@ -147,17 +149,19 @@ class PaimentController extends Controller
             return new Response(json_encode($ar401), 401);
         }
         $deleteForm = $this->createDeleteForm($paiment);
-        return $this->render('BillAndGoBundle:Paiment:show.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:Paiment:show.html.twig', array(
             'paiment' => $paiment,
             'user' => $user,
             'delete_form' => $deleteForm->createView(),
-        ));
+            )
+        );
     }
 
     /**
      * Deletes a paiment entity.
      *
-     * @Route("/{id}", name="paiment_delete")
+     * @Route("/{id}",   name="paiment_delete")
      * @Method("DELETE")
      */
     public function deleteAction(Request $request, Paiment $paiment)
@@ -186,8 +190,7 @@ class PaimentController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('paiment_delete', array('id' => $paiment->getId())))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
 
 }

@@ -13,7 +13,6 @@
 
 $(".billandgo_add_project").submit(function (e) {
     e.preventDefault();
-    console.log("dzdzd");
     var client = $("#billandgobundle_project_refClient option:selected").html();
     var name = $("#billandgobundle_project_name").val();
     var deadline = $("#billandgobundle_project_deadline").val();
@@ -28,6 +27,72 @@ $(".billandgo_add_project").submit(function (e) {
     }
 
 });
+
+
+
+$("#createprojectwithoutdesc").submit(function (e) {
+    e.preventDefault();
+    var client = $(this).attr("attr-client");
+    var name = $("#project_name").val();
+    var deadline = $("#project_deadline").val();
+    var desc = $("#pdescription").html();
+    console.log(client, name, deadline, desc);
+    if (statusG === 1) {
+        addEvent2(client, name, deadline, desc, $("#createprojectwithoutdesc"))
+    }
+    else {
+        $("#createprojectwithoutdesc").unbind("submit").submit();
+    }
+
+});
+
+
+$(".form_project").each(function () {
+    $(this).bind('submit', function (e) {
+        e.preventDefault();
+        var client = $(this).attr("attr-client");
+        var name = $(this).find(".project_name").val();
+        var deadline = $(this).find(".project_deadline").val();
+        var desc = $(this).find(".pdesc").html();
+        console.log(client, name, deadline, desc);
+        if (statusG === 1) {
+            addEvent2(client, name, deadline, desc, $(this))
+        }
+        else {
+            $(this).unbind("submit").submit();
+        }
+
+    });
+});
+
+
+
+var addEvent2 = function (client, name, deadline, desc, id) {
+    var event = {
+        'summary': 'Projet : '+ name,
+        'description': 'Projet pour le client '+ client + ' - ' + desc,
+        'start': {
+            'dateTime': (new Date()).toISOString(),
+            'timeZone': 'Europe/Paris'
+        },
+        'end': {
+            'dateTime': (new Date(deadline)).toISOString(),
+            'timeZone': 'Europe/Paris'
+        }
+    };
+
+    var request = gapi.client.calendar.events.insert({
+        'calendarId': 'primary',
+        'resource': event
+    });
+
+    request.execute(function(event) {
+        id.unbind("submit").submit();
+    });
+
+
+};
+
 
 var addEvent = function (client, name, deadline, desc) {
     var event = {

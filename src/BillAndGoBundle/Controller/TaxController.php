@@ -1,7 +1,6 @@
 <?php
 
 /**
- *
  *  * This is an iumio component [https://iumio.com]
  *  *
  *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
@@ -9,7 +8,6 @@
  *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
  *  *
  *  * To get more information about licence, please check the licence file
- *
  */
 
 
@@ -27,7 +25,7 @@ class TaxController extends Controller
      * Lists all tax entities.
      *
      * @Route("/tax/index", name="billandgo_tax_index")
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return              \Symfony\Component\HttpFoundation\Response
      */
     public function indexAction()
     {
@@ -39,10 +37,12 @@ class TaxController extends Controller
         $manager = $this->getDoctrine()->getManager();
         $taxes = $manager->getRepository('BillAndGoBundle:Tax')->findAll();
 
-        return $this->render('BillAndGoBundle:Tax:index.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:Tax:index.html.twig', array(
             'taxes' => $taxes,
             'user' => $user
-        ));
+            )
+        );
     }
 
     /**
@@ -50,7 +50,7 @@ class TaxController extends Controller
      * Admin only
      *
      * @Route("/tax/create", name="billandgo_tax_create")
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return               \Symfony\Component\HttpFoundation\Response
      */
     public function createAction()
     {
@@ -104,7 +104,8 @@ class TaxController extends Controller
         return $this->redirectToRoute("billandgo_tax_index");
     }
 
-    public function getLimitation($type) {
+    public function getLimitation($type) 
+    {
         $user = $this->getUser();
         if (!is_object($user)) { // || !$user instanceof UserInterface
             throw new AccessDeniedException('This user does not have access to this section.');
@@ -116,29 +117,29 @@ class TaxController extends Controller
         $quotes = ($estimates = $manager->getRepository('BillAndGoBundle:Document')->findAllEstimate($user->getId()));
         $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
         switch ($type) {
-            case 'project' :
-                if (count($projects) >= 15) {
-                    return (false);
-                }
-                return (true);
+        case 'project' :
+            if (count($projects) >= 15) {
+                return (false);
+            }
+            return (true);
                 break;
-            case 'bill' :
-                if (count($bills) >= 15) {
-                    return (false);
-                }
-                return (true);
+        case 'bill' :
+            if (count($bills) >= 15) {
+                return (false);
+            }
+            return (true);
                 break;
-            case 'quote' :
-                if (count($quotes) >= 15) {
-                    return (false);
-                }
-                return (true);
+        case 'quote' :
+            if (count($quotes) >= 15) {
+                return (false);
+            }
+            return (true);
                 break;
-            case 'client' :
-                if (count($clients) >= 15) {
-                    return (false);
-                }
-                return (true);
+        case 'client' :
+            if (count($clients) >= 15) {
+                return (false);
+            }
+            return (true);
                 break;
         }
         return (true);

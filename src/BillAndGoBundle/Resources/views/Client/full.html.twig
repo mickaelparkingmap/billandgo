@@ -103,7 +103,7 @@
                                 <li>
                                     <a href="#"><strong>Adresse :</strong> {{ client.adress }} {{ client.zipcode }} {{ client.city }}, {{ client.country }}</a>
                                 </li>
-                                <li><a href="#"><strong>Contact(s) :</strong>
+                                <li style="overflow-x: auto"><a href="#"><strong>Contact(s) :</strong>
                                         {% if client.contacts|length > 0 %}
                                         <table class="table table-striped">
                                             <thead>

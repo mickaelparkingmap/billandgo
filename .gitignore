@@ -43,5 +43,5 @@
 # vendors libraries (Symfony)
 /vendor/
 
-/.idea/
-/docs/
+.idea/
+docs/

@@ -44,9 +44,11 @@ class ProfileController extends BaseController
             throw new AccessDeniedException('This user does not have access to this section.');
         }
 
-        return $this->render('@FOSUser/Profile/show.html.twig', array(
+        return $this->render(
+            '@FOSUser/Profile/show.html.twig', array(
             'user' => $user,
-        ));
+            )
+        );
     }
 
 
@@ -54,7 +56,7 @@ class ProfileController extends BaseController
     /**
      * Edit the user.
      *
-     * @param Request $request
+     * @param  Request $request
      * @return Response
      */
     public function editAction(Request $request)
@@ -64,7 +66,9 @@ class ProfileController extends BaseController
         if (!is_object($user) || !$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
         }
-        /** @var $dispatcher EventDispatcherInterface */
+        /**
+ * @var $dispatcher EventDispatcherInterface 
+*/
         $dispatcher = $this->get('event_dispatcher');
 
         $event = new GetResponseUserEvent($user, $request);
@@ -90,14 +94,16 @@ class ProfileController extends BaseController
             ->add('country', null, array('label' => 'Pays', 'attr'  => array('class' => 'form-control')))
             ->add('phone', null, array('label' => 'Numéro de téléphone fixe', 'attr'  => array('class' => 'form-control')))
             ->add('mobile', null, array('label' => 'Numéro de téléphone mobile', 'attr'  => array('class' => 'form-control')))
-            ->add('company_logo', null , array('label' => 'Logo', 'attr'  => array('class' => 'form-control'), 'required' => false))
-            ->add('user_skin', null , array('label' => 'Photo de profil', 'attr'  => array('class' => 'form-control'), 'required' => false))
-            ->add('job_type', ChoiceType::class, array(
+            ->add('company_logo', null, array('label' => 'Logo', 'attr'  => array('class' => 'form-control'), 'required' => false))
+            ->add('user_skin', null, array('label' => 'Photo de profil', 'attr'  => array('class' => 'form-control'), 'required' => false))
+            ->add(
+                'job_type', ChoiceType::class, array(
                 'choices' => array(
                     'Freelance' => 'freelance',
                     'Micro-entrepreneur' => 'self-entrepreneur'
                 ), 'attr'  => array('class' => 'form-control'), 'required' => false,  'placeholder' => 'Non défini'
-            ))
+                )
+            )
             ->getForm();
 
         $form->handleRequest($request);
@@ -105,7 +111,9 @@ class ProfileController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $manager = $this->getDoctrine()->getManager();
 
-            /** @var $userManager UserManagerInterface */
+            /**
+ * @var $userManager UserManagerInterface 
+*/
             $userManager = $this->get('fos_user.user_manager');
             $event = new FormEvent($form, $request);
             $dispatcher->dispatch(FOSUserEvents::PROFILE_EDIT_SUCCESS, $event);
@@ -122,9 +130,11 @@ class ProfileController extends BaseController
         }
 
         //$_SESSION['user_last_mjm_photo'] = $user->getCompanyLogo();
-        return $this->render('@FOSUser/Profile/edit.html.twig', array(
+        return $this->render(
+            '@FOSUser/Profile/edit.html.twig', array(
             'form' => $form->createView(), "user" => $user
-        ));
+            )
+        );
     }
 
 
@@ -134,8 +144,9 @@ class ProfileController extends BaseController
         //1. strrchr renvoie l'extension avec le point (« . »).
         //2. substr(chaine,1) ignore le premier caractère de chaine.
         //3. strtolower met l'extension en minuscules.
-        $extension_upload = strtolower(  substr(  strrchr($_FILES['icone']['name'], '.')  ,1)  );
-        if ( in_array($extension_upload,$extensions_valides) ) exit( "Extension correcte");
+        $extension_upload = strtolower(substr(strrchr($_FILES['icone']['name'], '.'), 1));
+        if (in_array($extension_upload, $extensions_valides) ) { exit("Extension correcte");
+        }
     }
 
 }

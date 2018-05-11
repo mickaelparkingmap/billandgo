@@ -128,7 +128,7 @@ set status_fr = {
                             <div class="row">
                                 <div class="col-md-6">
                                     <ul>
-                                        <li><strong>Description : </strong> {{ document.description }}</li>
+                                        <li><strong>Description : </strong> <span id="pdescription">{{ document.description }}</span></li>
                                         <li><strong>Status : </strong> {{ status_fr[document.status]|capitalize }}</li>
                                         <li><strong>Montant {% if not document.type %}payé{% endif %} : </strong> {% if not document.type %}{{ document.sumPaiments }} € sur {% endif %}{{ document.getHT + document.VAT }} €</li>
                                         {% if document.sentDate %}
@@ -304,11 +304,11 @@ set status_fr = {
                                                                     </div>
                                                                     <div class="modal-body">
 
-                                                                            <form method="post" action="{{ path('billandgo_project_create_from_estimate', {'estimateID' : document.id}) }}">
+                                                                            <form method="post" action="{{ path('billandgo_project_create_from_estimate', {'estimateID' : document.id}) }}" id="createprojectwithoutdesc" attr-client="{{ document.refClient.companyName }}">
                                                                                 <div class="form-group row">
                                                                                     <label for="project_name" class="col-sm-3 col-form-label">Nom</label>
                                                                                     <div class="col-sm-9">
-                                                                                        <input class="form-control" type="text" value="Entrez le nom du projet" id="project_name" name="name">
+                                                                                        <input class="form-control" type="text" placeholder="Entrez le nom du projet" id="project_name" name="name">
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="form-group row">
@@ -317,11 +317,12 @@ set status_fr = {
                                                                                         <input class="form-control" type="text" name="deadline" id="project_deadline">
                                                                                     </div>
                                                                                 </div>
+                                                                                <div ><small><strong><i class="fa fa-info"></i> La description sera créée à partir de celle du devis</strong></small></div>
                                                                                 <button type="submit" class="btn btn-success btn-outline">Créer le projet</button>
                                                                             </form>
                                                                         </div>
                                                                     <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary btn-danger btn-outline" data-dismiss="modal">Fermer</button>
+                                                                        <button type="submit" class="btn btn-secondary btn-danger btn-outline" data-dismiss="modal">Fermer</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -507,22 +508,22 @@ set status_fr = {
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <form method="post" action="{{ path('billandgo_project_create_from_lines') }}" id="createProject">
+                                                        <form method="post" action="{{ path('billandgo_project_create_from_lines') }}" id="createProject" attr-client="{{ document.refClient.companyName }}">
                                                             <input type="hidden" name="estimate" value="{{ document.id }}">
                                                             <div class="form-group">
                                                                 <label class="control-label required" for="name">Nom du projet :</label>
-                                                                <input class="form-control" type="text" name="name" value="{{ document.number }}">
+                                                                <input class="form-control projectname" type="text" name="name" value="{{ document.number }}">
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="control-label required" for="name">Description :</label>
-                                                                <input class="form-control" type="text" name="description" value="{{ document.description }}">
+                                                                <input class="form-control projectdescription" type="text" name="description" value="{{ document.description }}">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label class="control-label required" for="name">Délai :</label>
-                                                                <input class="form-control datepick" type="text" name="deadline">
+                                                                <label class="control-label required" for="name">Deadline :</label>
+                                                                <input class="form-control datepick projectdeadline" type="text" name="deadline">
                                                             </div>
                                                             <div class="form-group text-right">
-                                                                <input type="submit" class="btn btn-success btn-outline" value="Créer un projet">
+                                                                <input type="button" class="btn btn-success btn-outline" value="Créer un projet" id="createProjectElement">
                                                             </div>
                                                         </form>
                                                     </div>
@@ -719,4 +720,6 @@ set status_fr = {
 
         var imgDoc = '{{ asset('uploads/user/company/'~user.getCompanyLogoPath ) }}';
     </script>
+    <script src="{{ asset('bundles/billandgo/js/project.google.agenda.js') }}"></script>
+<script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
 {% endblock %}

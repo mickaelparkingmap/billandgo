@@ -1,7 +1,6 @@
 <?php
 
 /**
- *
  *  * This is an iumio component [https://iumio.com]
  *  *
  *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
@@ -9,7 +8,6 @@
  *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
  *  *
  *  * To get more information about licence, please check the licence file
- *
  */
 
 
@@ -45,10 +43,12 @@ class DevisController extends Controller
             $ar401 = ["not connected"];
             return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
         }
-        return $this->render('BillAndGoBundle:Devis:index.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:Devis:index.html.twig', array(
             'list' => $list_devis,
             'user' => $user
-        ));
+            )
+        );
     }
 
     /**
@@ -57,7 +57,8 @@ class DevisController extends Controller
     public function mobileIndexAction()
     {
         $user = $this->getUser();
-        if (!is_object($user)) return 401;
+        if (!is_object($user)) { return 401;
+        }
         $manager = $this->getDoctrine()->getManager();
         $list_devis = $manager->getRepository('BillAndGoBundle:Devis')->findByRefUser($user);
         return $list_devis;
@@ -66,7 +67,7 @@ class DevisController extends Controller
     /**
      * @Route("/devis/{id}", name="billandgo_devis_view", requirements={"id" = "\d+"});
      * @param Request $req
-     * @param int $id
+     * @param int     $id
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function viewAction(Request $req, int $id)
@@ -81,7 +82,8 @@ class DevisController extends Controller
                 $ar401 = ["unauthorized"];
                 return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
             }
-            if ($devis == -404) return $this->redirect($this->generateUrl("billandgo_devis_list"));
+            if ($devis == -404) { return $this->redirect($this->generateUrl("billandgo_devis_list"));
+            }
         }
         $line = new DevisLine();
         $form = $this->get('form.factory')->create(DevisLine2Type::class, $line);
@@ -102,12 +104,14 @@ class DevisController extends Controller
                 return $this->redirect($this->generateUrl("billandgo_devis_view", array('id' => $devis->getId())));
             }
         }
-        return $this->render('BillAndGoBundle:Devis:full.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:Devis:full.html.twig', array(
             'devis' => $devis,
             'form' => $form->createView(),
             'formEdit' => $formEdit->createView(),
             'user' => $user
-        ));
+            )
+        );
     }
 
     /**
@@ -118,12 +122,14 @@ class DevisController extends Controller
     public function mobileViewAction(int $id)
     {
         $user = $this->getUser();
-        if (!is_object($user)) return -401;
+        if (!is_object($user)) { return -401;
+        }
         if ($id > 0) {
             $manager = $this->getDoctrine()->getManager();
             $devis = $manager->getRepository('BillAndGoBundle:Devis')->find($id);
-            if ($devis->getRefUser() != $user) return -401;
-            if ($devis != NULL) {
+            if ($devis->getRefUser() != $user) { return -401;
+            }
+            if ($devis != null) {
                 return $devis;
             }
         }
@@ -151,7 +157,7 @@ class DevisController extends Controller
         $devis = new Devis();
         $form = $this->createForm(DevisType::class, $devis, array('uid' => $user->getId()));
         if ($req->isMethod('POST')) {
-            if (($form->handleRequest($req)->isValid()) && ($devis->getClient() != NULL)) {
+            if (($form->handleRequest($req)->isValid()) && ($devis->getClient() != null)) {
                 $devis->setRefUser($user);
                 $manager->persist($devis);
                 $manager->flush();
@@ -159,16 +165,18 @@ class DevisController extends Controller
                 return $this->redirect($this->generateUrl("billandgo_devis_view", array('id' => $devis->getId())));
             }
         }
-        return $this->render('BillAndGoBundle:Devis:add.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:Devis:add.html.twig', array(
             'form' => $form->createView(),
             'user' => $user
-        ));
+            )
+        );
     }
 
     /**
      * @Route("/devis/{id}/add", name="billandgo_devis_add_line")
      * @param Request $req
-     * @param int $id
+     * @param int     $id
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function addLineAction(Request $req, int $id)
@@ -180,13 +188,14 @@ class DevisController extends Controller
         if ($id > 0) {
             $manager = $this->getDoctrine()->getManager();
             $devis = $manager->getRepository('BillAndGoBundle:Devis')->find($id);
-            if ($devis != NULL) {
+            if ($devis != null) {
                 if ($devis->getRefUser() != $user) {
                     $ar401 = ["not your estimate"];
                     return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
                 }
-                if ($devis->getStatus() != "draft")
+                if ($devis->getStatus() != "draft") {
                     return $this->redirect($this->generateUrl("billandgo_devis_view", array('id' => $devis->getId())));
+                }
                 $line = new DevisLine();
                 $form = $this->get('form.factory')->create(DevisLine2Type::class, $line);
                 if ($req->isMethod('POST')) {
@@ -199,11 +208,13 @@ class DevisController extends Controller
                         return $this->redirect($this->generateUrl("billandgo_devis_view", array('id' => $devis->getId())));
                     }
                 }
-                return $this->render('BillAndGoBundle:Devis:addline2.html.twig', array(
+                return $this->render(
+                    'BillAndGoBundle:Devis:addline2.html.twig', array(
                     'form' => $form->createView(),
                     'devis' => $devis,
                     'user' => $user
-                ));
+                    )
+                );
             }
         }
         return $this->redirect($this->generateUrl("billandgo_devis_list"));
@@ -223,18 +234,18 @@ class DevisController extends Controller
         if ($id > 0) {
             $manager = $this->getDoctrine()->getManager();
             $devis = $manager->getRepository('BillAndGoBundle:Devis')->find($id);
-            if ($devis != NULL) {
+            if ($devis != null) {
                 if ($devis->getRefUser() != $user) {
                     $ar401 = ["not your estimate"];
                     return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
                 }
-                if ($devis->getStatus() != "draft")
+                if ($devis->getStatus() != "draft") {
                     return $this->redirect($this->generateUrl("billandgo_devis_view", array('id' => $devis->getId())));
+                }
                 $lines = $devis->getLines();
                 foreach ($lines as $line_elt)
                 {
-                    if ($line_elt->getId() == $line)
-                    {
+                    if ($line_elt->getId() == $line) {
                         $devis->removeLine($line_elt);
                         $manager->persist($devis);
                         $manager->flush();
@@ -254,23 +265,25 @@ class DevisController extends Controller
     public function statusSetAction(int $id, string $status)
     {
         $user = $this->getUser();
-        if (!is_object($user))
+        if (!is_object($user)) {
             throw new AccessDeniedException('Non connecté');
-        if ($id > 0)
-        {
+        }
+        if ($id > 0) {
             $manager = $this->getDoctrine()->getManager();
             $estimate = $manager->getRepository('BillAndGoBundle:Devis')->find($id);
-            if ($estimate != NULL) {
+            if ($estimate != null) {
                 if ($estimate->getRefUser() != $user) {
                     $ar401 = ["not your estimate"];
                     return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
                 }
                 if (in_array($status, ["canceled", "sent", "refused", "draft", "accepted"])) {
                     $estimate->setStatus($status);
-                    if ($status == "sent")
+                    if ($status == "sent") {
                         $estimate->setSendTime(new \DateTime());
-                    if (($status == "refused") || ($status == "accepted"))
+                    }
+                    if (($status == "refused") || ($status == "accepted")) {
                         $estimate->setResponseTime(new \DateTime());
+                    }
                     $manager->flush();
                 }
                 return $this->redirect($this->generateUrl("billandgo_devis_view", array('id' => $id)));
@@ -279,7 +292,8 @@ class DevisController extends Controller
         return $this->redirect($this->generateUrl("billandgo_devis_list"));
     }
 
-    public function getLimitation($type) {
+    public function getLimitation($type) 
+    {
         $user = $this->getUser();
         if (!is_object($user)) { // || !$user instanceof UserInterface
             throw new AccessDeniedException('This user does not have access to this section.');
@@ -292,29 +306,29 @@ class DevisController extends Controller
         $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
         if ($user->getPlan() != "billandgo_paid_plan") {
             switch ($type) {
-                case 'project' :
-                    if (count($projects) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'project' :
+                if (count($projects) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
-                case 'bill' :
-                    if (count($bills) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'bill' :
+                if (count($bills) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
-                case 'quote' :
-                    if (count($quotes) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'quote' :
+                if (count($quotes) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
-                case 'client' :
-                    if (count($clients) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'client' :
+                if (count($clients) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
             }
         }

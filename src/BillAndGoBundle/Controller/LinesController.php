@@ -1,7 +1,6 @@
 <?php
 
 /**
- *
  *  * This is an iumio component [https://iumio.com]
  *  *
  *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
@@ -9,7 +8,6 @@
  *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
  *  *
  *  * To get more information about licence, please check the licence file
- *
  */
 
 
@@ -39,10 +37,12 @@ class LinesController extends Controller
         }
         $manager = $this->getDoctrine()->getManager();
         $list = $manager->getRepository('BillAndGoBundle:Line')->findByRefUser($user);
-        return $this->render('BillAndGoBundle:Lines:list.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:Lines:list.html.twig', array(
             'list' => $list,
             'user' => $user
-        ));
+            )
+        );
     }
 
     /**
@@ -50,8 +50,8 @@ class LinesController extends Controller
      * else return the form to create one
      *
      * @Route("/lines/add", name="billandgo_line_add")
-     * @param Request $req post request from the creation form
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @param               Request $req post request from the creation form
+     * @return              \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function addAction(Request $req)
     {
@@ -73,16 +73,18 @@ class LinesController extends Controller
                 return $this->redirect($this->generateUrl("billandgo_testlines"));
             }
         }
-        return $this->render('BillAndGoBundle:Lines:add.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:Lines:add.html.twig', array(
             'form' => $form->createView(),
             'user' => $user
-        ));
+            )
+        );
     }
 
     /**
      * @Route("/lines/{id}/edit/status/{status}")
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @param int $id id of the line
+     * @param int    $id     id of the line
      * @param String $status the new status
      */
     public function editStatusAction($id, $status)
@@ -96,10 +98,10 @@ class LinesController extends Controller
             $ar401 = ["disconnected"];
             return new Response(json_encode($ar401), 401);
         }
-        if (($id > 0) && (in_array($status, $avalaible_status))){
+        if (($id > 0) && (in_array($status, $avalaible_status))) {
             $manager = $this->getDoctrine()->getManager();
             $line = $manager->getRepository('BillAndGoBundle:Line')->find($id);
-            if ($line == NULL) {
+            if ($line == null) {
                 $ar404 = ["doesn't exist"];
                 return new Response(json_encode($ar404), 404);
             }
@@ -118,7 +120,7 @@ class LinesController extends Controller
     /**
      * @Route("/lines/{id}/edit/deadline/{deadline}")
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @param int $id of the line
+     * @param int    $id       of the line
      * @param String $deadline new deadline
      */
     public function editDeadLineAction($id, $deadline)
@@ -131,7 +133,7 @@ class LinesController extends Controller
         if ($id > 0) {
             $manager = $this->getDoctrine()->getManager();
             $line = $manager->getRepository('BillAndGoBundle:Line')->find($id);
-            if ($line == NULL) {
+            if ($line == null) {
                 $ar404 = ["doesn't exist"];
                 return new Response(json_encode($ar404), 404);
             }
@@ -151,7 +153,7 @@ class LinesController extends Controller
     /**
      * @Route("/lines/{id}/edit/chronotime/{add}")
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @param int $id of the line
+     * @param int $id  of the line
      * @param int $add hours added to the chrono time of the line
      */
     public function editChronoTimeAction($id, $add)
@@ -164,7 +166,7 @@ class LinesController extends Controller
         if ($id > 0) {
             $manager = $this->getDoctrine()->getManager();
             $line = $manager->getRepository('BillAndGoBundle:Line')->find($id);
-            if ($line == NULL) {
+            if ($line == null) {
                 $ar404 = ["doesn't exist"];
                 return new Response(json_encode($ar404), 404);
             }
@@ -184,7 +186,7 @@ class LinesController extends Controller
     /**
      * @Route("/lines/{id}/edit/estimatedtime/{estim}")
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @param int $id of the line
+     * @param int $id    of the line
      * @param int $estim new estimated time
      */
     public function editEstimatedTimeAction($id, $estim)
@@ -197,7 +199,7 @@ class LinesController extends Controller
         if ($id > 0) {
             $manager = $this->getDoctrine()->getManager();
             $line = $manager->getRepository('BillAndGoBundle:Line')->find($id);
-            if ($line == NULL) {
+            if ($line == null) {
                 $ar404 = ["doesn't exist"];
                 return new Response(json_encode($ar404), 404);
             }
@@ -217,10 +219,10 @@ class LinesController extends Controller
      * @Route("/lines/{id}/edit/client/{id_client}")
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @param int $id of the line
+     * @param int $id        of the line
      * @param int $id_client id of the client to which you want to ref the line
      */
-    public function editClientAction ($id, $id_client)
+    public function editClientAction($id, $id_client)
     {
         $user = $this->getUser();
         if (!is_object($user)) {
@@ -230,12 +232,12 @@ class LinesController extends Controller
         if (($id > 0) && ($id_client > 0)) {
             $manager = $this->getDoctrine()->getManager();
             $line = $manager->getRepository('BillAndGoBundle:Line')->find($id_client);
-            if ($line == NULL) {
+            if ($line == null) {
                 $ar404 = ["line doesn't exist"];
                 return new Response(json_encode($ar404), 404);
             }
             $client = $manager->getRepository('BillAndGoBundle:Client')->find($id);
-            if ($client == NULL) {
+            if ($client == null) {
                 $ar404 = ["client doesn't exist"];
                 return new Response(json_encode($ar404), 404);
             }
@@ -276,7 +278,7 @@ class LinesController extends Controller
         if ($id > 0) {
             $manager = $this->getDoctrine()->getManager();
             $line = $manager->getRepository('BillAndGoBundle:Line')->find($id);
-            if ($line == NULL) {
+            if ($line == null) {
                 $ar404 = ["doesn't exist"];
                 return new Response(json_encode($ar404), 404);
             }
@@ -429,12 +431,15 @@ class LinesController extends Controller
      */
     public function joinAction($id1, $id2)
     {
-        return $this->render('BillAndGoBundle:Lines:join.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:Lines:join.html.twig', array(
             // ...
-        ));
+            )
+        );
     }
 
-    public function getLimitation($type) {
+    public function getLimitation($type) 
+    {
         $user = $this->getUser();
         if (!is_object($user)) { // || !$user instanceof UserInterface
             throw new AccessDeniedException('This user does not have access to this section.');
@@ -447,29 +452,29 @@ class LinesController extends Controller
         $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
         if ($user->getPlan() != "billandgo_paid_plan") {
             switch ($type) {
-                case 'project' :
-                    if (count($projects) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'project' :
+                if (count($projects) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
-                case 'bill' :
-                    if (count($bills) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'bill' :
+                if (count($bills) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
-                case 'quote' :
-                    if (count($quotes) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'quote' :
+                if (count($quotes) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
-                case 'client' :
-                    if (count($clients) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'client' :
+                if (count($clients) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
             }
         }

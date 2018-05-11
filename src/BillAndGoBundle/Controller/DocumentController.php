@@ -1,7 +1,6 @@
 <?php
 
 /**
- *
  *  * This is an iumio component [https://iumio.com]
  *  *
  *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
@@ -9,7 +8,6 @@
  *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
  *  *
  *  * To get more information about licence, please check the licence file
- *
  */
 
 
@@ -45,7 +43,7 @@ class DocumentController extends Controller
      *
      * @Route("/estimates", name="billandgo_estimate_index")
      * @Method("GET")
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return              \Symfony\Component\HttpFoundation\Response
      */
     public function indexEstimate()
     {
@@ -57,12 +55,14 @@ class DocumentController extends Controller
         $manager = $this->getDoctrine()->getManager();
         $estimates = $manager->getRepository('BillAndGoBundle:Document')->findAllEstimate($user->getId());
 
-        return $this->render('BillAndGoBundle:document:index.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:document:index.html.twig', array(
             'list' => $estimates,
             'user' => $user,
             'type' => 'estimate',
             'limitation' =>  $this->getLimitation("quote")
-        ));
+            )
+        );
     }
 
     /**
@@ -70,7 +70,7 @@ class DocumentController extends Controller
      *
      * @Route("/bills", name="billandgo_bill_index")
      * @Method("GET")
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return          \Symfony\Component\HttpFoundation\Response
      */
     public function indexBill()
     {
@@ -82,22 +82,24 @@ class DocumentController extends Controller
         $manager = $this->getDoctrine()->getManager();
         $bills = $manager->getRepository('BillAndGoBundle:Document')->findAllBill($user->getId());
 
-        return $this->render('BillAndGoBundle:document:indexBill.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:document:indexBill.html.twig', array(
             'list' => $bills,
             'user' => $user,
             'type' => 'bill',
             'limitation' =>  $this->getLimitation("bill")
-        ));
+            )
+        );
     }
 
     /**
      * Finds and displays a document entity.
      *
      * @Route("/documents/{id}", name="billandgo_document_view")
-     * @Method({"GET", "POST"})
-     * @param Request $req post request of edit, split, line creation or line edition
-     * @param int $id id of the project
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @Method({"GET",           "POST"})
+     * @param                    Request $req post request of edit, split, line creation or line edition
+     * @param                    int     $id  id of the project
+     * @return                   \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function viewAction(Request $req, int $id)
     {
@@ -109,36 +111,40 @@ class DocumentController extends Controller
         if ($id > 0) {
             $manager = $this->getDoctrine()->getManager();
             $document = $manager->getRepository('BillAndGoBundle:Document')->find($id);
-            if ($document != NULL) {
+            if ($document != null) {
                 if ($document->getRefUser() != $user) {
                     $ar401 = ["wrong user"];
                     return new Response(json_encode($ar401), 401);
                 }
                 $line = new Line();
-                if ($document->getType())
+                if ($document->getType()) {
                     $form = $this->get('form.factory')->create(LineEstimateType::class, $line);
-                else
+                } else {
                     $form = $this->get('form.factory')->create(LineBillType::class, $line);
+                }
                 if ($req->isMethod('POST')) {
                     $ret = $this->viewPostAction($id, $req, $user, $document, $form, $line);
-                    if ($ret < 0){
+                    if ($ret < 0) {
                         $ar500 = ["wrong request : code ".$ret];
                         return new Response(json_encode($ar500), 500);
                     }
-                    else
+                    else {
                         $document = $manager->getRepository('BillAndGoBundle:Document')->find($id);
+                    }
                 }
                 $taxes = $manager->getRepository('BillAndGoBundle:Tax')->findAll($id);
                 $names = $manager->getRepository('BillAndGoBundle:Line')->lastLinesNames($user);
                 $descriptions = $manager->getRepository('BillAndGoBundle:Line')->lastLinesDescriptions($user);
-                return $this->render('BillAndGoBundle:document:full.html.twig', array(
+                return $this->render(
+                    'BillAndGoBundle:document:full.html.twig', array(
                     'document' => $document,
                     'taxes' => $taxes,
                     'names' => $names,
                     'descriptions' => $descriptions,
                     'form' => $form->createView(),
                     'user' => $user
-                ));
+                    )
+                );
             }
         }
         return $this->redirect($this->generateUrl("billandgo_estimate_index"));
@@ -149,12 +155,12 @@ class DocumentController extends Controller
      * edit, add or split lines in the document
      * or edit document
      *
-     * @param int $id id of current project
-     * @param Request $req request sent to viewAction
-     * @param User $user current user
-     * @param Document $document current document
-     * @param Form $form form LineProjectType
-     * @param Line $line new line if creation
+     * @param  int      $id       id of current project
+     * @param  Request  $req      request sent to viewAction
+     * @param  User     $user     current user
+     * @param  Document $document current document
+     * @param  Form     $form     form LineProjectType
+     * @param  Line     $line     new line if creation
      * @return int
      */
     private function viewPostAction(int $id, Request $req, User $user, Document $document, Form $form, Line $line)
@@ -174,15 +180,15 @@ class DocumentController extends Controller
 
         //split line
         if (($split) && ($id_line)) {
-            if ($this->splitLine($id, $id_line, $split, $user) != 0)
+            if ($this->splitLine($id, $id_line, $split, $user) != 0) {
                 return -500;
-            else
+            } else {
                 return 1;
+            }
         }
 
         //edit document
-        elseif (($edit['number']) && ($edit['description']))
-        {
+        elseif (($edit['number']) && ($edit['description'])) {
             $document->setNumber($edit['number']);
             $document->setDescription($edit['description']);
             $manager->flush();
@@ -192,24 +198,25 @@ class DocumentController extends Controller
         //edit line
         elseif (($id_line) && ($edit['name']) && ($edit['description'])
             && ($edit['quantity']) && ($edit['price'])
-            && ($edit['deadline']))
-        {
+            && ($edit['deadline'])
+        ) {
             $ret = $this->editLine($id_line, $edit, $user);
-            if ($ret == 0)
+            if ($ret == 0) {
                 return 3;
-            else
+            } else {
                 return $ret;
+            }
         }
         //create line
-        elseif ($form->handleRequest($req)->isValid())
-        {
+        elseif ($form->handleRequest($req)->isValid()) {
             $line->setRefUser($user);
             $line->setRefClient($document->getRefClient());
             $line->setStatus($document->getStatus());
-            if ($document->getType())
+            if ($document->getType()) {
                 $document->addRefLine($line);
-            else
+            } else {
                 $document->addRefLinesB($line);
+            }
             $manager->persist($line);
             $manager->flush();
             return 4;
@@ -219,11 +226,12 @@ class DocumentController extends Controller
 
     /**
      * edit status and update sentDate, answerDate if neeeded
+     *
      * @Route("/documents/{id}/edit/status/{status}", name="billandgo_document_edit_status")
      * @Method("GET")
-     * @param int $id of the document
-     * @param string $status
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @param                                         int    $id     of the document
+     * @param                                         string $status
+     * @return                                        \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function editStatus(int $id, string $status)
     {
@@ -235,7 +243,7 @@ class DocumentController extends Controller
         if (($id > 0) && (in_array($status, $this->status))) {
             $manager = $this->getDoctrine()->getManager();
             $document = $manager->getRepository('BillAndGoBundle:Document')->find($id);
-            if ($document != NULL) {
+            if ($document != null) {
                 if ($document->getRefUser() != $user) {
                     $ar401 = ["wrong user"];
                     return new Response(json_encode($ar401), 401);
@@ -288,7 +296,8 @@ class DocumentController extends Controller
         return new Response(json_encode($ar404), 404);
     }
 
-    private function linesStatus ($document, $status) {
+    private function linesStatus($document, $status) 
+    {
         $estim_status = ['canceled', 'draw', 'estimated', 'accepted', 'refused'];
         $manager = $this->getDoctrine()->getManager();
         $lines = $document->getRefLines();
@@ -304,19 +313,21 @@ class DocumentController extends Controller
      * split line : create another line et reduce quantity of the first one
      * called by viewPostAction
      *
-     * @param int $id id of the document
-     * @param int $id_line id of the line to split
-     * @param int $split quantity to split : will be remove from the existing line and attributed to the new one
-     * @param User $user current user
+     * @param  int  $id      id of the document
+     * @param  int  $id_line id of the line to split
+     * @param  int  $split   quantity to split : will be remove from the existing line and attributed to the new one
+     * @param  User $user    current user
      * @return int
      */
-    private function splitLine ($id, $id_line, $split, $user) {
+    private function splitLine($id, $id_line, $split, $user) 
+    {
         $manager = $this->getDoctrine()->getManager();
         $document = $manager->getRepository('BillAndGoBundle:Document')->find($id);
         $line = $manager->getRepository('BillAndGoBundle:Line')->find($id_line);
-        if (($line != NULL) && ($line->getQuantity() > $split)) {
-            if (($line->getRefUser() != $user) || ($document->getRefUser() != $user))
+        if (($line != null) && ($line->getQuantity() > $split)) {
+            if (($line->getRefUser() != $user) || ($document->getRefUser() != $user)) {
                 return 401;
+            }
             $new_line = new Line();
             $new_line->setRefTax($line->getRefTax());
             $new_line->setStatus($line->getStatus());
@@ -330,10 +341,11 @@ class DocumentController extends Controller
             $new_line->setChronoTime(0);
             $new_line->setQuantity($split);
             $line->setQuantity($line->getQuantity() - $split);
-            if ($document->getType())
+            if ($document->getType()) {
                 $document->addRefLine($new_line);
-            else
+            } else {
                 $document->addRefLinesB($new_line);
+            }
             $manager->persist($new_line);
             $manager->flush();
             return 0;
@@ -345,18 +357,21 @@ class DocumentController extends Controller
      * edit line
      * called by ViewPostAction
      *
-     * @param int $id_line id of the line to edit
-     * @param array $edit array with all edit informatons : name, description, quantity, price, reftax, estim, chrono, deadline
-     * @param User $user current user
+     * @param  int   $id_line id of the line to edit
+     * @param  array $edit    array with all edit informatons : name, description, quantity, price, reftax, estim, chrono, deadline
+     * @param  User  $user    current user
      * @return int
      */
-    private function editLine($id_line, $edit, $user) {
+    private function editLine($id_line, $edit, $user) 
+    {
         $manager = $this->getDoctrine()->getManager();
         $line = $manager->getRepository('BillAndGoBundle:Line')->find($id_line);
-        if ($line == NULL)
+        if ($line == null) {
             return 404;
-        if ($line->getRefUser() != $user)
+        }
+        if ($line->getRefUser() != $user) {
             return 401;
+        }
         $line->setName($edit['name']);
         $line->setDescription($edit['description']);
         $line->setQuantity($edit['quantity']);
@@ -365,10 +380,12 @@ class DocumentController extends Controller
             $new_tax = $manager->getRepository('BillAndGoBundle:Tax')->find($edit['refTax']);
             $line->setRefTax($new_tax);
         }
-        if (isset($edit['estim']) && $edit['estim'])
+        if (isset($edit['estim']) && $edit['estim']) {
             $line->setEstimatedTime($edit['estim']);
-        if (isset($edit['chrono']) && $edit['chrono'])
+        }
+        if (isset($edit['chrono']) && $edit['chrono']) {
             $line->setChronoTime($edit['chrono']);
+        }
         $line->setDeadline(new \DateTime($edit['deadline']));
         $manager->flush();
         return 0;
@@ -378,9 +395,9 @@ class DocumentController extends Controller
      * add an estimate
      *
      * @Route("/estimates/add", name="billandgo_estimate_add")
-     * @Method({"GET", "POST"})
-     * @param Request $req
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @Method({"GET",          "POST"})
+     * @param                   Request $req
+     * @return                  \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function addEstimateAction(Request $req)
     {
@@ -411,7 +428,8 @@ class DocumentController extends Controller
                 $num->setEstimateYearMonth(date("Ym"));
                 $num->setEstimateIndex(1);
             }
-            else $num->setEstimateIndex($num->getEstimateIndex() + 1);
+            else { $num->setEstimateIndex($num->getEstimateIndex() + 1);
+            }
         }
         $index = $num->getEstimateIndex();
 
@@ -428,19 +446,21 @@ class DocumentController extends Controller
                 return $this->redirect($this->generateUrl("billandgo_document_view", array('id' => $estimate->getId())));
             }
         }
-        return $this->render('BillAndGoBundle:document:addEstimate.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:document:addEstimate.html.twig', array(
             'form' => $form->createView(),
             'user' => $user
-        ));
+            )
+        );
     }
 
     /**
      * add a bill
      *
      * @Route("/bills/add", name="billandgo_bill_add")
-     * @Method({"GET", "POST"})
-     * @param Request $req
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @Method({"GET",      "POST"})
+     * @param               Request $req
+     * @return              \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function addBillAction(Request $req)
     {
@@ -472,7 +492,8 @@ class DocumentController extends Controller
                 $num->setBillYearMonth(date("Ym"));
                 $num->setBillIndex(1);
             }
-            else $num->setBillIndex($num->getBillIndex() + 1);
+            else { $num->setBillIndex($num->getBillIndex() + 1);
+            }
         }
         $index = $num->getBillIndex();
 
@@ -489,10 +510,12 @@ class DocumentController extends Controller
                 return $this->redirect($this->generateUrl("billandgo_document_view", array('id' => $bill->getId())));
             }
         }
-        return $this->render('BillAndGoBundle:document:addBill.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:document:addBill.html.twig', array(
             'form' => $form->createView(),
             'user' => $user
-        ));
+            )
+        );
     }
 
     /**
@@ -500,7 +523,7 @@ class DocumentController extends Controller
      * @param Request $req
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function addBillFromEstimateLines (Request $req)
+    public function addBillFromEstimateLines(Request $req)
     {
         $user = $this->getUser();
         if (!is_object($user)) {
@@ -514,16 +537,17 @@ class DocumentController extends Controller
         $post = $req->request->all();
         $lines_id = array();
         foreach ($post as $post_id => $post_elt) {
-            if ($post_id == "name")
+            if ($post_id == "name") {
                 $name = $post_elt;
-            elseif ($post_id == "description")
+            } elseif ($post_id == "description") {
                 $description = $post_elt;
-            elseif ($post_id == "estimate")
+            } elseif ($post_id == "estimate") {
                 $estimate_id = $post_elt;
-            elseif ($post_id == "deadline")
+            } elseif ($post_id == "deadline") {
                 $deadline = $post_elt;
-            else
+            } else {
                 $lines_id[] = substr($post_id, 12);
+            }
         }
         $manager = $this->getDoctrine()->getManager();
 
@@ -543,15 +567,16 @@ class DocumentController extends Controller
                 $num->setBillYearMonth(date("Ym"));
                 $num->setBillIndex(1);
             }
-            else $num->setBillIndex($num->getBillIndex() + 1);
+            else { $num->setBillIndex($num->getBillIndex() + 1);
+            }
         }
         $index = $num->getBillIndex();
 
         $estimate = $manager->getRepository('BillAndGoBundle:Document')->find($estimate_id);
-        if ($estimate == NULL)
+        if ($estimate == null) {
             return $this->redirect($this->generateUrl("billandgo_bill_index"));
-        if ($estimate->getRefUser() != $user)
-        {
+        }
+        if ($estimate->getRefUser() != $user) {
             $ar401 = ['wrong user'];
             return new Response(json_encode($ar401), 401);
         }
@@ -562,8 +587,9 @@ class DocumentController extends Controller
         $bill->setRefUser($user);
         $bill->setRefClient($estimate->getRefClient());
         $bill->setType(0);
-        if (isset($deadline))
+        if (isset($deadline)) {
             $bill->setDelayDate(new \DateTime($deadline));
+        }
         foreach ($lines_id as $line_id) {
             $line = $manager->getRepository('BillAndGoBundle:Line')->find($line_id);
             if ($line->getRefUser() != $user) {
@@ -584,9 +610,9 @@ class DocumentController extends Controller
      * create a facture form an estimate, refered by estimate_id
      *
      * @Route("bills/add/estimate/{estimate_id}", name="billandgo_bill_create_from_estimate")
-     * @param Request $req post request from the facturation form
-     * @param int $estimate_id estimate id
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @param                                     Request $req         post request from the facturation form
+     * @param                                     int     $estimate_id estimate id
+     * @return                                    \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function createFromEstimateAction(Request $req, int $estimate_id)
     {
@@ -599,9 +625,9 @@ class DocumentController extends Controller
         if ($req->isMethod('POST')) {
             $manager = $this->getDoctrine()->getManager();
             $estimate = $manager->getRepository('BillAndGoBundle:Document')->find($estimate_id);
-            if ($estimate == NULL) return $this->redirect($this->generateUrl("billandgo_bill_index"));
-            if ($estimate->getRefUser() != $user)
-            {
+            if ($estimate == null) { return $this->redirect($this->generateUrl("billandgo_bill_index"));
+            }
+            if ($estimate->getRefUser() != $user) {
                 $ar401 = ['wrong user'];
                 return new Response(json_encode($ar401), 401);
             }
@@ -622,7 +648,8 @@ class DocumentController extends Controller
                     $num->setBillYearMonth(date("Ym"));
                     $num->setBillIndex(1);
                 }
-                else $num->setBillIndex($num->getBillIndex() + 1);
+                else { $num->setBillIndex($num->getBillIndex() + 1);
+                }
             }
             $index = $num->getBillIndex();
 
@@ -663,9 +690,9 @@ class DocumentController extends Controller
         if ($req->isMethod('POST')) {
             $manager = $this->getDoctrine()->getManager();
             $project = $manager->getRepository('BillAndGoBundle:Project')->find($project_id);
-            if ($project == NULL) return $this->redirect($this->generateUrl("billandgo_bill_index"));
-            if ($project->getRefUser() != $user)
-            {
+            if ($project == null) { return $this->redirect($this->generateUrl("billandgo_bill_index"));
+            }
+            if ($project->getRefUser() != $user) {
                 $ar401 = ['wrong user'];
                 return new Response(json_encode($ar401), 401);
             }
@@ -686,7 +713,8 @@ class DocumentController extends Controller
                     $num->setBillYearMonth(date("Ym"));
                     $num->setBillIndex(1);
                 }
-                else $num->setBillIndex($num->getBillIndex() + 1);
+                else { $num->setBillIndex($num->getBillIndex() + 1);
+                }
             }
             $index = $num->getBillIndex();
 
@@ -713,11 +741,11 @@ class DocumentController extends Controller
     /**
      * @Route("documents/{doc_id}/send", name="billandgo_document_send_email")
      * @Method("GET")
-     * @param int $doc_id
-     * @param Request $req get request containing client_id
+     * @param int     $doc_id
+     * @param Request $req    get request containing client_id
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function sendEmail (int $doc_id, Request $req)
+    public function sendEmail(int $doc_id, Request $req)
     {
         //check user
         $user = $this->getUser();
@@ -730,10 +758,11 @@ class DocumentController extends Controller
         $contact_id = $req->query->get("contact");
         $document = $manager->getRepository('BillAndGoBundle:Document')->find($doc_id);
         $contact = $manager->getRepository("BillAndGoBundle:ClientContact")->find($contact_id);
-        if ($document == NULL) return $this->redirect($this->generateUrl("billandgo_bill_index"));
-        if ($contact == NULL) return $this->redirect($this->generateUrl("billandgo_document_view", array('id' => $doc_id)));
-        if (($document->getRefUser() != $user) || ($document->getRefUser() != $user))
-        {
+        if ($document == null) { return $this->redirect($this->generateUrl("billandgo_bill_index"));
+        }
+        if ($contact == null) { return $this->redirect($this->generateUrl("billandgo_document_view", array('id' => $doc_id)));
+        }
+        if (($document->getRefUser() != $user) || ($document->getRefUser() != $user)) {
             $ar401 = ['wrong user'];
             return new Response(json_encode($ar401), 401);
         }
@@ -774,8 +803,7 @@ class DocumentController extends Controller
                     )
                 ),
                 "text/html"
-            )
-            ;
+            );
         $this->get("mailer")->send($message);
         $document->setToken($rand);
         $manager->flush();
@@ -786,10 +814,11 @@ class DocumentController extends Controller
                 "user" => $user,
                 "rand" => $rand
             ));*/
-        if ($document->getType())
+        if ($document->getType()) {
             return $this->redirectToRoute("billandgo_document_edit_status", array("id" => $doc_id, "status" => "estimated"));
-        else
+        } else {
             return $this->redirectToRoute("billandgo_document_edit_status", array("id" => $doc_id, "status" => "billed"));
+        }
         return $this->redirect($this->generateUrl("billandgo_document_view", array('id' => $doc_id)));
     }
 
@@ -801,20 +830,23 @@ class DocumentController extends Controller
      * @param int $answer
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function answerEmail (int $doc_id, int $token, int $answer)
+    public function answerEmail(int $doc_id, int $token, int $answer)
     {
         $manager = $this->getDoctrine()->getManager();
         $document = $manager->getRepository('BillAndGoBundle:Document')->find($doc_id);
-        if ($document == NULL) return new Response("404");
+        if ($document == null) { return new Response("404");
+        }
         if ($document->getToken() == $token) {
             if (($answer == 1) && ($document->getStatus() == "estimated")) {
                 $document->setAnswerDate(new \DateTime());
                 $document->setStatus("accepted");
                 $this->linesStatus($document, "accepted");
-                return $this->render("BillAndGoBundle:document:accepted.html.twig",
+                return $this->render(
+                    "BillAndGoBundle:document:accepted.html.twig",
                     array(
                         "type" => "devis",
-                    ));
+                    )
+                );
             }
             else if (($answer == 0) && ($document->getStatus() == "estimated")) {
                 $document->setAnswerDate(new \DateTime());
@@ -826,7 +858,8 @@ class DocumentController extends Controller
         return new Response("401");
     }
 
-    public function getLimitation($type) {
+    public function getLimitation($type) 
+    {
         $user = $this->getUser();
         if (!is_object($user)) { // || !$user instanceof UserInterface
             throw new AccessDeniedException('This user does not have access to this section.');
@@ -839,29 +872,29 @@ class DocumentController extends Controller
         $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
         if ($user->getPlan() != "billandgo_paid_plan") {
             switch ($type) {
-                case 'project' :
-                    if (count($projects) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'project' :
+                if (count($projects) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
-                case 'bill' :
-                    if (count($bills) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'bill' :
+                if (count($bills) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
-                case 'quote' :
-                    if (count($quotes) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'quote' :
+                if (count($quotes) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
-                case 'client' :
-                    if (count($clients) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'client' :
+                if (count($clients) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
             }
         }

@@ -193,26 +193,28 @@ set status_fr = {
                                                                                 </button>
                                                                             </div>
                                                                             <div class="modal-body">
-                                                                                <div class="well">
-                                                                                    <form method="post" action="{{ path('billandgo_project_create_from_estimate', {'estimateID' : doc.id}) }}">
+                                                                                <div class="">
+                                                                                    <form method="post" action="{{ path('billandgo_project_create_from_estimate', {'estimateID' : doc.id}) }}" class="form_project" attr-client="{{ doc.refClient.companyname }}">
                                                                                         <div class="form-group row">
                                                                                             <label for="project_name" class="col-sm-3 col-form-label">Nom</label>
                                                                                             <div class="col-sm-9">
-                                                                                                <input class="form-control" type="text" value="Entrez le nom du projet" id="project_name" name="name">
+                                                                                                <input class="form-control project_name" type="text" placeholder="Entrez le nom du projet" id="project_name" name="name">
                                                                                             </div>
                                                                                         </div>
+                                                                                        <p style="display: none" class="pdesc">{{ doc.description }}</p>
                                                                                         <div class="form-group row">
                                                                                             <label for="project_deadline" class="col-sm-3 col-form-label">Deadline</label>
                                                                                             <div class="col-sm-9">
-                                                                                                <input class="form-control" type="text" name="deadline" id="project_deadline">
+                                                                                                <input class="form-control project_deadline" type="text" name="deadline" id="project_deadline">
                                                                                             </div>
                                                                                         </div>
-                                                                                        <button type="submit" class="btn btn-success">Créer le projet</button>
+                                                                                        <div ><small><strong><i class="fa fa-info"></i> La description sera créée à partir de celle du devis</strong></small></div>
+                                                                                        <button type="submit" class="btn btn-success btn-outline">Créer le projet</button>
                                                                                     </form>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="modal-footer">
-                                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                                <button type="button" class="btn btn-secondary btn-danger btn-outline" data-dismiss="modal">Fermer</button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -232,18 +234,18 @@ set status_fr = {
                                                                                 </button>
                                                                             </div>
                                                                             <div class="modal-body">
-                                                                                <div class="well">
+                                                                                <div class="">
                                                                                     <form method="post" action="{{ path('billandgo_bill_create_from_estimate', {'estimate_id' : doc.id}) }}">
                                                                                         <div class="form-group">
                                                                                             <label for="bill_delay" class="form-label">Date de paiement</label>
                                                                                             <input id="bill_delay" name="delay" required="required" class="form-control" type="text">
                                                                                         </div>
-                                                                                        <button type="submit" class="btn btn-success">Créer la facture</button>
+                                                                                        <button type="submit" class="btn btn-success btn-outline">Créer la facture</button>
                                                                                     </form>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="modal-footer">
-                                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                                <button type="button" class="btn btn-secondary btn-danger btn-outline" data-dismiss="modal">Fermer</button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -932,21 +934,23 @@ set status_fr = {
                                                                                 </button>
                                                                             </div>
                                                                             <div class="modal-body">
-                                                                                <div class="well">
-                                                                                    <form method="post" action="{{ path('billandgo_project_create_from_estimate', {'estimateID' : doc.id}) }}">
+                                                                                <div class="">
+                                                                                    <form method="post" action="{{ path('billandgo_project_create_from_estimate', {'estimateID' : doc.id}) }}" class="form_project" attr-client="{{ doc.refClient.companyname }}">
                                                                                         <div class="form-group row">
                                                                                             <label for="project_name" class="col-sm-3 col-form-label">Nom</label>
                                                                                             <div class="col-sm-9">
-                                                                                                <input class="form-control" type="text" value="Entrez le nom du projet" id="project_name" name="name">
+                                                                                                <input class="form-control project_name" type="text" placeholder="Entrez le nom du projet" id="project_name" name="name">
                                                                                             </div>
                                                                                         </div>
+                                                                                        <p style="display: none" class="pdesc">{{ doc.description }}</p>
                                                                                         <div class="form-group row">
                                                                                             <label for="project_deadline" class="col-sm-3 col-form-label">Deadline</label>
                                                                                             <div class="col-sm-9">
-                                                                                                <input class="form-control" type="text" name="deadline" id="project_deadline">
+                                                                                                <input class="form-control project_deadline" type="text" name="deadline" id="project_deadline">
                                                                                             </div>
                                                                                         </div>
-                                                                                        <button type="submit" class="btn btn-success">Créer le projet</button>
+                                                                                        <div ><small><strong><i class="fa fa-info"></i> La description sera créée à partir de celle du devis</strong></small></div>
+                                                                                        <button type="submit" class="btn btn-success btn-outline">Créer le projet</button>
                                                                                     </form>
                                                                                 </div>
                                                                             </div>
@@ -1091,5 +1095,9 @@ set status_fr = {
                 $('#estimateFilterAccepted').removeClass('active');
             }
         );
+        $('#project_deadline').datepicker();
+        $('#bill_delay').datepicker();
     </script>
+    <script src="{{ asset('bundles/billandgo/js/project.google.agenda.js') }}"></script>
+    <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
 {% endblock %}

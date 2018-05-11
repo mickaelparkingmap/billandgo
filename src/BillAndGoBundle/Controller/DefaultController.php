@@ -1,7 +1,6 @@
 <?php
 
 /**
- *
  *  * This is an iumio component [https://iumio.com]
  *  *
  *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
@@ -9,7 +8,6 @@
  *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
  *  *
  *  * To get more information about licence, please check the licence file
- *
  */
 
 
@@ -22,7 +20,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class DefaultController extends Controller
 {
 
-   /* public function indexAction()
+    /* public function indexAction()
     {
         $user = $this->getUser();
         if (!is_object($user)) { // || !$user instanceof UserInterface
@@ -42,9 +40,11 @@ class DefaultController extends Controller
             throw new AccessDeniedException('This user does not have access to this section.');
         }
 
-        return $this->render('BillAndGoBundle:Default:limited.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:Default:limited.html.twig', array(
             'user' => $user,
-        ));
+            )
+        );
     }
 
     /**
@@ -103,7 +103,8 @@ class DefaultController extends Controller
             }
         }
         $clients = count($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
-        return $this->render('BillAndGoBundle:Default:dashboard.html.twig', array(
+        return $this->render(
+            'BillAndGoBundle:Default:dashboard.html.twig', array(
             'user' => $user,
             'project' => count($projects),
             'projects' => $projects,
@@ -115,10 +116,12 @@ class DefaultController extends Controller
             'quotestotalm' => $quotestotalm,
             'quotesacceptm' => $quotesacceptm,
             'enddate' => date("t/m/Y", strtotime((new \DateTime())->format('Y-m-d')))
-        ));
+            )
+        );
     }
 
-    public function getLimitation($type) {
+    public function getLimitation($type) 
+    {
         $user = $this->getUser();
         if (!is_object($user)) { // || !$user instanceof UserInterface
             throw new AccessDeniedException('This user does not have access to this section.');
@@ -131,29 +134,29 @@ class DefaultController extends Controller
         $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
         if ($user->getPlan() != "billandgo_paid_plan") {
             switch ($type) {
-                case 'project' :
-                    if (count($projects) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'project' :
+                if (count($projects) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
-                case 'bill' :
-                    if (count($bills) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'bill' :
+                if (count($bills) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
-                case 'quote' :
-                    if (count($quotes) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'quote' :
+                if (count($quotes) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
-                case 'client' :
-                    if (count($clients) >= 15) {
-                        return (false);
-                    }
-                    return (true);
+            case 'client' :
+                if (count($clients) >= 15) {
+                    return (false);
+                }
+                return (true);
                     break;
             }
         }

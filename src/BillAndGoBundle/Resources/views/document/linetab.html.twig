@@ -109,26 +109,27 @@
                 }
                 %}
                 {{ status_new_fr[document.status]|capitalize  }}
+
+            </td>
+            <td>
                 {% if line.refProject|first %}
-                    <a class="btn btn-info" href="{{ path("billandgo_project_view", {"id":line.refProject|first.id}) }}">
-                        {{ line.refProject|first.name }}
+                    <a class="btn btn-info btn-outline" href="{{ path("billandgo_project_view", {"id":line.refProject|first.id}) }}">
+                        Voir le projet {{ line.refProject|first.name }}
                     </a>
                 {% endif %}
                 {% if document.type %}
                     {% if line.refBill|first %}
-                        <a class="btn btn-info" href="{{ path("billandgo_document_view", {"id":line.refBill|first.id}) }}">
+                        <a class="btn btn-info btn-outline" href="{{ path("billandgo_document_view", {"id":line.refBill|first.id}) }}">
                             {{ line.refBill|first.number }}
                         </a>
                     {% endif %}
                 {% else %}
                     {% if line.refEstimate|first %}
-                        <a class="btn btn-info" href="{{ path("billandgo_document_view", {"id":line.refEstimate|first.id}) }}">
+                        <a class="btn btn-info btn-outline" href="{{ path("billandgo_document_view", {"id":line.refEstimate|first.id}) }}">
                             {{ line.refEstimate|first.number }}
                         </a>
                     {% endif %}
                 {% endif %}
-            </td>
-            <td>
                 {% if modify %}
                     {% if document.type %}
                         <a class="btn btn-danger btn-outline" href="{{ path('billandgo_line_detach_estimate', {'id': line.id}) }}"> Supprimer <i class="fa fa-trash text-danger"></i></a>
