@@ -43,11 +43,23 @@ https://iumio.com
 - Quote email color
 - Fix responsive design issues
 
+## [1.2.3] - 2018-05-11
+
+-  Change dashboard stats
+- Add GA event on project creation from quote
+- Quote email color
+- Fix responsive design issues
+
+## [1.2.4] - 2018-05-11
+
+-  Change full name from sidebar to username
+
 
 [STABLE RELEASE]: https://github.com/iumio/billandgo
 [1.2.0]: https://github.com/iumio/billandgo/releases/tag/v1.2.0
 [1.2.1]: https://github.com/iumio/billandgo/releases/tag/v1.2.1
 [1.2.2]: https://github.com/iumio/billandgo/releases/tag/v1.2.2
 [1.2.3]: https://github.com/iumio/billandgo/releases/tag/v1.2.3
+[1.2.4]: https://github.com/iumio/billandgo/releases/tag/v1.2.4
 
 

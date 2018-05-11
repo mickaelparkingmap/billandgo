@@ -69,7 +69,7 @@
                             <img class="img-circle" src="{% if user.getUserSkinPath() is null %}{{ asset('bundles/billandgo/img/default_user.png') }}{% else %}{{ '/uploads/user/avatar/'~user.getUserSkinPath()}} {% endif %}" />
                         </li>
                         <li class="name-side inline-block-e">
-                            {{ user.lastname |capitalize }}  {{ user.firstname|capitalize }}
+                            {{ user.username |capitalize }}
                         </li>
                         {% if user.jobtype is not null %}
                             <li class="jobtype-side"><small>
@@ -642,7 +642,7 @@
 
     <footer class="main-footer">
         <div class="pull-right hidden-xs">
-            <b>Version</b> 1.2.3
+            <b>Version</b> 1.2.4
         </div>
         <strong>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go.</strong> All rights reserved. - <small>Bill&Go is an <a href="https://iumio.com">iumio component</a></small>
     </footer>
