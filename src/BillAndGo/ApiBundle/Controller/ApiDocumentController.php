@@ -30,11 +30,11 @@ class ApiDocumentController extends FOSRestController
     /**
      * @method getApiDevisIndexAction
      * get --> [GET] method
-     * api --> [route] = /api/devis/index
+     * api --> [route] = /api/estimate/index
      * Route --> /api
      * @return Response
      */
-    public function getApiDevisIndexAction () : Response
+    public function getApiEstimateIndexAction () : Response
     {
 
         $authService = new AuthentificationService($this->getDoctrine()->getRepository(AccessToken::class));
@@ -45,6 +45,25 @@ class ApiDocumentController extends FOSRestController
             /** @var DocumentService $documentService */
             $documentService = $this->get("AppBundle\Service\DocumentService");
             $list = $documentService->listDrawFromUser($user);
+            $response = new Response(Serializer::serialize($list));
+        }
+        return $response;
+    }
+
+    /**
+     * @return Response
+     * route -> /api/bill/index
+     */
+    public function getApiBillIndexAction () : Response
+    {
+        $authService = new AuthentificationService($this->getDoctrine()->getRepository(AccessToken::class));
+        $user = $authService->authenticate();
+        $response = new Response(json_encode(["error" => "not connected"]));
+
+        if (null !== $user) {
+            /** @var DocumentService $documentService */
+            $documentService = $this->get("AppBundle\Service\DocumentService");
+            $list = $documentService->listBillsFromUser($user);
             $response = new Response(Serializer::serialize($list));
         }
         return $response;

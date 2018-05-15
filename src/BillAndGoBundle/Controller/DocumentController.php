@@ -27,9 +27,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\Constraints\Date;
-use Symfony\Component\Validator\Constraints\DateTime;
 
+/**
+ * Class DocumentController
+ * @package BillAndGoBundle\Controller
+ */
 class DocumentController extends Controller
 {
     private $status = [
@@ -41,9 +43,9 @@ class DocumentController extends Controller
     /**
      * Lists all estimates entities.
      *
-     * @Route("/estimates", name="billandgo_estimate_index")
+     * @Route ("/estimates", name="billandgo_estimate_index")
      * @Method("GET")
-     * @return              \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function indexEstimate()
     {
@@ -79,9 +81,9 @@ class DocumentController extends Controller
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
         }
-        $manager = $this->getDoctrine()->getManager();
-        $bills = $manager->getRepository('BillAndGoBundle:Document')->findAllBill($user->getId());
 
+        $documentService = $this->get("AppBundle\Service\DocumentService");
+        $bills = $documentService->listBillsFromUser($user);
         return $this->render(
             'BillAndGoBundle:document:indexBill.html.twig', array(
             'list' => $bills,

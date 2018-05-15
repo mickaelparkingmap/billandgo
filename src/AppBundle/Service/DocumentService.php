@@ -53,4 +53,20 @@ class DocumentService extends Controller
             ])
             ;
     }
+
+
+    /**
+     * @param User $user
+     * @return array
+     */
+    public function listBillsFromUser (User $user) : array
+    {
+        return $this->em
+            ->getRepository(Document::class)
+            ->findBy([
+                'refUser' => $user,
+                'type' => 0
+            ])
+            ;
+    }
 }
