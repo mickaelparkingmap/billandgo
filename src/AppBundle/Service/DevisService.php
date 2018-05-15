@@ -14,29 +14,42 @@
 
 namespace AppBundle\Service;
 
-use BillAndGoBundle\Entity\Devis;
+use BillAndGoBundle\Entity\Document;
 use BillAndGoBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+/**
+ * Class DevisService
+ * @package AppBundle\Service
+ */
 class DevisService extends Controller
 {
     /** @var EntityManager */
     private $em;
 
+    /**
+     * DevisService constructor.
+     * @param EntityManagerInterface $em
+     */
     public function __construct (
         EntityManagerInterface $em
     ) {
         $this->em = $em;
     }
 
+    /**
+     * @param User $user
+     * @return array
+     */
     public function listDrawFromUser (User $user) : array
     {
         return $this->em
-            ->getRepository(Devis::class)
+            ->getRepository(Document::class)
             ->findBy([
-                'refUser' => $user
+                'refUser' => $user,
+                'type' => 1
             ])
             ;
     }

@@ -377,40 +377,6 @@ class Document
     }
 
     /**
-     * Add refProject
-     *
-     * @param \BillAndGoBundle\Entity\Project $refProject
-     *
-     * @return Document
-     */
-    public function addRefProject(\BillAndGoBundle\Entity\Project $refProject)
-    {
-        $this->refProject[] = $refProject;
-
-        return $this;
-    }
-
-    /**
-     * Remove refProject
-     *
-     * @param \BillAndGoBundle\Entity\Project $refProject
-     */
-    public function removeRefProject(\BillAndGoBundle\Entity\Project $refProject)
-    {
-        $this->refProject->removeElement($refProject);
-    }
-
-    /**
-     * Get refProject
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getRefProject()
-    {
-        return $this->refProject;
-    }
-
-    /**
      * Add refLine
      *
      * @param \BillAndGoBundle\Entity\Line $refLine
@@ -476,74 +442,6 @@ class Document
     public function getRefLinesB()
     {
         return $this->refLinesB;
-    }
-
-    /**
-     * Add refBill
-     *
-     * @param \BillAndGoBundle\Entity\Document $refBill
-     *
-     * @return Document
-     */
-    public function addRefBill(\BillAndGoBundle\Entity\Document $refBill)
-    {
-        $this->refBill[] = $refBill;
-
-        return $this;
-    }
-
-    /**
-     * Remove refBill
-     *
-     * @param \BillAndGoBundle\Entity\Document $refBill
-     */
-    public function removeRefBill(\BillAndGoBundle\Entity\Document $refBill)
-    {
-        $this->refBill->removeElement($refBill);
-    }
-
-    /**
-     * Get refBill
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getRefBill()
-    {
-        return $this->refBill;
-    }
-
-    /**
-     * Add refEstimate
-     *
-     * @param \BillAndGoBundle\Entity\Document $refEstimate
-     *
-     * @return Document
-     */
-    public function addRefEstimate(\BillAndGoBundle\Entity\Document $refEstimate)
-    {
-        $this->refEstimate[] = $refEstimate;
-
-        return $this;
-    }
-
-    /**
-     * Remove refEstimate
-     *
-     * @param \BillAndGoBundle\Entity\Document $refEstimate
-     */
-    public function removeRefEstimate(\BillAndGoBundle\Entity\Document $refEstimate)
-    {
-        $this->refEstimate->removeElement($refEstimate);
-    }
-
-    /**
-     * Get refEstimate
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getRefEstimate()
-    {
-        return $this->refEstimate;
     }
 
     /**
@@ -686,4 +584,44 @@ class Document
     {
         return $this->token;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString () : string
+    {
+        $data = [
+            'id'            => $this->id,
+            'number'        => $this->number,
+            'type'          => ($this->type) ? 'devis' : 'facture',
+            'description'   => $this->description,
+            'status'        => $this->status,
+            'client'        => $this->refClient->getCompanyName(),
+            'clientId'      => $this->refClient->getId(),
+            'lines'         => []
+        ];
+        if (null !== $this->sentDate) {
+            $data['sentDate'] = $this->sentDate->format('y-m-d H:i:s');
+        }
+        if (null !== $this->delayDate) {
+            $data['delayDate'] = $this->delayDate->format('y-m-d H:i:s');
+        }
+        if (null !== $this->answerDate) {
+            $data['answerDate'] = $this->answerDate->format('y-m-d H:i:s');
+        }
+
+        foreach ($this->getRefLines() as $line) {
+            /** @var Line $line */
+            $data['lines'][$line->getId()] = [
+                'id'        => $line->getId(),
+                'name'      => $line->getName(),
+                'value'     => $line->getPrice() * $line->getQuantity(),
+                'status'    => $line->getStatus()
+            ];
+        }
+
+        return json_encode($data);
+    }
+
+
 }

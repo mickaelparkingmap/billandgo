@@ -15,11 +15,16 @@
 namespace BillAndGo\ApiBundle\Controller;
 
 use AppBundle\Service\DevisService;
+use AppBundle\Service\Serializer;
 use BillAndGo\ApiBundle\Entity\AccessToken;
 use BillAndGo\ApiBundle\Service\AuthentificationService;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class ApiDevisController
+ * @package BillAndGo\ApiBundle\Controller
+ */
 class ApiDevisController extends FOSRestController
 {
     /**
@@ -34,15 +39,15 @@ class ApiDevisController extends FOSRestController
 
         $authService = new AuthentificationService($this->getDoctrine()->getRepository(AccessToken::class));
         $user = $authService->authenticate();
-        $list = ["error" => "not connected"];
+        $response = new Response(json_encode(["error" => "not connected"]));
 
         if (null !== $user) {
             /** @var DevisService $devisService */
             $devisService = $this->get("AppBundle\Service\DevisService");
             $list = $devisService->listDrawFromUser($user);
+            $response = new Response(Serializer::serialize($list));
         }
-        $view = $this->view($list);
-        return $this->handleView($view);
+        return $response;
     }
 
 }
