@@ -13,15 +13,6 @@
  */
 
 
-/**
- * THE REST ROUTING IS PARTICULAR
- * WE MUST EXTENDS THE FOSRESTCONTROLLER --> IT WILL CREATE A "REST APP"
- * THE ROUTING IS BY FUNCTION NAME
- * EXAMPLE : IF YOU WANT TO DO A "GET" ON "USERS" (SO [GET] /USERS)
- * YOUR FUNCTION NAME MUST BEGIN BY "GET" THEN YOUR ROUTE NAME (SO "USERS") AND END BY "ACTION"
- */
-
-
 namespace BillAndGo\ApiBundle\Controller;
 
 use BillAndGo\ApiBundle\Entity\AccessToken;
@@ -36,13 +27,13 @@ class DefaultController extends FOSRestController
 {
 
     /**
-     * @method getApiAction
+     * @method getTestAction
      * get --> [GET] method
-     * api --> [route] = /test
+     * api --> [route] = /api/test
      * Route --> /api
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getTestAction(Request $req)
+    public function getTestAction()
     {
         /*$headers = apache_request_headers();
         if (isset($headers['Authorization'])) {
@@ -60,15 +51,15 @@ class DefaultController extends FOSRestController
     }
 
     /**
-     * @method getApiAction
+     * @method getTest2Action
      * get --> [GET] method
-     * api --> [route] = /test2
+     * api --> [route] = /api/test2
      * Route --> /api
      *
      * @param Request $request
      * @return Response
      */
-    public function getTest2Action (Request $request)
+    public function getTest2Action ()
     {
         $data = array("not" => "logged in");
         $authService = new AuthentificationService($this->getDoctrine()->getRepository(AccessToken::class));
