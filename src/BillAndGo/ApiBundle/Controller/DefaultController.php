@@ -24,9 +24,12 @@
 
 namespace BillAndGo\ApiBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use BillAndGo\ApiBundle\Entity\AccessToken;
+use BillAndGo\ApiBundle\Service\AuthentificationService;
 use FOS\RestBundle\Controller\FOSRestController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 
 class DefaultController extends FOSRestController
@@ -35,13 +38,44 @@ class DefaultController extends FOSRestController
     /**
      * @method getApiAction
      * get --> [GET] method
-     * api --> [route] = /api
+     * api --> [route] = /test
      * Route --> /api
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getApiAction()
+    public function getTestAction(Request $req)
     {
-        $data = array("hello" => "world");
+        /*$headers = apache_request_headers();
+        if (isset($headers['Authorization'])) {
+            $req->headers->set('Authorization', $headers['Authorization']);
+        }*/
+
+        $data = array("connection" => "successful");
+        /** @var AuthorizationChecker $checker */
+        $checker = $this->get('security.authorization_checker');
+        if (!$checker->isGranted('IS_AUTHENTICATED_FULLY')) {
+            $data = array("not" => "logged in");
+        }
+        $view = $this->view($data);
+        return $this->handleView($view);
+    }
+
+    /**
+     * @method getApiAction
+     * get --> [GET] method
+     * api --> [route] = /test2
+     * Route --> /api
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function getTest2Action (Request $request)
+    {
+        $data = array("not" => "logged in");
+        $authService = new AuthentificationService($this->getDoctrine()->getRepository(AccessToken::class));
+        $user = $authService->authenticate();
+        if (null !== $user) {
+            $data = array("user" => $user->getUsername());
+        }
         $view = $this->view($data);
         return $this->handleView($view);
     }
