@@ -52,9 +52,9 @@ class DocumentController extends Controller
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
         }
-        $manager = $this->getDoctrine()->getManager();
-        $estimates = $manager->getRepository('BillAndGoBundle:Document')->findAllEstimate($user->getId());
 
+        $documentService = $this->get("AppBundle\Service\DocumentService");
+        $estimates = $documentService->listDrawFromUser($user);
         return $this->render(
             'BillAndGoBundle:document:index.html.twig', array(
             'list' => $estimates,
