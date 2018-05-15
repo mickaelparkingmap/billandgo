@@ -24,7 +24,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  * Class DevisService
  * @package AppBundle\Service
  */
-class DevisService extends Controller
+class DocumentService extends Controller
 {
     /** @var EntityManager */
     private $em;

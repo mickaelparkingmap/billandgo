@@ -1,5 +1,5 @@
 services:
 
-    billandgo.devis:
-        class: 'AppBundle\Service\DevisService'
+    billandgo.document:
+        class: 'AppBundle\Service\DocumentService'
         autowire: true

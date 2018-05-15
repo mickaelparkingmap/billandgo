@@ -14,7 +14,7 @@
 
 namespace BillAndGo\ApiBundle\Controller;
 
-use AppBundle\Service\DevisService;
+use AppBundle\Service\DocumentService;
 use AppBundle\Service\Serializer;
 use BillAndGo\ApiBundle\Entity\AccessToken;
 use BillAndGo\ApiBundle\Service\AuthentificationService;
@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class ApiDevisController
  * @package BillAndGo\ApiBundle\Controller
  */
-class ApiDevisController extends FOSRestController
+class ApiDocumentController extends FOSRestController
 {
     /**
      * @method getApiDevisIndexAction
@@ -42,9 +42,9 @@ class ApiDevisController extends FOSRestController
         $response = new Response(json_encode(["error" => "not connected"]));
 
         if (null !== $user) {
-            /** @var DevisService $devisService */
-            $devisService = $this->get("AppBundle\Service\DevisService");
-            $list = $devisService->listDrawFromUser($user);
+            /** @var DocumentService $documentService */
+            $documentService = $this->get("AppBundle\Service\DocumentService");
+            $list = $documentService->listDrawFromUser($user);
             $response = new Response(Serializer::serialize($list));
         }
         return $response;
