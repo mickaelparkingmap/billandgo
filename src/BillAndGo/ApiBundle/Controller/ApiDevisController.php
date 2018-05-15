@@ -14,10 +14,9 @@
 
 namespace BillAndGo\ApiBundle\Controller;
 
+use AppBundle\Service\DevisService;
 use BillAndGo\ApiBundle\Entity\AccessToken;
 use BillAndGo\ApiBundle\Service\AuthentificationService;
-use BillAndGoBundle\Entity\Devis;
-use BillAndGoBundle\Entity\User;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -38,28 +37,12 @@ class ApiDevisController extends FOSRestController
         $list = ["error" => "not connected"];
 
         if (null !== $user) {
-            $list = $this->listDrawFromUser($user);
+            /** @var DevisService $devisService */
+            $devisService = $this->get("AppBundle\Service\DevisService");
+            $list = $devisService->listDrawFromUser($user);
         }
         $view = $this->view($list);
         return $this->handleView($view);
-    }
-
-
-    /**
-     * @param User $user
-     * @return array
-     * TODO en faire un service à partager avec le controller web
-     */
-    private function listDrawFromUser (User $user) : array
-    {
-        return $this
-            ->getDoctrine()
-            ->getManager()
-            ->getRepository(Devis::class)
-            ->findBy([
-                'refUser' => $user
-            ])
-        ;
     }
 
 }

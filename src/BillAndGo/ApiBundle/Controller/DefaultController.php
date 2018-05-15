@@ -33,7 +33,7 @@ class DefaultController extends FOSRestController
      * Route --> /api
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getTestAction()
+    public function getApiTestAction()
     {
         /*$headers = apache_request_headers();
         if (isset($headers['Authorization'])) {
@@ -53,13 +53,13 @@ class DefaultController extends FOSRestController
     /**
      * @method getTest2Action
      * get --> [GET] method
-     * api --> [route] = /api/test2
+     * api --> [route] = /test2
      * Route --> /api
      *
      * @param Request $request
      * @return Response
      */
-    public function getTest2Action ()
+    public function getApiTest2Action ()
     {
         $data = array("not" => "logged in");
         $authService = new AuthentificationService($this->getDoctrine()->getRepository(AccessToken::class));

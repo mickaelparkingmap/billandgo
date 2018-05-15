@@ -1,0 +1,5 @@
+services:
+
+    billandgo.devis:
+        class: 'AppBundle\Service\DevisService'
+        autowire: true
