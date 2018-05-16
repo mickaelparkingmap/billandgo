@@ -13,17 +13,31 @@
 
 namespace BillAndGoBundle\Controller;
 
+use AppBundle\Service\ClientService;
 use BillAndGoBundle\Entity\Client;
 use BillAndGoBundle\Entity\ClientContact;
 use BillAndGoBundle\Form\ClientContact2Type;
 use BillAndGoBundle\Form\ClientType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ClientController extends Controller
 {
+    /** @var ClientService */
+    private $clientService;
+
+    /**
+     * @param ContainerInterface|null $container
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        parent::setContainer($container);
+        $this->clientService = $this->get("AppBundle\Service\ClientService");
+    }
+
     /**
      * @Route("/clients", name="billandgo_clients_list")
      * @return \Symfony\Component\HttpFoundation\Response
@@ -34,11 +48,8 @@ class ClientController extends Controller
         if (!is_object($user)) { // || !$user instanceof UserInterface
             throw new AccessDeniedException('This user does not have access to this section.');
         }
-        $clients = $this->mobileIndexAction();
-        if ((is_int($clients)) && ($clients == -401)) {
-            $ar401 = ["not connected"];
-            return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
-        }
+
+        $clients = $this->clientService->getClientListFromUser($user);
         return $this->render(
             'BillAndGoBundle:Client:index.html.twig', array(
             'list' => $clients,
@@ -46,19 +57,6 @@ class ClientController extends Controller
             'limitation' =>  $this->getLimitation("client")
             )
         );
-    }
-
-    /**
-     * @Route("/mobile/clients", name="billandgo_mobile_clients_list")
-     */
-    public function mobileIndexAction()
-    {
-        $user = $this->getUser();
-        if (!is_object($user)) { return -401;
-        }
-        $manager = $this->getDoctrine()->getManager();
-        $clients = $manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user);
-        return $clients;
     }
 
     /**
@@ -73,15 +71,8 @@ class ClientController extends Controller
         if (!is_object($user)) { // || !$user instanceof UserInterface
             throw new AccessDeniedException('This user does not have access to this section.');
         }
-        $client = $this->mobileViewAction($id);
-        if (is_int($client)) {
-            if ($client == -401) {
-                $ar401 = ["unauthorized"];
-                return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
-            }
-            if ($client == -404) { return $this->redirect($this->generateUrl("billandgo_clients_list"));
-            }
-        }
+        $client = $this->clientService->getClient($user, $id);
+
         $contact = new ClientContact();
         $form = $this->get('form.factory')->create(ClientContact2Type::class, $contact);
         if ($req->isMethod('POST')) {
@@ -101,28 +92,6 @@ class ClientController extends Controller
             'user' => $user
             )
         );
-    }
-
-    /**
-     * @Route("/mobile/clients/{id}", name="billandgo_mobile_clients_view", requirements={"id" = "\d+"});
-     * @param int $id
-     * @return int|object
-     */
-    public function mobileViewAction(int $id)
-    {
-        $user = $this->getUser();
-        if (!is_object($user)) { return -401;
-        }
-        if ($id > 0) {
-            $manager = $this->getDoctrine()->getManager();
-            $client = $manager->getRepository('BillAndGoBundle:Client')->find($id);
-            if ($client != null) {
-                if ($client->getUserRef() != $user) { return -401;
-                }
-                return $client;
-            }
-        }
-        return -404;
     }
 
     /**
