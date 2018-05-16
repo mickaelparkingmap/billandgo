@@ -55,9 +55,9 @@ class Meeting
     private $id;
 
     /**
-     * @var \BillAndGoBundle\Entity\ClientContact
+     * @var ClientContact
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\ClientContact")
+     * @ORM\ManyToOne(targetEntity="ClientContact")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ref_contact", referencedColumnName="id")
      * })
@@ -65,14 +65,14 @@ class Meeting
     private $refContact;
 
     /**
-     * @var \BillAndGoBundle\Entity\Devis
+     * @var Document
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\Devis")
+     * @ORM\ManyToOne(targetEntity="Document")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ref_devis", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="ref_document", referencedColumnName="id")
      * })
      */
-    private $refDevis;
+    private $refDocument;
 
 
 
@@ -161,11 +161,11 @@ class Meeting
     /**
      * Set refContact
      *
-     * @param \BillAndGoBundle\Entity\ClientContact $refContact
+     * @param ClientContact $refContact
      *
      * @return Meeting
      */
-    public function setRefContact(\BillAndGoBundle\Entity\ClientContact $refContact = null)
+    public function setRefContact(ClientContact $refContact = null)
     {
         $this->refContact = $refContact;
 
@@ -175,7 +175,7 @@ class Meeting
     /**
      * Get refContact
      *
-     * @return \BillAndGoBundle\Entity\ClientContact
+     * @return ClientContact
      */
     public function getRefContact()
     {
@@ -183,26 +183,26 @@ class Meeting
     }
 
     /**
-     * Set refDevis
+     * Set refDocument
      *
-     * @param \BillAndGoBundle\Entity\Devis $refDevis
+     * @param Document $refDocument
      *
      * @return Meeting
      */
-    public function setRefDevis(\BillAndGoBundle\Entity\Devis $refDevis = null)
+    public function setRefDocument(Document $refDocument = null)
     {
-        $this->refDevis = $refDevis;
+        $this->refDocument = $refDocument;
 
         return $this;
     }
 
     /**
-     * Get refDevis
+     * Get refDocument
      *
-     * @return \BillAndGoBundle\Entity\Devis
+     * @return Document
      */
-    public function getRefDevis()
+    public function getRefDocument()
     {
-        return $this->refDevis;
+        return $this->refDocument;
     }
 }

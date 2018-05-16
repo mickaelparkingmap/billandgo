@@ -56,9 +56,9 @@ class Note
     private $id;
 
     /**
-     * @var \BillAndGoBundle\Entity\ClientContact
+     * @var ClientContact
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\ClientContact")
+     * @ORM\ManyToOne(targetEntity="ClientContact")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ref_contact", referencedColumnName="id")
      * })
@@ -66,14 +66,14 @@ class Note
     private $refContact;
 
     /**
-     * @var \BillAndGoBundle\Entity\Devis
+     * @var Document
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\Devis")
+     * @ORM\ManyToOne(targetEntity="Document")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ref_devis", referencedColumnName="id")
      * })
      */
-    private $refDevis;
+    private $refDocument;
 
 
 
@@ -162,11 +162,11 @@ class Note
     /**
      * Set refContact
      *
-     * @param \BillAndGoBundle\Entity\ClientContact $refContact
+     * @param ClientContact $refContact
      *
      * @return Note
      */
-    public function setRefContact(\BillAndGoBundle\Entity\ClientContact $refContact = null)
+    public function setRefContact(ClientContact $refContact = null)
     {
         $this->refContact = $refContact;
 
@@ -176,7 +176,7 @@ class Note
     /**
      * Get refContact
      *
-     * @return \BillAndGoBundle\Entity\ClientContact
+     * @return ClientContact
      */
     public function getRefContact()
     {
@@ -186,13 +186,13 @@ class Note
     /**
      * Set refDevis
      *
-     * @param \BillAndGoBundle\Entity\Devis $refDevis
+     * @param Document $refDevis
      *
      * @return Note
      */
-    public function setRefDevis(\BillAndGoBundle\Entity\Devis $refDevis = null)
+    public function setRefDocument(Document $refDocument = null)
     {
-        $this->refDevis = $refDevis;
+        $this->refDocument = $refDocument;
 
         return $this;
     }
@@ -200,10 +200,10 @@ class Note
     /**
      * Get refDevis
      *
-     * @return \BillAndGoBundle\Entity\Devis
+     * @return Document
      */
-    public function getRefDevis()
+    public function getRefDocument()
     {
-        return $this->refDevis;
+        return $this->refDocument;
     }
 }
