@@ -23,13 +23,16 @@ trait DocumentTrait
      * @param User $user
      * @return Document
      */
-    private function createBill(User $user) : Document
+    private function createBill(User $user, array $data = []) : Document
     {
         $bill = new Document();
-        $bill->setNumber("FAC-2018-01-01-001");
-        $bill->setDescription("facture de test");
+        $bill->setNumber('FAC-2018-01-01-001');
+        if (isset($data['number'])) {
+            $bill->setNumber($data['number']);
+        }
+        $bill->setDescription('facture de test');
         $bill->setRefUser($user);
-        $bill->setStatus("draw");
+        $bill->setStatus('draw');
         $bill->setType(false);
         return $bill;
     }
@@ -38,13 +41,16 @@ trait DocumentTrait
      * @param User $user
      * @return Document
      */
-    private function createDraw(User $user) : Document
+    private function createDraw(User $user, array $data = []) : Document
     {
         $bill = new Document();
-        $bill->setNumber("DEV-2018-01-01-001");
-        $bill->setDescription("devis de test");
+        $bill->setNumber('DEV-2018-01-01-001');
+        if (isset($data['number'])) {
+            $bill->setNumber($data['number']);
+        }
+        $bill->setDescription('devis de test');
         $bill->setRefUser($user);
-        $bill->setStatus("draw");
+        $bill->setStatus('draw');
         $bill->setType(true);
         return $bill;
     }

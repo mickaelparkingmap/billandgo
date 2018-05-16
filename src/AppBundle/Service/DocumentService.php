@@ -41,32 +41,47 @@ class DocumentService extends Controller
 
     /**
      * @param User $user
+     * @param array $status
      * @return array
      */
-    public function listDrawFromUser (User $user) : array
+    public function listDrawFromUser (
+        User $user,
+        array $status = [
+            "draw", "canceled", "refused",
+            "estimated", "accepted"
+        ]
+    ) : array
     {
+        $filter = [
+            'refUser'   => $user,
+            'type'      => true,
+            'status'    => $status
+        ];
         return $this->em
             ->getRepository(Document::class)
-            ->findBy([
-                'refUser' => $user,
-                'type' => 1
-            ])
-            ;
+            ->findBy($filter);
     }
-
 
     /**
      * @param User $user
+     * @param array $status
      * @return array
      */
-    public function listBillsFromUser (User $user) : array
+    public function listBillsFromUser (
+        User $user,
+        array $status = [
+            "draw", "canceled", "refused",
+            "billed", "partially", "paid"
+        ]
+    ) : array
     {
+        $filter = [
+            'refUser'   => $user,
+            'type'      => false,
+            'status'    => $status
+        ];
         return $this->em
             ->getRepository(Document::class)
-            ->findBy([
-                'refUser' => $user,
-                'type' => 0
-            ])
-            ;
+            ->findBy($filter);
     }
 }
