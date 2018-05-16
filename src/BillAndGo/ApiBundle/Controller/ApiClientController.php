@@ -14,47 +14,44 @@
 
 namespace BillAndGo\ApiBundle\Controller;
 
-use AppBundle\Service\DocumentService;
+
+use AppBundle\Service\ClientService;
 use AppBundle\Service\Serializer;
 use BillAndGo\ApiBundle\Entity\AccessToken;
 use BillAndGo\ApiBundle\Service\AuthentificationService;
-use BillAndGoBundle\Entity\Document;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Class ApiDevisController
- * @package BillAndGo\ApiBundle\Controller
- */
-class ApiDocumentController extends FOSRestController
+class ApiClientController extends FOSRestController
 {
     /** @var AuthentificationService */
     private $authService;
-    /** @var DocumentService */
-    private $documentService;
+    /** @var ClientService */
+    private $clientService;
 
+    /**
+     * @param ContainerInterface|null $container
+     */
     public function setContainer(ContainerInterface $container = null)
     {
         parent::setContainer($container);
         $this->authService = new AuthentificationService($this->getDoctrine()->getRepository(AccessToken::class));
-        $this->documentService = $this->get("AppBundle\Service\DocumentService");
+        $this->clientService = $this->get("AppBundle\Service\ClientService");
     }
-
 
     /**
      * @return Response
-     *
-     * @Get("/api/estimate")
+     * @Get("/api/client")
      */
-    public function getApiEstimateIndexAction () : Response
+    public function getApiClientIndexAction () : Response
     {
         $user = $this->authService->authenticate();
         $response = new Response(json_encode(["error" => "not connected"]));
 
         if (null !== $user) {
-            $list = $this->documentService->listDrawFromUser($user);
+            $list = $this->clientService->getClientListFromUser($user);
             $response = new Response(Serializer::serialize($list));
         }
         return $response;
@@ -63,37 +60,16 @@ class ApiDocumentController extends FOSRestController
     /**
      * @return Response
      *
-     * @Get("/api/bill")
+     * @Get("/api/client/{id}")
      */
-    public function getApiBillIndexAction () : Response
+    public function getApiClientAction (int $id) : Response
     {
         $user = $this->authService->authenticate();
         $response = new Response(json_encode(["error" => "not connected"]));
 
         if (null !== $user) {
-            $list = $this->documentService->listBillsFromUser($user);
-            $response = new Response(Serializer::serialize($list));
-        }
-        return $response;
-    }
-
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @Get("/api/document/{id}")
-     */
-    public function getApiDocumentAction (int $id) : Response
-    {
-        $user = $this->authService->authenticate();
-        $response = new Response(json_encode(["error" => "not connected"]));
-
-        if (null !== $user) {
-            $document = $this->documentService->getDocument($user, $id);
-            $response = new Response(json_encode(["error" => "not found"]));
-            if ($document instanceof Document) {
-                $response = new Response(Serializer::serialize($document));
-            }
+            $client = $this->clientService->getClient($user, $id);
+            $response = new Response(Serializer::serialize($client));
         }
         return $response;
     }

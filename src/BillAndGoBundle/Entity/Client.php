@@ -12,9 +12,9 @@
  *
  */
 
-
 namespace BillAndGoBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -98,10 +98,9 @@ class Client
      *
      * @return Client
      */
-    public function setCompanyName($companyName)
+    public function setCompanyName(string $companyName) : self
     {
         $this->companyName = $companyName;
-
         return $this;
     }
 
@@ -110,7 +109,7 @@ class Client
      *
      * @return string
      */
-    public function getCompanyName()
+    public function getCompanyName() : string
     {
         return $this->companyName;
     }
@@ -122,10 +121,9 @@ class Client
      *
      * @return Client
      */
-    public function setAdress($adress)
+    public function setAdress(string $adress) : self
     {
         $this->adress = $adress;
-
         return $this;
     }
 
@@ -134,7 +132,7 @@ class Client
      *
      * @return string
      */
-    public function getAdress()
+    public function getAdress() : string
     {
         return $this->adress;
     }
@@ -142,23 +140,22 @@ class Client
     /**
      * Set zipcode
      *
-     * @param boolean $zipcode
+     * @param string $zipcode
      *
      * @return Client
      */
-    public function setZipcode($zipcode)
+    public function setZipcode(string $zipcode) : self
     {
         $this->zipcode = $zipcode;
-
         return $this;
     }
 
     /**
      * Get zipcode
      *
-     * @return boolean
+     * @return string
      */
-    public function getZipcode()
+    public function getZipcode() : string
     {
         return $this->zipcode;
     }
@@ -170,10 +167,9 @@ class Client
      *
      * @return Client
      */
-    public function setCity($city)
+    public function setCity(string $city) : self
     {
         $this->city = $city;
-
         return $this;
     }
 
@@ -182,7 +178,7 @@ class Client
      *
      * @return string
      */
-    public function getCity()
+    public function getCity() : string
     {
         return $this->city;
     }
@@ -194,10 +190,9 @@ class Client
      *
      * @return Client
      */
-    public function setCountry($country)
+    public function setCountry(string $country) : self
     {
         $this->country = $country;
-
         return $this;
     }
 
@@ -206,7 +201,7 @@ class Client
      *
      * @return string
      */
-    public function getCountry()
+    public function getCountry() : string
     {
         return $this->country;
     }
@@ -216,7 +211,7 @@ class Client
      *
      * @return integer
      */
-    public function getId()
+    public function getId() : int
     {
         return $this->id;
     }
@@ -224,23 +219,22 @@ class Client
     /**
      * Set userRef
      *
-     * @param \BillAndGoBundle\Entity\User $userRef
+     * @param User $userRef
      *
      * @return Client
      */
-    public function setUserRef(\BillAndGoBundle\Entity\User $userRef = null)
+    public function setUserRef(User $userRef = null) : self
     {
         $this->userRef = $userRef;
-
         return $this;
     }
 
     /**
      * Get userRef
      *
-     * @return \BillAndGoBundle\Entity\User
+     * @return User
      */
-    public function getUserRef()
+    public function getUserRef() : User
     {
         return $this->userRef;
     }
@@ -250,9 +244,10 @@ class Client
      *
      * @return Client
      */
-    public function addContact(ClientContact $contact)
+    public function addContact(ClientContact $contact) : self
     {
     	$this->contactRef[] = $contact;
+    	return $this;
     }
     
     /**
@@ -260,21 +255,53 @@ class Client
      *
      * @return Client
      */
-    public function removeContact(ClientContact $contact)
+    public function removeContact(ClientContact $contact) : self
     {
     	$this->contactRef->removeElement($contact);
+    	return $this;
     }
-    
+
     /**
-     * @return ArrayCollection
+     * @return Collection(ClientContact)
      */
-    public function getContacts()
+    public function getContacts() : Collection
     {
     	return $this->contactRef;
     }
-    
+
+    /**
+     * Client constructor.
+     */
     public function __construct()
     {
     	$this->contactRef = new ArrayCollection();
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString() : string
+    {
+        $data = [
+            'id'            => $this->id,
+            'companyName'   => $this->companyName,
+            'address'       => $this->adress,
+            'zipcode'       => $this->zipcode,
+            'city'          => $this->city,
+            'country'       => $this->country
+        ];
+        $data["contacts"] = [];
+        foreach ($this->getContacts() as $contact) {
+            /** @var ClientContact $contact */
+            $data["contacts"][$contact->getId()] = [
+                'id'        => $contact->getId(),
+                'firstname' => $contact->getFirstname(),
+                'lastname'  => $contact->getLastname(),
+                'email'     => $contact->getEmail(),
+                'phone'     => $contact->getPhone(),
+                'mobile'    => $contact->getMobile()
+            ];
+        }
+        return json_encode($data);
     }
 }
