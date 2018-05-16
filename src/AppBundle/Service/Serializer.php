@@ -29,7 +29,7 @@ class Serializer
         if (is_array($truc)) {
             $array = [];
             foreach ($truc as $elt) {
-                $array[] = json_decode($elt->__toString());
+                $array[] = json_decode($elt->Serialize());
             }
             return json_encode($array);
         }
