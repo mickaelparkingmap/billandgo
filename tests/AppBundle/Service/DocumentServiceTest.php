@@ -15,6 +15,7 @@
 namespace Tests\AppBundle\Service;
 
 use AppBundle\Service\DocumentService;
+use BillAndGoBundle\Entity\Document;
 use Tests\AppBundle\Utils\DocumentTrait;
 use Tests\AppBundle\Utils\PurgeTestCase;
 use Tests\AppBundle\Utils\UserTrait;
@@ -121,9 +122,84 @@ class DocumentServiceTest extends PurgeTestCase
         $this->assertEmpty($list);
     }
 
-    public function testListDrawFromUser()
+    /**
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function testListEstimateFromUser()
     {
-        $this->assertTrue(true);
+        $user = $this->createUser();
+        $this->save($user);
+
+        $documentService = new DocumentService($this->getEntityManager());
+        $list = $documentService->listDrawFromUser($user);
+        $this->assertNotNull($list);
+        $this->assertEmpty($list);
+
+        //estimate
+        $estimate = $this->createDraw($user);
+        $this->save($estimate);
+        $list = $documentService->listDrawFromUser($user);
+        $this->assertEquals(1, count($list));
+
+        //bill
+        $bill = $this->createBill($user);
+        $this->save($bill);
+        $list = $documentService->listDrawFromUser($user);
+        $this->assertNotEmpty($list);
+        $this->assertEquals(1, count($list));
+    }
+
+    /**
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function testGetDocument() {
+
+        $user1 = $this->createUser();
+        $this->save($user1);
+        $bill = $this->createBill($user1);
+        $this->save($bill);
+        $documentService = new DocumentService($this->getEntityManager());
+
+        $document = $documentService->getDocument($user1, $bill->getId());
+        $this->assertNotNull($document);
+        $this->assertTrue($document instanceof Document);
+        $this->assertEquals($bill->getNumber(), $document->getNumber());
+    }
+
+    /**
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function testGetDocumentWrongId() {
+
+        $user1 = $this->createUser();
+        $this->save($user1);
+        $bill = $this->createBill($user1);
+        $this->save($bill);
+        $documentService = new DocumentService($this->getEntityManager());
+
+        $document = $documentService->getDocument($user1, $bill->getId() + 1);
+        $this->assertNull($document);
+    }
+
+    /**
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function testGetDocumentWrongUser() {
+
+        $user1 = $this->createUser();
+        $this->save($user1);
+        $user2 = $this->createUser([
+            'firstname' => 'jean-paul',
+            'email'     => 'jpdupont@gmail.com'
+        ]);
+        $this->save($user2);
+        $bill = $this->createBill($user1);
+        $this->save($bill);
+        $documentService = new DocumentService($this->getEntityManager());
+
+
+        $document = $documentService->getDocument($user2, $bill->getId());
+        $this->assertNull($document);
     }
 
 }

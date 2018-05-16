@@ -21,14 +21,20 @@ trait UserTrait
     /**
      * @return User
      */
-    private function createUser() : User
+    private function createUser($data = []) : User
     {
         $user = new User();
         $user->setFirstname("jean-mi");
+        if (isset($data['firstname'])) {
+            $user->setFirstname($data['firstname']);
+        }
         $user->setLastname("dupont");
-        $user->setUsername("jean-mi_dupont");
+        $user->setUsername($user->getFirstname().'_'.$user->getLastname());
         $user->setCompanyname("dupont");
         $user->setEmail("jmdupont@gmail.com");
+        if (isset($data['email'])) {
+            $user->setEmail($data['email']);
+        }
         $user->setPassword("toto");
         return $user;
     }
