@@ -13,11 +13,13 @@
 
 namespace BillAndGoBundle\Controller;
 
+use AppBundle\Service\DocumentService;
 use BillAndGoBundle\Entity\Numerotation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use BillAndGoBundle\Entity\User;
 use BillAndGoBundle\Entity\Document;
 use BillAndGoBundle\Entity\Line;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\Form\Form;
 use BillAndGoBundle\Form\LineEstimateType;
@@ -34,11 +36,24 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class DocumentController extends Controller
 {
+    /** @var array  */
     private $status = [
         "draw", "canceled", "refused",
         "estimated", "accepted",
         "billed", "partially", "paid"
     ];
+    /** @var DocumentService $documentService */
+    private $documentService;
+
+    /**
+     * @param ContainerInterface|null $container
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        parent::setContainer($container);
+        $this->documentService = $this->get("AppBundle\Service\DocumentService");
+    }
+
 
     /**
      * Lists all estimates entities.
@@ -55,8 +70,7 @@ class DocumentController extends Controller
             return new Response(json_encode($ar401), 401);
         }
 
-        $documentService = $this->get("AppBundle\Service\DocumentService");
-        $estimates = $documentService->listDrawFromUser($user);
+        $estimates = $this->documentService->listDrawFromUser($user);
         return $this->render(
             'BillAndGoBundle:document:index.html.twig', array(
             'list' => $estimates,
@@ -82,8 +96,7 @@ class DocumentController extends Controller
             return new Response(json_encode($ar401), 401);
         }
 
-        $documentService = $this->get("AppBundle\Service\DocumentService");
-        $bills = $documentService->listBillsFromUser($user);
+        $bills = $this->documentService->listBillsFromUser($user);
         return $this->render(
             'BillAndGoBundle:document:indexBill.html.twig', array(
             'list' => $bills,
@@ -111,9 +124,10 @@ class DocumentController extends Controller
             return new Response(json_encode($ar401), 401);
         }
         if ($id > 0) {
-            $manager = $this->getDoctrine()->getManager();
-            $document = $manager->getRepository('BillAndGoBundle:Document')->find($id);
+            $document = $this->documentService->getDocument($user, $id);
+
             if ($document != null) {
+                $manager = $this->getDoctrine()->getManager();
                 if ($document->getRefUser() != $user) {
                     $ar401 = ["wrong user"];
                     return new Response(json_encode($ar401), 401);
