@@ -288,7 +288,7 @@ class Project
         return $this->refLines;
     }
 
-    public function __toString()
+    public function Serialize()
     {
         $data = [
             'id'            => $this->id,
