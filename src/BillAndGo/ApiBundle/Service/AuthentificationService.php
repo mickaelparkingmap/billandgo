@@ -80,7 +80,7 @@ class AuthentificationService extends Controller
         $tokenString = $this->getTokenFromHeaders();
         if (null !== $tokenString) {
             $token = $this->getTokenInDB($tokenString);
-            if (!$token->hasExpired()) {
+            if ((null !== $token) && (!$token->hasExpired())) {
                 /** @var User $user */
                 $user = $token->getUser();
             }
