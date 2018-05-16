@@ -17,17 +17,12 @@ namespace BillAndGo\ApiBundle\Controller;
 
 use AppBundle\Service\ClientService;
 use AppBundle\Service\Serializer;
-use BillAndGo\ApiBundle\Entity\AccessToken;
-use BillAndGo\ApiBundle\Service\AuthentificationService;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-class ApiClientController extends FOSRestController
+class ApiClientController extends ApiBasicController
 {
-    /** @var AuthentificationService */
-    private $authService;
     /** @var ClientService */
     private $clientService;
 
@@ -37,7 +32,6 @@ class ApiClientController extends FOSRestController
     public function setContainer(ContainerInterface $container = null)
     {
         parent::setContainer($container);
-        $this->authService = new AuthentificationService($this->getDoctrine()->getRepository(AccessToken::class));
         $this->clientService = $this->get("AppBundle\Service\ClientService");
     }
 
@@ -47,7 +41,7 @@ class ApiClientController extends FOSRestController
      */
     public function getApiClientIndexAction () : Response
     {
-        $user = $this->authService->authenticate();
+        $user = $this->getUser();
         $response = new Response(json_encode(["error" => "not connected"]));
 
         if (null !== $user) {
@@ -64,7 +58,7 @@ class ApiClientController extends FOSRestController
      */
     public function getApiClientAction (int $id) : Response
     {
-        $user = $this->authService->authenticate();
+        $user = $this->getUser();
         $response = new Response(json_encode(["error" => "not connected"]));
 
         if (null !== $user) {

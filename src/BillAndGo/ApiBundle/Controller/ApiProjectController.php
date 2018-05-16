@@ -15,18 +15,12 @@ namespace BillAndGo\ApiBundle\Controller;
 
 use AppBundle\Service\ProjectService;
 use AppBundle\Service\Serializer;
-use BillAndGo\ApiBundle\Entity\AccessToken;
-use BillAndGo\ApiBundle\Service\AuthentificationService;
 use FOS\RestBundle\Controller\Annotations\Get;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-class ApiProjectController extends Controller
+class ApiProjectController extends ApiClientController
 {
-
-    /** @var AuthentificationService */
-    private $authService;
     /** @var ProjectService */
     private $projectService;
 
@@ -36,7 +30,6 @@ class ApiProjectController extends Controller
     public function setContainer(ContainerInterface $container = null)
     {
         parent::setContainer($container);
-        $this->authService = new AuthentificationService($this->getDoctrine()->getRepository(AccessToken::class));
         $this->projectService = $this->get("AppBundle\Service\ProjectService");
     }
 
@@ -46,7 +39,7 @@ class ApiProjectController extends Controller
      */
     public function getApiProjectIndexAction () : Response
     {
-        $user = $this->authService->authenticate();
+        $user = $this->getUser();
         $response = new Response(json_encode(["error" => "not connected"]));
 
         if (null !== $user) {
@@ -63,7 +56,7 @@ class ApiProjectController extends Controller
      */
     public function getApiProjectAction (int $id) : Response
     {
-        $user = $this->authService->authenticate();
+        $user = $this->getUser();
         $response = new Response(json_encode(["error" => "not connected"]));
 
         if (null !== $user) {

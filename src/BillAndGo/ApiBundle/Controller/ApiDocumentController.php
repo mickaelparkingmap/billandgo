@@ -16,11 +16,8 @@ namespace BillAndGo\ApiBundle\Controller;
 
 use AppBundle\Service\DocumentService;
 use AppBundle\Service\Serializer;
-use BillAndGo\ApiBundle\Entity\AccessToken;
-use BillAndGo\ApiBundle\Service\AuthentificationService;
 use BillAndGoBundle\Entity\Document;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -28,17 +25,14 @@ use Symfony\Component\HttpFoundation\Response;
  * Class ApiDevisController
  * @package BillAndGo\ApiBundle\Controller
  */
-class ApiDocumentController extends FOSRestController
+class ApiDocumentController extends ApiBasicController
 {
-    /** @var AuthentificationService */
-    private $authService;
     /** @var DocumentService */
     private $documentService;
 
     public function setContainer(ContainerInterface $container = null)
     {
         parent::setContainer($container);
-        $this->authService = new AuthentificationService($this->getDoctrine()->getRepository(AccessToken::class));
         $this->documentService = $this->get("AppBundle\Service\DocumentService");
     }
 
@@ -50,7 +44,7 @@ class ApiDocumentController extends FOSRestController
      */
     public function getApiEstimateIndexAction () : Response
     {
-        $user = $this->authService->authenticate();
+        $user = $this->getUser();
         $response = new Response(json_encode(["error" => "not connected"]));
 
         if (null !== $user) {
@@ -67,7 +61,7 @@ class ApiDocumentController extends FOSRestController
      */
     public function getApiBillIndexAction () : Response
     {
-        $user = $this->authService->authenticate();
+        $user = $this->getUser();
         $response = new Response(json_encode(["error" => "not connected"]));
 
         if (null !== $user) {
@@ -85,7 +79,7 @@ class ApiDocumentController extends FOSRestController
      */
     public function getApiDocumentAction (int $id) : Response
     {
-        $user = $this->authService->authenticate();
+        $user = $this->getUser();
         $response = new Response(json_encode(["error" => "not connected"]));
 
         if (null !== $user) {
