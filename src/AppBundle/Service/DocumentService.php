@@ -42,7 +42,7 @@ class DocumentService extends Controller
     /**
      * @param User $user
      * @param array $status
-     * @return array
+     * @return Document[]
      */
     public function listDrawFromUser (
         User $user,
@@ -65,7 +65,7 @@ class DocumentService extends Controller
     /**
      * @param User $user
      * @param array $status
-     * @return array
+     * @return Document[]
      */
     public function listBillsFromUser (
         User $user,
@@ -83,5 +83,24 @@ class DocumentService extends Controller
         return $this->em
             ->getRepository(Document::class)
             ->findBy($filter);
+    }
+
+    /**
+     * @param User $user
+     * @param int $id
+     * @return Document
+     */
+    public function getDocument (
+        User $user,
+        int $id
+    ) : ?Document
+    {
+        $document = $this->em->getRepository(Document::class)->find($id);
+        if ($document instanceof Document) {
+            if ($document->getRefUser() !== $user) {
+                $document = null;
+            }
+        }
+        return $document;
     }
 }

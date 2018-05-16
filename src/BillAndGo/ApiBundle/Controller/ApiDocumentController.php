@@ -18,6 +18,8 @@ use AppBundle\Service\DocumentService;
 use AppBundle\Service\Serializer;
 use BillAndGo\ApiBundle\Entity\AccessToken;
 use BillAndGo\ApiBundle\Service\AuthentificationService;
+use BillAndGoBundle\Entity\Document;
+use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -28,11 +30,9 @@ use Symfony\Component\HttpFoundation\Response;
 class ApiDocumentController extends FOSRestController
 {
     /**
-     * @method getApiDevisIndexAction
-     * get --> [GET] method
-     * api --> [route] = /api/estimate/index
-     * Route --> /api
      * @return Response
+     *
+     * @Get("/api/estimate")
      */
     public function getApiEstimateIndexAction () : Response
     {
@@ -52,7 +52,8 @@ class ApiDocumentController extends FOSRestController
 
     /**
      * @return Response
-     * route -> /api/bill/index
+     *
+     * @Get("/api/bill")
      */
     public function getApiBillIndexAction () : Response
     {
@@ -65,6 +66,30 @@ class ApiDocumentController extends FOSRestController
             $documentService = $this->get("AppBundle\Service\DocumentService");
             $list = $documentService->listBillsFromUser($user);
             $response = new Response(Serializer::serialize($list));
+        }
+        return $response;
+    }
+
+    /**
+     * @param int $id
+     * @return Response
+     *
+     * @Get("/api/document/{id}")
+     */
+    public function getApiDocumentAction (int $id) : Response
+    {
+        $authService = new AuthentificationService($this->getDoctrine()->getRepository(AccessToken::class));
+        $user = $authService->authenticate();
+        $response = new Response(json_encode(["error" => "not connected"]));
+
+        if (null !== $user) {
+            /** @var DocumentService $documentService */
+            $documentService = $this->get("AppBundle\Service\DocumentService");
+            $document = $documentService->getDocument($user, $id);
+            $response = new Response(json_encode(["error" => "not found"]));
+            if ($document instanceof Document) {
+                $response = new Response(Serializer::serialize($document));
+            }
         }
         return $response;
     }

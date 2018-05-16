@@ -615,7 +615,16 @@ class Document
             $data['lines'][$line->getId()] = [
                 'id'        => $line->getId(),
                 'name'      => $line->getName(),
-                'value'     => $line->getPrice() * $line->getQuantity(),
+                'valueHT'     => $line->getPrice() * $line->getQuantity(),
+                'status'    => $line->getStatus()
+            ];
+        }
+        foreach ($this->getRefLinesB() as $line) {
+            /** @var Line $line */
+            $data['lines'][$line->getId()] = [
+                'id'        => $line->getId(),
+                'name'      => $line->getName(),
+                'valueHT'     => $line->getPrice() * $line->getQuantity(),
                 'status'    => $line->getStatus()
             ];
         }
