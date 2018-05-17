@@ -109,7 +109,7 @@ class Client
      *
      * @return string
      */
-    public function getCompanyName() : string
+    public function getCompanyName() : ?string
     {
         return $this->companyName;
     }
@@ -132,7 +132,7 @@ class Client
      *
      * @return string
      */
-    public function getAdress() : string
+    public function getAdress() : ?string
     {
         return $this->adress;
     }
@@ -155,7 +155,7 @@ class Client
      *
      * @return string
      */
-    public function getZipcode() : string
+    public function getZipcode() : ?string
     {
         return $this->zipcode;
     }
@@ -178,7 +178,7 @@ class Client
      *
      * @return string
      */
-    public function getCity() : string
+    public function getCity() : ?string
     {
         return $this->city;
     }
@@ -201,7 +201,7 @@ class Client
      *
      * @return string
      */
-    public function getCountry() : string
+    public function getCountry() : ?string
     {
         return $this->country;
     }
