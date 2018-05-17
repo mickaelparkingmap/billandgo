@@ -148,7 +148,7 @@ class User extends BaseUser
     /**
      * @return string
      */
-    public function getJobtype () : string
+    public function getJobtype () : ?string
     {
         return $this->jobtype;
     }
@@ -182,7 +182,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getFirstname () : string
+    public function getFirstname () : ?string
     {
         return $this->firstname;
     }
@@ -205,7 +205,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getLastname () : string
+    public function getLastname () : ?string
     {
         return $this->lastname;
     }
@@ -228,7 +228,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getCompanyname () : string
+    public function getCompanyname () : ?string
     {
         return $this->companyname;
     }
@@ -251,7 +251,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getAddress () : string
+    public function getAddress () : ?string
     {
         return $this->address;
     }
@@ -274,7 +274,7 @@ class User extends BaseUser
      *
      * @return integer
      */
-    public function getZipCode () : string
+    public function getZipCode () : ?string
     {
         return $this->zipCode;
     }
@@ -297,7 +297,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getCity () : string
+    public function getCity () : ?string
     {
         return $this->city;
     }
@@ -320,7 +320,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getCountry () : string
+    public function getCountry () : ?string
     {
         return $this->country;
     }
@@ -343,7 +343,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getMobile () : string
+    public function getMobile () : ?string
     {
         return $this->mobile;
     }
@@ -366,7 +366,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getPhone () : string
+    public function getPhone () : ?string
     {
         return $this->phone;
     }
@@ -389,7 +389,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getSiret () : string
+    public function getSiret () : ?string
     {
         return $this->siret;
     }
@@ -412,7 +412,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getBanque () : string
+    public function getBanque () : ?string
     {
         return $this->banque;
     }
@@ -436,7 +436,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getBic () : string
+    public function getBic () : ?string
     {
         return $this->bic;
     }
@@ -459,7 +459,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getIban () : string
+    public function getIban () : ?string
     {
         return $this->iban;
     }
