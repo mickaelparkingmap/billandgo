@@ -467,7 +467,7 @@ class User extends BaseUser
     /**
      * @return string
      */
-    public function getPlan () : string
+    public function getPlan () : ?string
     {
         return $this->plan;
     }
@@ -565,7 +565,7 @@ class User extends BaseUser
     /**
      * @return string
      */
-    public function getUserSkinPath () : string
+    public function getUserSkinPath () : ?string
     {
         return $this->userSkinPath;
     }
@@ -806,7 +806,7 @@ class User extends BaseUser
         return $this->lastname." ".$this->firstname;
     }
 
-    public function Serialize () : string
+    public function stringify () : string
     {
         $data = [
             'id'            => $this->id,

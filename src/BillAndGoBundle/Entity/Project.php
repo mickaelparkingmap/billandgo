@@ -288,7 +288,7 @@ class Project
         return $this->refLines;
     }
 
-    public function Serialize()
+    public function stringify()
     {
         $data = [
             'id'            => $this->id,

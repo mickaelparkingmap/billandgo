@@ -34,7 +34,7 @@ class Serializer
             return json_encode($array);
         }
         else {
-            return $truc->Serialize();
+            return $truc->stringify();
         }
     }
 }

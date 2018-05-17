@@ -588,7 +588,7 @@ class Document
     /**
      * @return string
      */
-    public function Serialize () : string
+    public function stringify () : string
     {
         $data = [
             'id'            => $this->id,
