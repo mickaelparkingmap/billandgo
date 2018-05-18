@@ -15,6 +15,7 @@ namespace BillAndGoBundle\Controller;
 
 use AppBundle\Service\ClientService;
 use AppBundle\Service\DocumentService;
+use BillAndGoBundle\Entity\Client;
 use BillAndGoBundle\Entity\Numerotation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use BillAndGoBundle\Entity\User;
@@ -412,42 +413,50 @@ class DocumentController extends Controller
     }
 
     /**
-     * @Route("/document/add", name="billandgo_document_add")
+     * @Route("/document/add/{step}", name="billandgo_document_add")
      * @Method({"GET"})
      * @param Request $req
      * @return Response
      * @throws \Doctrine\ORM\ORMException
      */
-    public function addDocumentAction (Request $req) : Response
+    public function addDocumentAction (Request $req, int $step) : Response
     {
         $user = $this->getUser();
         if (!is_object($user)) {
             return new Response(json_encode(["disconnected"]), 401);
         }
-        $step = $req->get('step');
-        if (null !== $step) {
-            if (1 == (int) $step) {
-                $type = $req->get('type');
-                if (in_array($type, ['bill', 'estimate'])) {
-                    $clients = $this->clientService->getClientListFromUser($user);
-                    $doc = $this->documentService->documentCreation($user, $type);
+        if (1 == $step) {
+            $type = $req->get('type');
+            if (in_array($type, ['bill', 'estimate'])) {
+                $clients = $this->clientService->getClientListFromUser($user);
+                $doc = $this->documentService->documentCreation($user, $type);
+                return $this->render(
+                    'BillAndGoBundle:document:addDocument.html.twig', array(
+                        'step'      => 2,
+                        'doc'       => $doc,
+                        'clients'   => $clients,
+                        'user'      => $user
+                    )
+                );
+            }
+        }
+        elseif (2 == $step) {
+            $clientID = (int) $req->get('client');
+            $docID = (int) $req->get('doc');
+            if ((is_int($clientID)) && (is_int($docID))) {
+                $client = $this->clientService->getClient($user, $clientID);
+                if ($client instanceof Client) {
+                    $doc = $this->documentService->addClient($user, $client, $docID);
                     return $this->render(
                         'BillAndGoBundle:document:addDocument.html.twig', array(
-                            'step'      => 2,
+                            'step'      => 3,
                             'doc'       => $doc,
-                            'clients'   => $clients,
                             'user'      => $user
                         )
                     );
                 }
             }
-            elseif (2 == (int) $step) {
-                $clientID = $req->get('client');
-                dump($clientID);die;
-            }
         }
-
-
         return new Response('nothing');
     }
 

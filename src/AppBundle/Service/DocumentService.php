@@ -14,6 +14,7 @@
 
 namespace AppBundle\Service;
 
+use BillAndGoBundle\Entity\Client;
 use BillAndGoBundle\Entity\Document;
 use BillAndGoBundle\Entity\Numerotation;
 use BillAndGoBundle\Entity\User;
@@ -196,5 +197,22 @@ class DocumentService extends Controller
 
         }
         return $num;
+    }
+
+    /**
+     * @param User $user
+     * @param Client $client
+     * @param int $docID
+     * @return Document|null
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function addClient (User $user, Client $client, int $docID) : ?Document
+    {
+        $doc = $this->getDocument($user, $docID);
+        if ($doc instanceof Document) {
+            $doc->setRefClient($client);
+            $this->em->flush();
+        }
+        return $doc;
     }
 }

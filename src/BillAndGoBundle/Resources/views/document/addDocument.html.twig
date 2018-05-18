@@ -67,45 +67,108 @@
                         <div class="box-footer">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <form method="get">
-                                    <div class="form-group row" id="document_modal_client">
-                                        <input type="hidden" value="{{ doc.id }}">
-                                        <div class="col-md-12">
-                                            <h4>
-                                                <label class="control-label required" for="billandgobundle_document_refClient">
-                                                    Sélectionner le Client
-                                                </label>
-                                            </h4>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <select
-                                                    id="billandgobundle_document_refClient"
-                                                    name="client"
-                                                    required="required"
-                                                    class="form-control"
-                                            >
-                                                {% for client in clients %}
-                                                    <option value="{{ client.id }}" required="required">
-                                                        {{ client.companyName }}
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <input
-                                                    type="submit"
-                                                    value="Suivant"
-                                                    class="btn btn-success btn-outline"
-                                            >
-                                        </div>
-                                    </div>
-                                    </form>
+                                    {% if step == 2 %}
+                                        <form method="get" action="{{ path('billandgo_document_add', {'step': 2}) }}">
+                                            <div class="form-group row" id="document_modal_client">
+                                                <input type="hidden" name="doc" value="{{ doc.id }}">
+                                                <div class="col-md-12">
+                                                    <h4>
+                                                        <label class="control-label required" for="billandgobundle_document_refClient">
+                                                            Sélectionner le Client
+                                                        </label>
+                                                    </h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <select
+                                                            id="billandgobundle_document_refClient"
+                                                            name="client"
+                                                            required="required"
+                                                            class="form-control"
+                                                    >
+                                                        {% for client in clients %}
+                                                            <option value="{{ client.id }}" required="required">
+                                                                {{ client.companyName }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input
+                                                            type="submit"
+                                                            value="Suivant"
+                                                            class="btn btn-success btn-outline"
+                                                    >
+                                                </div>
+                                            </div>
+                                        </form>
 
+                                    {% elseif step == 3 %}
 
+                                        <form method="get" action="{{ path('billandgo_document_add', {'step': 3}) }}">
+                                            <div class="form-group row">
+                                                <input type="hidden" name="doc" value="{{ doc.id }}">
+                                            </div>
+                                            <div class="col-md-12">
+                                                <h4>
+                                                    <label class="control-label required" for="billandgobundle_document_description">
+                                                        Description du document
+                                                    </label>
+                                                </h4>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group" style="">
+                                                    <textarea
+                                                            id="billandgobundle_document_description"
+                                                            name="description"
+                                                            required="required"
+                                                            class="form-control"
+                                                    >
+                                                    </textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <input
+                                                        type="submit"
+                                                        value="Suivant"
+                                                        class="btn btn-success btn-outline"
+                                                >
+                                            </div>
+                                        </form>
 
+                                    {% elseif step == 4 %}
 
+                                        <form method="get" action="{{ path('billandgo_document_add', {'step': 4}) }}">
+                                            <div class="form-group row">
+                                                <input type="hidden" name="doc" value="{{ doc.id }}">
+                                            </div>
+                                            <div class="col-md-12">
+                                                <h4>
+                                                    <label class="control-label required" for="billandgobundle_document_delayDate">
+                                                        Date de validité
+                                                    </label>
+                                                </h4>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group" style="">
+                                                    <input
+                                                            id="billandgobundle_document_delayDate"
+                                                            name="delayDate"
+                                                            required="required"
+                                                            class="form-control"
+                                                            type="text"
+                                                    >
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input
+                                                        type="submit"
+                                                        value="Suivant"
+                                                        class="btn btn-success btn-outline"
+                                                >
+                                            </div>
+                                        </form>
 
-
+                                    {% endif %}
                                 </div>
 
                             </div>
