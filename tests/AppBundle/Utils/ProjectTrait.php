@@ -35,6 +35,9 @@ trait ProjectTrait
         $project = new Project();
         $project->setRefUser($user);
         $project->setName('macron');
+        if (isset($data['name'])) {
+            $project->setName($data['name']);
+        }
         $project->setDescription("C'est notre projeeeeeeeeet");
         $project->setBegin(new \DateTime());
         $project->setDeadline(new \DateTime());

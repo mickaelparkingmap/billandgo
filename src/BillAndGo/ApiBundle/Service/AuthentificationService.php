@@ -45,7 +45,6 @@ class AuthentificationService extends Controller
         $token = null;
         $headers = apache_request_headers();
         $auth = $headers['Authorization'];
-        $tokenString = null;
         if (null !== $auth) {
             $mode = substr($auth, 0, 6);
             if ("Bearer" === $mode) {

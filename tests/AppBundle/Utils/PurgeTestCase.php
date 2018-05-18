@@ -20,8 +20,8 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class PurgeTestCase extends KernelTestCase
 {
-    /** @var EntityManager $em */
-    private $em;
+    /** @var EntityManager $entityManager */
+    private $entityManager;
 
     /**
      *
@@ -38,7 +38,7 @@ class PurgeTestCase extends KernelTestCase
     protected function setUp ()
     {
         parent::setUp();
-        $this->em = self::$kernel->getContainer()->get('doctrine.orm.entity_manager');
+        $this->entityManager = self::$kernel->getContainer()->get('doctrine.orm.entity_manager');
         $this->purgeDatabase();
     }
 
@@ -52,7 +52,7 @@ class PurgeTestCase extends KernelTestCase
 
     protected function getEntityManager () : EntityManager
     {
-        return $this->em;
+        return $this->entityManager;
     }
 
     /**
@@ -60,7 +60,7 @@ class PurgeTestCase extends KernelTestCase
      */
     private function purgeDatabase () : void
     {
-        $purger = new ORMPurger($this->em);
+        $purger = new ORMPurger($this->entityManager);
         $purger->purge();
     }
 
@@ -71,8 +71,8 @@ class PurgeTestCase extends KernelTestCase
      */
     protected function save ($obj)
     {
-        $this->em->persist($obj);
-        $this->em->flush();
+        $this->entityManager->persist($obj);
+        $this->entityManager->flush();
         return $obj;
     }
 
