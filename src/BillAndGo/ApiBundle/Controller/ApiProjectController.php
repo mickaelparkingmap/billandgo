@@ -54,13 +54,13 @@ class ApiProjectController extends ApiClientController
      *
      * @Get("/api/project/{id}")
      */
-    public function getApiProjectAction (int $id) : Response
+    public function getApiProjectAction (int $projectID) : Response
     {
         $user = $this->getUser();
         $response = new Response(json_encode(["error" => "not connected"]));
 
         if (null !== $user) {
-            $client = $this->projectService->getProject($user, $id);
+            $client = $this->projectService->getProject($user, $projectID);
             $response = new Response(Serializer::serialize($client));
         }
         return $response;

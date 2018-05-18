@@ -56,13 +56,13 @@ class ApiClientController extends ApiBasicController
      *
      * @Get("/api/client/{id}")
      */
-    public function getApiClientAction (int $id) : Response
+    public function getApiClientAction (int $clientID) : Response
     {
         $user = $this->getUser();
         $response = new Response(json_encode(["error" => "not connected"]));
 
         if (null !== $user) {
-            $client = $this->clientService->getClient($user, $id);
+            $client = $this->clientService->getClient($user, $clientID);
             $response = new Response(Serializer::serialize($client));
         }
         return $response;

@@ -77,13 +77,13 @@ class ApiDocumentController extends ApiBasicController
      *
      * @Get("/api/document/{id}")
      */
-    public function getApiDocumentAction (int $id) : Response
+    public function getApiDocumentAction (int $docID) : Response
     {
         $user = $this->getUser();
         $response = new Response(json_encode(["error" => "not connected"]));
 
         if (null !== $user) {
-            $document = $this->documentService->getDocument($user, $id);
+            $document = $this->documentService->getDocument($user, $docID);
             $response = new Response(json_encode(["error" => "not found"]));
             if ($document instanceof Document) {
                 $response = new Response(Serializer::serialize($document));
