@@ -1,7 +1,7 @@
 {% extends "BillAndGoBundle::base.html.twig" %}
 
 
-{% if doc.type %}
+{% if type %}
     {% set min_fr = "devis" %}
     {% set maj_fr = "Devis" %}
     {% set list_path = path('billandgo_estimate_index') %}
@@ -62,7 +62,7 @@
                             <!-- /.widget-user-image -->
                             <h5 class="widget-user-username">Nouveau</h5>
                             <h5 class="widget-user-desc">{{ maj_fr }}</h5>
-                            {% if doc.type %}
+                            {% if type %}
                                 <h5 class="widget-user-desc"><em>Suivez les étapes afin de créer un nouveau devis</em></h5>
                             {% else %}
                                 <h5 class="widget-user-desc"><em>Suivez les étapes afin de créer une nouvelle facture</em></h5>
@@ -74,7 +74,7 @@
                                     {% if step == 2 %}
                                         <form method="get" action="{{ path('billandgo_document_add', {'step': 2}) }}">
                                             <div class="form-group row" id="document_modal_client">
-                                                <input type="hidden" name="doc" value="{{ doc.id }}">
+                                                <input type="hidden" name="type" value="{{ type }}">
                                                 <div class="col-md-12">
                                                     <h4>
                                                         <label class="control-label required" for="billandgobundle_document_refClient">

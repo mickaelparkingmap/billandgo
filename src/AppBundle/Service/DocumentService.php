@@ -112,7 +112,7 @@ class DocumentService extends Controller
      * @return Document
      * @throws \Doctrine\ORM\ORMException
      */
-    public function documentCreation (User $user, string $type) : Document
+    public function documentCreation (User $user, string $type, Client $client) : Document
     {
         $index = $this->numerotation($user, $type);
         $number = ('bill' === $type) ? 'FAC-' : 'DEV-';
@@ -123,6 +123,7 @@ class DocumentService extends Controller
         $document->setNumber($number);
         $document->setType(('estimate' === $type));
         $document->setStatus('draw');
+        $document->setRefClient($client);
         $this->em->persist($document);
         $this->em->flush();
 
