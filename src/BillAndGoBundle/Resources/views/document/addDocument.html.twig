@@ -62,7 +62,11 @@
                             <!-- /.widget-user-image -->
                             <h5 class="widget-user-username">Nouveau</h5>
                             <h5 class="widget-user-desc">{{ maj_fr }}</h5>
-                            <h5 class="widget-user-desc"><em>Suivez les étapes afin de créer un nouveau {{ min_fr }}</em></h5>
+                            {% if doc.type %}
+                                <h5 class="widget-user-desc"><em>Suivez les étapes afin de créer un nouveau devis</em></h5>
+                            {% else %}
+                                <h5 class="widget-user-desc"><em>Suivez les étapes afin de créer une nouvelle facture</em></h5>
+                            {% endif %}
                         </div>
                         <div class="box-footer">
                             <div class="row">

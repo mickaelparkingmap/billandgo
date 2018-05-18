@@ -143,20 +143,20 @@ class DocumentService extends Controller
         if (isset($numerotationArray[0])) {
             /** @var Numerotation $num */
             $num = $numerotationArray[0];
-            $this->updateNumerotation($type, $num);
+            $index = $this->updateNumerotation($type, $num);
         }
         else {
-            $this->createNumerotation($user, $type);
+            $index = $this->createNumerotation($user, $type);
         }
-        return $num->getEstimateIndex();
+        return $index;
     }
 
     /**
      * @param User $user
      * @param string $type
-     * @return Numerotation
+     * @return integer
      */
-    private function createNumerotation (User $user, string $type) : Numerotation
+    private function createNumerotation (User $user, string $type) : int
     {
         $num = new Numerotation();
         $num->setRefUser($user);
@@ -165,15 +165,16 @@ class DocumentService extends Controller
         $num->setBillYearMonth(date("Ym"));
         $num->setEstimateYearMonth(date("Ym"));
         $this->em->persist($num);
-        return $num;
+        $index = ('estimate' === $type) ? $num->getEstimateIndex() : $num->getBillIndex();
+        return $index;
     }
 
     /**
      * @param string $type
      * @param Numerotation $num
-     * @return Numerotation
+     * @return integer
      */
-    private function updateNumerotation (string $type, Numerotation $num) : Numerotation
+    private function updateNumerotation (string $type, Numerotation $num) : int
     {
         if ('estimate' === $type) {
             if ($num->getEstimateYearMonth() != date("Ym")) {
@@ -184,6 +185,7 @@ class DocumentService extends Controller
                 $num->setEstimateIndex($num->getEstimateIndex() + 1);
             }
             $this->em->persist($num);
+            $index = $num->getEstimateIndex();
         }
         else if ('bill' === $type) {
             if ($num->getBillYearMonth() != date("Ym")) {
@@ -194,9 +196,9 @@ class DocumentService extends Controller
                 $num->setBillIndex($num->getBillIndex() + 1);
             }
             $this->em->persist($num);
-
+            $index = $num->getBillIndex();
         }
-        return $num;
+        return $index;
     }
 
     /**
