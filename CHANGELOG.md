@@ -45,7 +45,7 @@ https://iumio.com
 
 ## [1.2.3] - 2018-05-11
 
--  Change dashboard stats
+- Change dashboard stats
 - Add GA event on project creation from quote
 - Quote email color
 - Fix responsive design issues
@@ -62,4 +62,47 @@ https://iumio.com
 [1.2.3]: https://github.com/iumio/billandgo/releases/tag/v1.2.3
 [1.2.4]: https://github.com/iumio/billandgo/releases/tag/v1.2.4
 
+
+## [1.3.0] - 2018-05-15
+
+- basic api authentification on /api/auth endpoint
+
+
+## [1.3.1] - 2018-05-15
+
+- creation of documents service for both by web controller and api controller
+- creation of clients service for both by web controller and api controller
+- creation of projects service for both by web controller and api controller
+
+
+## [1.3.2] - 2018-05-16
+
+- api : list of clients
+- api : view of a client
+- api : list of estimates
+- api : view of an estimate
+- api : list of projects
+- api : view of a project
+- api : list of bills
+- api : view of a bill
+
+
+## [1.3.3] - 2018-05-17
+
+- various corrections
+
+
+## [1.3.4] - 2018-05-17
+
+- setting up tests for services
+
+
+## [1.4.0] - 2018-05-18
+
+- step by step creation for documents
+
+
+## [1.4.1] - 2018-05-18
+
+- creation of estimates and bills from a client interface
 
