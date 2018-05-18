@@ -54,7 +54,7 @@ set status_fr = {
                         </div><!-- /.info-box-content -->
                     </div><!-- /.info-box -->
                 </div><!-- /.col -->
-                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('billandgo_estimate_add') }}'">
+                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('billandgo_document_add', {'step': 1, 'type': type}) }}'">
                     <div class="info-box">
                         <span class="info-box-icon bg-green"><i class="fa fa-plus"></i></span>
                         <div class="info-box-content">
@@ -62,24 +62,6 @@ set status_fr = {
                         </div><!-- /.info-box-content -->
                     </div><!-- /.info-box -->
                 </div><!-- /.col -->
-
-
-
-
-
-                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('billandgo_document_add', {'step': 1, 'type': type}) }}'">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-green"><i class="fa fa-plus"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text"><strong>Créer  {% if type == 'estimate' %}un nouveau devis2{% elseif type == 'bill' %}une nouvelle facture{% endif %}</strong></span>
-                        </div><!-- /.info-box-content -->
-                    </div><!-- /.info-box -->
-                </div><!-- /.col -->
-
-
-
-
-
 
                 {% if user.plan == null and limitation == false %}
                     <div class="col-md-12 ">
@@ -829,7 +811,7 @@ set status_fr = {
                                     <h4>Aucun {{ min_fr }} enregistré </h4>
                                     <p>
                                         Vous n'avez pas encore saisi de {{ min_fr }}, ne perdez pas de temps,
-                                        <a href="{{ path('billandgo_estimate_add') }}">Ajoutez votre premier {{ min_fr }}</a>
+                                        <a href="{{ path('billandgo_document_add', {'step': 1, 'type': type }) }}">Ajoutez-en !</a>
                                     </p>
                                 </div>
                             </div>

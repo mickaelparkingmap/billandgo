@@ -490,7 +490,7 @@ class DocumentController extends Controller
      * @param                   Request $req
      * @return                  \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function addEstimateAction(Request $req)
+    /*public function addEstimateAction(Request $req)
     {
         $user = $this->getUser();
         if (!is_object($user)) {
@@ -543,7 +543,7 @@ class DocumentController extends Controller
             'user' => $user
             )
         );
-    }
+    }*/
 
     /**
      * add a bill
@@ -553,7 +553,7 @@ class DocumentController extends Controller
      * @param               Request $req
      * @return              \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function addBillAction(Request $req)
+    /*public function addBillAction(Request $req)
     {
         $user = $this->getUser();
         if (!is_object($user)) {
@@ -607,7 +607,7 @@ class DocumentController extends Controller
             'user' => $user
             )
         );
-    }
+    }*/
 
     /**
      * @Route("/bills/add/estimate/lines", name="billandgo_bill_create_from_lines")

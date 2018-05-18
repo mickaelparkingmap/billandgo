@@ -368,7 +368,7 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="{{ path('billandgo_estimate_add') }}"><i class="fa fa-plus"></i> Nouveau Devis</a></li>
+                        <li><a href="{{ path('billandgo_document_add', {'step': 1, 'type': 'estimate'}) }}"><i class="fa fa-plus"></i> Nouveau Devis</a></li>
                         <li><a href="{{ path('billandgo_estimate_index') }}"><i class="fa fa-list-alt"></i> Liste Devis</a></li>
                     </ul>
                 </li>
@@ -396,7 +396,7 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="{{ path('billandgo_bill_add') }}"><i class="fa fa-plus"></i> Nouvelle Facture</a></li>
+                        <li><a href="{{ path('billandgo_document_add', {'step': 1, 'type': 'bill'}) }}"><i class="fa fa-plus"></i> Nouvelle Facture</a></li>
                         <li><a href="{{ path('billandgo_bill_index') }}"><i class="fa fa-list-alt"></i> Liste Factures</a></li>
                     </ul>
                 </li>
