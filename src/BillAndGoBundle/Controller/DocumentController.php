@@ -26,7 +26,6 @@ use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\Form\Form;
 use BillAndGoBundle\Form\LineEstimateType;
 use BillAndGoBundle\Form\LineBillType;
-use BillAndGoBundle\Form\DocumentType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -425,62 +424,54 @@ class DocumentController extends Controller
         if (!is_object($user)) {
             return new Response(json_encode(["disconnected"]), 401);
         }
-        if (1 == $step) {
-            $type = $req->get('type');
-            if (in_array($type, ['bill', 'estimate'])) {
-                $clients = $this->clientService->getClientListFromUser($user);
+        $type = $req->get('type');
+        $clientID = (int) $req->get('client');
+        $description = $req->get('description');
+        $docID = (int) $req->get('doc');
+        if ((1 == $step) && (null !== $type) && (in_array($type, ['bill', 'estimate']))) {
+            $clients = $this->clientService->getClientListFromUser($user);
+            return $this->render(
+                'BillAndGoBundle:document:addDocument.html.twig', array(
+                    'step'      => 2,
+                    'type'      => $type,
+                    'clients'   => $clients,
+                    'user'      => $user
+                )
+            );
+        }
+        elseif ((2 == $step) && (is_int($clientID)) && (in_array($type, ['bill', 'estimate']))) {
+            $client = $this->clientService->getClient($user, $clientID);
+            if ($client instanceof Client) {
+                $doc = $this->documentService->documentCreation($user, $type, $client);
                 return $this->render(
                     'BillAndGoBundle:document:addDocument.html.twig', array(
-                        'step'      => 2,
+                        'step'      => 3,
                         'type'      => $type,
-                        'clients'   => $clients,
-                        'user'      => $user
-                    )
-                );
-            }
-        }
-        elseif (2 == $step) {
-            $clientID = (int) $req->get('client');
-            $type = $req->get('type');
-            if ((is_int($clientID)) && (in_array($type, ['bill', 'estimate']))) {
-                $client = $this->clientService->getClient($user, $clientID);
-                if ($client instanceof Client) {
-                    $doc = $this->documentService->documentCreation($user, $type, $client);
-                    return $this->render(
-                        'BillAndGoBundle:document:addDocument.html.twig', array(
-                            'step'      => 3,
-                            'type'      => $type,
-                            'doc'       => $doc,
-                            'user'      => $user
-                        )
-                    );
-                }
-            }
-        }
-        elseif (3 == $step) {
-            $description = $req->get('description');
-            $docID = (int) $req->get('doc');
-            if ((null !== $description) && !(empty($description)) && (is_int($docID))) {
-                $doc = $this->documentService->setDescription($user, $description, $docID);
-                return $this->render(
-                    'BillAndGoBundle:document:addDocument.html.twig', array(
-                        'step'      => 4,
-                        'type'      => $doc->getType(),
                         'doc'       => $doc,
                         'user'      => $user
                     )
                 );
             }
         }
-        elseif (4 == $step) {
+        elseif ((3 == $step) && (null !== $description) && (is_int($docID))) {
+            $doc = $this->documentService->setDescription($user, $description, $docID);
+            return $this->render(
+                'BillAndGoBundle:document:addDocument.html.twig', array(
+                    'step'      => 4,
+                    'type'      => $doc->getType(),
+                    'doc'       => $doc,
+                    'user'      => $user
+                )
+            );
+        }
+        elseif ((4 == $step) && (is_int($docID))) {
             $delayDate = new \DateTime($req->get('delayDate'));
-            $docID = (int) $req->get('doc');
-            if ((null !== $delayDate) && (is_int($docID))) {
+            if ((null !== $delayDate)) {
                 $doc = $this->documentService->setDelayDate($user, $delayDate, $docID);
                 return $this->redirect($this->generateUrl("billandgo_document_view", array('id' => $doc->getId())));
             }
         }
-        return new Response('nothing');
+        return $this->redirect($this->generateUrl('billandgo_dashboard'));
     }
 
     /**
