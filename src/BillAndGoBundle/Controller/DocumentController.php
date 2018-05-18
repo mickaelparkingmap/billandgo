@@ -414,7 +414,7 @@ class DocumentController extends Controller
 
     /**
      * @Route("/document/add/{step}", name="billandgo_document_add")
-     * @Method({"GET"})
+     * @Method({"GET", "POST"})
      * @param Request $req
      * @return Response
      * @throws \Doctrine\ORM\ORMException
@@ -455,6 +455,28 @@ class DocumentController extends Controller
                         )
                     );
                 }
+            }
+        }
+        elseif (3 == $step) {
+            $description = $req->get('description');
+            $docID = (int) $req->get('doc');
+            if ((null !== $description) && !(empty($description)) && (is_int($docID))) {
+                $doc = $this->documentService->setDescription($user, $description, $docID);
+                return $this->render(
+                    'BillAndGoBundle:document:addDocument.html.twig', array(
+                        'step'      => 4,
+                        'doc'       => $doc,
+                        'user'      => $user
+                    )
+                );
+            }
+        }
+        elseif (4 == $step) {
+            $delayDate = new \DateTime($req->get('delayDate'));
+            $docID = (int) $req->get('doc');
+            if ((null !== $delayDate) && (is_int($docID))) {
+                $doc = $this->documentService->setDelayDate($user, $delayDate, $docID);
+                return $this->redirect($this->generateUrl("billandgo_document_view", array('id' => $doc->getId())));
             }
         }
         return new Response('nothing');

@@ -104,7 +104,7 @@
 
                                     {% elseif step == 3 %}
 
-                                        <form method="get" action="{{ path('billandgo_document_add', {'step': 3}) }}">
+                                        <form method="post" action="{{ path('billandgo_document_add', {'step': 3}) }}">
                                             <div class="form-group row">
                                                 <input type="hidden" name="doc" value="{{ doc.id }}">
                                             </div>

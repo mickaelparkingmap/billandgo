@@ -215,4 +215,38 @@ class DocumentService extends Controller
         }
         return $doc;
     }
+
+    /**
+     * @param User $user
+     * @param string $description
+     * @param int $docID
+     * @return Document|null
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function setDescription (User $user, string $description, int $docID) : ?Document
+    {
+        $doc = $this->getDocument($user, $docID);
+        if ($doc instanceof Document) {
+            $doc->setDescription($description);
+            $this->em->flush();
+        }
+        return $doc;
+    }
+
+    /**
+     * @param User $user
+     * @param \DateTime $delay
+     * @param int $docID
+     * @return Document|null
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function setDelayDate (User $user, \DateTime $delay, int $docID) : ?Document
+    {
+        $doc = $this->getDocument($user, $docID);
+        if ($doc instanceof Document) {
+            $doc->setDelayDate($delay);
+            $this->em->flush();
+        }
+        return $doc;
+    }
 }
