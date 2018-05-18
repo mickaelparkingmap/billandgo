@@ -23,17 +23,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class ClientService extends Controller
 {
-    /** @var EntityManager */
-    private $em;
+    /** @var EntityManager $entityManager */
+    private $entityManager;
 
     /**
      * DevisService constructor.
      * @param EntityManagerInterface $em
      */
     public function __construct (
-        EntityManagerInterface $em
+        EntityManagerInterface $entityManager
     ) {
-        $this->em = $em;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -42,7 +42,7 @@ class ClientService extends Controller
      */
     public function getClientListFromUser (User $user) : array
     {
-        return $this->em
+        return $this->entityManager
             ->getRepository(Client::class)
             ->findBy([
                 "userRef" => $user
@@ -54,9 +54,9 @@ class ClientService extends Controller
      * @param int $id
      * @return Client|null
      */
-    public function getClient (User $user, int $id) : ?Client
+    public function getClient (User $user, int $clientID) : ?Client
     {
-        $client = $this->em->getRepository(Client::class)->find($id);
+        $client = $this->entityManager->getRepository(Client::class)->find($clientID);
         if ($client instanceof Client) {
             if ($client->getUserRef() !== $user) {
                 $client = null;

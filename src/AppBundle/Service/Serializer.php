@@ -26,15 +26,15 @@ class Serializer
      */
     static public function serialize ($truc) : string
     {
-        if (is_array($truc)) {
-            $array = [];
-            foreach ($truc as $elt) {
-                $array[] = json_decode($elt->Serialize());
-            }
-            return json_encode($array);
+        return (is_array($truc)) ? self::serializeArray($truc) : $truc->stringify;
+    }
+
+    static private function serializeArray ($array) : string
+    {
+        $return = [];
+        foreach ($array as $elt) {
+            $return[] = json_decode($elt->Serialize());
         }
-        else {
-            return $truc->stringify();
-        }
+        return json_encode($return);
     }
 }

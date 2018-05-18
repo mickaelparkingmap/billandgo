@@ -29,16 +29,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class DocumentService extends Controller
 {
     /** @var EntityManager */
-    private $em;
+    private $entityManager;
 
     /**
      * DevisService constructor.
-     * @param EntityManagerInterface $em
+     * @param EntityManagerInterface $entityManager
      */
     public function __construct (
-        EntityManagerInterface $em
+        EntityManagerInterface $entityManager
     ) {
-        $this->em = $em;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -59,7 +59,7 @@ class DocumentService extends Controller
             'type'      => true,
             'status'    => $status
         ];
-        return $this->em
+        return $this->entityManager
             ->getRepository(Document::class)
             ->findBy($filter);
     }
@@ -82,22 +82,22 @@ class DocumentService extends Controller
             'type'      => false,
             'status'    => $status
         ];
-        return $this->em
+        return $this->entityManager
             ->getRepository(Document::class)
             ->findBy($filter);
     }
 
     /**
      * @param User $user
-     * @param int $id
+     * @param int $docID
      * @return Document
      */
     public function getDocument (
         User $user,
-        int $id
+        int $docID
     ) : ?Document
     {
-        $document = $this->em->getRepository(Document::class)->find($id);
+        $document = $this->entityManager->getRepository(Document::class)->find($docID);
         if ($document instanceof Document) {
             if ($document->getRefUser() !== $user) {
                 $document = null;
@@ -109,8 +109,10 @@ class DocumentService extends Controller
     /**
      * @param User $user
      * @param string $type
+     * @param Client $client
      * @return Document
      * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function documentCreation (User $user, string $type, Client $client) : Document
     {
@@ -124,8 +126,8 @@ class DocumentService extends Controller
         $document->setType(('estimate' === $type));
         $document->setStatus('draw');
         $document->setRefClient($client);
-        $this->em->persist($document);
-        $this->em->flush();
+        $this->entityManager->persist($document);
+        $this->entityManager->flush();
 
         return $document;
     }
@@ -138,7 +140,7 @@ class DocumentService extends Controller
      */
     private function numerotation (User $user, string $type) : int
     {
-        $numerotationArray = $this->em->getRepository(Numerotation::class)->findBy([
+        $numerotationArray = $this->entityManager->getRepository(Numerotation::class)->findBy([
             'refUser' => $user
         ]);
         if (isset($numerotationArray[0])) {
@@ -165,7 +167,7 @@ class DocumentService extends Controller
         $num->setEstimateIndex(("estimate" === $type) ? 1 : 0);
         $num->setBillYearMonth(date("Ym"));
         $num->setEstimateYearMonth(date("Ym"));
-        $this->em->persist($num);
+        $this->entityManager->persist($num);
         $index = ('estimate' === $type) ? $num->getEstimateIndex() : $num->getBillIndex();
         return $index;
     }
@@ -185,7 +187,7 @@ class DocumentService extends Controller
             else {
                 $num->setEstimateIndex($num->getEstimateIndex() + 1);
             }
-            $this->em->persist($num);
+            $this->entityManager->persist($num);
             $index = $num->getEstimateIndex();
         }
         else if ('bill' === $type) {
@@ -196,7 +198,7 @@ class DocumentService extends Controller
             else {
                 $num->setBillIndex($num->getBillIndex() + 1);
             }
-            $this->em->persist($num);
+            $this->entityManager->persist($num);
             $index = $num->getBillIndex();
         }
         return $index;
@@ -214,7 +216,7 @@ class DocumentService extends Controller
         $doc = $this->getDocument($user, $docID);
         if ($doc instanceof Document) {
             $doc->setRefClient($client);
-            $this->em->flush();
+            $this->entityManager->flush();
         }
         return $doc;
     }
@@ -231,7 +233,7 @@ class DocumentService extends Controller
         $doc = $this->getDocument($user, $docID);
         if ($doc instanceof Document) {
             $doc->setDescription($description);
-            $this->em->flush();
+            $this->entityManager->flush();
         }
         return $doc;
     }
@@ -248,7 +250,7 @@ class DocumentService extends Controller
         $doc = $this->getDocument($user, $docID);
         if ($doc instanceof Document) {
             $doc->setDelayDate($delay);
-            $this->em->flush();
+            $this->entityManager->flush();
         }
         return $doc;
     }

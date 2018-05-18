@@ -24,16 +24,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class ProjectService extends Controller
 {
     /** @var EntityManager */
-    private $em;
+    private $entityManager;
 
     /**
      * DevisService constructor.
-     * @param EntityManagerInterface $em
+     * @param EntityManagerInterface $entityManager
      */
     public function __construct (
-        EntityManagerInterface $em
+        EntityManagerInterface $entityManager
     ) {
-        $this->em = $em;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -42,7 +42,7 @@ class ProjectService extends Controller
      */
     public function getProjectList (User $user) : array
     {
-        return $this->em
+        return $this->entityManager
             ->getRepository(Project::class)
             ->findBy([
                 "refUser" => $user
@@ -54,9 +54,9 @@ class ProjectService extends Controller
      * @param int $id
      * @return Project|null
      */
-    public function getProject (User $user, int $id) : ?Project
+    public function getProject (User $user, int $projectID) : ?Project
     {
-        $project = $this->em->getRepository(Project::class)->find($id);
+        $project = $this->entityManager->getRepository(Project::class)->find($projectID);
         if ($project instanceof Project) {
             if ($project->getRefUser() !== $user) {
                 $project = null;
