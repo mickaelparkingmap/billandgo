@@ -15,6 +15,7 @@
 namespace AppBundle\Service;
 
 use BillAndGoBundle\Entity\Document;
+use BillAndGoBundle\Entity\Numerotation;
 use BillAndGoBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -102,5 +103,98 @@ class DocumentService extends Controller
             }
         }
         return $document;
+    }
+
+    /**
+     * @param User $user
+     * @param string $type
+     * @return Document
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function documentCreation (User $user, string $type) : Document
+    {
+        $index = $this->numerotation($user, $type);
+        $number = ('bill' === $type) ? 'FAC-' : 'DEV-';
+        $number .= date('Y-m-') . str_pad($index, 3, '0', STR_PAD_LEFT);
+
+        $document = new Document();
+        $document->setRefUser($user);
+        $document->setNumber($number);
+        $document->setType(('estimate' === $type));
+        $document->setStatus('draw');
+        $this->em->persist($document);
+        $this->em->flush();
+
+        return $document;
+    }
+
+    /**
+     * @param User $user
+     * @param string $type
+     * @return int
+     * @throws \Doctrine\ORM\ORMException
+     */
+    private function numerotation (User $user, string $type) : int
+    {
+        $numerotationArray = $this->em->getRepository(Numerotation::class)->findBy([
+            'refUser' => $user
+        ]);
+        if (isset($numerotationArray[0])) {
+            /** @var Numerotation $num */
+            $num = $numerotationArray[0];
+            $this->updateNumerotation($type, $num);
+        }
+        else {
+            $this->createNumerotation($user, $type);
+        }
+        return $num->getEstimateIndex();
+    }
+
+    /**
+     * @param User $user
+     * @param string $type
+     * @return Numerotation
+     */
+    private function createNumerotation (User $user, string $type) : Numerotation
+    {
+        $num = new Numerotation();
+        $num->setRefUser($user);
+        $num->setBillIndex(("bill" === $type) ? 1 : 0);
+        $num->setEstimateIndex(("estimate" === $type) ? 1 : 0);
+        $num->setBillYearMonth(date("Ym"));
+        $num->setEstimateYearMonth(date("Ym"));
+        $this->em->persist($num);
+        return $num;
+    }
+
+    /**
+     * @param string $type
+     * @param Numerotation $num
+     * @return Numerotation
+     */
+    private function updateNumerotation (string $type, Numerotation $num) : Numerotation
+    {
+        if ('estimate' === $type) {
+            if ($num->getEstimateYearMonth() != date("Ym")) {
+                $num->setEstimateYearMonth(date("Ym"));
+                $num->setEstimateIndex(1);
+            }
+            else {
+                $num->setEstimateIndex($num->getEstimateIndex() + 1);
+            }
+            $this->em->persist($num);
+        }
+        else if ('bill' === $type) {
+            if ($num->getBillYearMonth() != date("Ym")) {
+                $num->setBillYearMonth(date("Ym"));
+                $num->setBillIndex(1);
+            }
+            else {
+                $num->setBillIndex($num->getBillIndex() + 1);
+            }
+            $this->em->persist($num);
+
+        }
+        return $num;
     }
 }

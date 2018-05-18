@@ -13,6 +13,7 @@
 
 namespace BillAndGoBundle\Controller;
 
+use AppBundle\Service\ClientService;
 use AppBundle\Service\DocumentService;
 use BillAndGoBundle\Entity\Numerotation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -44,6 +45,8 @@ class DocumentController extends Controller
     ];
     /** @var DocumentService $documentService */
     private $documentService;
+    /** @var ClientService $clientService */
+    private $clientService;
 
     /**
      * @param ContainerInterface|null $container
@@ -52,6 +55,7 @@ class DocumentController extends Controller
     {
         parent::setContainer($container);
         $this->documentService = $this->get("AppBundle\Service\DocumentService");
+        $this->clientService = $this->get("AppBundle\Service\ClientService");
     }
 
 
@@ -405,6 +409,46 @@ class DocumentController extends Controller
         $line->setDeadline(new \DateTime($edit['deadline']));
         $manager->flush();
         return 0;
+    }
+
+    /**
+     * @Route("/document/add", name="billandgo_document_add")
+     * @Method({"GET"})
+     * @param Request $req
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function addDocumentAction (Request $req) : Response
+    {
+        $user = $this->getUser();
+        if (!is_object($user)) {
+            return new Response(json_encode(["disconnected"]), 401);
+        }
+        $step = $req->get('step');
+        if (null !== $step) {
+            if (1 == (int) $step) {
+                $type = $req->get('type');
+                if (in_array($type, ['bill', 'estimate'])) {
+                    $clients = $this->clientService->getClientListFromUser($user);
+                    $doc = $this->documentService->documentCreation($user, $type);
+                    return $this->render(
+                        'BillAndGoBundle:document:addDocument.html.twig', array(
+                            'step'      => 2,
+                            'doc'       => $doc,
+                            'clients'   => $clients,
+                            'user'      => $user
+                        )
+                    );
+                }
+            }
+            elseif (2 == (int) $step) {
+                $clientID = $req->get('client');
+                dump($clientID);die;
+            }
+        }
+
+
+        return new Response('nothing');
     }
 
     /**
