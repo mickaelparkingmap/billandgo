@@ -139,7 +139,7 @@ class Project
      *
      * @return \DateTime
      */
-    public function getDeadline () : \DateTime
+    public function getDeadline () : ?\DateTime
     {
         return $this->deadline;
     }
@@ -162,7 +162,7 @@ class Project
      *
      * @return string
      */
-    public function getName () : string
+    public function getName () : ?string
     {
         return $this->name;
     }
@@ -185,7 +185,7 @@ class Project
      *
      * @return string
      */
-    public function getDescription () : string
+    public function getDescription () : ?string
     {
         return $this->description;
     }
@@ -241,7 +241,7 @@ class Project
      *
      * @return Client
      */
-    public function getRefClient() : Client
+    public function getRefClient() : ?Client
     {
         return $this->refClient;
     }

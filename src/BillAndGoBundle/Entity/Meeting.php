@@ -69,7 +69,7 @@ class Meeting
      *
      * @ORM\ManyToOne(targetEntity="Document")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ref_document", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="ref_devis", referencedColumnName="id")
      * })
      */
     private $refDocument;
