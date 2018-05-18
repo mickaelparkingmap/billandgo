@@ -24,22 +24,36 @@
         <!-- Main content -->
         <section class="content">
             <div class="row">
-            <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('billandgo_clients_list') }}'">
-                <div class="info-box">
-                    <span class="info-box-icon bg-black"><i class="fa fa-list"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text"><strong>Liste des clients</strong></span>
-                    </div><!-- /.info-box-content -->
-                </div><!-- /.info-box -->
-            </div><!-- /.col -->
-            <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('billandgo_clients_add') }}'">
-                <div class="info-box">
-                    <span class="info-box-icon bg-green"><i class="fa fa-plus"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text"><strong>Créer un client</strong></span>
-                    </div><!-- /.info-box-content -->
-                </div><!-- /.info-box -->
-            </div><!-- /.col -->
+                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('billandgo_clients_list') }}'">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-black"><i class="fa fa-list"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text"><strong>Liste des clients</strong></span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+                <div
+                        class="col-md-3 col-sm-6 col-xs-12 onlick column-link"
+                        onclick="location.href='{{ path('billandgo_document_add', {'step' : 2, 'client' : client.id, 'type' : 'estimate'}) }}'"
+                >
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green"><i class="fa fa-file-text-o"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text"><strong>Ajouter un devis</strong></span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+                <div
+                        class="col-md-3 col-sm-6 col-xs-12 onlick column-link"
+                        onclick="location.href='{{ path('billandgo_document_add', {'step' : 2, 'client' : client.id, 'type' : 'bill'}) }}'"
+                >
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green"><i class="fa fa-briefcase"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text"><strong>Ajouter une facture</strong></span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
             </div>
 
             <div class="row">
