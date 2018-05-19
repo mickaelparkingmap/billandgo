@@ -62,7 +62,7 @@ class LegalTerms
      *
      * @return int
      */
-    public function getId()
+    public function getId() : int
     {
         return $this->id;
     }
@@ -74,9 +74,9 @@ class LegalTerms
      *
      * @return LegalTerms
      */
-    public function setName($name)
+    public function setName(string $name) : self
     {
-        $this->name = $name;
+        $this->name = trim(strip_tags($name));
 
         return $this;
     }
@@ -86,7 +86,7 @@ class LegalTerms
      *
      * @return string
      */
-    public function getName()
+    public function getName() : ?string
     {
         return $this->name;
     }
@@ -98,10 +98,9 @@ class LegalTerms
      *
      * @return LegalTerms
      */
-    public function setVersion($version)
+    public function setVersion(string $version) : self
     {
-        $this->version = $version;
-
+        $this->version = trim(strip_tags($version));
         return $this;
     }
 
@@ -110,7 +109,7 @@ class LegalTerms
      *
      * @return string
      */
-    public function getVersion()
+    public function getVersion() : ?string
     {
         return $this->version;
     }
@@ -122,10 +121,9 @@ class LegalTerms
      *
      * @return LegalTerms
      */
-    public function setPublicationDate($publicationDate)
+    public function setPublicationDate(\DateTime $publicationDate) : self
     {
         $this->publicationDate = $publicationDate;
-
         return $this;
     }
 
@@ -134,7 +132,7 @@ class LegalTerms
      *
      * @return \DateTime
      */
-    public function getPublicationDate()
+    public function getPublicationDate() : ?\DateTime
     {
         return $this->publicationDate;
     }
@@ -146,10 +144,9 @@ class LegalTerms
      *
      * @return LegalTerms
      */
-    public function setCreationDate($creationDate)
+    public function setCreationDate(\DateTime $creationDate) : self
     {
         $this->creationDate = $creationDate;
-
         return $this;
     }
 
@@ -158,7 +155,7 @@ class LegalTerms
      *
      * @return \DateTime
      */
-    public function getCreationDate()
+    public function getCreationDate() : ?\DateTime
     {
         return $this->creationDate;
     }
@@ -170,10 +167,9 @@ class LegalTerms
      *
      * @return LegalTerms
      */
-    public function setContent($content)
+    public function setContent(string $content) : self
     {
-        $this->content = $content;
-
+        $this->content = trim(strip_tags($content));
         return $this;
     }
 
@@ -182,7 +178,7 @@ class LegalTerms
      *
      * @return string
      */
-    public function getContent()
+    public function getContent() : ?string
     {
         return $this->content;
     }

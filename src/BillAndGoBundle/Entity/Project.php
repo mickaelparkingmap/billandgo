@@ -65,9 +65,9 @@ class Project
     private $id;
 
     /**
-     * @var \BillAndGoBundle\Entity\User
+     * @var User
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="refUser", referencedColumnName="id")
      * })
@@ -75,9 +75,9 @@ class Project
     private $refUser;
 
     /**
-     * @var \BillAndGoBundle\Entity\Client
+     * @var Client
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\Client")
+     * @ORM\ManyToOne(targetEntity="Client")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="refClient", referencedColumnName="id")
      * })
@@ -89,7 +89,7 @@ class Project
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="BillAndGoBundle\Entity\Line", inversedBy="refProject")
+     * @ORM\ManyToMany(targetEntity="Line", inversedBy="refProject")
      * @ORM\JoinTable(name="line_project",
      *		joinColumns={@ORM\JoinColumn(name="project_id", referencedColumnName="id")},
      *		inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
@@ -101,11 +101,11 @@ class Project
     /**
      * Set begin
      *
-     * @param \DateTime $begin
+     * @param \DateTime|null $begin
      *
      * @return Project
      */
-    public function setBegin (\DateTime $begin) : self
+    public function setBegin (?\DateTime $begin) : self
     {
         $this->begin = $begin;
         return $this;
@@ -114,9 +114,9 @@ class Project
     /**
      * Get begin
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getBegin () : \DateTime
+    public function getBegin () : ?\DateTime
     {
         return $this->begin;
     }
@@ -124,11 +124,11 @@ class Project
     /**
      * Set deadline
      *
-     * @param \DateTime $deadline
+     * @param \DateTime|null $deadline
      *
      * @return Project
      */
-    public function setDeadline (\DateTime $deadline) : self
+    public function setDeadline (?\DateTime $deadline) : self
     {
         $this->deadline = $deadline;
         return $this;
@@ -137,7 +137,7 @@ class Project
     /**
      * Get deadline
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getDeadline () : ?\DateTime
     {
@@ -153,14 +153,14 @@ class Project
      */
     public function setName(string $name) : self
     {
-        $this->name = $name;
+        $this->name = trim(strip_tags($name));
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string
+     * @return string|null
      */
     public function getName () : ?string
     {
@@ -170,20 +170,20 @@ class Project
     /**
      * Set description
      *
-     * @param string $description
+     * @param string $description|null
      *
      * @return Project
      */
-    public function setDescription (string $description) : self
+    public function setDescription (?string $description) : self
     {
-        $this->description = $description;
+        $this->description = trim(strip_tags($description));
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return string
+     * @return string|null
      */
     public function getDescription () : ?string
     {
@@ -203,11 +203,11 @@ class Project
     /**
      * Set refUser
      *
-     * @param User $refUser
+     * @param User|null $refUser
      *
      * @return Project
      */
-    public function setRefUser(User $refUser = null) : self
+    public function setRefUser(?User $refUser = null) : self
     {
         $this->refUser = $refUser;
         return $this;
@@ -216,9 +216,9 @@ class Project
     /**
      * Get refUser
      *
-     * @return User
+     * @return User|null
      */
-    public function getRefUser() : User
+    public function getRefUser() : ?User
     {
         return $this->refUser;
     }
@@ -239,12 +239,13 @@ class Project
     /**
      * Get refClient
      *
-     * @return Client
+     * @return Client|null
      */
     public function getRefClient() : ?Client
     {
         return $this->refClient;
     }
+
     /**
      * Constructor
      */
@@ -270,6 +271,7 @@ class Project
      * Remove refLine
      *
      * @param Line $refLine
+     *
      * @return Project
      */
     public function removeRefLine(Line $refLine) : self
@@ -288,7 +290,10 @@ class Project
         return $this->refLines;
     }
 
-    public function stringify()
+    /**
+     * @return string
+     */
+    public function stringify() : string
     {
         $data = [
             'id'            => $this->id,

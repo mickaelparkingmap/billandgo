@@ -80,23 +80,22 @@ class Note
     /**
      * Set creation
      *
-     * @param \DateTime $creation
+     * @param \DateTime|null $creation
      *
      * @return Note
      */
-    public function setCreation($creation)
+    public function setCreation(?\DateTime $creation) : self
     {
         $this->creation = $creation;
-
         return $this;
     }
 
     /**
      * Get creation
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getCreation()
+    public function getCreation() : ?\DateTime
     {
         return $this->creation;
     }
@@ -108,10 +107,9 @@ class Note
      *
      * @return Note
      */
-    public function setName($name)
+    public function setName(string $name) : self
     {
-        $this->name = $name;
-
+        $this->name = trim(strip_tags($name));
         return $this;
     }
 
@@ -120,7 +118,7 @@ class Note
      *
      * @return string
      */
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }
@@ -132,9 +130,9 @@ class Note
      *
      * @return Note
      */
-    public function setDescription($description)
+    public function setDescription(string $description) : self
     {
-        $this->description = $description;
+        $this->description = trim(strip_tags($description));
 
         return $this;
     }
@@ -144,7 +142,7 @@ class Note
      *
      * @return string
      */
-    public function getDescription()
+    public function getDescription() : ?string
     {
         return $this->description;
     }
@@ -154,7 +152,7 @@ class Note
      *
      * @return integer
      */
-    public function getId()
+    public function getId() : int
     {
         return $this->id;
     }
@@ -166,19 +164,18 @@ class Note
      *
      * @return Note
      */
-    public function setRefContact(ClientContact $refContact = null)
+    public function setRefContact(?ClientContact $refContact = null) : self
     {
         $this->refContact = $refContact;
-
         return $this;
     }
 
     /**
      * Get refContact
      *
-     * @return ClientContact
+     * @return ClientContact|null
      */
-    public function getRefContact()
+    public function getRefContact() : ?ClientContact
     {
         return $this->refContact;
     }
@@ -186,23 +183,22 @@ class Note
     /**
      * Set refDevis
      *
-     * @param Document $refDevis
+     * @param Document|null $refDevis
      *
      * @return Note
      */
-    public function setRefDocument(Document $refDocument = null)
+    public function setRefDocument(?Document $refDocument = null) : self
     {
         $this->refDocument = $refDocument;
-
         return $this;
     }
 
     /**
      * Get refDevis
      *
-     * @return Document
+     * @return Document|null
      */
-    public function getRefDocument()
+    public function getRefDocument() : ?Document
     {
         return $this->refDocument;
     }

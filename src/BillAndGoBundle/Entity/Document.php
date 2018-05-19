@@ -15,6 +15,8 @@
 
 namespace BillAndGoBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -35,9 +37,9 @@ class Document
     private $id;
 
     /**
-     * @var \BillAndGoBundle\Entity\User
+     * @var User
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="refUser", referencedColumnName="id")
      * })
@@ -45,9 +47,9 @@ class Document
     private $refUser;
 
     /**
-     * @var \BillAndGoBundle\Entity\Client
+     * @var Client
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\Client")
+     * @ORM\ManyToOne(targetEntity="Client")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="refClient", referencedColumnName="id")
      * })
@@ -55,9 +57,9 @@ class Document
     private $refClient;
 
     /**
-     * @var \BillAndGoBundle\Entity\Line
+     * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="BillAndGoBundle\Entity\Line", inversedBy="refEstimate")
+     * @ORM\ManyToMany(targetEntity="Line", inversedBy="refEstimate")
      * @ORM\JoinTable(name="line_estimate",
      *		joinColumns={@ORM\JoinColumn(name="estimate_id", referencedColumnName="id")},
      *		inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
@@ -66,9 +68,9 @@ class Document
     private $refLines;
 
     /**
-     * @var \BillAndGoBundle\Entity\Line
+     * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="BillAndGoBundle\Entity\Line", inversedBy="refBill")
+     * @ORM\ManyToMany(targetEntity="Line", inversedBy="refBill")
      * @ORM\JoinTable(name="line_bill",
      *		joinColumns={@ORM\JoinColumn(name="bill_id", referencedColumnName="id")},
      *		inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
@@ -126,9 +128,9 @@ class Document
     private $answerDate;
 
     /**
-     * @var \BillAndGoBundle\Entity\Paiment
+     * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="BillAndGoBundle\Entity\Paiment", inversedBy="refBill")
+     * @ORM\ManyToMany(targetEntity="Paiment", inversedBy="refBill")
      * @ORM\JoinTable(name="bill_paiment",
      *		joinColumns={@ORM\JoinColumn(name="bill_id", referencedColumnName="id")},
      *		inverseJoinColumns={@ORM\JoinColumn(name="paiment_id", referencedColumnName="id")}
@@ -148,7 +150,7 @@ class Document
      *
      * @return int
      */
-    public function getId()
+    public function getId() : int
     {
         return $this->id;
     }
@@ -160,10 +162,9 @@ class Document
      *
      * @return Document
      */
-    public function setNumber($number)
+    public function setNumber(string $number) : self
     {
-        $this->number = $number;
-
+        $this->number = trim(strip_tags(strip_tags($number)));
         return $this;
     }
 
@@ -172,7 +173,7 @@ class Document
      *
      * @return string
      */
-    public function getNumber()
+    public function getNumber() : ?string
     {
         return $this->number;
     }
@@ -180,14 +181,13 @@ class Document
     /**
      * Set description
      *
-     * @param string $description
+     * @param string|null $description
      *
      * @return Document
      */
-    public function setDescription($description)
+    public function setDescription(?string $description) : self
     {
-        $this->description = $description;
-
+        $this->description = trim(strip_tags($description));
         return $this;
     }
 
@@ -196,7 +196,7 @@ class Document
      *
      * @return string
      */
-    public function getDescription()
+    public function getDescription() : ?string
     {
         return $this->description;
     }
@@ -208,10 +208,9 @@ class Document
      *
      * @return Document
      */
-    public function setStatus($status)
+    public function setStatus(string $status) : self
     {
         $this->status = $status;
-
         return $this;
     }
 
@@ -220,7 +219,7 @@ class Document
      *
      * @return string
      */
-    public function getStatus()
+    public function getStatus() : ?string
     {
         return $this->status;
     }
@@ -232,10 +231,9 @@ class Document
      *
      * @return Document
      */
-    public function setSentDate($sentDate)
+    public function setSentDate(\DateTime $sentDate) : self
     {
         $this->sentDate = $sentDate;
-
         return $this;
     }
 
@@ -244,7 +242,7 @@ class Document
      *
      * @return \DateTime
      */
-    public function getSentDate()
+    public function getSentDate() : ?\DateTime
     {
         return $this->sentDate;
     }
@@ -256,10 +254,9 @@ class Document
      *
      * @return Document
      */
-    public function setDelayDate($delayDate)
+    public function setDelayDate(\DateTime $delayDate) : self
     {
         $this->delayDate = $delayDate;
-
         return $this;
     }
 
@@ -268,7 +265,7 @@ class Document
      *
      * @return \DateTime
      */
-    public function getDelayDate()
+    public function getDelayDate() : ?\DateTime
     {
         return $this->delayDate;
     }
@@ -280,10 +277,9 @@ class Document
      *
      * @return Document
      */
-    public function setAnswerDate($answerDate)
+    public function setAnswerDate(\DateTime $answerDate) : self
     {
         $this->answerDate = $answerDate;
-
         return $this;
     }
 
@@ -292,7 +288,7 @@ class Document
      *
      * @return \DateTime
      */
-    public function getAnswerDate()
+    public function getAnswerDate() : ?\DateTime
     {
         return $this->answerDate;
     }
@@ -300,23 +296,22 @@ class Document
     /**
      * Set refUser
      *
-     * @param \BillAndGoBundle\Entity\User $refUser
+     * @param User $refUser
      *
      * @return Document
      */
-    public function setRefUser(\BillAndGoBundle\Entity\User $refUser = null)
+    public function setRefUser(?User $refUser = null) : self
     {
         $this->refUser = $refUser;
-
         return $this;
     }
 
     /**
      * Get refUser
      *
-     * @return \BillAndGoBundle\Entity\User
+     * @return User|null
      */
-    public function getRefUser()
+    public function getRefUser() : ?User
     {
         return $this->refUser;
     }
@@ -324,23 +319,22 @@ class Document
     /**
      * Set refClient
      *
-     * @param \BillAndGoBundle\Entity\Client $refClient
+     * @param Client $refClient
      *
      * @return Document
      */
-    public function setRefClient(\BillAndGoBundle\Entity\Client $refClient = null)
+    public function setRefClient(?Client $refClient = null) : self
     {
         $this->refClient = $refClient;
-
         return $this;
     }
 
     /**
      * Get refClient
      *
-     * @return \BillAndGoBundle\Entity\Client
+     * @return Client
      */
-    public function getRefClient()
+    public function getRefClient() : ?Client
     {
         return $this->refClient;
     }
@@ -352,10 +346,9 @@ class Document
      *
      * @return Document
      */
-    public function setType($type)
+    public function setType(bool $type) : self
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -364,7 +357,7 @@ class Document
      *
      * @return boolean
      */
-    public function getType()
+    public function getType() : bool
     {
         return $this->type;
     }
@@ -373,39 +366,41 @@ class Document
      */
     public function __construct()
     {
-        $this->refLines = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->refLines = new ArrayCollection();
     }
 
     /**
      * Add refLine
      *
-     * @param \BillAndGoBundle\Entity\Line $refLine
+     * @param Line $refLine
      *
      * @return Document
      */
-    public function addRefLine(\BillAndGoBundle\Entity\Line $refLine)
+    public function addRefLine(Line $refLine)
     {
         $this->refLines[] = $refLine;
-
         return $this;
     }
 
     /**
      * Remove refLine
      *
-     * @param \BillAndGoBundle\Entity\Line $refLine
+     * @param Line $refLine
+     *
+     * @return Document
      */
-    public function removeRefLine(\BillAndGoBundle\Entity\Line $refLine)
+    public function removeRefLine(Line $refLine) : self
     {
         $this->refLines->removeElement($refLine);
+        return $this;
     }
 
     /**
      * Get refLines
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
-    public function getRefLines()
+    public function getRefLines() : Collection
     {
         return $this->refLines;
     }
@@ -413,23 +408,22 @@ class Document
     /**
      * Add refLinesB
      *
-     * @param \BillAndGoBundle\Entity\Line $refLinesB
+     * @param Line $refLinesB
      *
      * @return Document
      */
-    public function addRefLinesB(\BillAndGoBundle\Entity\Line $refLinesB)
+    public function addRefLinesB(Line $refLinesB) : self
     {
         $this->refLinesB[] = $refLinesB;
-
         return $this;
     }
 
     /**
      * Remove refLinesB
      *
-     * @param \BillAndGoBundle\Entity\Line $refLinesB
+     * @param Line $refLinesB
      */
-    public function removeRefLinesB(\BillAndGoBundle\Entity\Line $refLinesB)
+    public function removeRefLinesB(Line $refLinesB)
     {
         $this->refLinesB->removeElement($refLinesB);
     }
@@ -437,9 +431,9 @@ class Document
     /**
      * Get refLinesB
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
-    public function getRefLinesB()
+    public function getRefLinesB() : Collection
     {
         return $this->refLinesB;
     }
@@ -447,33 +441,35 @@ class Document
     /**
      * Add refPaiment
      *
-     * @param \BillAndGoBundle\Entity\Paiment $refPaiment
+     * @param Paiment $refPaiment
      *
      * @return Document
      */
-    public function addRefPaiment(\BillAndGoBundle\Entity\Paiment $refPaiment)
+    public function addRefPaiment(Paiment $refPaiment) : self
     {
         $this->refPaiment[] = $refPaiment;
-
         return $this;
     }
 
     /**
      * Remove refPaiment
      *
-     * @param \BillAndGoBundle\Entity\Paiment $refPaiment
+     * @param Paiment $refPaiment
+     *
+     * @return Document
      */
-    public function removeRefPaiment(\BillAndGoBundle\Entity\Paiment $refPaiment)
+    public function removeRefPaiment(Paiment $refPaiment) : self
     {
         $this->refPaiment->removeElement($refPaiment);
+        return $this;
     }
 
     /**
      * Get refPaiment
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
-    public function getRefPaiment()
+    public function getRefPaiment() : Collection
     {
         return $this->refPaiment;
     }
@@ -483,7 +479,7 @@ class Document
      *
      * @return float
      */
-    public function getHT()
+    public function getHT() : float
     {
         $ht = 0;
         if ($this->type) {
@@ -503,7 +499,7 @@ class Document
      *
      * @return float
      */
-    public function getVAT()
+    public function getVAT() : float
     {
         $vat = 0;
         if ($this->type) {
@@ -523,7 +519,7 @@ class Document
      *
      * @return float
      */
-    public function getSumPaiments()
+    public function getSumPaiments() : float
     {
         $sum = 0;
         foreach ($this->refPaiment as $paiment) {
@@ -536,7 +532,7 @@ class Document
      * are all lines transformed in project or bills ?
      * @return bool
      */
-    public function areLinesTransformed()
+    public function areLinesTransformed() : bool
     {
         foreach ($this->refLines as $line) {
             if (
@@ -555,7 +551,7 @@ class Document
      * is bill paid
      * @return bool
      */
-    public function isBillPaid()
+    public function isBillPaid() : bool
     {
         return ($this->getSumPaiments() >= $this->getHT() + $this->getVAT());
     }
@@ -568,10 +564,9 @@ class Document
      *
      * @return Document
      */
-    public function setToken($token)
+    public function setToken(int $token) : self
     {
         $this->token = $token;
-
         return $this;
     }
 
@@ -580,7 +575,7 @@ class Document
      *
      * @return integer
      */
-    public function getToken()
+    public function getToken() : int
     {
         return $this->token;
     }

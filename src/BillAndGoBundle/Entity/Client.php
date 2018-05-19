@@ -100,7 +100,7 @@ class Client
      */
     public function setCompanyName(string $companyName) : self
     {
-        $this->companyName = $companyName;
+        $this->companyName = trim(strip_tags($companyName));
         return $this;
     }
 
@@ -123,7 +123,7 @@ class Client
      */
     public function setAdress(string $adress) : self
     {
-        $this->adress = $adress;
+        $this->adress = trim(strip_tags($adress));
         return $this;
     }
 
@@ -146,7 +146,7 @@ class Client
      */
     public function setZipcode(string $zipcode) : self
     {
-        $this->zipcode = $zipcode;
+        $this->zipcode = trim(strip_tags($zipcode));
         return $this;
     }
 
@@ -169,7 +169,7 @@ class Client
      */
     public function setCity(string $city) : self
     {
-        $this->city = $city;
+        $this->city = trim(strip_tags($city));
         return $this;
     }
 
@@ -192,7 +192,7 @@ class Client
      */
     public function setCountry(string $country) : self
     {
-        $this->country = $country;
+        $this->country = trim(strip_tags($country));
         return $this;
     }
 

@@ -83,10 +83,9 @@ class Meeting
      *
      * @return Meeting
      */
-    public function setBeginningTime($beginningTime)
+    public function setBeginningTime(?\DateTime $beginningTime) : self
     {
         $this->beginningTime = $beginningTime;
-
         return $this;
     }
 
@@ -95,7 +94,7 @@ class Meeting
      *
      * @return \DateTime
      */
-    public function getBeginningTime()
+    public function getBeginningTime() : ?\DateTime
     {
         return $this->beginningTime;
     }
@@ -107,10 +106,9 @@ class Meeting
      *
      * @return Meeting
      */
-    public function setEndingTime($endingTime)
+    public function setEndingTime(?\DateTime $endingTime) : self
     {
         $this->endingTime = $endingTime;
-
         return $this;
     }
 
@@ -119,7 +117,7 @@ class Meeting
      *
      * @return \DateTime
      */
-    public function getEndingTime()
+    public function getEndingTime() : \DateTime
     {
         return $this->endingTime;
     }
@@ -131,10 +129,9 @@ class Meeting
      *
      * @return Meeting
      */
-    public function setPlace($place)
+    public function setPlace(string $place) : self
     {
-        $this->place = $place;
-
+        $this->place = trim(strip_tags($place));
         return $this;
     }
 
@@ -143,7 +140,7 @@ class Meeting
      *
      * @return string
      */
-    public function getPlace()
+    public function getPlace() : ?string
     {
         return $this->place;
     }
@@ -153,7 +150,7 @@ class Meeting
      *
      * @return integer
      */
-    public function getId()
+    public function getId() : int
     {
         return $this->id;
     }
@@ -161,23 +158,22 @@ class Meeting
     /**
      * Set refContact
      *
-     * @param ClientContact $refContact
+     * @param ClientContact|null $refContact
      *
      * @return Meeting
      */
-    public function setRefContact(ClientContact $refContact = null)
+    public function setRefContact(?ClientContact $refContact = null) : self
     {
         $this->refContact = $refContact;
-
         return $this;
     }
 
     /**
      * Get refContact
      *
-     * @return ClientContact
+     * @return ClientContact|null
      */
-    public function getRefContact()
+    public function getRefContact() : ?ClientContact
     {
         return $this->refContact;
     }
@@ -185,14 +181,13 @@ class Meeting
     /**
      * Set refDocument
      *
-     * @param Document $refDocument
+     * @param Document|null $refDocument
      *
      * @return Meeting
      */
-    public function setRefDocument(Document $refDocument = null)
+    public function setRefDocument(Document $refDocument = null) : self
     {
         $this->refDocument = $refDocument;
-
         return $this;
     }
 
@@ -201,7 +196,7 @@ class Meeting
      *
      * @return Document
      */
-    public function getRefDocument()
+    public function getRefDocument() : ?Document
     {
         return $this->refDocument;
     }

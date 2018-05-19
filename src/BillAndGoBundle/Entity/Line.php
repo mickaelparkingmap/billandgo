@@ -14,6 +14,9 @@
 
 namespace BillAndGoBundle\Entity;
 
+use BillAndGoBundle\Repository\LineRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -34,9 +37,9 @@ class Line
     private $id;
 
     /**
-     * @var \BillAndGoBundle\Entity\User
+     * @var User
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="refUser", referencedColumnName="id")
      * })
@@ -44,9 +47,9 @@ class Line
     private $refUser;
 
     /**
-     * @var \BillAndGoBundle\Entity\Client
+     * @var Client
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\Client")
+     * @ORM\ManyToOne(targetEntity="Client")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="refClient", referencedColumnName="id")
      * })
@@ -75,16 +78,16 @@ class Line
     private $quantity;
 
     /**
-     * @var string
+     * @var float
      *
      * @ORM\Column(name="price", type="decimal", precision=10, scale=2, nullable=true)
      */
     private $price;
 
     /**
-     * @var \BillAndGoBundle\Entity\Tax
+     * @var Tax
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\Tax")
+     * @ORM\ManyToOne(targetEntity="Tax")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="refTax", referencedColumnName="id")
      * })
@@ -92,14 +95,14 @@ class Line
     private $refTax;
 
     /**
-     * @var string
+     * @var float
      *
      * @ORM\Column(name="estimatedTime", type="decimal", precision=4, scale=1, nullable=true)
      */
     private $estimatedTime;
 
     /**
-     * @var string
+     * @var float
      *
      * @ORM\Column(name="chronoTime", type="decimal", precision=4, scale=1, nullable=true)
      */
@@ -120,9 +123,9 @@ class Line
     private $deadLine;
 
     /**
-     * @var \BillAndGoBundle\Entity\Project
+     * @var Project
      *
-     * @ORM\ManyToMany(targetEntity="BillAndGoBundle\Entity\Project", mappedBy="refLines")
+     * @ORM\ManyToMany(targetEntity="Project", mappedBy="refLines")
      * @ORM\JoinTable(name="line_project",
      *		joinColumns={@ORM\JoinColumn(name="project_id", referencedColumnName="id")},
      *		inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
@@ -131,9 +134,9 @@ class Line
     private $refProject;
 
     /**
-     * @var \BillAndGoBundle\Entity\Document
+     * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="BillAndGoBundle\Entity\Document", mappedBy="refLines")
+     * @ORM\ManyToMany(targetEntity="Document", mappedBy="refLines")
      * @ORM\JoinTable(name="line_estimate",
      *		joinColumns={@ORM\JoinColumn(name="estimate_id", referencedColumnName="id")},
      *		inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
@@ -142,9 +145,9 @@ class Line
     private $refEstimate;
 
     /**
-     * @var \BillAndGoBundle\Entity\Document
+     * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="BillAndGoBundle\Entity\Document", mappedBy="refLinesB")
+     * @ORM\ManyToMany(targetEntity="Document", mappedBy="refLinesB")
      * @ORM\JoinTable(name="line_bill",
      *		joinColumns={@ORM\JoinColumn(name="bill_id", referencedColumnName="id")},
      *		inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
@@ -158,7 +161,7 @@ class Line
      *
      * @return int
      */
-    public function getId()
+    public function getId() : int
     {
         return $this->id;
     }
@@ -170,19 +173,18 @@ class Line
      *
      * @return Line
      */
-    public function setName($name)
+    public function setName(string $name) : self
     {
-        $this->name = $name;
-
+        $this->name = trim(strip_tags($name));
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string
+     * @return string|null
      */
-    public function getName()
+    public function getName() : ?string
     {
         return $this->name;
     }
@@ -194,19 +196,18 @@ class Line
      *
      * @return Line
      */
-    public function setDescription($description)
+    public function setDescription(string $description) : self
     {
-        $this->description = $description;
-
+        $this->description = trim(strip_tags($description));
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return string
+     * @return string|null
      */
-    public function getDescription()
+    public function getDescription() : ?string
     {
         return $this->description;
     }
@@ -218,19 +219,20 @@ class Line
      *
      * @return Line
      */
-    public function setQuantity($quantity)
+    public function setQuantity(int $quantity) : self
     {
-        $this->quantity = $quantity;
-
+        if ($quantity > 0) {
+            $this->quantity = $quantity;
+        }
         return $this;
     }
 
     /**
      * Get quantity
      *
-     * @return int
+     * @return int|null
      */
-    public function getQuantity()
+    public function getQuantity() : ?int
     {
         return $this->quantity;
     }
@@ -238,11 +240,11 @@ class Line
     /**
      * Set price
      *
-     * @param string $price
+     * @param float $price
      *
      * @return Line
      */
-    public function setPrice($price)
+    public function setPrice(float $price) : self
     {
         $this->price = $price;
 
@@ -252,9 +254,9 @@ class Line
     /**
      * Get price
      *
-     * @return string
+     * @return float
      */
-    public function getPrice()
+    public function getPrice() : ?float
     {
         return $this->price;
     }
@@ -262,23 +264,24 @@ class Line
     /**
      * Set estimatedTime
      *
-     * @param string $estimatedTime
+     * @param float $estimatedTime
      *
      * @return Line
      */
-    public function setEstimatedTime($estimatedTime)
+    public function setEstimatedTime(float $estimatedTime) : self
     {
-        $this->estimatedTime = $estimatedTime;
-
+        if ($estimatedTime >= 0) {
+            $this->estimatedTime = $estimatedTime;
+        }
         return $this;
     }
 
     /**
      * Get estimatedTime
      *
-     * @return string
+     * @return float
      */
-    public function getEstimatedTime()
+    public function getEstimatedTime() : ?float
     {
         return $this->estimatedTime;
     }
@@ -286,23 +289,24 @@ class Line
     /**
      * Set chronoTime
      *
-     * @param string $chronoTime
+     * @param float $chronoTime
      *
      * @return Line
      */
-    public function setChronoTime($chronoTime)
+    public function setChronoTime(float $chronoTime) : self
     {
-        $this->chronoTime = $chronoTime;
-
+        if ($chronoTime >= 0) {
+            $this->chronoTime = $chronoTime;
+        }
         return $this;
     }
 
     /**
      * Get chronoTime
      *
-     * @return string
+     * @return float
      */
-    public function getChronoTime()
+    public function getChronoTime() : ?float
     {
         return $this->chronoTime;
     }
@@ -314,10 +318,9 @@ class Line
      *
      * @return Line
      */
-    public function setStatus($status)
+    public function setStatus(string $status) : self
     {
         $this->status = $status;
-
         return $this;
     }
 
@@ -326,7 +329,7 @@ class Line
      *
      * @return string
      */
-    public function getStatus()
+    public function getStatus() : ?string
     {
         return $this->status;
     }
@@ -338,19 +341,18 @@ class Line
      *
      * @return Line
      */
-    public function setDeadLine($deadLine)
+    public function setDeadLine(?\DateTime $deadLine) : self
     {
         $this->deadLine = $deadLine;
-
         return $this;
     }
 
     /**
      * Get deadLine
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getDeadLine()
+    public function getDeadLine() : ?\DateTime
     {
         return $this->deadLine;
     }
@@ -358,23 +360,22 @@ class Line
     /**
      * Set refUser
      *
-     * @param \BillAndGoBundle\Entity\User $refUser
+     * @param User $refUser
      *
      * @return Line
      */
-    public function setRefUser(\BillAndGoBundle\Entity\User $refUser = null)
+    public function setRefUser(?User $refUser = null) : self
     {
         $this->refUser = $refUser;
-
         return $this;
     }
 
     /**
      * Get refUser
      *
-     * @return \BillAndGoBundle\Entity\User
+     * @return User
      */
-    public function getRefUser()
+    public function getRefUser() : ?User
     {
         return $this->refUser;
     }
@@ -382,64 +383,66 @@ class Line
     /**
      * Set refClient
      *
-     * @param \BillAndGoBundle\Entity\Client $refClient
+     * @param Client|null $refClient
      *
      * @return Line
      */
-    public function setRefClient(\BillAndGoBundle\Entity\Client $refClient = null)
+    public function setRefClient(?Client $refClient = null) : self
     {
         $this->refClient = $refClient;
-
         return $this;
     }
 
     /**
      * Get refClient
      *
-     * @return \BillAndGoBundle\Entity\Client
+     * @return Client|null
      */
-    public function getRefClient()
+    public function getRefClient() : ?Client
     {
         return $this->refClient;
     }
+
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->refProject = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->refProject = new ArrayCollection();
     }
 
     /**
      * Add refProject
      *
-     * @param \BillAndGoBundle\Entity\Project $refProject
+     * @param Project $refProject
      *
      * @return Line
      */
-    public function addRefProject(\BillAndGoBundle\Entity\Project $refProject)
+    public function addRefProject(Project $refProject) : self
     {
         $this->refProject[] = $refProject;
-
         return $this;
     }
 
     /**
      * Remove refProject
      *
-     * @param \BillAndGoBundle\Entity\Project $refProject
+     * @param Project $refProject
+     *
+     * @return Line
      */
-    public function removeRefProject(\BillAndGoBundle\Entity\Project $refProject)
+    public function removeRefProject(Project $refProject) : self
     {
         $this->refProject->removeElement($refProject);
+        return $this;
     }
 
     /**
      * Get refProject
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
-    public function getRefProject()
+    public function getRefProject() : Collection
     {
         return $this->refProject;
     }
@@ -447,33 +450,35 @@ class Line
     /**
      * Add refEstimate
      *
-     * @param \BillAndGoBundle\Entity\Document $refEstimate
+     * @param Document $refEstimate
      *
      * @return Line
      */
-    public function addRefEstimate(\BillAndGoBundle\Entity\Document $refEstimate)
+    public function addRefEstimate(Document $refEstimate) : self
     {
-        $this->refEstimate[] = $refEstimate;
-
+        $this->refEstimate->add($refEstimate);
         return $this;
     }
 
     /**
      * Remove refEstimate
      *
-     * @param \BillAndGoBundle\Entity\Document $refEstimate
+     * @param Document $refEstimate
+     *
+     * @return Line
      */
-    public function removeRefEstimate(\BillAndGoBundle\Entity\Document $refEstimate)
+    public function removeRefEstimate(Document $refEstimate) : self
     {
         $this->refEstimate->removeElement($refEstimate);
+        return $this;
     }
 
     /**
      * Get refEstimate
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
-    public function getRefEstimate()
+    public function getRefEstimate() : Collection
     {
         return $this->refEstimate;
     }
@@ -481,33 +486,35 @@ class Line
     /**
      * Add refBill
      *
-     * @param \BillAndGoBundle\Entity\Document $refBill
+     * @param Document $refBill
      *
      * @return Line
      */
-    public function addRefBill(\BillAndGoBundle\Entity\Document $refBill)
+    public function addRefBill(Document $refBill) : self
     {
-        $this->refBill[] = $refBill;
-
+        $this->refBill->add($refBill);
         return $this;
     }
 
     /**
      * Remove refBill
      *
-     * @param \BillAndGoBundle\Entity\Document $refBill
+     * @param Document $refBill
+     *
+     * @return Line
      */
-    public function removeRefBill(\BillAndGoBundle\Entity\Document $refBill)
+    public function removeRefBill(Document $refBill) : self
     {
         $this->refBill->removeElement($refBill);
+        return $this;
     }
 
     /**
      * Get refBill
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
-    public function getRefBill()
+    public function getRefBill() : Collection
     {
         return $this->refBill;
     }
@@ -515,23 +522,22 @@ class Line
     /**
      * Set refTax
      *
-     * @param \BillAndGoBundle\Entity\Tax $refTax
+     * @param Tax|null $refTax
      *
      * @return Line
      */
-    public function setRefTax(\BillAndGoBundle\Entity\Tax $refTax = null)
+    public function setRefTax(?Tax $refTax = null) : self
     {
         $this->refTax = $refTax;
-
         return $this;
     }
 
     /**
      * Get refTax
      *
-     * @return \BillAndGoBundle\Entity\Tax
+     * @return Tax|null
      */
-    public function getRefTax()
+    public function getRefTax() : ?Tax
     {
         return $this->refTax;
     }

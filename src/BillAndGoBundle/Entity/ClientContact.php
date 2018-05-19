@@ -78,10 +78,9 @@ class ClientContact
      *
      * @return ClientContact
      */
-    public function setFirstname($firstname)
+    public function setFirstname(string $firstname) : self
     {
-        $this->firstname = $firstname;
-
+        $this->firstname = trim(strip_tags($firstname));
         return $this;
     }
 
@@ -90,7 +89,7 @@ class ClientContact
      *
      * @return string
      */
-    public function getFirstname()
+    public function getFirstname() : ?string
     {
         return $this->firstname;
     }
@@ -102,10 +101,9 @@ class ClientContact
      *
      * @return ClientContact
      */
-    public function setLastname($lastname)
+    public function setLastname(string $lastname) : self
     {
-        $this->lastname = $lastname;
-
+        $this->lastname = trim(strip_tags($lastname));
         return $this;
     }
 
@@ -114,7 +112,7 @@ class ClientContact
      *
      * @return string
      */
-    public function getLastname()
+    public function getLastname() : ?string
     {
         return $this->lastname;
     }
@@ -126,10 +124,9 @@ class ClientContact
      *
      * @return ClientContact
      */
-    public function setEmail($email)
+    public function setEmail(string $email) : self
     {
-        $this->email = $email;
-
+        $this->email = trim(strip_tags($email));
         return $this;
     }
 
@@ -138,7 +135,7 @@ class ClientContact
      *
      * @return string
      */
-    public function getEmail()
+    public function getEmail() : ?string
     {
         return $this->email;
     }
@@ -150,10 +147,9 @@ class ClientContact
      *
      * @return ClientContact
      */
-    public function setPhone($phone)
+    public function setPhone(string $phone) : self
     {
-        $this->phone = $phone;
-
+        $this->phone = trim(strip_tags($phone));
         return $this;
     }
 
@@ -162,7 +158,7 @@ class ClientContact
      *
      * @return string
      */
-    public function getPhone()
+    public function getPhone() : ?string
     {
         return $this->phone;
     }
@@ -174,10 +170,9 @@ class ClientContact
      *
      * @return ClientContact
      */
-    public function setMobile($mobile)
+    public function setMobile(string $mobile) : self
     {
-        $this->mobile = $mobile;
-
+        $this->mobile = trim(strip_tags($mobile));
         return $this;
     }
 
@@ -186,7 +181,7 @@ class ClientContact
      *
      * @return string
      */
-    public function getMobile()
+    public function getMobile() : ?string
     {
         return $this->mobile;
     }
@@ -196,7 +191,7 @@ class ClientContact
      *
      * @return integer
      */
-    public function getId()
+    public function getId() : int
     {
         return $this->id;
     }

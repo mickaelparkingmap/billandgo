@@ -78,7 +78,7 @@ class Numerotation
      *
      * @return int
      */
-    public function getId()
+    public function getId() : int
     {
         return $this->id;
     }
@@ -90,10 +90,9 @@ class Numerotation
      *
      * @return Numerotation
      */
-    public function setEstimateIndex($estimateIndex)
+    public function setEstimateIndex(int $estimateIndex) : self
     {
         $this->estimateIndex = $estimateIndex;
-
         return $this;
     }
 
@@ -102,7 +101,7 @@ class Numerotation
      *
      * @return int
      */
-    public function getEstimateIndex()
+    public function getEstimateIndex() : int
     {
         return $this->estimateIndex;
     }
@@ -114,10 +113,9 @@ class Numerotation
      *
      * @return Numerotation
      */
-    public function setEstimateYearMonth($estimateYearMonth)
+    public function setEstimateYearMonth(int $estimateYearMonth) : self
     {
         $this->estimateYearMonth = $estimateYearMonth;
-
         return $this;
     }
 
@@ -126,7 +124,7 @@ class Numerotation
      *
      * @return int
      */
-    public function getEstimateYearMonth()
+    public function getEstimateYearMonth() : int
     {
         return $this->estimateYearMonth;
     }
@@ -138,10 +136,9 @@ class Numerotation
      *
      * @return Numerotation
      */
-    public function setBillIndex($billIndex)
+    public function setBillIndex(int $billIndex) : self
     {
         $this->billIndex = $billIndex;
-
         return $this;
     }
 
@@ -150,7 +147,7 @@ class Numerotation
      *
      * @return int
      */
-    public function getBillIndex()
+    public function getBillIndex() : int
     {
         return $this->billIndex;
     }
@@ -162,10 +159,9 @@ class Numerotation
      *
      * @return Numerotation
      */
-    public function setBillYearMonth($billYearMonth)
+    public function setBillYearMonth(int $billYearMonth) : self
     {
         $this->billYearMonth = $billYearMonth;
-
         return $this;
     }
 
@@ -174,7 +170,7 @@ class Numerotation
      *
      * @return int
      */
-    public function getBillYearMonth()
+    public function getBillYearMonth() : int
     {
         return $this->billYearMonth;
     }
@@ -182,23 +178,22 @@ class Numerotation
     /**
      * Set refUser
      *
-     * @param \BillAndGoBundle\Entity\User $refUser
+     * @param User $refUser
      *
      * @return Numerotation
      */
-    public function setRefUser(\BillAndGoBundle\Entity\User $refUser = null)
+    public function setRefUser(User $refUser = null) : self
     {
         $this->refUser = $refUser;
-
         return $this;
     }
 
     /**
      * Get refUser
      *
-     * @return \BillAndGoBundle\Entity\User
+     * @return User
      */
-    public function getRefUser()
+    public function getRefUser() : User
     {
         return $this->refUser;
     }
