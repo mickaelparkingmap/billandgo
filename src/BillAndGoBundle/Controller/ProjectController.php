@@ -13,11 +13,13 @@
 
 namespace BillAndGoBundle\Controller;
 
+use AppBundle\Service\ProjectService;
 use BillAndGoBundle\Entity\Line;
 use BillAndGoBundle\Entity\Project;
 use BillAndGoBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use BillAndGoBundle\Form\ProjectType;
@@ -27,6 +29,18 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ProjectController extends Controller
 {
+
+    /** @var ProjectService $projectService */
+    private $projectService;
+
+    /**
+     * @param ContainerInterface|null $container
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        parent::setContainer($container);
+        $this->projectService = $this->get("AppBundle\Service\ProjectService");
+    }
     /**
      * list all projects
      *
@@ -41,8 +55,7 @@ class ProjectController extends Controller
             return new Response(json_encode($ar401), 401);
         }
 
-        $manager = $this->getDoctrine()->getManager();
-        $list_project = $manager->getRepository('BillAndGoBundle:Project')->findByRefUser($user);
+        $list_project = $this->projectService->getProjectList($user);
         return $this->render(
             'BillAndGoBundle:Project:index.html.twig', array(
             'list' => $list_project,
@@ -68,13 +81,9 @@ class ProjectController extends Controller
             return new Response(json_encode($ar401), 401);
         }
         if ($id > 0) {
-            $manager = $this->getDoctrine()->getManager();
-            $project = $manager->getRepository('BillAndGoBundle:Project')->find($id);
+            $project = $this->projectService->getProject($user, $id);
             if ($project != null) {
-                if ($project->getRefUser() != $user) {
-                    $ar401 = ["wrong user"];
-                    return new Response(json_encode($ar401), 401);
-                }
+                $manager = $this->getDoctrine()->getManager();
                 $line = new Line();
                 $form = $this->get('form.factory')->create(LineProjectType::class, $line);
 

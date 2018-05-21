@@ -54,7 +54,7 @@ set status_fr = {
                         </div><!-- /.info-box-content -->
                     </div><!-- /.info-box -->
                 </div><!-- /.col -->
-                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('billandgo_estimate_add') }}'">
+                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('billandgo_document_add', {'step': 1, 'type': type}) }}'">
                     <div class="info-box">
                         <span class="info-box-icon bg-green"><i class="fa fa-plus"></i></span>
                         <div class="info-box-content">
@@ -62,6 +62,7 @@ set status_fr = {
                         </div><!-- /.info-box-content -->
                     </div><!-- /.info-box -->
                 </div><!-- /.col -->
+
                 {% if user.plan == null and limitation == false %}
                     <div class="col-md-12 ">
                         <div class="callout callout-info">
@@ -80,12 +81,23 @@ set status_fr = {
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <div class="text-left">
-                        Filtrer par :
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default btn-success btn-outline" id="estimateFilterAll">Tous</button>
-                            <button type="button" class="btn btn-default btn-success btn-outline" id="estimateFilterSent">Envoyés</button>
-                            <button type="button" class="btn btn-default btn-success btn-outline" id="estimateFilterAccepted">Acceptés</button>
+                    <div class="row">
+                        <div class="text-left col-md-6">
+                            Filtrer par :
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-success btn-outline" id="estimateFilterAll">Tous</button>
+                                <button type="button" class="btn btn-default btn-success btn-outline" id="estimateFilterSent">Envoyés</button>
+                                <button type="button" class="btn btn-default btn-success btn-outline" id="estimateFilterAccepted">Acceptés</button>
+                            </div>
+                        </div>
+                        <div class="text-right col-md-6">
+                            <form class="form-inline">
+                                <label for="document-filter-begin" class="control-label">Début :</label>
+                                <input name="begin" type="text" id="document-filter-begin" class="form-control">
+                                <label for="document-filter-end" class="control-label">Fin :</label>
+                                <input name="end" type="text" id="document-filter-end" class="form-control">
+                                <input type="submit" value="Filtrer" class="btn btn-success btn-outline btn-lg btn">
+                            </form>
                         </div>
                     </div>
                     <hr>
@@ -476,7 +488,7 @@ set status_fr = {
                                     <h4> Aucun {{ min_fr }} enregistré </h4>
                                     <p>
                                         Vous n'avez pas encore saisi de {{ min_fr }}, ne perdez pas de temps,
-                                        <a href="{{ path('billandgo_estimate_add') }}">Ajoutez votre premier {{ min_fr }}</a>
+                                        <a href="{{ path('billandgo_document_add', {'step': 1, 'type': 'estimate'}) }}">Ajoutez votre premier {{ min_fr }}</a>
                                     </p>
                                 </div>
                             </div>
@@ -527,7 +539,11 @@ set status_fr = {
                                         <!-- /.widget-user-image -->
                                         <h3 class="widget-user-username"> {{ doc.number }} </h3>
                                         <h5 class="widget-user-desc">Status : <strong> {{ status_fr[doc.status]|lower }}</strong></h5>
-                                        <h5 class="widget-user-desc"> Client :  <a href="{{ path('billandgo_clients_view', {'id': doc.refClient.id}) }}" class="white-color">{{ doc.refClient.companyName }}</a></h5>
+                                        {% if doc.refClient %}
+                                            <h5 class="widget-user-desc"> Client :  <a href="{{ path('billandgo_clients_view', {'id': doc.refClient.id}) }}" class="white-color">{{ doc.refClient.companyName }}</a></h5>
+                                        {% else %}
+                                            <h5 class="widget-user-desc"> Client : -</h5>
+                                        {% endif %}
                                         <h5 class="widget-user-desc">Total : <strong>  {{ doc.HT + doc.VAT }}€ TTC</strong></h5>
                                         <h5 class="widget-user-desc client-link-box-content"> <a href="{{ path('billandgo_document_view', {'id': doc.id}) }}">
                                                 Voir le {{ min_fr }}
@@ -554,33 +570,34 @@ set status_fr = {
                                             </ul>
                                             <div class="tab-content">
                                                 <div id="cli-{{ doc.number }}-info" class="tab-pane fade in active bg-info" >
-
                                                     <ul>
                                                         <li><strong>Date d'envoi :</strong> {{ doc.sentDate|date('d-m-Y') }} </li>
                                                         <li><strong>Date de validité : </strong>{{ doc.delayDate|date('d-m-Y') }}</li>
                                                     </ul>
+                                                    {% if doc.refClient %}
+                                                        <h5><strong>Envoyez votre {{ min_fr }} à un des contacts ci-dessous :</strong> </h5>
+                                                        {% if doc.refClient.contacts|length > 0 %}
+                                                        <div class="row">
+                                                            <form action="{{ path("billandgo_document_send_email", {"doc_id": doc.id}) }}" method="get">
+                                                                <div class="form-group col-md-6 col-xs-12">
 
-                                                    <h5><strong>Envoyez votre {{ min_fr }} à un des contacts ci-dessous :</strong> </h5>
-                                                    {% if doc.refClient.contacts|length > 0 %}
-                                                    <div class="row">
-                                                        <form action="{{ path("billandgo_document_send_email", {"doc_id": doc.id}) }}" method="get">
-                                                            <div class="form-group col-md-6 col-xs-12">
-
-                                                                <select dir="rtl" class="form-control {{ color[nbcolor] }}" name="contact" style="color:#fff;">
-                                                                    {% for contact in doc.refClient.contacts %}
-                                                                        <option value="{{ contact.id }}">{{ contact.email }}</option>
-                                                                    {% endfor %}
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-md-6 col-xs-12">
-                                                                <button type="submit" class="btn {{ color[nbcolor] }} btn-outline center-block">
-                                                                    <i class="fa fa-envelope"></i> Envoyer
-                                                                </button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
+                                                                    <select dir="rtl" class="form-control {{ color[nbcolor] }}" name="contact" style="color:#fff;">
+                                                                        {% for contact in doc.refClient.contacts %}
+                                                                            <option value="{{ contact.id }}">{{ contact.email }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-6 col-xs-12">
+                                                                    <button type="submit" class="btn {{ color[nbcolor] }} btn-outline center-block">
+                                                                        <i class="fa fa-envelope"></i> Envoyer
+                                                                    </button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        {% else %}
+                                                            Aucun contact
+                                                        {% endif %}
                                                     {% else %}
-                                                        Aucun contact
                                                     {% endif %}
                                                 </div>
                                                 <div id="cli-{{ doc.number }}-doc" class="tab-pane fade in bg-info">
@@ -651,7 +668,7 @@ set status_fr = {
                                     <h4> Aucun {{ min_fr }} enregistré </h4>
                                     <p>
                                         Vous n'avez pas encore saisi de {{ min_fr }}, ne perdez pas de temps,
-                                        <a href="{{ path('billandgo_estimate_add') }}">Ajoutez votre premier {{ min_fr }}</a>
+                                        <a href="{{ path('billandgo_document_add', {'step': 1, 'type': 'estimate'}) }}">Ajoutez votre premier {{ min_fr }}</a>
                                     </p>
                                 </div>
                             </div>
@@ -805,7 +822,7 @@ set status_fr = {
                                     <h4>Aucun {{ min_fr }} enregistré </h4>
                                     <p>
                                         Vous n'avez pas encore saisi de {{ min_fr }}, ne perdez pas de temps,
-                                        <a href="{{ path('billandgo_estimate_add') }}">Ajoutez votre premier {{ min_fr }}</a>
+                                        <a href="{{ path('billandgo_document_add', {'step': 1, 'type': type }) }}">Ajoutez-en !</a>
                                     </p>
                                 </div>
                             </div>
@@ -1097,6 +1114,8 @@ set status_fr = {
         );
         $('#project_deadline').datepicker();
         $('#bill_delay').datepicker();
+        $('#document-filter-begin').datepicker();
+        $('#document-filter-end').datepicker();
     </script>
     <script src="{{ asset('bundles/billandgo/js/project.google.agenda.js') }}"></script>
     <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>

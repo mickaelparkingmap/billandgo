@@ -13,48 +13,73 @@
 
 namespace BillAndGoBundle\Controller;
 
+use AppBundle\Service\ClientService;
+use AppBundle\Service\DocumentService;
+use AppBundle\Service\SuggestionService;
+use BillAndGoBundle\Entity\Client;
 use BillAndGoBundle\Entity\Numerotation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use BillAndGoBundle\Entity\User;
 use BillAndGoBundle\Entity\Document;
 use BillAndGoBundle\Entity\Line;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\Form\Form;
 use BillAndGoBundle\Form\LineEstimateType;
 use BillAndGoBundle\Form\LineBillType;
-use BillAndGoBundle\Form\DocumentType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\Constraints\Date;
-use Symfony\Component\Validator\Constraints\DateTime;
 
+/**
+ * Class DocumentController
+ * @package BillAndGoBundle\Controller
+ */
 class DocumentController extends Controller
 {
+    /** @var array  */
     private $status = [
         "draw", "canceled", "refused",
         "estimated", "accepted",
         "billed", "partially", "paid"
     ];
+    /** @var DocumentService $documentService */
+    private $documentService;
+    /** @var ClientService $clientService */
+    private $clientService;
+    /** @var SuggestionService $suggestionService */
+    private $suggestionService;
+
+    /**
+     * @param ContainerInterface|null $container
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        parent::setContainer($container);
+        $this->documentService = $this->get("AppBundle\Service\DocumentService");
+        $this->clientService = $this->get("AppBundle\Service\ClientService");
+        $this->suggestionService = $this->get("billandgo.suggestion");
+    }
+
 
     /**
      * Lists all estimates entities.
      *
-     * @Route("/estimates", name="billandgo_estimate_index")
+     * @Route ("/estimates", name="billandgo_estimate_index")
      * @Method("GET")
-     * @return              \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function indexEstimate()
+    public function indexEstimate(Request $request)
     {
         $user = $this->getUser();
         if (!is_object($user)) {
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
         }
-        $manager = $this->getDoctrine()->getManager();
-        $estimates = $manager->getRepository('BillAndGoBundle:Document')->findAllEstimate($user->getId());
-
+        $begin = $request->get('begin');
+        $end = $request->get('end');
+        $estimates = $this->documentService->listDrawFromUser($user, $begin, $end);
         return $this->render(
             'BillAndGoBundle:document:index.html.twig', array(
             'list' => $estimates,
@@ -70,17 +95,18 @@ class DocumentController extends Controller
      *
      * @Route("/bills", name="billandgo_bill_index")
      * @Method("GET")
-     * @return          \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function indexBill()
+    public function indexBill(Request $request) : Response
     {
         $user = $this->getUser();
         if (!is_object($user)) {
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
         }
-        $manager = $this->getDoctrine()->getManager();
-        $bills = $manager->getRepository('BillAndGoBundle:Document')->findAllBill($user->getId());
+        $begin = $request->get('begin');
+        $end = $request->get('end');
+        $bills = $this->documentService->listBillsFromUser($user, $begin, $end);
 
         return $this->render(
             'BillAndGoBundle:document:indexBill.html.twig', array(
@@ -109,9 +135,10 @@ class DocumentController extends Controller
             return new Response(json_encode($ar401), 401);
         }
         if ($id > 0) {
-            $manager = $this->getDoctrine()->getManager();
-            $document = $manager->getRepository('BillAndGoBundle:Document')->find($id);
+            $document = $this->documentService->getDocument($user, $id);
+
             if ($document != null) {
+                $manager = $this->getDoctrine()->getManager();
                 if ($document->getRefUser() != $user) {
                     $ar401 = ["wrong user"];
                     return new Response(json_encode($ar401), 401);
@@ -217,6 +244,16 @@ class DocumentController extends Controller
             } else {
                 $document->addRefLinesB($line);
             }
+            $lineData = $req->request->get('billandgobundle_line');
+            //dump($lineData);die;
+            $suggestion = $this->suggestionService->update(
+                $user,
+                $lineData['name'],
+                $lineData['description'],
+                $lineData['price'],
+                $lineData['estimatedTime']
+            );
+            $manager->persist($suggestion);
             $manager->persist($line);
             $manager->flush();
             return 4;
@@ -392,130 +429,66 @@ class DocumentController extends Controller
     }
 
     /**
-     * add an estimate
-     *
-     * @Route("/estimates/add", name="billandgo_estimate_add")
-     * @Method({"GET",          "POST"})
-     * @param                   Request $req
-     * @return                  \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @Route("/document/add/{step}", name="billandgo_document_add")
+     * @Method({"GET", "POST"})
+     * @param Request $req
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
      */
-    public function addEstimateAction(Request $req)
+    public function addDocumentAction (Request $req, int $step) : Response
     {
         $user = $this->getUser();
         if (!is_object($user)) {
-            $ar401 = ["disconnected"];
-            return new Response(json_encode($ar401), 401);
+            return new Response(json_encode(["disconnected"]), 401);
         }
-
-        if (false === $this->getLimitation("quote")) {
-            return $this->redirect($this->generateUrl("billandgo_limitation"));
+        $type = $req->get('type');
+        $clientID = (int) $req->get('client');
+        $description = $req->get('description');
+        $docID = (int) $req->get('doc');
+        if ((1 == $step) && (null !== $type) && (in_array($type, ['bill', 'estimate']))) {
+            $clients = $this->clientService->getClientListFromUser($user);
+            return $this->render(
+                'BillAndGoBundle:document:addDocument.html.twig', array(
+                    'step'      => 2,
+                    'type'      => $type,
+                    'clients'   => $clients,
+                    'user'      => $user
+                )
+            );
         }
-        $manager = $this->getDoctrine()->getManager();
-
-        $numerotationArray = $manager->getRepository("BillAndGoBundle:Numerotation")->findByRefUser($user);
-        if (!(isset($numerotationArray[0]))) {
-            $num = new Numerotation();
-            $num->setRefUser($user);
-            $num->setBillIndex(0);
-            $num->setEstimateIndex(1);
-            $num->setBillYearMonth(date("Ym"));
-            $num->setEstimateYearMonth(date("Ym"));
-            $manager->persist($num);
-        }
-        else {
-            $num = $numerotationArray[0];
-            if ($num->getEstimateYearMonth() != date("Ym")) {
-                $num->setEstimateYearMonth(date("Ym"));
-                $num->setEstimateIndex(1);
-            }
-            else { $num->setEstimateIndex($num->getEstimateIndex() + 1);
-            }
-        }
-        $index = $num->getEstimateIndex();
-
-        $estimate = new Document();
-        $form = $this->createForm(DocumentType::class, $estimate, array('uid' => $user->getId()));
-        if ($req->isMethod('POST')) {
-            if (($form->handleRequest($req)->isValid())) {
-                $estimate->setNumber("DEV-" . date("Y-m-") . str_pad($index, 3, "0", STR_PAD_LEFT));
-                $estimate->setRefUser($user);
-                $estimate->setType(1);
-                $estimate->setStatus("draw");
-                $manager->persist($estimate);
-                $manager->flush();
-                return $this->redirect($this->generateUrl("billandgo_document_view", array('id' => $estimate->getId())));
+        elseif ((2 == $step) && (is_int($clientID)) && (in_array($type, ['bill', 'estimate']))) {
+            $client = $this->clientService->getClient($user, $clientID);
+            if ($client instanceof Client) {
+                $doc = $this->documentService->documentCreation($user, $type, $client);
+                return $this->render(
+                    'BillAndGoBundle:document:addDocument.html.twig', array(
+                        'step'      => 3,
+                        'type'      => $type,
+                        'doc'       => $doc,
+                        'user'      => $user
+                    )
+                );
             }
         }
-        return $this->render(
-            'BillAndGoBundle:document:addEstimate.html.twig', array(
-            'form' => $form->createView(),
-            'user' => $user
-            )
-        );
-    }
-
-    /**
-     * add a bill
-     *
-     * @Route("/bills/add", name="billandgo_bill_add")
-     * @Method({"GET",      "POST"})
-     * @param               Request $req
-     * @return              \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     */
-    public function addBillAction(Request $req)
-    {
-        $user = $this->getUser();
-        if (!is_object($user)) {
-            $ar401 = ["disconnected"];
-            return new Response(json_encode($ar401), 401);
+        elseif ((3 == $step) && (null !== $description) && (is_int($docID))) {
+            $doc = $this->documentService->setDescription($user, $description, $docID);
+            return $this->render(
+                'BillAndGoBundle:document:addDocument.html.twig', array(
+                    'step'      => 4,
+                    'type'      => $doc->getType(),
+                    'doc'       => $doc,
+                    'user'      => $user
+                )
+            );
         }
-
-        if (false === $this->getLimitation("bill")) {
-            return $this->redirect($this->generateUrl("billandgo_limitation"));
-        }
-
-        $manager = $this->getDoctrine()->getManager();
-
-        $numerotationArray = $manager->getRepository("BillAndGoBundle:Numerotation")->findByRefUser($user);
-        if (!(isset($numerotationArray[0]))) {
-            $num = new Numerotation();
-            $num->setRefUser($user);
-            $num->setBillIndex(1);
-            $num->setEstimateIndex(0);
-            $num->setBillYearMonth(date("Ym"));
-            $num->setEstimateYearMonth(date("Ym"));
-            $manager->persist($num);
-        }
-        else {
-            $num = $numerotationArray[0];
-            if ($num->getBillYearMonth() != date("Ym")) {
-                $num->setBillYearMonth(date("Ym"));
-                $num->setBillIndex(1);
-            }
-            else { $num->setBillIndex($num->getBillIndex() + 1);
+        elseif ((4 == $step) && (is_int($docID))) {
+            $delayDate = new \DateTime($req->get('delayDate'));
+            if ((null !== $delayDate)) {
+                $doc = $this->documentService->setDelayDate($user, $delayDate, $docID);
+                return $this->redirect($this->generateUrl("billandgo_document_view", array('id' => $doc->getId())));
             }
         }
-        $index = $num->getBillIndex();
-
-        $bill = new Document();
-        $form = $this->createForm(DocumentType::class, $bill, array('uid' => $user->getId()));
-        if ($req->isMethod('POST')) {
-            if (($form->handleRequest($req)->isValid())) {
-                $bill->setNumber("FAC-" . date("Y-m-") . str_pad($index, 3, "0", STR_PAD_LEFT));
-                $bill->setRefUser($user);
-                $bill->setType(0);
-                $bill->setStatus("draw");
-                $manager->persist($bill);
-                $manager->flush();
-                return $this->redirect($this->generateUrl("billandgo_document_view", array('id' => $bill->getId())));
-            }
-        }
-        return $this->render(
-            'BillAndGoBundle:document:addBill.html.twig', array(
-            'form' => $form->createView(),
-            'user' => $user
-            )
-        );
+        return $this->redirect($this->generateUrl('billandgo_dashboard'));
     }
 
     /**

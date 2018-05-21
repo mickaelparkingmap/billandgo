@@ -15,6 +15,8 @@
 
 namespace BillAndGoBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -56,9 +58,9 @@ class Paiment
     private $mode;
 
     /**
-     * @var \BillAndGoBundle\Entity\User
+     * @var User
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ref_user", referencedColumnName="id")
      * })
@@ -66,9 +68,9 @@ class Paiment
     private $refUser;
 
     /**
-     * @var \BillAndGoBundle\Entity\Document
+     * @var Document
      *
-     * @ORM\ManyToMany(targetEntity="BillAndGoBundle\Entity\Document", mappedBy="refPaiment")
+     * @ORM\ManyToMany(targetEntity="Document", mappedBy="refPaiment")
      * @ORM\JoinTable(name="bill_paiment",
      *		joinColumns={@ORM\JoinColumn(name="bill_id", referencedColumnName="id")},
      *		inverseJoinColumns={@ORM\JoinColumn(name="paiment_id", referencedColumnName="id")}
@@ -87,19 +89,20 @@ class Paiment
      *
      * @return Paiment
      */
-    public function setAmount($amount)
+    public function setAmount(int $amount) : self
     {
-        $this->amount = $amount;
-
+        if ($amount >= 0) {
+            $this->amount = $amount;
+        }
         return $this;
     }
 
     /**
      * Get amount
      *
-     * @return integer
+     * @return integer|null
      */
-    public function getAmount()
+    public function getAmount() : ?int
     {
         return $this->amount;
     }
@@ -111,10 +114,9 @@ class Paiment
      *
      * @return Paiment
      */
-    public function setDatePaiment($datePaiment)
+    public function setDatePaiment(?\DateTime $datePaiment) : self
     {
         $this->datePaiment = $datePaiment;
-
         return $this;
     }
 
@@ -123,7 +125,7 @@ class Paiment
      *
      * @return \DateTime
      */
-    public function getDatePaiment()
+    public function getDatePaiment() : ?\DateTime
     {
         return $this->datePaiment;
     }
@@ -135,19 +137,18 @@ class Paiment
      *
      * @return Paiment
      */
-    public function setMode($mode)
+    public function setMode(string $mode) : self
     {
         $this->mode = $mode;
-
         return $this;
     }
 
     /**
      * Get mode
      *
-     * @return string
+     * @return string|null
      */
-    public function getMode()
+    public function getMode() : ?string
     {
         return $this->mode;
     }
@@ -157,7 +158,7 @@ class Paiment
      *
      * @return integer
      */
-    public function getId()
+    public function getId() : int
     {
         return $this->id;
     }
@@ -165,81 +166,78 @@ class Paiment
     /**
      * Set refUser
      *
-     * @param \BillAndGoBundle\Entity\User $refUser
+     * @param User|null $refUser
      *
      * @return Paiment
      */
-    public function setRefUser(\BillAndGoBundle\Entity\User $refUser = null)
+    public function setRefUser(?User $refUser = null) : self
     {
         $this->refUser = $refUser;
-
         return $this;
     }
 
     /**
      * Get refUser
      *
-     * @return \BillAndGoBundle\Entity\User
+     * @return User
      */
-    public function getRefUser()
+    public function getRefUser() : User
     {
         return $this->refUser;
     }
-    /**
-     * Constructor
-     */
+
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->refBill = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->refBill = new ArrayCollection();
     }
 
     /**
      * Add refBill
      *
-     * @param \BillAndGoBundle\Entity\Document $refBill
+     * @param Document $refBill
      *
      * @return Paiment
      */
-    public function addRefBill(\BillAndGoBundle\Entity\Document $refBill)
+    public function addRefBill(Document $refBill) : self
     {
-        $this->refBill[] = $refBill;
-
+        $this->refBill->add($refBill);
         return $this;
     }
 
     /**
      * alias of addrefBill
      *
-     * @param \BillAndGoBundle\Entity\Document $refBill
+     * @param Document $refBill
      *
      * @return Paiment
      */
-    public function setRefBill(\BillAndGoBundle\Entity\Document $refBill)
+    public function setRefBill(Document $refBill) : self
     {
-        $this->refBill[] = $refBill;
-
-        return $this;
+        return $this->addRefBill($refBill);
     }
 
     /**
      * Remove refBill
      *
-     * @param \BillAndGoBundle\Entity\Document $refBill
+     * @param Document $refBill
+     *
+     * @return Paiment
      */
-    public function removeRefBill(\BillAndGoBundle\Entity\Document $refBill)
+    public function removeRefBill(Document $refBill) : self
     {
         $this->refBill->removeElement($refBill);
+        return $this;
     }
 
     /**
      * Get refBill
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
-    public function getRefBill()
+    public function getRefBill() : Collection
     {
         return $this->refBill;
     }

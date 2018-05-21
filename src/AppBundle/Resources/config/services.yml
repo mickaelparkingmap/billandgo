@@ -1,0 +1,10 @@
+services:
+
+    billandgo.document:
+        class: 'AppBundle\Service\DocumentService'
+        autowire: true
+
+    billandgo.suggestion:
+        class: 'AppBundle\Service\SuggestionService'
+        autowire: true
+        public: true

@@ -55,9 +55,9 @@ class Meeting
     private $id;
 
     /**
-     * @var \BillAndGoBundle\Entity\ClientContact
+     * @var ClientContact
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\ClientContact")
+     * @ORM\ManyToOne(targetEntity="ClientContact")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ref_contact", referencedColumnName="id")
      * })
@@ -65,14 +65,14 @@ class Meeting
     private $refContact;
 
     /**
-     * @var \BillAndGoBundle\Entity\Devis
+     * @var Document
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\Devis")
+     * @ORM\ManyToOne(targetEntity="Document")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ref_devis", referencedColumnName="id")
      * })
      */
-    private $refDevis;
+    private $refDocument;
 
 
 
@@ -83,10 +83,9 @@ class Meeting
      *
      * @return Meeting
      */
-    public function setBeginningTime($beginningTime)
+    public function setBeginningTime(?\DateTime $beginningTime) : self
     {
         $this->beginningTime = $beginningTime;
-
         return $this;
     }
 
@@ -95,7 +94,7 @@ class Meeting
      *
      * @return \DateTime
      */
-    public function getBeginningTime()
+    public function getBeginningTime() : ?\DateTime
     {
         return $this->beginningTime;
     }
@@ -107,10 +106,9 @@ class Meeting
      *
      * @return Meeting
      */
-    public function setEndingTime($endingTime)
+    public function setEndingTime(?\DateTime $endingTime) : self
     {
         $this->endingTime = $endingTime;
-
         return $this;
     }
 
@@ -119,7 +117,7 @@ class Meeting
      *
      * @return \DateTime
      */
-    public function getEndingTime()
+    public function getEndingTime() : \DateTime
     {
         return $this->endingTime;
     }
@@ -131,10 +129,9 @@ class Meeting
      *
      * @return Meeting
      */
-    public function setPlace($place)
+    public function setPlace(string $place) : self
     {
-        $this->place = $place;
-
+        $this->place = trim(strip_tags($place));
         return $this;
     }
 
@@ -143,7 +140,7 @@ class Meeting
      *
      * @return string
      */
-    public function getPlace()
+    public function getPlace() : ?string
     {
         return $this->place;
     }
@@ -153,7 +150,7 @@ class Meeting
      *
      * @return integer
      */
-    public function getId()
+    public function getId() : int
     {
         return $this->id;
     }
@@ -161,48 +158,46 @@ class Meeting
     /**
      * Set refContact
      *
-     * @param \BillAndGoBundle\Entity\ClientContact $refContact
+     * @param ClientContact|null $refContact
      *
      * @return Meeting
      */
-    public function setRefContact(\BillAndGoBundle\Entity\ClientContact $refContact = null)
+    public function setRefContact(?ClientContact $refContact = null) : self
     {
         $this->refContact = $refContact;
-
         return $this;
     }
 
     /**
      * Get refContact
      *
-     * @return \BillAndGoBundle\Entity\ClientContact
+     * @return ClientContact|null
      */
-    public function getRefContact()
+    public function getRefContact() : ?ClientContact
     {
         return $this->refContact;
     }
 
     /**
-     * Set refDevis
+     * Set refDocument
      *
-     * @param \BillAndGoBundle\Entity\Devis $refDevis
+     * @param Document|null $refDocument
      *
      * @return Meeting
      */
-    public function setRefDevis(\BillAndGoBundle\Entity\Devis $refDevis = null)
+    public function setRefDocument(Document $refDocument = null) : self
     {
-        $this->refDevis = $refDevis;
-
+        $this->refDocument = $refDocument;
         return $this;
     }
 
     /**
-     * Get refDevis
+     * Get refDocument
      *
-     * @return \BillAndGoBundle\Entity\Devis
+     * @return Document
      */
-    public function getRefDevis()
+    public function getRefDocument() : ?Document
     {
-        return $this->refDevis;
+        return $this->refDocument;
     }
 }

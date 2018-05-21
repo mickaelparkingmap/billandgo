@@ -15,6 +15,7 @@
 
 namespace BillAndGoBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -64,9 +65,9 @@ class Project
     private $id;
 
     /**
-     * @var \BillAndGoBundle\Entity\User
+     * @var User
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="refUser", referencedColumnName="id")
      * })
@@ -74,9 +75,9 @@ class Project
     private $refUser;
 
     /**
-     * @var \BillAndGoBundle\Entity\Client
+     * @var Client
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\Client")
+     * @ORM\ManyToOne(targetEntity="Client")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="refClient", referencedColumnName="id")
      * })
@@ -86,9 +87,9 @@ class Project
 
 
     /**
-     * @var \BillAndGoBundle\Entity\Line
+     * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="BillAndGoBundle\Entity\Line", inversedBy="refProject")
+     * @ORM\ManyToMany(targetEntity="Line", inversedBy="refProject")
      * @ORM\JoinTable(name="line_project",
      *		joinColumns={@ORM\JoinColumn(name="project_id", referencedColumnName="id")},
      *		inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
@@ -100,23 +101,22 @@ class Project
     /**
      * Set begin
      *
-     * @param \DateTime $begin
+     * @param \DateTime|null $begin
      *
      * @return Project
      */
-    public function setBegin($begin)
+    public function setBegin (?\DateTime $begin) : self
     {
         $this->begin = $begin;
-
         return $this;
     }
 
     /**
      * Get begin
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getBegin()
+    public function getBegin () : ?\DateTime
     {
         return $this->begin;
     }
@@ -124,23 +124,22 @@ class Project
     /**
      * Set deadline
      *
-     * @param \DateTime $deadline
+     * @param \DateTime|null $deadline
      *
      * @return Project
      */
-    public function setDeadline($deadline)
+    public function setDeadline (?\DateTime $deadline) : self
     {
         $this->deadline = $deadline;
-
         return $this;
     }
 
     /**
      * Get deadline
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getDeadline()
+    public function getDeadline () : ?\DateTime
     {
         return $this->deadline;
     }
@@ -152,19 +151,18 @@ class Project
      *
      * @return Project
      */
-    public function setName($name)
+    public function setName(string $name) : self
     {
-        $this->name = $name;
-
+        $this->name = trim(strip_tags($name));
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string
+     * @return string|null
      */
-    public function getName()
+    public function getName () : ?string
     {
         return $this->name;
     }
@@ -172,23 +170,22 @@ class Project
     /**
      * Set description
      *
-     * @param string $description
+     * @param string $description|null
      *
      * @return Project
      */
-    public function setDescription($description)
+    public function setDescription (?string $description) : self
     {
-        $this->description = $description;
-
+        $this->description = trim(strip_tags($description));
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return string
+     * @return string|null
      */
-    public function getDescription()
+    public function getDescription () : ?string
     {
         return $this->description;
     }
@@ -198,7 +195,7 @@ class Project
      *
      * @return integer
      */
-    public function getId()
+    public function getId () : int
     {
         return $this->id;
     }
@@ -206,23 +203,22 @@ class Project
     /**
      * Set refUser
      *
-     * @param \BillAndGoBundle\Entity\User $refUser
+     * @param User|null $refUser
      *
      * @return Project
      */
-    public function setRefUser(\BillAndGoBundle\Entity\User $refUser = null)
+    public function setRefUser(?User $refUser = null) : self
     {
         $this->refUser = $refUser;
-
         return $this;
     }
 
     /**
      * Get refUser
      *
-     * @return \BillAndGoBundle\Entity\User
+     * @return User|null
      */
-    public function getRefUser()
+    public function getRefUser() : ?User
     {
         return $this->refUser;
     }
@@ -230,99 +226,96 @@ class Project
     /**
      * Set refClient
      *
-     * @param \BillAndGoBundle\Entity\Client $refClient
+     * @param Client $refClient
      *
      * @return Project
      */
-    public function setRefClient(\BillAndGoBundle\Entity\Client $refClient = null)
+    public function setRefClient(Client $refClient = null) : self
     {
         $this->refClient = $refClient;
-
         return $this;
     }
 
     /**
      * Get refClient
      *
-     * @return \BillAndGoBundle\Entity\Client
+     * @return Client|null
      */
-    public function getRefClient()
+    public function getRefClient() : ?Client
     {
         return $this->refClient;
     }
+
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->lines = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add refDocument
-     *
-     * @param \BillAndGoBundle\Entity\Document $refDocument
-     *
-     * @return Project
-     */
-    public function addRefDocument(\BillAndGoBundle\Entity\Document $refDocument)
-    {
-        $this->refDocument[] = $refDocument;
-
-        return $this;
-    }
-
-    /**
-     * Remove refDocument
-     *
-     * @param \BillAndGoBundle\Entity\Document $refDocument
-     */
-    public function removeRefDocument(\BillAndGoBundle\Entity\Document $refDocument)
-    {
-        $this->refDocument->removeElement($refDocument);
-    }
-
-    /**
-     * Get refDocument
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getRefDocument()
-    {
-        return $this->refDocument;
+        $this->lines = new ArrayCollection();
     }
 
     /**
      * Add refLine
      *
-     * @param \BillAndGoBundle\Entity\Line $refLine
+     * @param Line $refLine
      *
      * @return Project
      */
-    public function addRefLine(\BillAndGoBundle\Entity\Line $refLine)
+    public function addRefLine(Line $refLine) : self
     {
-        $this->refLines[] = $refLine;
-
+        $this->refLines->add($refLine);
         return $this;
     }
 
     /**
      * Remove refLine
      *
-     * @param \BillAndGoBundle\Entity\Line $refLine
+     * @param Line $refLine
+     *
+     * @return Project
      */
-    public function removeRefLine(\BillAndGoBundle\Entity\Line $refLine)
+    public function removeRefLine(Line $refLine) : self
     {
         $this->refLines->removeElement($refLine);
+        return $this;
     }
 
     /**
      * Get refLines
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
-    public function getRefLines()
+    public function getRefLines() : Collection
     {
         return $this->refLines;
+    }
+
+    /**
+     * @return string
+     */
+    public function stringify() : string
+    {
+        $data = [
+            'id'            => $this->id,
+            'name'          => $this->name,
+            'client'        => $this->refClient->getCompanyName(),
+            'clientID'      => $this->refClient->getId(),
+            'description'   => $this->description,
+            'begin'         => $this->begin->format('y-m-d H:i:s'),
+            'deadline'      => $this->deadline->format('y-m-d H:i:s')
+        ];
+        $data['todo'] = [];
+        foreach ($this->refLines as $line) {
+            /** @var Line $line */
+            $data['todo'][$line->getId()] = [
+                'id'            => $line->getId(),
+                'name'          => $line->getName(),
+                'description'   => $line->getDescription(),
+                'valueHt'       => $line->getQuantity() * $line->getPrice(),
+                'status'        => $line->getStatus()
+            ];
+
+        }
+        return json_encode($data);
     }
 }

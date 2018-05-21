@@ -61,7 +61,7 @@ class Tax
      *
      * @return int
      */
-    public function getId()
+    public function getId() : int
     {
         return $this->id;
     }
@@ -73,10 +73,9 @@ class Tax
      *
      * @return Tax
      */
-    public function setName($name)
+    public function setName(string $name) : self
     {
-        $this->name = $name;
-
+        $this->name = trim(strip_tags($name));
         return $this;
     }
 
@@ -85,7 +84,7 @@ class Tax
      *
      * @return string
      */
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }
@@ -97,10 +96,9 @@ class Tax
      *
      * @return Tax
      */
-    public function setPercent($percent)
+    public function setPercent(int $percent) : self
     {
         $this->percent = $percent;
-
         return $this;
     }
 
@@ -109,7 +107,7 @@ class Tax
      *
      * @return int
      */
-    public function getPercent()
+    public function getPercent() : int
     {
         return $this->percent;
     }
@@ -121,10 +119,9 @@ class Tax
      *
      * @return Tax
      */
-    public function setHelp($help)
+    public function setHelp(string $help) : self
     {
-        $this->help = $help;
-
+        $this->help = trim(strip_tags($help));
         return $this;
     }
 
@@ -133,7 +130,7 @@ class Tax
      *
      * @return string
      */
-    public function getHelp()
+    public function getHelp() : string 
     {
         return $this->help;
     }

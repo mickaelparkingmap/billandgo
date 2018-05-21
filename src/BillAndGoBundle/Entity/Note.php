@@ -56,9 +56,9 @@ class Note
     private $id;
 
     /**
-     * @var \BillAndGoBundle\Entity\ClientContact
+     * @var ClientContact
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\ClientContact")
+     * @ORM\ManyToOne(targetEntity="ClientContact")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ref_contact", referencedColumnName="id")
      * })
@@ -66,37 +66,36 @@ class Note
     private $refContact;
 
     /**
-     * @var \BillAndGoBundle\Entity\Devis
+     * @var Document
      *
-     * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\Devis")
+     * @ORM\ManyToOne(targetEntity="Document")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ref_devis", referencedColumnName="id")
      * })
      */
-    private $refDevis;
+    private $refDocument;
 
 
 
     /**
      * Set creation
      *
-     * @param \DateTime $creation
+     * @param \DateTime|null $creation
      *
      * @return Note
      */
-    public function setCreation($creation)
+    public function setCreation(?\DateTime $creation) : self
     {
         $this->creation = $creation;
-
         return $this;
     }
 
     /**
      * Get creation
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getCreation()
+    public function getCreation() : ?\DateTime
     {
         return $this->creation;
     }
@@ -108,10 +107,9 @@ class Note
      *
      * @return Note
      */
-    public function setName($name)
+    public function setName(string $name) : self
     {
-        $this->name = $name;
-
+        $this->name = trim(strip_tags($name));
         return $this;
     }
 
@@ -120,7 +118,7 @@ class Note
      *
      * @return string
      */
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }
@@ -132,9 +130,9 @@ class Note
      *
      * @return Note
      */
-    public function setDescription($description)
+    public function setDescription(string $description) : self
     {
-        $this->description = $description;
+        $this->description = trim(strip_tags($description));
 
         return $this;
     }
@@ -144,7 +142,7 @@ class Note
      *
      * @return string
      */
-    public function getDescription()
+    public function getDescription() : ?string
     {
         return $this->description;
     }
@@ -154,7 +152,7 @@ class Note
      *
      * @return integer
      */
-    public function getId()
+    public function getId() : int
     {
         return $this->id;
     }
@@ -162,23 +160,22 @@ class Note
     /**
      * Set refContact
      *
-     * @param \BillAndGoBundle\Entity\ClientContact $refContact
+     * @param ClientContact $refContact
      *
      * @return Note
      */
-    public function setRefContact(\BillAndGoBundle\Entity\ClientContact $refContact = null)
+    public function setRefContact(?ClientContact $refContact = null) : self
     {
         $this->refContact = $refContact;
-
         return $this;
     }
 
     /**
      * Get refContact
      *
-     * @return \BillAndGoBundle\Entity\ClientContact
+     * @return ClientContact|null
      */
-    public function getRefContact()
+    public function getRefContact() : ?ClientContact
     {
         return $this->refContact;
     }
@@ -186,24 +183,23 @@ class Note
     /**
      * Set refDevis
      *
-     * @param \BillAndGoBundle\Entity\Devis $refDevis
+     * @param Document|null $refDevis
      *
      * @return Note
      */
-    public function setRefDevis(\BillAndGoBundle\Entity\Devis $refDevis = null)
+    public function setRefDocument(?Document $refDocument = null) : self
     {
-        $this->refDevis = $refDevis;
-
+        $this->refDocument = $refDocument;
         return $this;
     }
 
     /**
      * Get refDevis
      *
-     * @return \BillAndGoBundle\Entity\Devis
+     * @return Document|null
      */
-    public function getRefDevis()
+    public function getRefDocument() : ?Document
     {
-        return $this->refDevis;
+        return $this->refDocument;
     }
 }

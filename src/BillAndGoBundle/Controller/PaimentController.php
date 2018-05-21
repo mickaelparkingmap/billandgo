@@ -23,7 +23,6 @@ use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use BillAndGoBundle\Form\PaimentType;
-use BillAndGoBundle\Form\DocumentType;
 
 /**
  * Paiment controller.
