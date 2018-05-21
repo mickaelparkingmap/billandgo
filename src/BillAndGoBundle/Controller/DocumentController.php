@@ -66,15 +66,16 @@ class DocumentController extends Controller
      * @Method("GET")
      * @return Response
      */
-    public function indexEstimate()
+    public function indexEstimate(Request $request)
     {
         $user = $this->getUser();
         if (!is_object($user)) {
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
         }
-
-        $estimates = $this->documentService->listDrawFromUser($user);
+        $begin = $request->get('begin');
+        $end = $request->get('end');
+        $estimates = $this->documentService->listDrawFromUser($user, $begin, $end);
         return $this->render(
             'BillAndGoBundle:document:index.html.twig', array(
             'list' => $estimates,
