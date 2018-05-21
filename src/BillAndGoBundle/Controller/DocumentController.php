@@ -91,17 +91,19 @@ class DocumentController extends Controller
      *
      * @Route("/bills", name="billandgo_bill_index")
      * @Method("GET")
-     * @return          \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function indexBill()
+    public function indexBill(Request $request) : Response
     {
         $user = $this->getUser();
         if (!is_object($user)) {
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
         }
+        $begin = $request->get('begin');
+        $end = $request->get('end');
+        $bills = $this->documentService->listBillsFromUser($user, $begin, $end);
 
-        $bills = $this->documentService->listBillsFromUser($user);
         return $this->render(
             'BillAndGoBundle:document:indexBill.html.twig', array(
             'list' => $bills,

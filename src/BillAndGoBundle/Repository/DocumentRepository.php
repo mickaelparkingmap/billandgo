@@ -12,8 +12,8 @@
  *
  */
 
-
 namespace BillAndGoBundle\Repository;
+
 use BillAndGoBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 
@@ -71,7 +71,7 @@ class DocumentRepository extends EntityRepository
         array $status
     ) : array
     {
-        $typeBool = ($type == 'estimate');
+        $typeBool = ($type == 'estimate') ? 1 : 0;
         $qb = $this->createQueryBuilder('doc');
         $qb
             ->select('doc')

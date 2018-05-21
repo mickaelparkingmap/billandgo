@@ -81,6 +81,21 @@ set status_fr = {
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
+                        <div class="text-left col-md-6">
+                        </div>
+                        <div class="text-right col-md-6">
+                            <form class="form-inline">
+                                <label for="document-filter-begin" class="control-label">Début :</label>
+                                <input name="begin" type="text" id="document-filter-begin" class="form-control">
+                                <label for="document-filter-end" class="control-label">Fin :</label>
+                                <input name="end" type="text" id="document-filter-end" class="form-control">
+                                <input type="submit" value="Filtrer" class="btn btn-success btn-outline btn-lg btn">
+                            </form>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="row">
                         <!--<p class="text-center"><i>/* A venir : filtres*/</i></p>-->
                         {% set nbdoc = 0 %}
                         {% set totalHT = 0 %}
@@ -717,3 +732,12 @@ set status_fr = {
     <!-- /.content-wrapper -->
 
 {% endblock fos_user_content %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('#document-filter-begin').datepicker();
+        $('#document-filter-end').datepicker();
+    </script>
+{% endblock %}

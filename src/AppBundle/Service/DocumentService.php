@@ -66,25 +66,25 @@ class DocumentService extends Controller
 
     /**
      * @param User $user
+     * @param null|string $begin
+     * @param null|string $end
      * @param array $status
      * @return Document[]
      */
     public function listBillsFromUser (
         User $user,
+        ?string $begin = null,
+        ?string $end = null,
         array $status = [
             "draw", "canceled", "refused",
             "billed", "partially", "paid"
         ]
     ) : array
     {
-        $filter = [
-            'refUser'   => $user,
-            'type'      => false,
-            'status'    => $status
-        ];
-        return $this->entityManager
+        return $this
+            ->entityManager
             ->getRepository(Document::class)
-            ->findBy($filter);
+            ->findByDate($user, 'bill', $begin, $end, $status);
     }
 
     /**
