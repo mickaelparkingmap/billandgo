@@ -408,7 +408,9 @@ class Line
      */
     public function __construct()
     {
+        $this->refEstimate = new ArrayCollection();
         $this->refProject = new ArrayCollection();
+        $this->refBill = new ArrayCollection();
     }
 
     /**
