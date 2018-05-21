@@ -15,6 +15,7 @@ namespace BillAndGoBundle\Controller;
 
 use AppBundle\Service\ClientService;
 use AppBundle\Service\DocumentService;
+use AppBundle\Service\SuggestionService;
 use BillAndGoBundle\Entity\Client;
 use BillAndGoBundle\Entity\Numerotation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -47,6 +48,8 @@ class DocumentController extends Controller
     private $documentService;
     /** @var ClientService $clientService */
     private $clientService;
+    /** @var SuggestionService $suggestionService */
+    private $suggestionService;
 
     /**
      * @param ContainerInterface|null $container
@@ -56,6 +59,7 @@ class DocumentController extends Controller
         parent::setContainer($container);
         $this->documentService = $this->get("AppBundle\Service\DocumentService");
         $this->clientService = $this->get("AppBundle\Service\ClientService");
+        $this->suggestionService = $this->get("billandgo.suggestion");
     }
 
 
@@ -240,6 +244,16 @@ class DocumentController extends Controller
             } else {
                 $document->addRefLinesB($line);
             }
+            $lineData = $req->request->get('billandgobundle_line');
+            //dump($lineData);die;
+            $suggestion = $this->suggestionService->update(
+                $user,
+                $lineData['name'],
+                $lineData['description'],
+                $lineData['price'],
+                $lineData['estimatedTime']
+            );
+            $manager->persist($suggestion);
             $manager->persist($line);
             $manager->flush();
             return 4;
