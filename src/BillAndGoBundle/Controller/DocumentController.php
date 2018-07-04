@@ -145,7 +145,7 @@ class DocumentController extends Controller
                     return new Response(json_encode($ar401), 401);
                 }
                 $line = new Line();
-                if ($document->getType()) {
+                if ($document->isEstimate()) {
                     $form = $this->get('form.factory')->create(LineEstimateType::class, $line);
                 } else {
                     $form = $this->get('form.factory')->create(LineBillType::class, $line);
@@ -240,13 +240,12 @@ class DocumentController extends Controller
             $line->setRefUser($user);
             $line->setRefClient($document->getRefClient());
             $line->setStatus($document->getStatus());
-            if ($document->getType()) {
+            if ($document->isEstimate()) {
                 $document->addRefLine($line);
             } else {
                 $document->addRefLinesB($line);
             }
             $lineData = $req->request->get('billandgobundle_line');
-            //dump($lineData);die;
             $suggestion = $this->suggestionService->update(
                 $user,
                 $lineData['name'],
@@ -518,7 +517,7 @@ class DocumentController extends Controller
         return $this->render(
             'BillAndGoBundle:document:addDocument.html.twig', array(
                 'step'      => 4,
-                'type'      => $doc->getType(),
+                'type'      => $doc->isEstimate(),
                 'doc'       => $doc,
                 'user'      => $user
             )

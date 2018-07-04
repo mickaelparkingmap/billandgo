@@ -146,6 +146,14 @@ class Document
     private $token;
 
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->refLines = new ArrayCollection();
+    }
+
+    /**
      * Get id
      *
      * @return int
@@ -353,20 +361,13 @@ class Document
     }
 
     /**
-     * Get type
+     * true if estimate, false if bill
      *
-     * @return boolean
+     * @return bool
      */
-    public function getType() : bool
+    public function isEstimate(): bool
     {
         return $this->type;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->refLines = new ArrayCollection();
     }
 
     /**

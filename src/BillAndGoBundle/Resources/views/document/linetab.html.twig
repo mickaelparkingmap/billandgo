@@ -5,7 +5,7 @@
         <th>Nom</th>
         <th style="min-width:100px;">Quantité</th>
         <th style="min-width:100px;">Prix</th>
-        {% if document.type == "estimate" %}
+        {% if document.isEstimate == "estimate" %}
             <th style="min-width:100px;" class="color-grey">(Temps estimé)</th>
         {% endif %}
         <th style="min-width:100px">Statut</th>
@@ -79,7 +79,7 @@
                 <br/>
                 <span class="utc">{{ line.quantity }} x {{ line.price + (line.refTax.percent * line.price / 100.0) }}</span>  = <span class="ttc">{{ subTotalVat + subTotalHT }}</span> € TTC
             </td>
-            {% if document.type == "estimate" %}
+            {% if document.isEstimate == "estimate" %}
                 <td class="color-grey">
                     {% if line.estimatedTime %}
                         {% if line.estimatedTime > 0 %}
@@ -117,7 +117,7 @@
                         Voir le projet {{ line.refProject|first.name }}
                     </a>
                 {% endif %}
-                {% if document.type %}
+                {% if document.isEstimate %}
                     {% if line.refBill|first %}
                         <a class="btn btn-info btn-outline" href="{{ path("billandgo_document_view", {"id":line.refBill|first.id}) }}">
                             {{ line.refBill|first.number }}
@@ -131,7 +131,7 @@
                     {% endif %}
                 {% endif %}
                 {% if modify %}
-                    {% if document.type %}
+                    {% if document.isEstimate %}
                         <a class="btn btn-danger btn-outline" href="{{ path('billandgo_line_detach_estimate', {'id': line.id}) }}"> Supprimer <i class="fa fa-trash text-danger"></i></a>
                     {% else %}
                         <a class="btn btn-danger btn-outline" href="{{ path('billandgo_line_detach_bill', {'id': line.id}) }}">Supprimer <i class="fa fa-trash text-danger"></i></a>
