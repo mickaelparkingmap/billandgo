@@ -18,6 +18,7 @@ use BillAndGoBundle\BillAndGoBundle;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\Response;
 
 class TaxController extends Controller
 {
@@ -27,7 +28,7 @@ class TaxController extends Controller
      * @Route("/tax/index", name="billandgo_tax_index")
      * @return              \Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction()
+    public function indexAction(): Response
     {
         $user = $this->getUser();
         if ($user->getId() != 1) {
@@ -52,7 +53,7 @@ class TaxController extends Controller
      * @Route("/tax/create", name="billandgo_tax_create")
      * @return               \Symfony\Component\HttpFoundation\Response
      */
-    public function createAction()
+    public function createAction(): Response
     {
         $user = $this->getUser();
         if ($user->getId() != 1) {

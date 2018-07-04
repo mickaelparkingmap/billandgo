@@ -1,0 +1,83 @@
+{% extends "BillAndGoBundle::base.html.twig" %}
+
+{% block title %}{{ parent() }} - Liste des suggestions{% endblock %}
+
+{% block fos_user_content %}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Suggestions
+                <small>Voici la liste des suggestions communes</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><i class="fa fa-wrench"></i> Administration</li>
+                <li class="active"><i class="fa fa-legal"></i> Suggestions</li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-yellow"><i class="fa fa-legal"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Nombre de suggestions</span>
+                            <span class="info-box-number">{{ suggestions|length }}</span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green"><i class="fa fa-refresh"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text"><strong>Mettre à jour les suggestions</strong></span>
+                        </div><!-- /.info-box-content -->
+                    </div><!-- /.info-box -->
+                </div><!-- /.col -->
+            </div>
+
+        <!-- Main content -->
+            <div class="row">
+                {% set nbclient = 0 %}
+                {% set nbcolor = 0 %}
+                {% set maxcolor = 6 %}
+                {% set color = ['bg-yellow', 'bg-green', 'bg-purple', 'bg-black', 'bg-blue', 'bg-red'] %}
+                {% for suggestion in suggestions %}
+                    <div class="col-md-4">
+                        <!-- Widget: user widget style 1 -->
+                        <div class="box box-widget widget-user-2 box-client {{ color[nbcolor] }}-client">
+                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                            <div class="widget-user-header  {{ color[nbcolor] }}">
+                                <h3>{{ suggestion.name }}</h3>
+                                <h4>{{ suggestion.priceHT }}€ HT - {{ suggestion.time }}H</h4>
+                                <p>{{ suggestion.description }}</p>
+
+                            </div>
+                            <div class="box-footer no-padding">
+                                <div class="panel-body">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.widget-user -->
+                    </div>
+                    {%  set nbcolor = nbcolor + 1 %}
+                    {% if nbcolor >= maxcolor %}
+                        {%  set nbcolor = 0 %}
+                    {% endif %}
+                {% else %}
+                    <div class="callout callout-info">
+                        <h4> <i class="fa fa-warning"></i> Aucune suggestion enregistré <i class="fa fa-warning"></i> </h4>
+                        <p>Vous n'avez pas encore enregistré de suggestion</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+{% endblock fos_user_content %}

@@ -41,7 +41,7 @@ class SuggestionController extends Controller
     /**
      * JSON encoded list of suggestion, linked to user or common
      *
-     * @Route("/suggestions/index/json", name="billandgo_suggestion_index_json")
+     * @Route("/suggestion/index/json", name="billandgo_suggestion_index_json")
      * @return Response
      */
     public function indexJSONAction(): Response
@@ -64,5 +64,30 @@ class SuggestionController extends Controller
         }
         $json = json_encode($array);
         return new Response($json, 200);
+    }
+
+    /**
+     * Lists all suggestion owned by admin.
+     *
+     * @Route("/suggestion/index", name="billandgo_admin_suggestion_index")
+     * @return Response
+     */
+    public function adminIndexAction(): Response
+    {
+        $user = $this->getUser();
+        if (!($user instanceof User) || ($user->getId() !== 1)) {
+            $ar401 = ["not admin"];
+            return new Response(json_encode($ar401));
+        }
+        $list = $this->getDoctrine()->getRepository(Suggestion::class)->findBy(
+            ["refUser" => $user]
+        );
+
+        return $this->render(
+            'BillAndGoBundle:Suggestion:index.html.twig', array(
+                'suggestions'   => $list,
+                'user'          => $user
+            )
+        );
     }
 }
