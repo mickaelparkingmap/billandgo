@@ -18,6 +18,7 @@ use AppBundle\Service\DocumentService;
 use AppBundle\Service\SuggestionService;
 use BillAndGoBundle\Entity\Client;
 use BillAndGoBundle\Entity\Numerotation;
+use BillAndGoBundle\Repository\NumerotationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use BillAndGoBundle\Entity\User;
 use BillAndGoBundle\Entity\Document;
@@ -445,50 +446,96 @@ class DocumentController extends Controller
         $clientID = (int) $req->get('client');
         $description = $req->get('description');
         $docID = (int) $req->get('doc');
+        $delayDate = new \DateTime($req->get('delayDate'));
         if ((1 == $step) && (null !== $type) && (in_array($type, ['bill', 'estimate']))) {
-            $clients = $this->clientService->getClientListFromUser($user);
-            return $this->render(
-                'BillAndGoBundle:document:addDocument.html.twig', array(
-                    'step'      => 2,
-                    'type'      => $type,
-                    'clients'   => $clients,
-                    'user'      => $user
-                )
-            );
+            return $this->addDocumentStep1($user, $type);
         }
         elseif ((2 == $step) && (is_int($clientID)) && (in_array($type, ['bill', 'estimate']))) {
-            $client = $this->clientService->getClient($user, $clientID);
-            if ($client instanceof Client) {
-                $doc = $this->documentService->documentCreation($user, $type, $client);
-                return $this->render(
-                    'BillAndGoBundle:document:addDocument.html.twig', array(
-                        'step'      => 3,
-                        'type'      => $type,
-                        'doc'       => $doc,
-                        'user'      => $user
-                    )
-                );
-            }
+            return $this->addDocumentStep2($user, $type, $clientID);
         }
         elseif ((3 == $step) && (null !== $description) && (is_int($docID))) {
-            $doc = $this->documentService->setDescription($user, $description, $docID);
+            return $this->addDocumentStep3($user, $docID, $description);
+        }
+        elseif ((4 == $step) && (is_int($docID)) && (null !== $delayDate)) {
+            return $this->addDocumentStep4($user, $docID, $delayDate);
+        }
+        return $this->redirect($this->generateUrl('billandgo_dashboard'));
+    }
+
+    /**
+     * @param User $user
+     * @param string $type
+     * @return Response
+     */
+    private function addDocumentStep1(User $user, string $type): Response
+    {
+        $clients = $this->clientService->getClientListFromUser($user);
+        return $this->render(
+            'BillAndGoBundle:document:addDocument.html.twig', array(
+                'step'      => 2,
+                'type'      => $type,
+                'clients'   => $clients,
+                'user'      => $user
+            )
+        );
+    }
+
+    /**
+     * @param User $user
+     * @param string $type
+     * @param int $clientID
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    private function addDocumentStep2(User $user, string $type, int $clientID): Response
+    {
+        $client = $this->clientService->getClient($user, $clientID);
+        if ($client instanceof Client) {
+            $doc = $this->documentService->documentCreation($user, $type, $client);
             return $this->render(
                 'BillAndGoBundle:document:addDocument.html.twig', array(
-                    'step'      => 4,
-                    'type'      => $doc->getType(),
+                    'step'      => 3,
+                    'type'      => $type,
                     'doc'       => $doc,
                     'user'      => $user
                 )
             );
         }
-        elseif ((4 == $step) && (is_int($docID))) {
-            $delayDate = new \DateTime($req->get('delayDate'));
-            if ((null !== $delayDate)) {
-                $doc = $this->documentService->setDelayDate($user, $delayDate, $docID);
-                return $this->redirect($this->generateUrl("billandgo_document_view", array('id' => $doc->getId())));
-            }
-        }
         return $this->redirect($this->generateUrl('billandgo_dashboard'));
+    }
+
+    /**
+     * @param User $user
+     * @param int $docID
+     * @param string $description
+     * @return Response
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    private function addDocumentStep3(User $user, int $docID, string $description): Response
+    {
+        $doc = $this->documentService->setDescription($user, $description, $docID);
+        return $this->render(
+            'BillAndGoBundle:document:addDocument.html.twig', array(
+                'step'      => 4,
+                'type'      => $doc->getType(),
+                'doc'       => $doc,
+                'user'      => $user
+            )
+        );
+    }
+
+    /**
+     * @param User $user
+     * @param int $docID
+     * @param \DateTime $delayDate
+     * @return Response
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    private function addDocumentStep4(User $user, int $docID, \DateTime $delayDate): Response
+    {
+        $doc = $this->documentService->setDelayDate($user, $delayDate, $docID);
+        return $this->redirect($this->generateUrl("billandgo_document_view", array('id' => $doc->getId())));
     }
 
     /**
@@ -524,7 +571,9 @@ class DocumentController extends Controller
         }
         $manager = $this->getDoctrine()->getManager();
 
-        $numerotationArray = $manager->getRepository("BillAndGoBundle:Numerotation")->findByRefUser($user);
+        /** @var NumerotationRepository $numerotationRepo */
+        $numerotationRepo = $manager->getRepository(Numerotation::class);
+        $numerotationArray = $numerotationRepo->findByRefUser($user);
         if (!(isset($numerotationArray[0]))) {
             $num = new Numerotation();
             $num->setRefUser($user);
@@ -535,6 +584,7 @@ class DocumentController extends Controller
             $manager->persist($num);
         }
         else {
+            /** @var Numerotation $num */
             $num = $numerotationArray[0];
             if ($num->getBillYearMonth() != date("Ym")) {
                 $num->setBillYearMonth(date("Ym"));
@@ -564,6 +614,7 @@ class DocumentController extends Controller
             $bill->setDelayDate(new \DateTime($deadline));
         }
         foreach ($lines_id as $line_id) {
+            /** @var Line $line */
             $line = $manager->getRepository('BillAndGoBundle:Line')->find($line_id);
             if ($line->getRefUser() != $user) {
                 $ar401 = ['wrong user'];
@@ -616,6 +667,7 @@ class DocumentController extends Controller
                 $manager->persist($num);
             }
             else {
+                /** @var Numerotation $num */
                 $num = $numerotationArray[0];
                 if ($num->getBillYearMonth() != date("Ym")) {
                     $num->setBillYearMonth(date("Ym"));
@@ -635,6 +687,7 @@ class DocumentController extends Controller
             $bill->setDescription($estimate->getDescription());
             $bill->setStatus("draw");
             foreach ($estimate->getRefLines() as $line) {
+                /** @var Line $line */
                 if ($line->getRefBill()->isEmpty()) {
                     $bill->addRefLinesB($line);
                     $line->addRefBill($bill);
@@ -681,6 +734,7 @@ class DocumentController extends Controller
                 $manager->persist($num);
             }
             else {
+                /** @var Numerotation $num */
                 $num = $numerotationArray[0];
                 if ($num->getBillYearMonth() != date("Ym")) {
                     $num->setBillYearMonth(date("Ym"));
@@ -699,6 +753,7 @@ class DocumentController extends Controller
             $bill->setDescription($project->getDescription());
             $bill->setStatus("draw");
             foreach ($project->getRefLines() as $line) {
+                /** @var Line $line */
                 if ($line->getRefBill()->isEmpty()) {
                     $bill->addRefLinesB($line);
                     $line->addRefBill($bill);
@@ -789,10 +844,8 @@ class DocumentController extends Controller
             ));*/
         if ($document->getType()) {
             return $this->redirectToRoute("billandgo_document_edit_status", array("id" => $doc_id, "status" => "estimated"));
-        } else {
-            return $this->redirectToRoute("billandgo_document_edit_status", array("id" => $doc_id, "status" => "billed"));
         }
-        return $this->redirect($this->generateUrl("billandgo_document_view", array('id' => $doc_id)));
+        return $this->redirectToRoute("billandgo_document_edit_status", array("id" => $doc_id, "status" => "billed"));
     }
 
     /**
