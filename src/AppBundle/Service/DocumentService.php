@@ -143,15 +143,10 @@ class DocumentService extends Controller
         $numerotationArray = $this->entityManager->getRepository(Numerotation::class)->findBy([
             'refUser' => $user
         ]);
-        if (isset($numerotationArray[0])) {
-            /** @var Numerotation $num */
-            $num = $numerotationArray[0];
-            $index = $this->updateNumerotation($type, $num);
-        }
-        else {
-            $index = $this->createNumerotation($user, $type);
-        }
-        return $index;
+        return
+            (isset($numerotationArray[0])) ?
+                $this->updateNumerotation($type, $numerotationArray[0])
+                : $this->createNumerotation($user, $type);
     }
 
     /**
