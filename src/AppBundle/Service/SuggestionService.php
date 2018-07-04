@@ -31,7 +31,7 @@ class SuggestionService
      * SuggestionService constructor.
      * @param EntityManagerInterface $entityManager
      */
-    public function __construct (
+    public function __construct(
         EntityManagerInterface $entityManager
     ) {
         $this->entityManager = $entityManager;
@@ -42,10 +42,10 @@ class SuggestionService
      * @param string $name
      * @return Suggestion
      */
-    public function create (
+    public function create(
         User    $user,
         string  $name
-    ) : Suggestion
+    ): Suggestion
     {
         $suggestion = new Suggestion();
         $suggestion
@@ -61,12 +61,41 @@ class SuggestionService
      * @param string $name
      * @return Suggestion|null
      */
-    public function getOne (User $user, string $name) : ?Suggestion
+    public function getOne(User $user, string $name): ?Suggestion
     {
-        return $this->entityManager->getRepository(Suggestion::class)->findOneBy([
+        $suggestionRepo = $this->entityManager->getRepository(Suggestion::class);
+        /** @var Suggestion|null $suggestion */
+        $suggestion = $suggestionRepo->findOneBy([
             'refUser'   => $user,
             'name'      => $name
         ]);
+        return $suggestion;
+    }
+
+    /**
+     * @param User $user
+     * @return array
+     */
+    public function getList(User $user): array
+    {
+        $suggestionRepo = $this->entityManager->getRepository(Suggestion::class);
+        /** @var Suggestion|null $suggestion */
+        $suggestionListUser = $suggestionRepo->findBy([
+            'refUser'   => $user
+        ]);
+        $suggestionListCommon = $suggestionRepo->findBy([
+            'refUser'   => 1
+        ]);
+        $suggestionList = [];
+        foreach ($suggestionListUser as $suggestion) {
+            $suggestionList[$suggestion->getName()] = $suggestion;
+        }
+        foreach ($suggestionListCommon as $suggestion) {
+            if (!isset($suggestionList[$suggestion->getName()])) {
+                $suggestionList[$suggestion->getName()] = $suggestion;
+            }
+        }
+        return $suggestionList;
     }
 
     /**
@@ -77,13 +106,13 @@ class SuggestionService
      * @param float|null $time
      * @return Suggestion
      */
-    public function update (
+    public function update(
         User    $user,
         string  $name,
         ?string  $description = null,
         ?float   $priceHT = null,
         ?float   $time = null
-    ) : Suggestion
+    ): Suggestion
     {
         $suggestion = $this->getOne($user, $name);
         if (null === $suggestion) {
