@@ -137,7 +137,6 @@ class DocumentController extends Controller
         }
         if ($id > 0) {
             $document = $this->documentService->getDocument($user, $id);
-
             if ($document != null) {
                 $manager = $this->getDoctrine()->getManager();
                 if ($document->getRefUser() != $user) {
@@ -160,17 +159,15 @@ class DocumentController extends Controller
                         $document = $manager->getRepository('BillAndGoBundle:Document')->find($id);
                     }
                 }
-                $taxes = $manager->getRepository('BillAndGoBundle:Tax')->findAll($id);
-                $names = $manager->getRepository('BillAndGoBundle:Line')->lastLinesNames($user);
-                $descriptions = $manager->getRepository('BillAndGoBundle:Line')->lastLinesDescriptions($user);
+                $taxes = $manager->getRepository('BillAndGoBundle:Tax')->findAll();
+                $suggestions = $this->suggestionService->getList($user);
                 return $this->render(
                     'BillAndGoBundle:document:full.html.twig', array(
-                    'document' => $document,
-                    'taxes' => $taxes,
-                    'names' => $names,
-                    'descriptions' => $descriptions,
-                    'form' => $form->createView(),
-                    'user' => $user
+                    'document'      => $document,
+                    'taxes'         => $taxes,
+                    'suggestions'   => $suggestions,
+                    'form'          => $form->createView(),
+                    'user'          => $user
                     )
                 );
             }

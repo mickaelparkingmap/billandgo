@@ -694,26 +694,24 @@ set status_fr = {
 
         //autocomplete
         var names = [
-            {% for elt in names %}
-                "{{ elt.name }}",
-            {% endfor %}
-        ];
-        var descriptions = [
-            {% for elt in descriptions %}
-            "{{ elt.description }}",
+            {% for suggestion in suggestions %}
+            {
+                value:          "{{ suggestion.name }}",
+                description:    "{{ suggestion.description }}",
+                priceHT:        "{{ suggestion.priceHT }}",
+                time:           "{{ suggestion.time }}"
+            },
             {% endfor %}
         ];
         $("#billandgobundle_line_name").click(
             function() {
                 $('#billandgobundle_line_name').autocomplete({
-                    source: names
-                });
-            }
-        );
-        $("#billandgobundle_line_description").click(
-            function() {
-                $('#billandgobundle_line_description').autocomplete({
-                    source: descriptions
+                    source: names,
+                    select: function (event, ui) {
+                        $('#billandgobundle_line_description').val(ui.item.description);
+                        $('#billandgobundle_line_price').val(ui.item.priceHT);
+                        $('#billandgobundle_line_estimatedTime').val(ui.item.time);
+                    }
                 });
             }
         );
