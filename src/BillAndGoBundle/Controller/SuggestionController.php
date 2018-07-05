@@ -15,6 +15,7 @@ namespace BillAndGoBundle\Controller;
 use AppBundle\Service\SuggestionService;
 use BillAndGoBundle\Entity\Suggestion;
 use BillAndGoBundle\Entity\User;
+use BillAndGoBundle\Form\SuggestionType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -82,11 +83,13 @@ class SuggestionController extends Controller
         $list = $this->getDoctrine()->getRepository(Suggestion::class)->findBy(
             ["refUser" => $user]
         );
+        $form = $this->createForm(SuggestionType::class);
 
         return $this->render(
             'BillAndGoBundle:Suggestion:index.html.twig', array(
                 'suggestions'   => $list,
-                'user'          => $user
+                'user'          => $user,
+                'form'          => $form->createView()
             )
         );
     }
