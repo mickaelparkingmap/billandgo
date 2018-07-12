@@ -55,6 +55,4 @@ class ClientContactType extends AbstractType
     {
         return 'billandgobundle_clientcontact';
     }
-
-
 }

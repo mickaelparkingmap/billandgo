@@ -176,7 +176,7 @@ class Suggestion
      *
      * @return Suggestion
      */
-    public function setTime(float $time) : self
+    public function setTime($time) : self
     {
         $this->time = $time;
         return $this;
@@ -187,9 +187,8 @@ class Suggestion
      *
      * @return float
      */
-    public function getTime() : float
+    public function getTime()
     {
         return $this->time;
     }
 }
-

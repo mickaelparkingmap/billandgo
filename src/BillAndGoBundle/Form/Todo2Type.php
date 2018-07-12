@@ -79,6 +79,4 @@ class Todo2Type extends AbstractType
     {
         return 'billandgobundle_todo';
     }
-
-
 }

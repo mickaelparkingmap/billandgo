@@ -69,6 +69,4 @@ class ClientType extends AbstractType
     {
         return 'billandgobundle_client';
     }
-
-
 }

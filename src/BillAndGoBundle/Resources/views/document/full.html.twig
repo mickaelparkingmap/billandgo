@@ -64,7 +64,7 @@ set status_fr = {
                                 </div><!-- /.info-box-content -->
                             </div><!-- /.info-box -->
                         </div><!-- /.col -->
-                        <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('billandgo_document_add', {'step': 1, 'type': document.isEstimate}) }}'">
+                        <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" onclick="location.href='{{ path('billandgo_document_add', {'step': 1, 'type': 'estimate'}) }}'">
                             <div class="info-box">
                                 <span class="info-box-icon bg-green"><i class="fa fa-plus"></i></span>
                                 <div class="info-box-content">
@@ -72,7 +72,7 @@ set status_fr = {
                                 </div><!-- /.info-box-content -->
                             </div><!-- /.info-box -->
                         </div><!-- /.col -->
-                        <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link" id="generatePDF" attr-num="{{ document.number|lower }}" attr-company="{{ document.refClient.companyName|lower }}">
+                        <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link"  onclick="window.open('{{ path('billandgo_document_generate', {'id': document.id, }) }}')">
                             <div class="info-box">
                                 <span class="info-box-icon bg-red"><i class="fa fa-file-pdf-o"></i></span>
                                 <div class="info-box-content">

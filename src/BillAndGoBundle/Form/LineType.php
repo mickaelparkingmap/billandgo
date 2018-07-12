@@ -79,7 +79,7 @@ class LineType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'BillAndGoBundle\Entity\Line',
-            'uid' => NULL
+            'uid' => null
         ));
     }
 
@@ -90,6 +90,4 @@ class LineType extends AbstractType
     {
         return 'billandgobundle_line';
     }
-
-
 }

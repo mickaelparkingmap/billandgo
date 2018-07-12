@@ -64,7 +64,7 @@ class LineEstimateType extends AbstractType
                 'html5' => false,
                 'attr' => array('class' => 'ddl')
             ))*/
-            ->add('save', SubmitType::class,  array("label" => "Valider"))
+            ->add('save', SubmitType::class, array("label" => "Valider"))
         ;
     }
 
@@ -75,7 +75,7 @@ class LineEstimateType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'BillAndGoBundle\Entity\Line',
-            'uid' => NULL
+            'uid' => null
         ));
     }
 
@@ -86,6 +86,4 @@ class LineEstimateType extends AbstractType
     {
         return 'billandgobundle_line';
     }
-
-
 }

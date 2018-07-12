@@ -61,9 +61,9 @@ class Document
      *
      * @ORM\ManyToMany(targetEntity="Line", inversedBy="refEstimate")
      * @ORM\JoinTable(name="line_estimate",
-     *		joinColumns={@ORM\JoinColumn(name="estimate_id", referencedColumnName="id")},
-     *		inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
-     *		)
+     *      joinColumns={@ORM\JoinColumn(name="estimate_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
+     *      )
      */
     private $refLines;
 
@@ -72,9 +72,9 @@ class Document
      *
      * @ORM\ManyToMany(targetEntity="Line", inversedBy="refBill")
      * @ORM\JoinTable(name="line_bill",
-     *		joinColumns={@ORM\JoinColumn(name="bill_id", referencedColumnName="id")},
-     *		inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
-     *		)
+     *      joinColumns={@ORM\JoinColumn(name="bill_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
+     *      )
      */
     private $refLinesB;
 
@@ -132,9 +132,9 @@ class Document
      *
      * @ORM\ManyToMany(targetEntity="Paiment", inversedBy="refBill")
      * @ORM\JoinTable(name="bill_paiment",
-     *		joinColumns={@ORM\JoinColumn(name="bill_id", referencedColumnName="id")},
-     *		inverseJoinColumns={@ORM\JoinColumn(name="paiment_id", referencedColumnName="id")}
-     *		)
+     *      joinColumns={@ORM\JoinColumn(name="bill_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="paiment_id", referencedColumnName="id")}
+     *      )
      */
     private $refPaiment;
 
@@ -487,11 +487,11 @@ class Document
             foreach ($this->refLines as $line) {
                 $ht += $line->getPrice() * $line->getQuantity();
             }
-        }
-        else
+        } else {
             foreach ($this->refLinesB as $line) {
                 $ht += $line->getPrice() * $line->getQuantity();
             }
+        }
         return $ht;
     }
 
@@ -507,11 +507,11 @@ class Document
             foreach ($this->refLines as $line) {
                 $vat += $line->getPrice() * $line->getQuantity() * $line->getRefTax()->getPercent() / 100;
             }
-        }
-        else
+        } else {
             foreach ($this->refLinesB as $line) {
                 $vat += $line->getPrice() * $line->getQuantity() * $line->getRefTax()->getPercent() / 100;
             }
+        }
         return $vat;
     }
 
@@ -536,12 +536,10 @@ class Document
     public function areLinesTransformed() : bool
     {
         foreach ($this->refLines as $line) {
-            if (
-                !(isset($line->getRefBill()[0]))
+            if (!(isset($line->getRefBill()[0]))
                 &&
                 !(isset($line->getRefProject()[0]))
-            )
-            {
+            ) {
                 return false;
             }
         }
@@ -584,7 +582,7 @@ class Document
     /**
      * @return string
      */
-    public function stringify () : string
+    public function stringify() : string
     {
         $data = [
             'id'            => $this->id,
@@ -627,6 +625,4 @@ class Document
 
         return json_encode($data);
     }
-
-
 }

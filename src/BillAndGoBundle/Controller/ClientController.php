@@ -51,7 +51,8 @@ class ClientController extends Controller
 
         $clients = $this->clientService->getClientListFromUser($user);
         return $this->render(
-            'BillAndGoBundle:Client:index.html.twig', array(
+            'BillAndGoBundle:Client:index.html.twig',
+            array(
             'list' => $clients,
             'user' => $user,
             'limitation' =>  $this->getLimitation("client")
@@ -86,7 +87,8 @@ class ClientController extends Controller
             }
         }
         return $this->render(
-            'BillAndGoBundle:Client:full.html.twig', array(
+            'BillAndGoBundle:Client:full.html.twig',
+            array(
             'client' => $client,
             'form' => $form->createView(),
             'user' => $user
@@ -123,7 +125,8 @@ class ClientController extends Controller
             }
         }
         return $this->render(
-            'BillAndGoBundle:Client:add.html.twig', array(
+            'BillAndGoBundle:Client:add.html.twig',
+            array(
             'form' => $form->createView(),
             'user' => $user
             )
@@ -165,7 +168,8 @@ class ClientController extends Controller
                     }
                 }
                 return $this->render(
-                    'BillAndGoBundle:Client:addcontact.html.twig', array(
+                    'BillAndGoBundle:Client:addcontact.html.twig',
+                    array(
                     'form' => $form->createView(),
                     'client' => $client,
                     'user' => $user
@@ -196,8 +200,7 @@ class ClientController extends Controller
                     return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
                 }
                 $contacts = $client->getContacts();
-                foreach ($contacts as $contact_elt)
-                {
+                foreach ($contacts as $contact_elt) {
                     if ($contact_elt->getId() == $contact) {
                         $client->removeContact($contact_elt);
                         $manager->persist($client);
@@ -210,7 +213,7 @@ class ClientController extends Controller
         return $this->redirect($this->generateUrl("billandgo_clients_list"));
     }
 
-    public function getLimitation($type) 
+    public function getLimitation($type)
     {
         $user = $this->getUser();
         if (!is_object($user)) { // || !$user instanceof UserInterface
@@ -224,29 +227,29 @@ class ClientController extends Controller
         $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
         if ($user->getPlan() != "billandgo_paid_plan") {
             switch ($type) {
-            case 'project' :
-                if (count($projects) >= 15) {
-                    return (false);
-                }
-                return (true);
+                case 'project':
+                    if (count($projects) >= 15) {
+                        return (false);
+                    }
+                    return (true);
                     break;
-            case 'bill' :
-                if (count($bills) >= 15) {
-                    return (false);
-                }
-                return (true);
+                case 'bill':
+                    if (count($bills) >= 15) {
+                        return (false);
+                    }
+                    return (true);
                     break;
-            case 'quote' :
-                if (count($quotes) >= 15) {
-                    return (false);
-                }
-                return (true);
+                case 'quote':
+                    if (count($quotes) >= 15) {
+                        return (false);
+                    }
+                    return (true);
                     break;
-            case 'client' :
-                if (count($clients) >= 15) {
-                    return (false);
-                }
-                return (true);
+                case 'client':
+                    if (count($clients) >= 15) {
+                        return (false);
+                    }
+                    return (true);
                     break;
             }
         }

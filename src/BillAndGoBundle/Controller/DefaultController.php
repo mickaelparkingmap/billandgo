@@ -41,7 +41,8 @@ class DefaultController extends Controller
         }
 
         return $this->render(
-            'BillAndGoBundle:Default:limited.html.twig', array(
+            'BillAndGoBundle:Default:limited.html.twig',
+            array(
             'user' => $user,
             )
         );
@@ -71,8 +72,7 @@ class DefaultController extends Controller
         foreach ($bills as $one) {
             if (null != $one->getAnswerDate()) {
                 $n = $one->getAnswerDate()->format('m-Y');
-            }
-            else {
+            } else {
                 $n = null;
             }
 
@@ -89,8 +89,7 @@ class DefaultController extends Controller
         foreach ($quotes as $one) {
             if (null != $one->getAnswerDate()) {
                 $n = $one->getAnswerDate()->format('m-Y');
-            }
-            else {
+            } else {
                 $n = null;
             }
 
@@ -104,7 +103,8 @@ class DefaultController extends Controller
         }
         $clients = count($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
         return $this->render(
-            'BillAndGoBundle:Default:dashboard.html.twig', array(
+            'BillAndGoBundle:Default:dashboard.html.twig',
+            array(
             'user' => $user,
             'project' => count($projects),
             'projects' => $projects,
@@ -120,7 +120,7 @@ class DefaultController extends Controller
         );
     }
 
-    public function getLimitation($type) 
+    public function getLimitation($type)
     {
         $user = $this->getUser();
         if (!is_object($user)) { // || !$user instanceof UserInterface
@@ -134,29 +134,29 @@ class DefaultController extends Controller
         $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
         if ($user->getPlan() != "billandgo_paid_plan") {
             switch ($type) {
-            case 'project' :
-                if (count($projects) >= 15) {
-                    return (false);
-                }
-                return (true);
+                case 'project':
+                    if (count($projects) >= 15) {
+                        return (false);
+                    }
+                    return (true);
                     break;
-            case 'bill' :
-                if (count($bills) >= 15) {
-                    return (false);
-                }
-                return (true);
+                case 'bill':
+                    if (count($bills) >= 15) {
+                        return (false);
+                    }
+                    return (true);
                     break;
-            case 'quote' :
-                if (count($quotes) >= 15) {
-                    return (false);
-                }
-                return (true);
+                case 'quote':
+                    if (count($quotes) >= 15) {
+                        return (false);
+                    }
+                    return (true);
                     break;
-            case 'client' :
-                if (count($clients) >= 15) {
-                    return (false);
-                }
-                return (true);
+                case 'client':
+                    if (count($clients) >= 15) {
+                        return (false);
+                    }
+                    return (true);
                     break;
             }
         }

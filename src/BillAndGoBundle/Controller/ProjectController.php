@@ -57,7 +57,8 @@ class ProjectController extends Controller
 
         $list_project = $this->projectService->getProjectList($user);
         return $this->render(
-            'BillAndGoBundle:Project:index.html.twig', array(
+            'BillAndGoBundle:Project:index.html.twig',
+            array(
             'list' => $list_project,
             'user' => $user,
             'limitation' =>  $this->getLimitation("project")
@@ -91,14 +92,14 @@ class ProjectController extends Controller
                     if ($this->viewPostAction($id, $req, $user, $project, $form, $line) < 0) {
                         $ar500 = ["wrong request"];
                         return new Response(json_encode($ar500), 500);
-                    }
-                    else {
+                    } else {
                         $project = $manager->getRepository('BillAndGoBundle:Project')->find($id);
                     }
                 }
                 $taxes = $manager->getRepository('BillAndGoBundle:Tax')->findAll($id);
                 return $this->render(
-                    'BillAndGoBundle:Project:full.html.twig', array(
+                    'BillAndGoBundle:Project:full.html.twig',
+                    array(
                     'project' => $project,
                     'taxes' => $taxes,
                     'form' => $form->createView(),
@@ -142,9 +143,7 @@ class ProjectController extends Controller
             } else {
                 return 1;
             }
-        }
-
-        elseif (($id_line) && ($edit['name']) && ($edit['description'])
+        } elseif (($id_line) && ($edit['name']) && ($edit['description'])
             && ($edit['quantity']) && ($edit['price'])
             && ($edit['estim']) && ($edit['chrono']) && ($edit['deadline'])
         ) {
@@ -153,9 +152,7 @@ class ProjectController extends Controller
             } else {
                 return 2;
             }
-        }
-
-        elseif ($form->handleRequest($req)->isValid()) {
+        } elseif ($form->handleRequest($req)->isValid()) {
             $line->setStatus("planned");
             $line->setRefUser($user);
             $line->setRefClient($project->getRefClient());
@@ -197,7 +194,8 @@ class ProjectController extends Controller
             }
         }
         return $this->render(
-            'BillAndGoBundle:Project:add.html.twig', array(
+            'BillAndGoBundle:Project:add.html.twig',
+            array(
             'form' => $form->createView(),
             'user' => $user
             )
@@ -212,7 +210,7 @@ class ProjectController extends Controller
      * @param                                           int     $estimateID
      * @return                                          \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response     *
      */
-    public function addFromEstimateAction(Request $req, int $estimateID) 
+    public function addFromEstimateAction(Request $req, int $estimateID)
     {
         $user = $this->getUser();
         if (!is_object($user)) {
@@ -308,7 +306,6 @@ class ProjectController extends Controller
         $manager->persist($project);
         $manager->flush();
         return $this->redirect($this->generateUrl("billandgo_project_view", array('id' => $project->getId())));
-
     }
 
     /**
@@ -319,7 +316,7 @@ class ProjectController extends Controller
      * @param                                      int $id_line id of the line
      * @return                                     \Symfony\Component\HttpFoundation\Response
      */
-    public function addLineAction($id, $id_line) 
+    public function addLineAction($id, $id_line)
     {
         $user = $this->getUser();
         if (!is_object($user)) {
@@ -351,7 +348,7 @@ class ProjectController extends Controller
      * @param                                         int $id_line id of the line to delete
      * @return                                        \Symfony\Component\HttpFoundation\Response
      */
-    public function deleteLineAction($id, $id_line) 
+    public function deleteLineAction($id, $id_line)
     {
         $user = $this->getUser();
         if (!is_object($user)) {
@@ -384,7 +381,7 @@ class ProjectController extends Controller
      * @param  User $user    current user
      * @return int
      */
-    private function splitLine($id, $id_line, $split, $user) 
+    private function splitLine($id, $id_line, $split, $user)
     {
         $manager = $this->getDoctrine()->getManager();
         $project = $manager->getRepository('BillAndGoBundle:Project')->find($id);
@@ -423,7 +420,7 @@ class ProjectController extends Controller
      * @param  User  $user    current user
      * @return int
      */
-    private function editLine($id_line, $edit, $user) 
+    private function editLine($id_line, $edit, $user)
     {
         $manager = $this->getDoctrine()->getManager();
         $line = $manager->getRepository('BillAndGoBundle:Line')->find($id_line);
@@ -486,7 +483,7 @@ class ProjectController extends Controller
     }
 
 
-    public function getLimitation($type) 
+    public function getLimitation($type)
     {
         $user = $this->getUser();
         if (!is_object($user)) { // || !$user instanceof UserInterface
@@ -500,29 +497,29 @@ class ProjectController extends Controller
         $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
         if ($user->getPlan() != "billandgo_paid_plan") {
             switch ($type) {
-            case 'project' :
-                if (count($projects) >= 15) {
-                    return (false);
-                }
-                return (true);
+                case 'project':
+                    if (count($projects) >= 15) {
+                        return (false);
+                    }
+                    return (true);
                     break;
-            case 'bill' :
-                if (count($bills) >= 15) {
-                    return (false);
-                }
-                return (true);
+                case 'bill':
+                    if (count($bills) >= 15) {
+                        return (false);
+                    }
+                    return (true);
                     break;
-            case 'quote' :
-                if (count($quotes) >= 15) {
-                    return (false);
-                }
-                return (true);
+                case 'quote':
+                    if (count($quotes) >= 15) {
+                        return (false);
+                    }
+                    return (true);
                     break;
-            case 'client' :
-                if (count($clients) >= 15) {
-                    return (false);
-                }
-                return (true);
+                case 'client':
+                    if (count($clients) >= 15) {
+                        return (false);
+                    }
+                    return (true);
                     break;
             }
         }

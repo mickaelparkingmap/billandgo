@@ -71,7 +71,7 @@ class ProjectType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'BillAndGoBundle\Entity\Project',
-            'uid' => NULL
+            'uid' => null
         ));
     }
 
@@ -82,6 +82,4 @@ class ProjectType extends AbstractType
     {
         return 'billandgobundle_project';
     }
-
-
 }
