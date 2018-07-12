@@ -15,15 +15,18 @@ $factureNumber = '0001';
 $projectName = 'Création de votre site Internet eCommerce';
 
 $htmlpageheader = '<htmlpageheader name="myheader">
-<table width="100%"><tr>
-<td width="50%" style="color:#0000BB; "><span style="font-weight: bold; font-size: 14pt;">'.$companyName.'</span><br />'.$companyAdress
-.'<br />'. $companySite .'<br /><span style="font-family:dejavusanscondensed;">&#9742;</span>'. $companyTel .'</td>
-<td width="50%" style="text-align: right;">Facture No.<br /><span style="font-weight: bold; font-size: 12pt;">'. $factureNumber .'</span></td>
-</tr></table>
+<table class="company">
+<tr>
+<td style="color:#0000BB;"><span style="font-weight: bold; font-size: 14pt;">'.$companyName.'</span>
+<br />'.$companyAdress.'<br />'. $companySite .'<br />
+<span style="font-family:dejavusanscondensed;">&#9742;</span>'. $companyTel .'</td>
+<td style="text-align: right;">Facture No.<br /><span style="font-weight: bold; font-size: 12pt;">'. $factureNumber .'</span></td>
+</tr>
+</table>
 </htmlpageheader>';
 
 $htmlpagefooter = '<htmlpagefooter name="myfooter">
-<div style="border-top: 1px solid #000000; font-size: 9pt; text-align: center; padding-top: 3mm; ">
+<div class="htmlpgfooter">
 Page {PAGENO} of {nb}
 </div>
 </htmlpagefooter>';
@@ -112,11 +115,13 @@ mpdf-->
 
 <div style="text-align: right">Date: '.$date.'</div><br />
 
-<table class="client" cellpadding="10"><tr>
-<td width="100%" style="border: 0.1mm solid #888888; "><span style="font-size: 10pt; color: #555555; font-family: sans;">CLIENT :
-</span><br />'.$clientName.'<br />'.$clientAdress.'<br />'.$clientSite.'<br />'.$clientTel.'</td>
-</tr></table>
-<br />
+<table class="client" cellpadding="10">
+<tr>
+<td><span style="font-size: 10pt; color: #555555; font-family: sans;">CLIENT :</span>
+<br />'.$clientName.'<br />'.$clientAdress.'<br />'.$clientSite.'<br />
+<span style="font-family:dejavusanscondensed;">&#9742;</span>'.$clientTel.'</td>
+</tr>
+</table><br />
 
 <p class="projectName">Projet : '.$projectName.' </p><br />
 
@@ -280,7 +285,7 @@ $stylesheet = file_get_contents('styles.css');
 $mpdf->SetProtection(array('print'));
 $mpdf->SetTitle("Facture BillandGo");
 $mpdf->SetAuthor("BillandGo.");
-$mpdf->SetWatermarkText("Paid");
+$mpdf->SetWatermarkText("Payé");
 $mpdf->showWatermarkText = true;
 $mpdf->watermark_font = 'DejaVuSansCondensed';
 $mpdf->watermarkTextAlpha = 0.1;

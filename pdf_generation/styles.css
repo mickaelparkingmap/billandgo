@@ -39,8 +39,22 @@ table thead td { background-color: #EEEEEE;
   font-weight: bold; 
   font-size: 12pt;
 }
+table.company {
+  width : 100%;
+}
+.company td {width : 50%;}
 table.client {
   margin-left: 300pt;
   width : 100%;
   font-family: serif;
+}
+.client td {
+  border: 0.1mm solid #888888;
+  width : 100%;
+}
+.htmlpgfooter {
+  border-top: 1px solid #000000; 
+  font-size: 9pt;
+  text-align: center;
+  padding-top: 3mm;
 }
