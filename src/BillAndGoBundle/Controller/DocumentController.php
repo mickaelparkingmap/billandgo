@@ -365,7 +365,7 @@ class DocumentController extends Controller
             $new_line->setChronoTime(0);
             $new_line->setQuantity($split);
             $line->setQuantity($line->getQuantity() - $split);
-            if ($document->getType()) {
+            if ($document->isEstimate()) {
                 $document->addRefLine($new_line);
             } else {
                 $document->addRefLinesB($new_line);
@@ -783,7 +783,7 @@ class DocumentController extends Controller
         }
 
         $readableType = "";
-        if ($document->getType()) {
+        if ($document->isEstimate()) {
             $type = "estimate";
             $readableType = "Devis";
             $rand = random_int(1, 1000000000);
@@ -827,7 +827,7 @@ class DocumentController extends Controller
                 "user" => $user,
                 "rand" => $rand
             ));*/
-        if ($document->getType()) {
+        if ($document->isEstimate()) {
             return $this->redirectToRoute("billandgo_document_edit_status", array("id" => $doc_id, "status" => "estimated"));
         }
         return $this->redirectToRoute("billandgo_document_edit_status", array("id" => $doc_id, "status" => "billed"));

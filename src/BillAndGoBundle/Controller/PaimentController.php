@@ -75,7 +75,7 @@ class PaimentController extends Controller
         if ($req->isMethod('POST')) {
             if (($form->handleRequest($req)->isValid())) {
                 $paiment->setRefUser($user);
-                if (($paiment->getRefBill()[0]->getRefUser() == $user) && !($paiment->getRefBill()[0]->getType())) {
+                if (($paiment->getRefBill()[0]->getRefUser() == $user) && !($paiment->getRefBill()[0]->isEstimate())) {
                     $doc = $paiment->getRefBill()[0];
                     $doc->addRefPaiment($paiment);
                     $doc->setStatus("partially");
@@ -114,7 +114,7 @@ class PaimentController extends Controller
         }
         $manager = $this->getDoctrine()->getManager();
         $document = $manager->getRepository('BillAndGoBundle:Document')->find($id);
-        if ($req->isMethod('POST') && ($document->getRefUser() == $user) && !($document->getType())) {
+        if ($req->isMethod('POST') && ($document->getRefUser() == $user) && !($document->isEstimate())) {
             $paiment = new Paiment();
             $paiment->setRefUser($user);
             $paiment->setRefBill($document);
