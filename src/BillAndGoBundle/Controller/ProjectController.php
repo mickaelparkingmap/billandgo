@@ -224,7 +224,7 @@ class ProjectController extends Controller
 
         $manager = $this->getDoctrine()->getManager();
         $estimate = $manager->getRepository('BillAndGoBundle:Document')->find($estimateID);
-        if (!($estimate) || !($estimate->getType())) {
+        if (!($estimate) || !($estimate->isEstimate())) {
             $ar404 = ["doesn't exist or is not an estimate"];
             return new Response(json_encode($ar404), 404);
         }
