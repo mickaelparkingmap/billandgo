@@ -111,6 +111,8 @@ class Project
         return $this;
     }
 
+
+
     /**
      * Get begin
      *
@@ -251,6 +253,7 @@ class Project
      */
     public function __construct()
     {
+        $this->refLines = new  ArrayCollection();
         $this->lines = new ArrayCollection();
     }
 
