@@ -183,4 +183,3 @@ class LegalTerms
         return $this->content;
     }
 }
-

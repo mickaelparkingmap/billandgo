@@ -21,7 +21,6 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use FOS\OAuthServerBundle\Util\LegacyFormHelper;
 
-
 class RegistrationType extends AbstractType
 {
     /**
@@ -31,7 +30,7 @@ class RegistrationType extends AbstractType
     {
         $builder
             ->add('username', null, array('label' => false, 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control', 'placeholder' => 'Nom d\'utilisateur')))
-            ->add('email',  LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\EmailType'), array('label' => false, 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control', 'placeholder' => "E-mail", 'after' => 'username')))
+            ->add('email', LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\EmailType'), array('label' => false, 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control', 'placeholder' => "E-mail", 'after' => 'username')))
             ->add('firstname', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Prénom')))
             ->add('lastname', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Nom')))
             ->add('address', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Votre adresse')))

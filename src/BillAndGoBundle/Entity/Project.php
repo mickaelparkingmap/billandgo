@@ -91,9 +91,9 @@ class Project
      *
      * @ORM\ManyToMany(targetEntity="Line", inversedBy="refProject")
      * @ORM\JoinTable(name="line_project",
-     *		joinColumns={@ORM\JoinColumn(name="project_id", referencedColumnName="id")},
-     *		inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
-     *		)
+     *      joinColumns={@ORM\JoinColumn(name="project_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
+     *      )
      */
     private $refLines;
 
@@ -105,18 +105,20 @@ class Project
      *
      * @return Project
      */
-    public function setBegin (?\DateTime $begin) : self
+    public function setBegin(?\DateTime $begin) : self
     {
         $this->begin = $begin;
         return $this;
     }
+
+
 
     /**
      * Get begin
      *
      * @return \DateTime|null
      */
-    public function getBegin () : ?\DateTime
+    public function getBegin() : ?\DateTime
     {
         return $this->begin;
     }
@@ -128,7 +130,7 @@ class Project
      *
      * @return Project
      */
-    public function setDeadline (?\DateTime $deadline) : self
+    public function setDeadline(?\DateTime $deadline) : self
     {
         $this->deadline = $deadline;
         return $this;
@@ -139,7 +141,7 @@ class Project
      *
      * @return \DateTime|null
      */
-    public function getDeadline () : ?\DateTime
+    public function getDeadline() : ?\DateTime
     {
         return $this->deadline;
     }
@@ -162,7 +164,7 @@ class Project
      *
      * @return string|null
      */
-    public function getName () : ?string
+    public function getName() : ?string
     {
         return $this->name;
     }
@@ -174,7 +176,7 @@ class Project
      *
      * @return Project
      */
-    public function setDescription (?string $description) : self
+    public function setDescription(?string $description) : self
     {
         $this->description = trim(strip_tags($description));
         return $this;
@@ -185,7 +187,7 @@ class Project
      *
      * @return string|null
      */
-    public function getDescription () : ?string
+    public function getDescription() : ?string
     {
         return $this->description;
     }
@@ -195,7 +197,7 @@ class Project
      *
      * @return integer
      */
-    public function getId () : int
+    public function getId() : int
     {
         return $this->id;
     }
@@ -251,6 +253,7 @@ class Project
      */
     public function __construct()
     {
+        $this->refLines = new  ArrayCollection();
         $this->lines = new ArrayCollection();
     }
 
@@ -314,7 +317,6 @@ class Project
                 'valueHt'       => $line->getQuantity() * $line->getPrice(),
                 'status'        => $line->getStatus()
             ];
-
         }
         return json_encode($data);
     }

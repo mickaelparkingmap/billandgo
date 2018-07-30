@@ -148,7 +148,7 @@ class User extends BaseUser
     /**
      * @return string
      */
-    public function getJobtype () : ?string
+    public function getJobtype() : ?string
     {
         return $this->jobtype;
     }
@@ -157,7 +157,7 @@ class User extends BaseUser
      * @param string $jobtype
      * @return User
      */
-    public function setJobtype (string $jobtype) : self
+    public function setJobtype(string $jobtype) : self
     {
         $this->jobtype = $jobtype;
         return $this;
@@ -171,7 +171,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setFirstname (string $firstname) : self
+    public function setFirstname(string $firstname) : self
     {
         $this->firstname = $firstname;
         return $this;
@@ -182,7 +182,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getFirstname () : ?string
+    public function getFirstname() : ?string
     {
         return $this->firstname;
     }
@@ -194,7 +194,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setLastname (string $lastname) : self
+    public function setLastname(string $lastname) : self
     {
         $this->lastname = $lastname;
         return $this;
@@ -205,7 +205,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getLastname () : ?string
+    public function getLastname() : ?string
     {
         return $this->lastname;
     }
@@ -217,7 +217,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setCompanyname (string $companyname) : self
+    public function setCompanyname(string $companyname) : self
     {
         $this->companyname = $companyname;
         return $this;
@@ -228,7 +228,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getCompanyname () : ?string
+    public function getCompanyname() : ?string
     {
         return $this->companyname;
     }
@@ -240,7 +240,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setAddress (string $address) : self
+    public function setAddress(string $address) : self
     {
         $this->address = $address;
         return $this;
@@ -251,7 +251,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getAddress () : ?string
+    public function getAddress() : ?string
     {
         return $this->address;
     }
@@ -263,7 +263,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setZipCode (string $zipCode) : self
+    public function setZipCode(string $zipCode) : self
     {
         $this->zipCode = $zipCode;
         return $this;
@@ -274,7 +274,7 @@ class User extends BaseUser
      *
      * @return integer
      */
-    public function getZipCode () : ?string
+    public function getZipCode() : ?string
     {
         return $this->zipCode;
     }
@@ -286,7 +286,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setCity (string $city) : self
+    public function setCity(string $city) : self
     {
         $this->city = $city;
         return $this;
@@ -297,7 +297,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getCity () : ?string
+    public function getCity() : ?string
     {
         return $this->city;
     }
@@ -309,7 +309,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setCountry (string $country) : self
+    public function setCountry(string $country) : self
     {
         $this->country = $country;
         return $this;
@@ -320,7 +320,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getCountry () : ?string
+    public function getCountry() : ?string
     {
         return $this->country;
     }
@@ -332,7 +332,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setMobile (string $mobile) : self
+    public function setMobile(string $mobile) : self
     {
         $this->mobile = $mobile;
         return $this;
@@ -343,7 +343,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getMobile () : ?string
+    public function getMobile() : ?string
     {
         return $this->mobile;
     }
@@ -355,7 +355,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setPhone (string $phone) : self
+    public function setPhone(string $phone) : self
     {
         $this->phone = $phone;
         return $this;
@@ -366,7 +366,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getPhone () : ?string
+    public function getPhone() : ?string
     {
         return $this->phone;
     }
@@ -378,7 +378,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setSiret (string $siret) : self
+    public function setSiret(string $siret) : self
     {
         $this->siret = $siret;
         return $this;
@@ -389,7 +389,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getSiret () : ?string
+    public function getSiret() : ?string
     {
         return $this->siret;
     }
@@ -401,7 +401,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setBanque (string $banque) : self
+    public function setBanque(string $banque) : self
     {
         $this->banque = $banque;
         return $this;
@@ -412,7 +412,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getBanque () : ?string
+    public function getBanque() : ?string
     {
         return $this->banque;
     }
@@ -424,7 +424,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setBic (string $bic) : self
+    public function setBic(string $bic) : self
     {
         $this->bic = $bic;
         return $this;
@@ -436,7 +436,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getBic () : ?string
+    public function getBic() : ?string
     {
         return $this->bic;
     }
@@ -448,7 +448,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setIban (string $iban) : self
+    public function setIban(string $iban) : self
     {
         $this->iban = $iban;
         return $this;
@@ -459,7 +459,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getIban () : ?string
+    public function getIban() : ?string
     {
         return $this->iban;
     }
@@ -467,7 +467,7 @@ class User extends BaseUser
     /**
      * @return string
      */
-    public function getPlan () : ?string
+    public function getPlan() : ?string
     {
         return $this->plan;
     }
@@ -475,7 +475,7 @@ class User extends BaseUser
     /**
      * @param string $plan
      */
-    public function setPlan (string $plan)
+    public function setPlan(string $plan)
     {
         $this->plan = $plan;
     }
@@ -511,7 +511,7 @@ class User extends BaseUser
     /**
      * @return string|null
      */
-    public function getCompanyLogoPath () : ?string
+    public function getCompanyLogoPath() : ?string
     {
         return $this->companyLogoPath;
     }
@@ -520,7 +520,7 @@ class User extends BaseUser
      * @param string $companyLogoPath
      * @return User
      */
-    public function setCompanyLogoPath (string $companyLogoPath) : self
+    public function setCompanyLogoPath(string $companyLogoPath) : self
     {
         $this->companyLogoPath = $companyLogoPath;
         return $this;
@@ -529,7 +529,7 @@ class User extends BaseUser
     /**
      * @return mixed
      */
-    public function getCompanyLogoTemp ()
+    public function getCompanyLogoTemp()
     {
         return $this->companyLogoTemp;
     }
@@ -538,7 +538,7 @@ class User extends BaseUser
      * @param mixed $companyLogoTemp
      * @return User
      */
-    public function setCompanyLogoTemp ($companyLogoTemp) : self
+    public function setCompanyLogoTemp($companyLogoTemp) : self
     {
         $this->companyLogoTemp = $companyLogoTemp;
         return $this;
@@ -565,7 +565,7 @@ class User extends BaseUser
     /**
      * @return string
      */
-    public function getUserSkinPath () : ?string
+    public function getUserSkinPath() : ?string
     {
         return $this->userSkinPath;
     }
@@ -574,7 +574,7 @@ class User extends BaseUser
      * @param string $userSkinPath
      * @return User
      */
-    public function setUserSkinPath (string $userSkinPath) : self
+    public function setUserSkinPath(string $userSkinPath) : self
     {
         $this->userSkinPath = $userSkinPath;
         return $this;
@@ -583,7 +583,7 @@ class User extends BaseUser
     /**
      * @return mixed
      */
-    public function getUserSkin ()
+    public function getUserSkin()
     {
         return $this->user_skin;
     }
@@ -592,7 +592,7 @@ class User extends BaseUser
     /**
      * @return mixed
      */
-    public function getUserSkinTemp ()
+    public function getUserSkinTemp()
     {
         return $this->userSkinTemp;
     }
@@ -624,8 +624,7 @@ class User extends BaseUser
         if (null !== $this->company_logo) {
             $filename = sha1(uniqid(mt_rand(), true));
             $this->companyLogoPath = $filename.'.'.$this->getCompanyLogo()->guessExtension();
-        }
-        elseif (null !== $this->user_skin) {
+        } elseif (null !== $this->user_skin) {
             $filename = sha1(uniqid(mt_rand(), true));
             $this->userSkinPath = $filename.'.'.$this->getUserSkin()->guessExtension();
         }
@@ -644,7 +643,7 @@ class User extends BaseUser
             return;
         }*/
 
-       if (null !== $this->company_logo) {
+        if (null !== $this->company_logo) {
             // check if we have an old image
             if (isset($this->companyLogoTemp)) {
                 // delete the old image
@@ -660,7 +659,7 @@ class User extends BaseUser
                 $this->companyLogoPath
             );
 
-            $this->company_logo = null;
+             $this->company_logo = null;
         }
         if (null !== $this->user_skin) {
             // check if we have an old image
@@ -689,7 +688,7 @@ class User extends BaseUser
      * @param UploadedFile Company Logo $company_logo
      * @return User
      */
-    public function setCompanyLogo (UploadedFile $company_logo = null) : self
+    public function setCompanyLogo(UploadedFile $company_logo = null) : self
     {
         $this->company_logo = $company_logo;
         // check if we have an old image path
@@ -710,7 +709,7 @@ class User extends BaseUser
      * @param UploadedFile User skin $user_skin
      * @return User
      */
-    public function setUserSkin (UploadedFile $user_skin = null) : self
+    public function setUserSkin(UploadedFile $user_skin = null) : self
     {
         $this->user_skin = $user_skin;
         // check if we have an old image path
@@ -727,7 +726,7 @@ class User extends BaseUser
     /**
      * @return null|string
      */
-    public function getAbsolutePath () : ?string
+    public function getAbsolutePath() : ?string
     {
 
         if (null !== $this->companyLogoPath) {
@@ -742,7 +741,7 @@ class User extends BaseUser
     /**
      * @return null|string
      */
-    public function getWebPath () : ?string
+    public function getWebPath() : ?string
     {
         if (null !== $this->companyLogoPath) {
             return $this->getUploadDir("company").'/'.$this->companyLogoPath;
@@ -757,7 +756,7 @@ class User extends BaseUser
      * @param string $type
      * @return null|string
      */
-    public function getUploadDir (string $type) : ?string
+    public function getUploadDir(string $type) : ?string
     {
         if ("company" === $type) {
             return 'uploads/user/company';
@@ -766,14 +765,13 @@ class User extends BaseUser
             return 'uploads/user/avatar';
         }
         return null;
-
     }
 
     /**
      * @param string $type
      * @return string
      */
-    protected function getUploadRootDir (string $type) : string
+    protected function getUploadRootDir(string $type) : string
     {
         // On retourne le chemin relatif vers l'image pour notre code PHP
         return __DIR__.'/../../../web/'.$this->getUploadDir($type);
@@ -782,7 +780,7 @@ class User extends BaseUser
     /**
      * @return string
      */
-    public function __toString ()
+    public function __toString()
     {
         return $this->getAbsolutePath();
     }
@@ -790,7 +788,7 @@ class User extends BaseUser
     /**
      * @ORM\PostRemove()
      */
-    public function removeUpload ()
+    public function removeUpload()
     {
         $file = $this->getAbsolutePath();
         if ($file) {
@@ -801,12 +799,12 @@ class User extends BaseUser
     /**
      * @return string
      */
-    public function getFull () : string
+    public function getFull() : string
     {
         return $this->lastname." ".$this->firstname;
     }
 
-    public function stringify () : string
+    public function stringify() : string
     {
         $data = [
             'id'            => $this->id,
@@ -835,10 +833,4 @@ class User extends BaseUser
         ];
         return json_encode($data);
     }
-
-
-
-
 }
-
-

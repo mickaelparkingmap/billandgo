@@ -23,7 +23,7 @@ namespace BillAndGoBundle\Repository;
  */
 class LineRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function lastLinesNames ($refUser)
+    public function lastLinesNames($refUser)
     {
         $qb = $this->createQueryBuilder('a');
         $qb->select('a.name');
@@ -36,7 +36,7 @@ class LineRepository extends \Doctrine\ORM\EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function lastLinesDescriptions ($refUser)
+    public function lastLinesDescriptions($refUser)
     {
         $qb = $this->createQueryBuilder('a');
         $qb->select('a.description');

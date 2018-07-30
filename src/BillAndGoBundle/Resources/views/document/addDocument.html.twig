@@ -1,7 +1,7 @@
 {% extends "BillAndGoBundle::base.html.twig" %}
 
 
-{% if type %}
+{% if type == "estimate" %}
     {% set min_fr = "devis" %}
     {% set maj_fr = "Devis" %}
     {% set list_path = path('billandgo_estimate_index') %}

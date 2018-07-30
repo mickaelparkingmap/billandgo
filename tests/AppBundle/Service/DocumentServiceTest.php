@@ -66,9 +66,9 @@ class DocumentServiceTest extends PurgeTestCase
         $this->save($bill);
         $list = $documentService->listBillsFromUser($user);
         $this->assertEquals(1, count($list));
-        $list = $documentService->listBillsFromUser($user, ["draw"]);
+        $list = $documentService->listBillsFromUser($user, null, null, ["draw"]);
         $this->assertEquals(1, count($list));
-        $list = $documentService->listBillsFromUser($user, ["canceled", "refused", "billed", "partially", "paid"]);
+        $list = $documentService->listBillsFromUser($user, null, null, ["canceled", "refused", "billed", "partially", "paid"]);
         $this->assertEmpty($list);
 
         //canceled
@@ -76,9 +76,9 @@ class DocumentServiceTest extends PurgeTestCase
         $this->save($bill);
         $list = $documentService->listBillsFromUser($user);
         $this->assertEquals(1, count($list));
-        $list = $documentService->listBillsFromUser($user, ["canceled"]);
+        $list = $documentService->listBillsFromUser($user, null, null, ["canceled"]);
         $this->assertEquals(1, count($list));
-        $list = $documentService->listBillsFromUser($user, ["draw", "refused", "billed", "partially", "paid"]);
+        $list = $documentService->listBillsFromUser($user, null, null, ["draw", "refused", "billed", "partially", "paid"]);
         $this->assertEmpty($list);
 
         //refused
@@ -86,9 +86,9 @@ class DocumentServiceTest extends PurgeTestCase
         $this->save($bill);
         $list = $documentService->listBillsFromUser($user);
         $this->assertEquals(1, count($list));
-        $list = $documentService->listBillsFromUser($user, ["refused"]);
+        $list = $documentService->listBillsFromUser($user, null, null, ["refused"]);
         $this->assertEquals(1, count($list));
-        $list = $documentService->listBillsFromUser($user, ["draw", "canceled", "billed", "partially", "paid"]);
+        $list = $documentService->listBillsFromUser($user, null, null, ["draw", "canceled", "billed", "partially", "paid"]);
         $this->assertEmpty($list);
 
         //billed
@@ -96,9 +96,9 @@ class DocumentServiceTest extends PurgeTestCase
         $this->save($bill);
         $list = $documentService->listBillsFromUser($user);
         $this->assertEquals(1, count($list));
-        $list = $documentService->listBillsFromUser($user, ["billed"]);
+        $list = $documentService->listBillsFromUser($user, null, null, ["billed"]);
         $this->assertEquals(1, count($list));
-        $list = $documentService->listBillsFromUser($user, ["draw", "canceled", "refused", "partially", "paid"]);
+        $list = $documentService->listBillsFromUser($user, null, null, ["draw", "canceled", "refused", "partially", "paid"]);
         $this->assertEmpty($list);
 
         //partially
@@ -106,9 +106,9 @@ class DocumentServiceTest extends PurgeTestCase
         $this->save($bill);
         $list = $documentService->listBillsFromUser($user);
         $this->assertEquals(1, count($list));
-        $list = $documentService->listBillsFromUser($user, ["partially"]);
+        $list = $documentService->listBillsFromUser($user, null, null, ["partially"]);
         $this->assertEquals(1, count($list));
-        $list = $documentService->listBillsFromUser($user, ["draw", "canceled", "refused", "billed", "paid"]);
+        $list = $documentService->listBillsFromUser($user, null, null, ["draw", "canceled", "refused", "billed", "paid"]);
         $this->assertEmpty($list);
 
         //paid
@@ -116,9 +116,9 @@ class DocumentServiceTest extends PurgeTestCase
         $this->save($bill);
         $list = $documentService->listBillsFromUser($user);
         $this->assertEquals(1, count($list));
-        $list = $documentService->listBillsFromUser($user, ["paid"]);
+        $list = $documentService->listBillsFromUser($user, null, null, ["paid"]);
         $this->assertEquals(1, count($list));
-        $list = $documentService->listBillsFromUser($user, ["draw", "canceled", "refused", "billed", "partially"]);
+        $list = $documentService->listBillsFromUser($user, null, null, ["draw", "canceled", "refused", "billed", "partially"]);
         $this->assertEmpty($list);
     }
 

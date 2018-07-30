@@ -69,8 +69,7 @@ class DocumentRepository extends EntityRepository
         $begin = null,
         $end = null,
         array $status
-    ) : array
-    {
+    ) : array {
         $typeBool = ($type == 'estimate') ? 1 : 0;
         $qb = $this->createQueryBuilder('doc');
         $qb

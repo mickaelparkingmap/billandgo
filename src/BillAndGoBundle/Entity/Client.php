@@ -83,9 +83,9 @@ class Client
     /**
      * @ORM\ManyToMany(targetEntity="ClientContact", cascade={"all"}, orphanRemoval=true)
      * @ORM\JoinTable(name="client_clientcontact",
-     *		joinColumns={@ORM\JoinColumn(name="client_id", referencedColumnName="id")},
-     *		inverseJoinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="id", unique=true)}
-     *		)
+     *      joinColumns={@ORM\JoinColumn(name="client_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="id", unique=true)}
+     *      )
      */
     private $contactRef;
 
@@ -246,8 +246,8 @@ class Client
      */
     public function addContact(ClientContact $contact) : self
     {
-    	$this->contactRef[] = $contact;
-    	return $this;
+        $this->contactRef[] = $contact;
+        return $this;
     }
     
     /**
@@ -257,8 +257,8 @@ class Client
      */
     public function removeContact(ClientContact $contact) : self
     {
-    	$this->contactRef->removeElement($contact);
-    	return $this;
+        $this->contactRef->removeElement($contact);
+        return $this;
     }
 
     /**
@@ -266,7 +266,7 @@ class Client
      */
     public function getContacts() : Collection
     {
-    	return $this->contactRef;
+        return $this->contactRef;
     }
 
     /**
@@ -274,7 +274,7 @@ class Client
      */
     public function __construct()
     {
-    	$this->contactRef = new ArrayCollection();
+        $this->contactRef = new ArrayCollection();
     }
 
     /**

@@ -127,9 +127,9 @@ class Line
      *
      * @ORM\ManyToMany(targetEntity="Project", mappedBy="refLines")
      * @ORM\JoinTable(name="line_project",
-     *		joinColumns={@ORM\JoinColumn(name="project_id", referencedColumnName="id")},
-     *		inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
-     *		)
+     *      joinColumns={@ORM\JoinColumn(name="project_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
+     *      )
      */
     private $refProject;
 
@@ -138,9 +138,9 @@ class Line
      *
      * @ORM\ManyToMany(targetEntity="Document", mappedBy="refLines")
      * @ORM\JoinTable(name="line_estimate",
-     *		joinColumns={@ORM\JoinColumn(name="estimate_id", referencedColumnName="id")},
-     *		inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
-     *		)
+     *      joinColumns={@ORM\JoinColumn(name="estimate_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
+     *      )
      */
     private $refEstimate;
 
@@ -149,9 +149,9 @@ class Line
      *
      * @ORM\ManyToMany(targetEntity="Document", mappedBy="refLinesB")
      * @ORM\JoinTable(name="line_bill",
-     *		joinColumns={@ORM\JoinColumn(name="bill_id", referencedColumnName="id")},
-     *		inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
-     *		)
+     *      joinColumns={@ORM\JoinColumn(name="bill_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="line_id", referencedColumnName="id")}
+     *      )
      */
     private $refBill;
 

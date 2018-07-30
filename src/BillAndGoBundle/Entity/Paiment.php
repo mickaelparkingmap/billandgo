@@ -72,9 +72,9 @@ class Paiment
      *
      * @ORM\ManyToMany(targetEntity="Document", mappedBy="refPaiment")
      * @ORM\JoinTable(name="bill_paiment",
-     *		joinColumns={@ORM\JoinColumn(name="bill_id", referencedColumnName="id")},
-     *		inverseJoinColumns={@ORM\JoinColumn(name="paiment_id", referencedColumnName="id")}
-     *		)
+     *      joinColumns={@ORM\JoinColumn(name="bill_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="paiment_id", referencedColumnName="id")}
+     *      )
      */
     private $refBill;
 

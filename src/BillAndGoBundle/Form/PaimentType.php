@@ -74,7 +74,7 @@ class PaimentType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'BillAndGoBundle\Entity\Paiment',
-            'uid' => NULL
+            'uid' => null
         ));
     }
 
@@ -85,6 +85,4 @@ class PaimentType extends AbstractType
     {
         return 'billandgobundle_paiment';
     }
-
-
 }

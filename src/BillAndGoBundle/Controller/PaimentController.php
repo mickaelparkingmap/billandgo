@@ -47,7 +47,8 @@ class PaimentController extends Controller
         $em = $this->getDoctrine()->getManager();
         $paiments = $em->getRepository('BillAndGoBundle:Paiment')->findByRefUser($user);
         return $this->render(
-            'BillAndGoBundle:Paiment:index.html.twig', array(
+            'BillAndGoBundle:Paiment:index.html.twig',
+            array(
             'paiments' => $paiments,
             'user' => $user
             )
@@ -74,7 +75,7 @@ class PaimentController extends Controller
         if ($req->isMethod('POST')) {
             if (($form->handleRequest($req)->isValid())) {
                 $paiment->setRefUser($user);
-                if (($paiment->getRefBill()[0]->getRefUser() == $user) && !($paiment->getRefBill()[0]->getType())) {
+                if (($paiment->getRefBill()[0]->getRefUser() == $user) && !($paiment->getRefBill()[0]->isEstimate())) {
                     $doc = $paiment->getRefBill()[0];
                     $doc->addRefPaiment($paiment);
                     $doc->setStatus("partially");
@@ -88,7 +89,8 @@ class PaimentController extends Controller
             }
         }
         return $this->render(
-            'BillAndGoBundle:Paiment:add.html.twig', array(
+            'BillAndGoBundle:Paiment:add.html.twig',
+            array(
             'form' => $form->createView(),
             'user' => $user
             )
@@ -112,7 +114,7 @@ class PaimentController extends Controller
         }
         $manager = $this->getDoctrine()->getManager();
         $document = $manager->getRepository('BillAndGoBundle:Document')->find($id);
-        if ($req->isMethod('POST') && ($document->getRefUser() == $user) && !($document->getType())) {
+        if ($req->isMethod('POST') && ($document->getRefUser() == $user) && !($document->isEstimate())) {
             $paiment = new Paiment();
             $paiment->setRefUser($user);
             $paiment->setRefBill($document);
@@ -149,7 +151,8 @@ class PaimentController extends Controller
         }
         $deleteForm = $this->createDeleteForm($paiment);
         return $this->render(
-            'BillAndGoBundle:Paiment:show.html.twig', array(
+            'BillAndGoBundle:Paiment:show.html.twig',
+            array(
             'paiment' => $paiment,
             'user' => $user,
             'delete_form' => $deleteForm->createView(),
@@ -191,5 +194,4 @@ class PaimentController extends Controller
             ->setMethod('DELETE')
             ->getForm();
     }
-
 }

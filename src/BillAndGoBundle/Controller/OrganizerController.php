@@ -31,7 +31,8 @@ class OrganizerController extends Controller
         }
 
         return $this->render(
-            'BillAndGoBundle:Default:limited.html.twig', array(
+            'BillAndGoBundle:Default:limited.html.twig',
+            array(
             'user' => $user,
             )
         );
@@ -47,13 +48,14 @@ class OrganizerController extends Controller
             throw new AccessDeniedException('This user does not have access to this section.');
         }
         return $this->render(
-            'BillAndGoBundle:Organizer:index.html.twig', array(
+            'BillAndGoBundle:Organizer:index.html.twig',
+            array(
             'user' => $user
             )
         );
     }
 
-    public function getLimitation($type) 
+    public function getLimitation($type)
     {
         $user = $this->getUser();
         if (!is_object($user)) { // || !$user instanceof UserInterface
@@ -67,29 +69,29 @@ class OrganizerController extends Controller
         $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
         if ($user->getPlan() != "billandgo_paid_plan") {
             switch ($type) {
-            case 'project' :
-                if (count($projects) >= 15) {
-                    return (false);
-                }
-                return (true);
+                case 'project':
+                    if (count($projects) >= 15) {
+                        return (false);
+                    }
+                    return (true);
                     break;
-            case 'bill' :
-                if (count($bills) >= 15) {
-                    return (false);
-                }
-                return (true);
+                case 'bill':
+                    if (count($bills) >= 15) {
+                        return (false);
+                    }
+                    return (true);
                     break;
-            case 'quote' :
-                if (count($quotes) >= 15) {
-                    return (false);
-                }
-                return (true);
+                case 'quote':
+                    if (count($quotes) >= 15) {
+                        return (false);
+                    }
+                    return (true);
                     break;
-            case 'client' :
-                if (count($clients) >= 15) {
-                    return (false);
-                }
-                return (true);
+                case 'client':
+                    if (count($clients) >= 15) {
+                        return (false);
+                    }
+                    return (true);
                     break;
             }
         }

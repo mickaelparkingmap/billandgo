@@ -39,7 +39,8 @@ class TaxController extends Controller
         $taxes = $manager->getRepository('BillAndGoBundle:Tax')->findAll();
 
         return $this->render(
-            'BillAndGoBundle:Tax:index.html.twig', array(
+            'BillAndGoBundle:Tax:index.html.twig',
+            array(
             'taxes' => $taxes,
             'user' => $user
             )
@@ -105,7 +106,7 @@ class TaxController extends Controller
         return $this->redirectToRoute("billandgo_tax_index");
     }
 
-    public function getLimitation($type) 
+    public function getLimitation($type)
     {
         $user = $this->getUser();
         if (!is_object($user)) { // || !$user instanceof UserInterface
@@ -118,29 +119,29 @@ class TaxController extends Controller
         $quotes = ($estimates = $manager->getRepository('BillAndGoBundle:Document')->findAllEstimate($user->getId()));
         $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
         switch ($type) {
-        case 'project' :
-            if (count($projects) >= 15) {
-                return (false);
-            }
-            return (true);
+            case 'project':
+                if (count($projects) >= 15) {
+                    return (false);
+                }
+                return (true);
                 break;
-        case 'bill' :
-            if (count($bills) >= 15) {
-                return (false);
-            }
-            return (true);
+            case 'bill':
+                if (count($bills) >= 15) {
+                    return (false);
+                }
+                return (true);
                 break;
-        case 'quote' :
-            if (count($quotes) >= 15) {
-                return (false);
-            }
-            return (true);
+            case 'quote':
+                if (count($quotes) >= 15) {
+                    return (false);
+                }
+                return (true);
                 break;
-        case 'client' :
-            if (count($clients) >= 15) {
-                return (false);
-            }
-            return (true);
+            case 'client':
+                if (count($clients) >= 15) {
+                    return (false);
+                }
+                return (true);
                 break;
         }
         return (true);
