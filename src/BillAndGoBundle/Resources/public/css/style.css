@@ -73,7 +73,6 @@
     width: 100%;
     height: 100%;
     z-index: 9999;
-    background: url('../img/loader.gif') center no-repeat #fff;
 }
 
 
@@ -652,7 +651,7 @@ div.success, div.notice {
 
 
 .login-footer {
-    color: #544f4f;
+    color: white;
     text-align: center;
 }
 
@@ -704,4 +703,52 @@ div.success, div.notice {
       display: none;
     }
 }
+
+
+
+.body-blur {
+    -webkit-filter: blur(10px); /* Chrome, Opera, etc. */
+    filter: blur(10px); /* Firefox 35+, eventually all */
+
+}
+.centered{
+    width:100%;
+    height: 100%;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background: rgb(34,34,34); /* for IE */
+    background: rgba(34,34,34,0.75);
+
+}
+.blob-1,.blob-2{
+    width:70px;
+    height:70px;
+    position:absolute;
+    background:#fff;
+    border-radius:50%;
+    top:50%;left:50%;
+    transform:translate(-50%,-50%);
+}
+.blob-1{
+    left:20%;
+    animation:osc-l 2.5s ease infinite;
+}
+.blob-2{
+    left:80%;
+    animation:osc-r 2.5s ease infinite;
+    background:#0ff;
+}
+@keyframes osc-l{
+    0%{left:20%;}
+    50%{left:50%;}
+    100%{left:20%;}
+}
+@keyframes osc-r{
+    0%{left:80%;}
+    50%{left:50%;}
+    100%{left:80%;}
+}
+
 

@@ -1,43 +1,104 @@
 {% trans_default_domain 'FOSUserBundle' %}
+<div id="back" style="display: none">
+    <div class="backRight"></div>
+    <div class="backLeft"></div>
+</div>
 
-{% if error %}
-    <div class="callout callout-danger">
-        <h4> Identifiant ou mot de passe invalide </h4>
-    </div>
-{% endif %}
+<div id="slideBox" style="display: none">
+    <div class="topLayer">
 
-<form action="{{ path("fos_user_security_check") }}" method="post">
-    {% if csrf_token %}
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
-    {% endif %}
+       <div class="left">
+            <div class="content">
+                <h2>Sign Up</h2>
+                <form method="post" onsubmit="return false;">
+                    <div class="form-group">
+                        <input type="text" placeholder="username" />
+                    </div>
+                    <div class="form-group"></div>
+                    <div class="form-group"></div>
+                    <div class="form-group"></div>
+                </form>
+                <button id="goLeft" class="off">Login</button>
+                <button>Sign up</button>
+            </div>
+        </div>
+        <div class="right">
+            <div class="center-block">
+                <a class="center" href="/" >
+                    <img src="{{ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150" >
+                </a>
+            </div>
+            <div class="content">
 
-    <div class="form-group has-feedback">
-        <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" class="form-control" placeholder="Identifiant"/>
-        <span class="glyphicon glyphicon-user form-control-feedback"></span>
-    </div>
-    <div class="form-group has-feedback">
-        <input type="password" id="password" name="_password" required="required" class="form-control" placeholder="Mot de passse"/>
-        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-    </div>
-    <div class="row">
-        <div class="col-xs-6">
-            <div class="checkbox icheck">
-                <label>
+                <div class="login-box-body">
+                    <p class="login-box-msg"><strong>Bienvenue sur Bill&Go</strong></p>
+                    <p class="login-box-message"><small>Connectez-vous au service Bill&Go afin d'accéder à votre espace de travail</small></p>
+
+
+
+                </div>
+                <form action="{{ path("fos_user_security_check") }}" method="post">
+                    {% if csrf_token %}
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+                    {% endif %}
+                    {% if error %}
+                        <div class="callout callout-danger">
+                            <h4> Identifiants invalide </h4>
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+
+                        <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" class="form-control" placeholder="Identifiant"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="password" name="_password" required="required" class="form-control" placeholder="Mot de passse"/>
+                    </div>
+                    <button id="_submit" name="_submit">Connexion</button>
+                </form>
+                <div class="row">
+                    <div class="col-xs-12 text-center a-padd">
+                        <a href="{{ path('fos_user_resetting_request') }}" class="forgot-pass btn btn-outline"><small>Mot de passe oublié ?</small></a>
+                        <a href="{{ path('fos_user_registration_register') }}" class="forgot-pass btn btn-outline"><small>S'incrire ?</small></a>
+                    </div>
+                    <!--
+                    <label>
                     <input type="checkbox" id="remember_me" name="_remember_me" value="on" /> <small>Rester connecté</small>
                 </label>
+                    -->
+
+                </div>
             </div>
 
+            <footer class="text-right login-footer">
+                <br>
+                <small>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go. Tous droits réservés. Bill&Go est un produit <a href="https://www.iumio.com">iumio</a></small> - <a href="{{ path('billandgo_ml') }}" target="_blank">Mentions légales et Politiques de confidentialités</a>
+            </footer>
         </div>
-        <!-- /.col -->
-        <div class="col-xs-6">
-            <input type="submit" id="_submit" name="_submit" value="Connexion" class="btn btn-primary btn-block btn-flat" />
+
+    </div>
+</div>
+
+
+<div class="wrapper">
+    <div class="Grid Grid--gutters Grid--cols-2 u-textCenter">
+        <div class="Grid-cell column1">
+            <div class="center-block block">
+                <a class="center" href="/" >
+                    <img src="{{ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150" >
+                </a>
+                <h3 class="title">Vous êtes développeur en freelance ou auto-entrepreneur  ? <br> La gestion administrative vous tracasse ? <br>Bill&Go est fait pour vous</h3>
+                <button type="button" onclick="location.href='{{ path('fos_user_registration_register') }}'">Je m'inscris</button>
+            </div>
+        </div>
+        <div class="Grid-cell column2">
+            <div class="center-block block">
+                <a class="center" href="/" >
+                    <img src="{{ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150" >
+                </a>
+                <h3 class="title">Vous avez déjà un compte sur Bill&Go ? <br>Qu'attendez-vous, connectez-vous dès maintenant</h3>
+                <button type="button" id="connectnow">Je me connecte</button>
+
+            </div>
         </div>
     </div>
-    <div class="row">
-       <hr>
-        <div class="col-xs-12 text-center">
-            <a href="{{ path('fos_user_resetting_request') }}" class="forgot-pass btn btn-outline"><small>Mot de passe oublié ?</small></a><br>
-        </div>
-        <!-- /.col -->
-    </div>
-</form>
+</div>

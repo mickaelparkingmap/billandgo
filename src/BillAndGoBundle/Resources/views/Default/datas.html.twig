@@ -1,0 +1,118 @@
+{% extends "BillAndGoBundle::base.html.twig" %}
+
+{% block title %}{{ parent() }} - Liste des taxes{% endblock %}
+
+{% block fos_user_content %}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Mes données
+                <small>Bill&Go respecte votre vie privée et vos données. Nous mettons à disposition un outil qui vous permettra d'accéder à vos données dans un format brute à tout moment</small>
+
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="{{ path('billandgo_dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link">
+                    <strong>Le format des fichiers sont en .CSV</strong>
+                </div><!-- /.col -->
+            </div>
+            <div class="row">
+                    <div class="col-lg-3 col-md-6 col-xs-12">
+                        <!-- small box -->
+                        <div class="small-box bg-green">
+                            <div class="inner">
+                                <h4>Mes données personnelles</h4>
+                                <p>Obtenez vos données personnes renseignées à l'inscription et sur votre profil</p>
+
+
+
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <a href="{{ path('billandgo_datas_perso') }}" class="small-box-footer" target="_blank">Télécharger  <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+
+                <div class="col-lg-3 col-md-6 col-xs-12">
+                    <!-- small box -->
+                    <div class="small-box bg-yellow">
+                        <div class="inner">
+                            <h4>Mes projets</h4>
+
+<p>Obtenez la liste de l'ensemble de vos projets</p>
+
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <a href="{{ path('billandgo_datas_projects') }}" target="_blank" class="small-box-footer">Télécharger  <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+
+                <!--<div class="col-lg-3 col-md-6 col-xs-12">
+
+                    <div class="small-box bg-blue">
+                        <div class="inner">
+                            <h4>Mes factures</h4>
+
+
+
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-file"></i>
+                        </div>
+                        <a href="" class="small-box-footer">Télécharger  <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>-->
+
+                <!--<div class="col-lg-3 col-md-6 col-xs-12">
+
+                    <div class="small-box bg-black">
+                        <div class="inner">
+                            <h4>Mes devis</h4>
+
+
+
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-file-o"></i>
+                        </div>
+                        <a href="" class="small-box-footer">Télécharger  <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>-->
+
+                <div class="col-lg-3 col-md-6 col-xs-12">
+                    <!-- small box -->
+                    <div class="small-box bg-purple">
+                        <div class="inner">
+                            <h4>Mes paiements</h4>
+<p>Obtenez la liste de l'ensemble de vos paiements depuis votre inscription</p>
+
+
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-euro"></i>
+                        </div>
+                        <a href="{{ path('billandgo_datas_payments') }}" target="_blank" class="small-box-footer">Télécharger  <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+{% endblock fos_user_content %}

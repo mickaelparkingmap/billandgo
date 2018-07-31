@@ -90,16 +90,18 @@ fos_user:
                 enabled: true
                 template:   BillAndGoBundle:Registration:email.html.twig
                 from_email:
-                        address:        billandgo@iumio.com
+                        address:        noreply@billandgo.fr
                         sender_name:    Bill&Go Service
             form:
                 type: BillAndGoBundle\Form\RegistrationType
     resetting:
                 email:
                     from_email: # Use this node only if you don't want the global email address for the resetting email
-                        address:        billandgo@iumio.com
+                        address:        noreply@billandgo.fr
                         sender_name:    Bill&Go Service
                     template:   BillAndGoBundle:Resetting:email.html.twig
+                form:
+                    type: BillAndGoBundle\Form\ResettingType
     profile:
             form:
                 type: BillAndGoBundle\Form\ProfileType

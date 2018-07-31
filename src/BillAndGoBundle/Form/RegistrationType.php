@@ -6,7 +6,7 @@
  *  *
  *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
  *  *
- *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
+ *  * Bill&Go, gérer votre administratif efficacement [https://www.billandgo.fr]
  *  *
  *  * To get more information about licence, please check the licence file
  *
@@ -30,24 +30,24 @@ class RegistrationType extends AbstractType
     {
         $builder
             ->add('username', null, array('label' => false, 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control', 'placeholder' => 'Nom d\'utilisateur')))
-            ->add('email', LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\EmailType'), array('label' => false, 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control', 'placeholder' => "E-mail", 'after' => 'username')))
-            ->add('firstname', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Prénom')))
-            ->add('lastname', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Nom')))
-            ->add('address', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Votre adresse')))
-            ->add('zip_code', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Code postal')))
-            ->add('city', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Ville')))
-            ->add('country', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Pays')))
+            ->add('email', LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\EmailType'), array('label' => false, 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control', 'placeholder' => "E-mail", 'after' => 'username', 'required' => 'required')))
+            ->add('firstname', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Prénom', 'required' => 'required')))
+            ->add('lastname', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Nom', 'required' => 'required')))
+            ->add('address', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Votre adresse', 'required' => 'required')))
+            ->add('zip_code', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Code postal', 'required' => 'required')))
+            ->add('city', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Ville', 'required' => 'required')))
+            ->add('country', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Pays', 'required' => 'required', 'value' => 'FRANCE', 'disabled' => 'disabled')))
             ->add('phone', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Votre numéro de téléphone')))
-            ->add('mobile', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Votre numéro de mobile')))
+            ->add('mobile', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Votre numéro de mobile', 'required' => 'required')))
             ->add('plainPassword', LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\RepeatedType'), array(
                 'label' => false,
                 'type' => LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\PasswordType'),
                 'options' => array('translation_domain' => 'FOSUserBundle'),
-                'first_options' => array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Votre mot de passe')),
-                'second_options' => array('label' =>  false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Confirmer votre mot de passe')),
+                'first_options' => array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Votre mot de passe', 'required' => 'required')),
+                'second_options' => array('label' =>  false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Confirmer votre mot de passe', 'required' => 'required')),
                 'invalid_message' => 'fos_user.password.mismatch',
             ))
-            ->add('companyname', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Nom de votre société')))
+            ->add('companyname', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Nom de votre société', 'required' => 'required')))
             ->add('job_type', ChoiceType::class, array(
                 'choices' => array(
                     'Freelance' => 'freelance',

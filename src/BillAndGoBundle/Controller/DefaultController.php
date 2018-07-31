@@ -5,7 +5,7 @@
  *  *
  *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
  *  *
- *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
+ *  * Bill&Go, gérer votre administratif efficacement [https://www.billandgo.fr]
  *  *
  *  * To get more information about licence, please check the licence file
  */
@@ -44,6 +44,38 @@ class DefaultController extends Controller
             'BillAndGoBundle:Default:limited.html.twig',
             array(
             'user' => $user,
+            )
+        );
+    }
+
+    /**
+     * Legal mention page
+     * @Route("/mentions-legales", name="billandgo_ml")
+     */
+    public function mlAction()
+    {
+        $manager = $this->getDoctrine()->getManager();
+        $legal = $manager->getRepository('BillAndGoBundle:LegalTerms')->lastLegal();
+        return $this->render(
+            'BillAndGoBundle:Default:ml.html.twig', ["legal" => $legal]
+        );
+    }
+
+    /**
+     * Legal mention page
+     * @Route("/mes-donnees/", name="billandgo_datas")
+     */
+    public function dataAction()
+    {
+        $user = $this->getUser();
+        if (!is_object($user)) { // || !$user instanceof UserInterface
+            throw new AccessDeniedException('This user does not have access to this section.');
+        }
+
+        return $this->render(
+            'BillAndGoBundle:Default:datas.html.twig',
+            array(
+                'user' => $user,
             )
         );
     }

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <title>
+        {% block title %} Bill&Go - Mentions Légales et Politique de Confidentialités {% endblock %}
+    </title>
+    <meta name="description" content="Outil web destiné aux freelances/ micro-entrepreneurs développeur afin de simplifier leur gestion administrative" />
+    <meta name="keywords" content="Freelance, micro-entrepreneur, administratif, gestion administrative, temps, papier, compta, projets, devis, factures, taxes, iumio">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('bundles/billandgo/img/apple-touch-icon.png') }}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('bundles/billandgo/img/favicon-32x32.png') }}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('bundles/billandgo/img/favicon-16x16.png') }}" />
+    <link rel="manifest" href="{{ asset('bundles/billandgo/img/site.webmanifest') }}" />
+    <link rel="mask-icon" href="{{ asset('bundles/billandgo/img/safari-pinned-tab.svg') }}" color="#f26941" />
+    <link rel="shortcut icon" href="{{ asset('bundles/billandgo/img/favicon.ico') }}" />
+    <meta name="msapplication-TileColor" content="#2b5797" />
+    <meta name="msapplication-config" content="{{ asset('bundles/billandgo/img/browserconfig.xml') }}" />
+    <meta name="theme-color" content="#ffffff">
+    <link rel="icon" type="image/x-icon" href="{{ asset('bundles/billandgo/img/favicon.ico') }}"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+
+    {% block stylesheets %}
+        <link href="{{ asset('bundles/billandgo/css/login.css') }}" type="text/css" rel="stylesheet"/>
+        <style type="text/css">
+            .content {
+                width: 100%;
+                margin: 0 auto;
+                top: 15%;
+                position: absolute;
+                 left: 1%;
+                height: 80%;
+                overflow-y: auto;
+                /* margin-left: -125px; */
+            }
+        </style>
+    {% endblock %}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118804156-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-118804156-2');
+    </script>
+
+</head>
+
+<body class="hold-transition login-page">
+
+
+<div id="back" >
+    <div class="backRight"></div>
+    <div class="backLeft"></div>
+</div>
+
+<div id="slideBox" >
+    <div class="topLayer">
+
+        <div class="left">
+            <div class="content">
+                <h2>Sign Up</h2>
+                <form method="post" onsubmit="return false;">
+                    <div class="form-group">
+                        <input type="text" placeholder="username" />
+                    </div>
+                    <div class="form-group"></div>
+                    <div class="form-group"></div>
+                    <div class="form-group"></div>
+                </form>
+                <button id="goLeft" class="off">Login</button>
+                <button>Sign up</button>
+            </div>
+        </div>
+        <div class="right">
+            <div class="center-block">
+                <a class="center" href="/" >
+                    <img src="{{ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150" >
+                </a>
+            </div>
+            <div class="content">
+
+                <div class="login-box-body">
+                    <h2 class="login-box-msg"><strong>{{ legal["name"] }}</strong></h2>
+
+
+                    <div>
+                        {{ legal["content"]|raw }}
+                    </div>
+
+
+                    <p>Cette page a été publiée le {{ legal["publicationDate"]|date("d/m/Y") }}</p>
+                </div>
+            </div>
+
+            <footer class="text-right login-footer">
+                <br>
+                <small>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go. Tous droits réservés. Bill&Go est un produit <a href="https://www.iumio.com">iumio</a></small>
+            </footer>
+        </div>
+
+    </div>
+</div>
+
+{% block javascripts %}
+    <script src="{{ asset('bundles/billandgo/assets/jquery/dist/jquery.min.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/assets/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/js/login.js') }}"></script>
+{% endblock %}
+
+</body>
+</html>

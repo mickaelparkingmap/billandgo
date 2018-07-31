@@ -1,8 +1,95 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
-{{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register'}}) }}
+{#{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register'}}) }}
     {{ form_widget(form) }}
     <div>
         <input class="btn btn-outline center-block" type="submit" value="S'inscrire à Bill&Go" />
     </div>
-{{ form_end(form) }}
+{{ form_end(form) }#}
+
+
+
+
+<div class="modal-wrap">
+    <div class="center-block">
+        <a class="center" href="/" >
+            <img src="{{ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150" >
+        </a>
+    </div>
+    <div class="modal-header"><span></span><span></span><span></span>
+    </div>
+
+    {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'id': 'fos_user_registration_register'}}) }}
+
+    <div class="modal-bodies">
+
+        <div class="modal-body modal-body-step-0 is-showing">
+            <div class="title">Commencer dès maintenant votre inscription sur Bill&Go</div>
+            <div class="description">Votre inscription se déroulera en 3 étapes afin d'obtenir les informations requises pour votre compte sur Bill&Go.</div>
+
+            <br>
+            <div class="text-center">
+                <div class="button-start">Commencer mon inscription</div>
+            </div>
+            <br>
+            <div class="text-center">
+                <div class="button-old" onclick="location.href='{{ path('fos_user_security_login') }}'">J'ai déjà un compte</div>
+            </div>
+        </div>
+        <div class="modal-body modal-body-step-1">
+            <div class="title">Etape 1</div>
+            <div class="description">Informations nécéssaires à vous identifier</div>
+
+                {{ form_row(form.username) }}
+                {{ form_row(form.email) }}
+            {{ form_row(form.lastname) }}
+                {{ form_row(form.firstname) }}
+                {{ form_row(form.plainPassword) }}
+            <br>
+                <div class="text-center">
+                    <div class="button button-submit">Suivant</div>
+                </div>
+        </div>
+        <div class="modal-body modal-body-step-2">
+            <div class="title">Etape 2</div>
+            <div class="description">Votre adresse et coordonnées téléphoniques</div>
+
+                {{ form_row(form.address) }}
+                {{ form_row(form.zip_code) }}
+                {{ form_row(form.city) }}
+                {{ form_row(form.country) }}
+                {{ form_row(form.phone) }}
+                {{ form_row(form.mobile) }}
+
+                <div class="text-center fade-in">
+                    <div class="button button-submit">Suivant</div>
+                </div>
+        </div>
+        <div class="modal-body modal-body-step-3">
+            <div class="title">Etape 3</div>
+            <div class="description">Pour finir, quelques informations sur votre votre métier</div>
+
+            {{ form_row(form.companyname) }}
+            {{ form_row(form.job_type) }}
+            <br>
+            <div class="text-center fade-in">
+                <div class="button button-submit">Terminer mon inscription</div>
+            </div>
+        </div>
+       <!-- <div class="modal-body modal-body-step-4">
+            <div class="title">Step 4</div>
+            <div class="description">Check your email for the game results.</div>
+            <div class="text-center">
+                <div class="button">Done!</div>
+            </div>
+        </div>-->
+    </div>
+    {{ form_end(form) }}
+</div>
+<div class="text-center">
+    <div class="rerun-button">ReRun</div>
+</div>
+<footer class="text-right login-footer">
+    <br>
+    <small>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go. Tous droits réservés. Bill&Go est un produit <a href="https://www.iumio.com">iumio</a></small> - <a href="{{ path('billandgo_ml') }}" target="_blank">Mentions légales et Politiques de confidentialités</a>
+</footer>
