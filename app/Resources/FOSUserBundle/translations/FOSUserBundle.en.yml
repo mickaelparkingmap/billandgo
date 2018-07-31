@@ -42,7 +42,7 @@ registration:
     back: Back to the originating page.
     submit: Register
     flash:
-        user_created: The user has been created successfully
+        user_created: Bienvenue sur votre compte Bill&Go
     email:
         subject: Welcome %username%!
         message: |

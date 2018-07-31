@@ -5,7 +5,7 @@
      *  *
      *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
      *  *
-     *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
+     *  * Bill&Go, gérer votre administratif efficacement [https://www.billandgo.fr]
      *  *
      *  * To get more information about licence, please check the licence file
      */
@@ -980,74 +980,6 @@ Page {PAGENO} of {nb}
         $intl_date_formatter = new \IntlDateFormatter('fr_FR', \IntlDateFormatter::FULL, \IntlDateFormatter::NONE);
         $date =  $intl_date_formatter->format($date_time);
 
-        $money = ' &euro;';
-        $workUnit = ' j/h';
-
-        $element1 = 'Création de la charte graphique pour le web<br />Traitement des images fournies et adaptation.';
-        $element1Quantity = 1;
-        $element1UnitPrice = 1200;
-        $element1FinalPrice = $element1Quantity * $element1UnitPrice;
-
-        $element2 = 'Déclinaison de la charte dans les 2 versions de la langue (anglais / allemand).';
-        $element2Quantity = 2;
-        $element2UnitPrice = 250;
-        $element2FinalPrice = $element2Quantity * $element2UnitPrice;
-
-        $element3 = 'Intégration dans le site (3 versions de langue)';
-        $element3Quantity = 4;
-        $element3UnitPrice = 250;
-        $element3FinalPrice = $element3Quantity * $element3UnitPrice;
-
-        $element4 = 'Développement des pages, intégration des contenus, mis en page des rubriques statiques';
-        $element4Quantity = 37;
-        $element4UnitPrice = 100;
-        $element4FinalPrice = $element4Quantity * $element4UnitPrice;
-
-        $element5 = 'Forum de type PHPBB';
-        $element5Quantity = 1;
-        $element5UnitPrice = 250;
-        $element5FinalPrice = $element5Quantity * $element5UnitPrice;
-
-        $element6 = 'Espaces membres';
-        $element6Quantity = 2;
-        $element6UnitPrice = 250;
-        $element6FinalPrice = $element6Quantity * $element6UnitPrice;
-
-        $element7 = 'Module actualités';
-        $element7Quantity = 1;
-        $element7UnitPrice = 300;
-        $element7FinalPrice = $element7Quantity * $element7UnitPrice;
-
-        $element8 = 'Gestion des abonnements et désabonnements automatiques<br /> Interface pour la création des messages.';
-        $element8Quantity = 1;
-        $element8UnitPrice = 300;
-        $element8FinalPrice = $element8Quantity * $element8UnitPrice;
-
-        $element9 = 'Intégration des contenus en version anglaise et allemande';
-        $element9Quantity = 6;
-        $element9UnitPrice = 250;
-        $element9FinalPrice = $element9Quantity * $element9UnitPrice;
-
-        $element10 = '720 Plan';
-        $element10Quantity = 1;
-        $element10UnitPrice = 220;
-        $element10FinalPrice = $element10Quantity * $element10UnitPrice;
-
-        $element11 = 'Optimisation des pages pour une bonne visibilité des moteurs de recherche <br />
-Inscription manuelle du site dans les principaux moteurs de recherche <br />
-Inscription dans les annuaires thématiques gratuit ou Allo Pass.';
-        $element11Quantity = 3;
-        $element11UnitPrice = 200;
-        $element11FinalPrice = $element11Quantity * $element11UnitPrice;
-
-        $element = $element1FinalPrice + $element2FinalPrice + $element3FinalPrice + $element4FinalPrice + $element5FinalPrice + $element6FinalPrice +
-            $element7FinalPrice + $element8FinalPrice + $element9FinalPrice + $element10FinalPrice + $element11FinalPrice;
-
-        $elementTva = $element * 0.2;
-
-        $elementFinal = $element - $elementTva;
-
-
         $line = '';
 
         $totalHT = 0;
@@ -1068,8 +1000,6 @@ Inscription dans les annuaires thématiques gratuit ou Allo Pass.';
             $tax =  $one->getRefTax()->getName();
         }
 
-
-        //$totalTax = line.refTax.percent * $totalHT / 100;//exit();
                     $content = '
             <!-- ITEMS HERE -->
             '.
@@ -1130,6 +1060,10 @@ Inscription dans les annuaires thématiques gratuit ou Allo Pass.';
             '.$content.'
             </tbody>
             </table>
+            <br>
+            '.((!$document->isEstimate())?
+            '<div style="text-align: left"><strong>Coordonnées bancaires : </strong><br> NOM BANQUE : '.$user->getBanque().' <br> IBAN : '.$user->getIban().'<br>BIC : '.$user->getBic().'</div><br />
+            ' : '')   .'
             </body>
             </html>
             ';

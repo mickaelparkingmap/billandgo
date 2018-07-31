@@ -29,6 +29,7 @@
         <link href="{{ asset('bundles/billandgo/css/_all-skins.min.css') }}" type="text/css" rel="stylesheet"/>
         <link href="{{ asset('bundles/billandgo/css/AdminLTE.min.css') }}" type="text/css" rel="stylesheet"/>
         <link href="{{ asset('bundles/billandgo/css/style.css') }}" type="text/css" rel="stylesheet"/>
+        <link href="{{ asset('bundles/billandgo/css/common.css') }}" type="text/css" rel="stylesheet"/>
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -56,7 +57,7 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <a href="https://billandgo.fr">
+        <a href="/">
             <img src="{{ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="200" >
         </a>
     </div>
@@ -76,7 +77,15 @@
 <footer class="text-right login-footer">
     <strong>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go.</strong> All rights reserved. - <small>Bill&Go is an <a href="https://iumio.com">iumio component</a></small>
 </footer>
-
+<div class="privacy-banner" style="border-top: 2px solid #f3624f; display: none;">
+    <div>
+        <p>
+            Nous utilisons des cookies pour fournir et améliorer nos services. En utilisant notre site, vous acceptez les cookies.
+            <a class="banner-accept" href="#" style="background: #f3624f">Accepter</a>
+            <a class="banner-learn" href="{{ path('billandgo_ml') }}" target="_blank">Plus d'informations</a>
+        </p>
+    </div>
+</div>
 {% block javascripts %}
     <script src="{{ asset('bundles/billandgo/assets/jquery/dist/jquery.min.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/assets/jquery-ui/jquery-ui.min.js') }}"></script>
@@ -92,6 +101,7 @@
     <script src="{{ asset('bundles/billandgo/js/script.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/assets/bootstrap/dist/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/assets/iCheck/icheck.min.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/js/common.js') }}"></script>
 {% endblock %}
 
 </body>

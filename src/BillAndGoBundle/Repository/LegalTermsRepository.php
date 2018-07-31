@@ -10,4 +10,15 @@ namespace BillAndGoBundle\Repository;
  */
 class LegalTermsRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function lastLegal()
+    {
+        $qb = $this->createQueryBuilder('a');
+        $qb->select('a.name, a.publicationDate, a.content');
+        $qb->where('a.publicationDate IS NOT NULL')
+            ->setMaxResults(1)
+            ->orderBy("a.version",  "DESC")
+            //->andWhere('a.type = 1')
+        ;
+        return $qb->getQuery()->getOneOrNullResult();
+    }
 }

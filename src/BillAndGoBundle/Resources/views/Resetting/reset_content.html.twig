@@ -1,15 +1,55 @@
-{{ form_start(form, { 'action': path('fos_user_resetting_reset', {'token': token}), 'attr': { 'class': 'fos_user_resetting_reset' } }) }}
+<div id="back">
+    <div class="backRight"></div>
+    <div class="backLeft"></div>
+</div>
+<div id="slideBox">
+    <div class="topLayer">
 
-        {{ form_widget(form) }}
+        <div class="left">
+            <div class="content">
+                <h2>Sign Up</h2>
+                <form method="post" onsubmit="return false;">
+                    <div class="form-group">
+                        <input type="text" placeholder="username" />
+                    </div>
+                    <div class="form-group"></div>
+                    <div class="form-group"></div>
+                    <div class="form-group"></div>
+                </form>
+                <button id="goLeft" class="off">Login</button>
+                <button>Sign up</button>
+            </div>
+        </div>
+        <div class="right">
+            <div class="center-block">
+                <a class="center" href="/" >
+                    <img src="{{ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150" >
+                </a>
+            </div>
+            <div class="content">
+                {{ form_errors(form) }}
+                <div class="login-box-body">
+                    <p class="login-box-msg"><strong>Finalisez votre réinitialisation de mot de passe</strong></p>
+                    <p class="login-box-message"><small>Veuillez renseigner votre nouveau mot de passe afin qu'il soit pris en compte</small></p>
 
-<div class="row">
-    <div class="col-xs-6">
-    </div>
-    <!-- /.col -->
-    <div class="col-xs-6">
-        <input type="submit" id="_submit" name="_submit" value="Valider" class="btn btn-primary btn-block btn-flat">
+
+
+                </div>
+                {{ form_start(form, { 'action': path('fos_user_resetting_reset', {'token': token}), 'attr': { 'class': 'fos_user_resetting_reset' } }) }}
+
+
+                {{ form_widget(form) }}
+
+                    <button type="submit" id="_submit" name="_submit">Valider</button>
+                {{ form_end(form) }}
+
+            </div>
+
+            <footer class="text-right login-footer">
+                <br>
+                <small>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go. Tous droits réservés. Bill&Go est un produit <a href="https://www.iumio.com">iumio</a></small> - <a href="{{ path('billandgo_ml') }}" target="_blank">Mentions légales et Politiques de confidentialités</a>
+            </footer>
+        </div>
+
     </div>
 </div>
-
-
-{{ form_end(form) }}

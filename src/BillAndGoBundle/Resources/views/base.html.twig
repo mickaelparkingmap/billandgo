@@ -33,6 +33,7 @@
         <link href="{{ asset('bundles/billandgo/css/_all-skins.min.css') }}" type="text/css" rel="stylesheet"/>
         <link href="{{ asset('bundles/billandgo/css/AdminLTE.min.css') }}" type="text/css" rel="stylesheet"/>
         <link href="{{ asset('bundles/billandgo/css/style.css') }}" type="text/css" rel="stylesheet"/>
+        <link href="{{ asset('bundles/billandgo/css/common.css') }}" type="text/css" rel="stylesheet"/>
     {% endblock %}
     {% block advanced_stylesheets %}
     {% endblock %}
@@ -54,10 +55,14 @@
 %}
 <body class="hold-transition skin-blue sidebar-mini">
 {% block loader %}
-    <div class="se-pre-con"> <h3 class="validform">Chargement de la page...</h3> </div>
+    <!--<div class="se-pre-con"> <h3 class="validform">Chargement de la page...</h3> </div>-->
+    <div class ="se-pre-con centered">
+        <div class = "blob-1"></div>
+        <div class = "blob-2"></div>
+    </div>
 {% endblock %}
 
-<div class="wrapper">
+<div class="wrapper body-blur">
     <header class="main-header">
         <!-- Logo -->
         <div class="logo">
@@ -437,7 +442,7 @@
                         </span>
                     </a>
                 </li>
-                {% if user.id == 1 %}
+                {% if user.id == 1  %}
                     <li class="treeview">
                         <a href="#">
                             <i class="fa fa-wrench"></i>
@@ -452,6 +457,15 @@
                         </ul>
                     </li>
                 {% endif %}
+                <li>
+                    <a href="{{ path('billandgo_datas') }}">
+                        <i class="fa fa-database"></i>
+                        <span>Mes données</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                </li>
                 <li class="">
                 <a href="{{ path('fos_user_security_logout') }}">
                     <i class="fa fa-sign-out"></i>
@@ -461,6 +475,7 @@
                         </span>
                 </a>
                 </li>
+
 
                 {#
                 <li class="treeview">
@@ -642,12 +657,22 @@
 
     <footer class="main-footer">
         <div class="pull-right hidden-xs">
-            <b>Version</b> 1.4.1
+            <b>Version</b> 1.5.0
         </div>
-        <strong>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go.</strong> Tous droits réservés. - <small>Bill&Go est un composant <a href="https://iumio.com">iumio</a></small>
+        <strong>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go.</strong> Tous droits réservés. - <small>Bill&Go est un produit <a href="https://iumio.com">iumio</a></small> - <a href="{{ path('billandgo_ml') }}" target="_blank">Mentions légales et Politiques de confidentialités</a>
     </footer>
     <!-- Add the sidebar's background. This div must be placed immediately after the control sidebar -->
     <div class="control-sidebar-bg"></div>
+
+    <div class="privacy-banner" style="border-top: 2px solid #f3624f; display: none;">
+        <div>
+            <p>
+                Nous utilisons des cookies pour fournir et améliorer nos services. En utilisant notre site, vous acceptez les cookies.
+                <a class="banner-accept" href="#" style="background: #f3624f">Accepter</a>
+                <a class="banner-learn" href="{{ path('billandgo_ml') }}" target="_blank">Plus d'informations</a>
+            </p>
+        </div>
+    </div>
 </div>
 
 <!--  Scripts-->
@@ -658,7 +683,8 @@
     <script type="text/javascript">
         window.onload = function () {
             document.getElementsByClassName("se-pre-con")[0].style.display = "none";
-
+            $(".body-blur").removeClass("body-blur")
+            //document.getElementsByClassName("body-blur").remove("body-blur");
         };
 
         var formatingDate  = function(date) {
@@ -763,6 +789,7 @@
     <script src="{{ asset('bundles/billandgo/js/adminlte.min.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/js/script.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/js/generatePdf.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/js/common.js') }}"></script>
 {% endblock %}
 {% if user.plan == "billandgo_paid_plan" %}
     <!--Start of Tawk.to Script-->

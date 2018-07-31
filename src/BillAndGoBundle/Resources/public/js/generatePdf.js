@@ -4,7 +4,7 @@
  *  *
  *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
  *  *
- *  * Bill&Go, gérer votre administratif efficacement [https://billandgo.fr]
+ *  * Bill&Go, gérer votre administratif efficacement [https://www.billandgo.fr]
  *  *
  *  * To get more information about licence, please check the licence file
  *
@@ -270,7 +270,7 @@ $(document).ready(function () {
                     {
                         text: [
                             {
-                                text: (user_firstname).toUpperCase()+' '+ (user_lastname).toUpperCase() +' - '+ (user_companyname) + (((user_siret) == "")? "" : " - "+user_siret)+' - '+ user_adress+ ' '+ user_zip + ' '+ user_city + ', '+user_country+((user_plan != "billandgo_paid_plan")? '\n Document généré par la solution Bill&Go, un composant de iumio\n https://billandgo.fr - https://iumio.com' : ''), italics: false, bold: true,
+                                text: (user_firstname).toUpperCase()+' '+ (user_lastname).toUpperCase() +' - '+ (user_companyname) + (((user_siret) == "")? "" : " - "+user_siret)+' - '+ user_adress+ ' '+ user_zip + ' '+ user_city + ', '+user_country+((user_plan != "billandgo_paid_plan")? '\n Document généré par la solution Bill&Go, un composant de iumio\n https://www.billandgo.fr - https://iumio.com' : ''), italics: false, bold: true,
                                 fontSize: 6, alignment: 'center'
                             }
                         ]

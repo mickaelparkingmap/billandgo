@@ -8,14 +8,13 @@ All notable changes to this project will be documented in this file.
 Bill&Go, gérer votre administratif efficacement, un produit by iumio
 
 
-https://billandgo.fr
+https://www.billandgo.fr
 
-https://iumio.com
+https://www.iumio.com
 
 ========================================================
 
 ## [STABLE RELEASE]
-
 
 ## [1.2.0] - 2018-05-10
 
@@ -106,3 +105,12 @@ https://iumio.com
 
 - creation of estimates and bills from a client interface
 
+
+## [1.5.0] - 2018-07-31
+
+- PDF Features on serveur (cleaned)
+- New login screen, resetting screen, registration form
+- New loader
+- NEW GPDR requirements added
+- Adding new legal notice page
+- Bug fixes
