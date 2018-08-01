@@ -18,6 +18,9 @@ use BillAndGoBundle\Entity\Paiment;
 use BillAndGoBundle\Entity\Project;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -182,5 +185,44 @@ class DataController extends Controller
         $response->headers->set('Content-Disposition','attachment; filename="mes-donnees-projets'.$date.'.csv"');
 
         return $response;
+    }
+
+
+    /**
+     * @Route("/mes-donnees/supprimer-mon-compte", name="billandgo_datas_unsubscribe")
+     */
+     public function unsubscribeAction()
+    {
+        $user = $this->getUser();
+        if (!is_object($user)) { // || !$user instanceof UserInterface
+            throw new AccessDeniedException('This user does not have access to this section.');
+        }
+
+        $user->setUsername(md5($user->getUsername()).$user->getId());
+        $user->setUsernameCanonical(md5($user->getUsernameCanonical()).$user->getId());
+        $user->setEmail(md5($user->getEmail()).$user->getId());
+        $user->setEmailCanonical(md5($user->getEmailCanonical()).$user->getId());
+        $user->setEnabled(0);
+        $user->setRoles([]);
+        $user->setFirstname(md5($user->getFirstname()));
+        $user->setLastname(md5($user->getLastname()));
+        $user->setCompanyname(md5($user->getCompanyname()));
+        $user->setAddress(md5($user->getAddress()));
+        $user->setZipcode(md5($user->getZipcode()));
+        $user->setCity(md5($user->getCity()));
+
+        $user->setCountry(md5($user->getCountry()));
+        $user->setMobile(md5($user->getMobile()));
+        $user->setPhone(md5($user->getPhone()));
+        $user->setSiret(md5($user->getSiret()));
+
+        $user->setBanque(md5($user->getBanque()));
+        $user->setIban(md5($user->getIban()));
+        $user->setBic(md5($user->getBic()));
+        $user->setUnsubscribe(99);
+        $userManager = $this->container->get('fos_user.user_manager');
+        $userManager->updateUser($user);
+
+        return ($this->redirect("/logout"));
     }
 }
