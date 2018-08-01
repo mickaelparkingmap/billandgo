@@ -67,6 +67,11 @@
     border-radius: 5px;
     background: #000;
 }
+
+.login-footer {
+    z-index: -1;
+}
+
 @media (min-width: 768px) {
     .privacy-banner {
         padding: 1.5rem .5rem;

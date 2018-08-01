@@ -146,6 +146,13 @@ class User extends BaseUser
     private $jobtype;
 
     /**
+     * @var int|null
+     *
+     * @ORM\Column(name="unsubscribe", type="integer", nullable=true)
+     */
+    private $unsubscribe;
+
+    /**
      * @return string
      */
     public function getJobtype() : ?string
@@ -162,6 +169,23 @@ class User extends BaseUser
         $this->jobtype = $jobtype;
         return $this;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getUnsubscribe(): ?string
+    {
+        return $this->unsubscribe;
+    }
+
+    /**
+     * @param string|null $unsubscribe
+     */
+    public function setUnsubscribe(?string $unsubscribe): void
+    {
+        $this->unsubscribe = $unsubscribe;
+    }
+
 
 
     /**

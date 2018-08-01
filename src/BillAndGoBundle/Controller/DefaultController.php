@@ -93,7 +93,8 @@ class DefaultController extends Controller
         $manager = $this->getDoctrine()->getManager();
         $projects = ($manager->getRepository('BillAndGoBundle:Project')->findByRefUser($user));
         $bills = ($manager->getRepository('BillAndGoBundle:Document')->findAllBill($user->getId()));
-        $quotes = ($estimates = $manager->getRepository('BillAndGoBundle:Document')->findAllEstimate($user->getId()));
+        $repoDoc = $manager->getRepository('BillAndGoBundle:Document');
+        $quotes = ($estimates = $repoDoc->findAllEstimate($user->getId()));
         $billpaidm = 0;
         $billtotalm = 0;
         $quotesacceptm = 0;
@@ -133,6 +134,12 @@ class DefaultController extends Controller
                 $quotestotalm++;
             }
         }
+
+        $cb = ($repoDoc->getBillOrQuote((new \DateTime())->format("Y"), 0, $user->getId(),
+            $this->getDoctrine()->getConnection()));
+        $cq = ($repoDoc->getBillOrQuote((new \DateTime())->format("Y"), 1, $user->getId(),
+            $this->getDoctrine()->getConnection()));
+
         $clients = count($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
         return $this->render(
             'BillAndGoBundle:Default:dashboard.html.twig',
@@ -147,7 +154,8 @@ class DefaultController extends Controller
             'billtotalm' => $billtotalm,
             'quotestotalm' => $quotestotalm,
             'quotesacceptm' => $quotesacceptm,
-            'enddate' => date("t/m/Y", strtotime((new \DateTime())->format('Y-m-d')))
+            'enddate' => date("t/m/Y", strtotime((new \DateTime())->format('Y-m-d'))),
+                "cb" => $cb, "cq" => $cq
             )
         );
     }

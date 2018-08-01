@@ -1,10 +1,10 @@
 {% trans_default_domain 'FOSUserBundle' %}
-<div id="back" style="display: none">
+<div id="back"  {% if error is null%}style="display: none"{% endif %}>
     <div class="backRight"></div>
     <div class="backLeft"></div>
 </div>
 
-<div id="slideBox" style="display: none">
+<div id="slideBox"  {% if error is null %}style="display: none"{% endif %}>
     <div class="topLayer">
 
        <div class="left">
@@ -60,12 +60,6 @@
                         <a href="{{ path('fos_user_resetting_request') }}" class="forgot-pass btn btn-outline"><small>Mot de passe oublié ?</small></a>
                         <a href="{{ path('fos_user_registration_register') }}" class="forgot-pass btn btn-outline"><small>S'incrire ?</small></a>
                     </div>
-                    <!--
-                    <label>
-                    <input type="checkbox" id="remember_me" name="_remember_me" value="on" /> <small>Rester connecté</small>
-                </label>
-                    -->
-
                 </div>
             </div>
 
@@ -79,7 +73,7 @@
 </div>
 
 
-<div class="wrapper">
+<div class="wrapper"  {% if error %} style="display: none;" {% endif %}>
     <div class="Grid Grid--gutters Grid--cols-2 u-textCenter">
         <div class="Grid-cell column1">
             <div class="center-block block">
@@ -95,7 +89,7 @@
                 <a class="center" href="/" >
                     <img src="{{ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150" >
                 </a>
-                <h3 class="title">Vous avez déjà un compte sur Bill&Go ? <br>Qu'attendez-vous, connectez-vous dès maintenant</h3>
+                <h3 class="title">Vous avez déjà un compte sur Bill&Go ? <br>Connectez-vous dès maintenant <br> pour accéder à votre compte</h3>
                 <button type="button" id="connectnow">Je me connecte</button>
 
             </div>

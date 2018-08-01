@@ -42,31 +42,19 @@
 </head>
 
 <body class="hold-transition login-page">
-<!--<div class="login-box login-register">
-    <div class="login-logo">
-        <a href="#"><img src="{{ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="200" /></a>
-    </div>
 
 
-    <div class="login-box-body">
-        <p class="login-box-msg"><strong>Hello</strong></p>
-        <p class="login-box-message text-center"><small>Veuillez renseigner les informations de ce formulaire afin d'adhérer au service Bill&Go</small></p>
-    </div>
-    <hr>
-    <div class="login-box-body">
-        <p><small> Vous êtes déjà inscrit au service Bill&Go ?</small></p>
-        <div class="text-center btn btn-outline center-block"> <a href="{{ path('fos_user_security_login') }}" class="text-center">Connectez-vous</a></div>
-    </div>
 
-</div>
-<footer class="text-right login-footer">
-    <strong>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go.</strong> All rights reserved. - <small>Bill&Go is an <a href="https://iumio.com">iumio component</a></small>
-</footer>-->
 
 {% block fos_user_content %}
     {% include "@FOSUser/Registration/register_content.html.twig" %}
 {% endblock fos_user_content %}
+    <div class="push"></div>
 
+<footer class="text-right login-footer">
+    <br>
+    <small>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go. Tous droits réservés. Bill&Go est un produit <a href="https://www.iumio.com">iumio</a></small> - <a href="{{ path('billandgo_ml') }}" target="_blank">Mentions légales et Politiques de confidentialités</a>
+</footer>
 
 <div class="privacy-banner" style="border-top: 2px solid #f3624f; display: none;">
     <div>

@@ -108,11 +108,61 @@
                 </div>
 
 
-            </div>
+                <div class="col-lg-6 col-md-6 col-xs-12">
+                    <!-- small box -->
+                    <div class="small-box bg-black">
+                        <div class="inner">
+                            <h4>Se désinscrire du service Bill&Go</h4>
+                            <p>Vous pouvez vous désinscire du service Bill&Go via ce bouton</p>
 
+
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-remove"></i>
+                        </div>
+                        <a href="#" target="_blank" class="small-box-footer unsubscribe-alert">Se désinscrire  <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+
+
+            </div>
         </section>
         <!-- /.content -->
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Désinscription du service Bill&Go</h4>
+                </div>
+                <div class="modal-body">
+                    Voulez-vous vraiment vous désinscrire du service Bill&Go ?
+                    <br>
+                    <div>
+                        Vous n'aurez plus accès à votre compte et vous n'allez plus recevoir d'e-mail de la part de Bill&Go
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                    <button type="button" class="btn btn-success" onclick="location.href='{{ path('billandgo_datas_unsubscribe') }}'">Oui</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- /.content-wrapper -->
 
 {% endblock fos_user_content %}
+{% block advanced_javascripts %}
+    <script src="{{ asset('bundles/billandgo/assets/jquery/dist/jquery.min.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/assets/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript">
+        $(".unsubscribe-alert").click(function (e) {
+            e.preventDefault();
+            $("#myModal").modal("show");
+        });
+    </script>
+{% endblock %}

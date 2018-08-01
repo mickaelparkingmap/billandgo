@@ -95,4 +95,25 @@ class DocumentRepository extends EntityRepository
         }
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * @param int $year
+     * @param int $type
+     * @param int $id
+     * @param $connector
+     * @return mixed
+     */
+    public function getBillOrQuote(int $year, int $type, int $id, $connector)
+    {
+        $sql = "select count(*) as counter, REPLACE(DATE_FORMAT(delayDate, '%m'), '0', '') as mt
+                from document 
+                WHERE YEAR(delayDate) = :year
+                AND type = :type
+                AND refUser = :id
+                GROUP BY YEAR(delayDate), MONTH(delayDate)";
+
+        $stm = $connector->prepare($sql);
+        $stm->execute(["year" => $year, "type" => $type, "id" => $id]);
+        return ($stm->fetchAll(\PDO::FETCH_ASSOC));
+    }
 }
