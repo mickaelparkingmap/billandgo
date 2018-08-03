@@ -12,6 +12,7 @@
     "canceled" : "Annulé",
     "working" : "En cours",
     "waiting" : "En attente de validation",
+    "validated" : "Validé",
     "" : "statut inconnu"
 }
 %}
@@ -172,10 +173,10 @@
                                 {% endif %}
                                 <tr style="font-weight:bold">
                                     <td>
-                                        {% if line.status == "validated" and line.refBill is empty %}
+                                        {#% if line.status == "validated" and line.refBill is empty %}
                                             <input type="checkbox" name="select-line-{{ line.id }}" form="createProject" class="select-line">
                                             <input type="checkbox" name="select-line-{{ line.id }}" form="createBill" class="select-line hidden">
-                                        {% endif %}
+                                        {% endif %#}
                                         <span class="line-elt-name">{{ line.name }}</span>
                                         <button type="button"  class="btn btn-success btn-outline" data-toggle="modal" data-target="#editLine{{ line.id }}Modal">
                                             Modfier la tâche <i class="fa fa-gears"></i>

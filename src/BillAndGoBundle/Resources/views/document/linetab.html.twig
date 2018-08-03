@@ -85,7 +85,7 @@
                         {% if line.estimatedTime > 0 %}
                         {{ line.quantity }} x {{ line.estimatedTime }} h = {{ line.estimatedTime * line.quantity }} h
                         <br/>
-                        soit {{ line.price / line.estimatedTime }} € / h
+                        soit {{ (line.price / line.estimatedTime)|number_format(2) }} € / h
                         {% else %}
                             0 h
                         {% endif %}
