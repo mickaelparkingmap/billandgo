@@ -1,4 +1,5 @@
 {% trans_default_domain 'FOSUserBundle' %}
+{% trans_default_domain 'FOSUserBundle' %}
 {% block fos_user_content %}
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -58,7 +59,7 @@
                                             <li><strong>Email : </strong>{{user.email}}</li>
                                             <li><strong>Mobile : </strong>{{user.mobile}}</li>
                                             <li><strong>Status : </strong>{% if user.jobtype == null %}Non renseigné{% else %}{{status_jobtype_fr[user.jobtype]}}{% endif %}</li>
-                                            <li><strong>Licence : </strong>{% if user.plan == null %}Standard (Gratuit){% elseif user.plan == "billandgo_paid_plan" %}Premium (Payant){% endif %}</li>
+                                            <li><strong>Licence : </strong>{% if usersub["plan"] == "free" %}Standard - Gratuite{% elseif usersub["plan"] == "paid" %}Premium - Payante {% endif %} : Valide jusqu'au {{ usersub["end"]|date("d/m/Y") }}</li>
                                             <li><strong>Dernière connexion : </strong>{{user.lastlogin|date('d/m/Y à H:i:s')}}</li>
                                         </ul>
                                     </div>

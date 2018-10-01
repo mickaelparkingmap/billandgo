@@ -635,7 +635,7 @@ set status_fr = {
         <div class="phone">{{ user.phone }}</div>
         <div class="mobile">{{ user.mobile }}</div>
         <div class="siret">{{ user.siret }}</div>
-        <div class="plan">{{ user.plan }}</div>
+        <div class="plan"> {{ usersub["plan"] }}</div>
         <div class="bank-name">{{ user.banque }}</div>
         <div class="iban">{{ user.iban }}</div>
         <div class="bic">{{ user.bic }}</div>
@@ -653,6 +653,9 @@ set status_fr = {
 
 
 {% block javascripts %}
+    <script>
+        var syncTask = "{{ syncTask }}";
+    </script>
     {{ parent() }}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.fr.min.js"></script>

@@ -270,7 +270,7 @@ $(document).ready(function () {
                     {
                         text: [
                             {
-                                text: (user_firstname).toUpperCase()+' '+ (user_lastname).toUpperCase() +' - '+ (user_companyname) + (((user_siret) == "")? "" : " - "+user_siret)+' - '+ user_adress+ ' '+ user_zip + ' '+ user_city + ', '+user_country+((user_plan != "billandgo_paid_plan")? '\n Document généré par la solution Bill&Go, un composant de iumio\n https://www.billandgo.fr - https://iumio.com' : ''), italics: false, bold: true,
+                                text: (user_firstname).toUpperCase()+' '+ (user_lastname).toUpperCase() +' - '+ (user_companyname) + (((user_siret) == "")? "" : " - "+user_siret)+' - '+ user_adress+ ' '+ user_zip + ' '+ user_city + ', '+user_country+((user_plan != "paid")? '\n Document généré par la solution Bill&Go, un composant de iumio\n https://www.billandgo.fr - https://iumio.com' : ''), italics: false, bold: true,
                                 fontSize: 6, alignment: 'center'
                             }
                         ]

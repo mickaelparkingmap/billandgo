@@ -52,13 +52,16 @@
         </section>
         <!-- /.content -->
     </div>
+
     <!-- /.content-wrapper -->
 
 {% endblock fos_user_content %}
 
 {% block javascripts %}
     {{ parent() }}
-
+    <script>
+        var syncTask = "{{ syncTask }}";
+        </script>
     <script src="{{ asset('bundles/billandgo/js/project.google.agenda.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.fr.min.js"></script>
     <script>

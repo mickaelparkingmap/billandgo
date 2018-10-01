@@ -38,7 +38,11 @@ class DataController extends Controller
         if (!is_object($user)) { // || !$user instanceof UserInterface
             throw new AccessDeniedException('This user does not have access to this section.');
         }
-
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
+        }
         $response = new StreamedResponse();
         $response->setCallback(function() use($user){
 
@@ -102,6 +106,11 @@ class DataController extends Controller
         if (!is_object($user)) { // || !$user instanceof UserInterface
             throw new AccessDeniedException('This user does not have access to this section.');
         }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
+        }
 
         $em = $this->getDoctrine()->getManager();
         $payments = $em->getRepository('BillAndGoBundle:Paiment')->findByRefUser($user);
@@ -147,6 +156,11 @@ class DataController extends Controller
         $user = $this->getUser();
         if (!is_object($user)) { // || !$user instanceof UserInterface
             throw new AccessDeniedException('This user does not have access to this section.');
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -196,6 +210,11 @@ class DataController extends Controller
         $user = $this->getUser();
         if (!is_object($user)) { // || !$user instanceof UserInterface
             throw new AccessDeniedException('This user does not have access to this section.');
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
 
         $user->setUsername(md5($user->getUsername()).$user->getId());

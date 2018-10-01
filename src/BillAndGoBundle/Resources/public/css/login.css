@@ -8,6 +8,9 @@ body {
 }
 
 
+.hide {
+    display: none;
+}
 
 .backRight {
     position: absolute;

@@ -11,6 +11,7 @@
 
 namespace BillAndGoBundle\Controller;
 
+use BillAndGoBundle\Entity\User;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
@@ -22,6 +23,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,11 +46,17 @@ class ProfileController extends BaseController
         if (!is_object($user) || !$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
         }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
+        }
 
         return $this->render(
             '@FOSUser/Profile/show.html.twig',
             array(
             'user' => $user,
+                "usersub" => DefaultController::userSubscription($user, $this)
             )
         );
     }
@@ -67,6 +75,11 @@ class ProfileController extends BaseController
         $user = $this->getUser();
         if (!is_object($user) || !$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
         /**
  * @var $dispatcher EventDispatcherInterface
@@ -112,12 +125,19 @@ class ProfileController extends BaseController
 
         $form->handleRequest($request);
 
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $userFounded = $userRepo->findOneBy(array("email" => $user->getEmail()));
+
+
+        if (null !== $userFounded && $userFounded->getId() != $user->getId()) {
+            $form->addError(new FormError("Vous ne pouvez pas utiliser cet e-mail"));
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
             $manager = $this->getDoctrine()->getManager();
 
-            /**
- * @var $userManager UserManagerInterface
-*/
+
+
             $userManager = $this->get('fos_user.user_manager');
             $event = new FormEvent($form, $request);
             $dispatcher->dispatch(FOSUserEvents::PROFILE_EDIT_SUCCESS, $event);
@@ -137,7 +157,8 @@ class ProfileController extends BaseController
         return $this->render(
             '@FOSUser/Profile/edit.html.twig',
             array(
-            'form' => $form->createView(), "user" => $user
+            'form' => $form->createView(), "user" => $user,
+                "usersub" => DefaultController::userSubscription($user, $this)
             )
         );
     }
@@ -145,7 +166,7 @@ class ProfileController extends BaseController
 
     public function uploadImage()
     {
-        $extensions_valides = array( 'jpg' , 'jpeg' , 'gif' , 'png' );
+        $extensions_valides = array( 'jpg' , 'png' );
         //1. strrchr renvoie l'extension avec le point (« . »).
         //2. substr(chaine,1) ignore le premier caractère de chaine.
         //3. strtolower met l'extension en minuscules.

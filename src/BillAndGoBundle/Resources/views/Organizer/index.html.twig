@@ -1,6 +1,6 @@
 {% extends "BillAndGoBundle::base.html.twig" %}
 
-{% block title %}{{ parent() }} - Liste des clients{% endblock %}
+{% block title %}{{ parent() }} - Votre agenda connecté{% endblock %}
 {% block advanced_stylesheets %}
     <link href="{{ asset('bundles/billandgo/assets/fullcalendar/dist/fullcalendar.css') }}" type="text/css" rel="stylesheet"/>
 {% endblock %}
@@ -12,7 +12,7 @@
         <section class="content-header">
             <h1>
                 Agenda
-                <small>Voici votre agenda</small>
+                <small>Voici votre agenda connecté à votre calendrier (Google)</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
@@ -88,6 +88,52 @@
         </div>
     </div>
 
+
+    <div id="createEventModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span> <span class="sr-only">close</span></button>
+                    <h4>Créer un évènement</h4>
+                </div>
+                <div id="modalBody2" class="modal-body">
+                    <div class="form-group">
+                        <input class="form-control" type="text" placeholder="Nom" id="eName">
+                    </div>
+
+                    <div class="form-group form-inline">
+                        <div class="input-group date" data-provide="datetimepicker">
+                            <input type="text" id="eStartDate" class="form-control" placeholder="Date de début mm/dd/yyyy" disabled="disabled">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-inline">
+                        <div class="input-group date" data-provide="datepicker">
+                            <input type="text" id="eDueDate" class="form-control" placeholder="Date de fin mm/dd/yyyy">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea class="form-control" type="text" rows="4" placeholder="Description" id= "eDescription"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <input class="form-control" type="text" placeholder="Localisation" id= "eLocation"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Annuler</button>
+                    <button type="submit" class="btn btn-primary" id="submitButton">Créer</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 

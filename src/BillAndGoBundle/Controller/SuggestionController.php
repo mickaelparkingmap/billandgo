@@ -52,6 +52,11 @@ class SuggestionController extends Controller
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
         }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return new Response(json_encode($usersub["msg"]), 401);
+        }
         $list = $this->suggestionService->getList($user);
         $array = [];
         foreach ($list as $suggestion) {
@@ -80,6 +85,11 @@ class SuggestionController extends Controller
             $ar401 = ["not admin"];
             return new Response(json_encode($ar401));
         }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return new Response(json_encode($usersub["msg"]), 401);
+        }
         $list = $this->getDoctrine()->getRepository(Suggestion::class)->findBy(
             ["refUser" => $user]
         );
@@ -89,7 +99,8 @@ class SuggestionController extends Controller
             'BillAndGoBundle:Suggestion:index.html.twig', array(
                 'suggestions'   => $list,
                 'user'          => $user,
-                'form'          => $form->createView()
+                'form'          => $form->createView(),
+                'usersub' => $usersub
             )
         );
     }

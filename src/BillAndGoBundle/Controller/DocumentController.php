@@ -1,42 +1,45 @@
 <?php
 
-    /**
-     *  * This is an iumio component [https://iumio.com]
-     *  *
-     *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
-     *  *
-     *  * Bill&Go, gérer votre administratif efficacement [https://www.billandgo.fr]
-     *  *
-     *  * To get more information about licence, please check the licence file
-     */
+/**
+ *  * This is an iumio component [https://iumio.com]
+ *  *
+ *  * (c) Mickael Buliard <mickael.buliard@iumio.com>
+ *  *
+ *  * Bill&Go, gérer votre administratif efficacement [https://www.billandgo.fr]
+ *  *
+ *  * To get more information about licence, please check the licence file
+ */
 
 
-    namespace BillAndGoBundle\Controller;
+namespace BillAndGoBundle\Controller;
 
-    use AppBundle\Service\ClientService;
-    use AppBundle\Service\DocumentService;
-    use AppBundle\Service\SuggestionService;
-    use BillAndGoBundle\Entity\Client;
-    use BillAndGoBundle\Entity\Numerotation;
-    use BillAndGoBundle\Repository\NumerotationRepository;
-    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-    use BillAndGoBundle\Entity\User;
-    use BillAndGoBundle\Entity\Document;
-    use BillAndGoBundle\Entity\Line;
-    use Symfony\Component\DependencyInjection\ContainerInterface;
-    use Symfony\Component\Finder\Exception\AccessDeniedException;
-    use Symfony\Component\Form\Form;
-    use BillAndGoBundle\Form\LineEstimateType;
-    use BillAndGoBundle\Form\LineBillType;
-    use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-    use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-    use Symfony\Component\HttpFoundation\Request;
-    use Symfony\Component\HttpFoundation\Response;
+use AppBundle\Service\ClientService;
+use AppBundle\Service\DocumentService;
+use AppBundle\Service\SuggestionService;
+use BillAndGoBundle\Entity\Client;
+use BillAndGoBundle\Entity\Numerotation;
+use BillAndGoBundle\Repository\NumerotationRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use BillAndGoBundle\Entity\User;
+use BillAndGoBundle\Entity\Document;
+use BillAndGoBundle\Entity\Line;
+use Symfony\Component\Asset\Package;
+use Symfony\Component\Asset\Packages;
+use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
+use Symfony\Component\Form\Form;
+use BillAndGoBundle\Form\LineEstimateType;
+use BillAndGoBundle\Form\LineBillType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-    /**
-     * Class DocumentController
-     * @package BillAndGoBundle\Controller
-     */
+/**
+ * Class DocumentController
+ * @package BillAndGoBundle\Controller
+ */
 class DocumentController extends Controller
 {
     /** @var array  */
@@ -53,8 +56,8 @@ class DocumentController extends Controller
     private $suggestionService;
 
     /**
-         * @param ContainerInterface|null $container
-         */
+     * @param ContainerInterface|null $container
+     */
     public function setContainer(ContainerInterface $container = null)
     {
         parent::setContainer($container);
@@ -65,12 +68,12 @@ class DocumentController extends Controller
 
 
     /**
-         * Lists all estimates entities.
-         *
-         * @Route ("/estimates", name="billandgo_estimate_index")
-         * @Method("GET")
-         * @return Response
-         */
+     * Lists all estimates entities.
+     *
+     * @Route ("/estimates", name="billandgo_estimate_index")
+     * @Method("GET")
+     * @return Response
+     */
     public function indexEstimate(Request $request)
     {
         $user = $this->getUser();
@@ -78,33 +81,47 @@ class DocumentController extends Controller
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
         }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
+        }
         $begin = $request->get('begin');
         $end = $request->get('end');
         $estimates = $this->documentService->listDrawFromUser($user, $begin, $end);
+        $manager = $this->getDoctrine()->getManager();
+        $sync = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $user->getId(), "name" => "sync_task_calendar"));
         return $this->render(
             'BillAndGoBundle:document:index.html.twig',
             array(
                 'list' => $estimates,
                 'user' => $user,
                 'type' => 'estimate',
-                'limitation' =>  $this->getLimitation("quote")
+                'syncTask' => (null === $sync)? "inactive" : $sync->getValue(),
+                "usersub" => DefaultController::userSubscription($user, $this)
             )
         );
     }
 
     /**
-         * Lists all bills entities.
-         *
-         * @Route("/bills", name="billandgo_bill_index")
-         * @Method("GET")
-         * @return Response
-         */
+     * Lists all bills entities.
+     *
+     * @Route("/bills", name="billandgo_bill_index")
+     * @Method("GET")
+     * @return Response
+     */
     public function indexBill(Request $request) : Response
     {
         $user = $this->getUser();
         if (!is_object($user)) {
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
         $begin = $request->get('begin');
         $end = $request->get('end');
@@ -116,26 +133,31 @@ class DocumentController extends Controller
                 'list' => $bills,
                 'user' => $user,
                 'type' => 'bill',
-                'limitation' =>  $this->getLimitation("bill")
+                "usersub" => DefaultController::userSubscription($user, $this)
             )
         );
     }
 
     /**
-         * Finds and displays a document entity.
-         *
-         * @Route("/documents/{id}", name="billandgo_document_view")
-         * @Method({"GET",           "POST"})
-         * @param                    Request $req post request of edit, split, line creation or line edition
-         * @param                    int     $id  id of the project
-         * @return                   \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-         */
+     * Finds and displays a document entity.
+     *
+     * @Route("/documents/{id}", name="billandgo_document_view")
+     * @Method({"GET",           "POST"})
+     * @param                    Request $req post request of edit, split, line creation or line edition
+     * @param                    int     $id  id of the project
+     * @return                   \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function viewAction(Request $req, int $id)
     {
         $user = $this->getUser();
         if (!is_object($user)) {
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return new Response(json_encode($usersub["msg"]), 401);
         }
         if ($id > 0) {
             $document = $this->documentService->getDocument($user, $id);
@@ -162,6 +184,8 @@ class DocumentController extends Controller
                 }
                 $taxes = $manager->getRepository('BillAndGoBundle:Tax')->findAll();
                 $suggestions = $this->suggestionService->getList($user);
+                $sync = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+                    array("user" => $user->getId(), "name" => "sync_task_calendar"));
                 return $this->render(
                     'BillAndGoBundle:document:full.html.twig',
                     array(
@@ -169,7 +193,9 @@ class DocumentController extends Controller
                         'taxes'         => $taxes,
                         'suggestions'   => $suggestions,
                         'form'          => $form->createView(),
-                        'user'          => $user
+                        'user'          => $user,
+                        "usersub" => DefaultController::userSubscription($user, $this),
+                        'syncTask' => (null === $sync)? "inactive" : $sync->getValue()
                     )
                 );
             }
@@ -178,18 +204,18 @@ class DocumentController extends Controller
     }
 
     /**
-         * call by viewAction
-         * edit, add or split lines in the document
-         * or edit document
-         *
-         * @param  int      $id       id of current project
-         * @param  Request  $req      request sent to viewAction
-         * @param  User     $user     current user
-         * @param  Document $document current document
-         * @param  Form     $form     form LineProjectType
-         * @param  Line     $line     new line if creation
-         * @return int
-         */
+     * call by viewAction
+     * edit, add or split lines in the document
+     * or edit document
+     *
+     * @param  int      $id       id of current project
+     * @param  Request  $req      request sent to viewAction
+     * @param  User     $user     current user
+     * @param  Document $document current document
+     * @param  Form     $form     form LineProjectType
+     * @param  Line     $line     new line if creation
+     * @return int
+     */
     private function viewPostAction(int $id, Request $req, User $user, Document $document, Form $form, Line $line)
     {
         $manager = $this->getDoctrine()->getManager();
@@ -256,20 +282,25 @@ class DocumentController extends Controller
     }
 
     /**
-         * edit status and update sentDate, answerDate if neeeded
-         *
-         * @Route("/documents/{id}/edit/status/{status}", name="billandgo_document_edit_status")
-         * @Method("GET")
-         * @param                                         int    $id     of the document
-         * @param                                         string $status
-         * @return                                        \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-         */
+     * edit status and update sentDate, answerDate if neeeded
+     *
+     * @Route("/documents/{id}/edit/status/{status}", name="billandgo_document_edit_status")
+     * @Method("GET")
+     * @param                                         int    $id     of the document
+     * @param                                         string $status
+     * @return                                        \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function editStatus(int $id, string $status)
     {
         $user = $this->getUser();
         if (!is_object($user)) {
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
         if (($id > 0) && (in_array($status, $this->status))) {
             $manager = $this->getDoctrine()->getManager();
@@ -334,15 +365,15 @@ class DocumentController extends Controller
     }
 
     /**
-         * split line : create another line et reduce quantity of the first one
-         * called by viewPostAction
-         *
-         * @param  int  $id      id of the document
-         * @param  int  $id_line id of the line to split
-         * @param  int  $split   quantity to split : will be remove from the existing line and attributed to the new one
-         * @param  User $user    current user
-         * @return int
-         */
+     * split line : create another line et reduce quantity of the first one
+     * called by viewPostAction
+     *
+     * @param  int  $id      id of the document
+     * @param  int  $id_line id of the line to split
+     * @param  int  $split   quantity to split : will be remove from the existing line and attributed to the new one
+     * @param  User $user    current user
+     * @return int
+     */
     private function splitLine($id, $id_line, $split, $user)
     {
         $manager = $this->getDoctrine()->getManager();
@@ -378,14 +409,14 @@ class DocumentController extends Controller
     }
 
     /**
-         * edit line
-         * called by ViewPostAction
-         *
-         * @param  int   $id_line id of the line to edit
-         * @param  array $edit    array with all edit informatons : name, description, quantity, price, reftax, estim, chrono, deadline
-         * @param  User  $user    current user
-         * @return int
-         */
+     * edit line
+     * called by ViewPostAction
+     *
+     * @param  int   $id_line id of the line to edit
+     * @param  array $edit    array with all edit informatons : name, description, quantity, price, reftax, estim, chrono, deadline
+     * @param  User  $user    current user
+     * @return int
+     */
     private function editLine($id_line, $edit, $user)
     {
         $manager = $this->getDoctrine()->getManager();
@@ -416,12 +447,12 @@ class DocumentController extends Controller
     }
 
     /**
-         * @Route("/document/add/{step}", name="billandgo_document_add")
-         * @Method({"GET", "POST"})
-         * @param Request $req
-         * @return Response
-         * @throws \Doctrine\ORM\ORMException
-         */
+     * @Route("/document/add/{step}", name="billandgo_document_add")
+     * @Method({"GET", "POST"})
+     * @param Request $req
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     */
     public function addDocumentAction(Request $req, int $step) : Response
     {
         $user = $this->getUser();
@@ -446,10 +477,10 @@ class DocumentController extends Controller
     }
 
     /**
-         * @param User $user
-         * @param string $type
-         * @return Response
-         */
+     * @param User $user
+     * @param string $type
+     * @return Response
+     */
     private function addDocumentStep1(User $user, string $type): Response
     {
         $clients = $this->clientService->getClientListFromUser($user);
@@ -459,19 +490,20 @@ class DocumentController extends Controller
                 'step'      => 2,
                 'type'      => $type,
                 'clients'   => $clients,
-                'user'      => $user
+                'user'      => $user,
+                "usersub" => DefaultController::userSubscription($user, $this)
             )
         );
     }
 
     /**
-         * @param User $user
-         * @param string $type
-         * @param int $clientID
-         * @return Response
-         * @throws \Doctrine\ORM\ORMException
-         * @throws \Doctrine\ORM\OptimisticLockException
-         */
+     * @param User $user
+     * @param string $type
+     * @param int $clientID
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     private function addDocumentStep2(User $user, string $type, int $clientID): Response
     {
         $client = $this->clientService->getClient($user, $clientID);
@@ -483,7 +515,8 @@ class DocumentController extends Controller
                     'step'      => 3,
                     'type'      => $type,
                     'doc'       => $doc,
-                    'user'      => $user
+                    'user'      => $user,
+                    "usersub" => DefaultController::userSubscription($user, $this)
                 )
             );
         }
@@ -491,12 +524,12 @@ class DocumentController extends Controller
     }
 
     /**
-         * @param User $user
-         * @param int $docID
-         * @param string $description
-         * @return Response
-         * @throws \Doctrine\ORM\OptimisticLockException
-         */
+     * @param User $user
+     * @param int $docID
+     * @param string $description
+     * @return Response
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     private function addDocumentStep3(User $user, int $docID, string $description): Response
     {
         $doc = $this->documentService->setDescription($user, $description, $docID);
@@ -506,18 +539,19 @@ class DocumentController extends Controller
                 'step'      => 4,
                 'type'      => $doc->isEstimate(),
                 'doc'       => $doc,
-                'user'      => $user
+                'user'      => $user,
+                "usersub" => DefaultController::userSubscription($user, $this)
             )
         );
     }
 
     /**
-         * @param User $user
-         * @param int $docID
-         * @param \DateTime $delayDate
-         * @return Response
-         * @throws \Doctrine\ORM\OptimisticLockException
-         */
+     * @param User $user
+     * @param int $docID
+     * @param \DateTime $delayDate
+     * @return Response
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     private function addDocumentStep4(User $user, int $docID, \DateTime $delayDate): Response
     {
         $doc = $this->documentService->setDelayDate($user, $delayDate, $docID);
@@ -525,10 +559,10 @@ class DocumentController extends Controller
     }
 
     /**
-         * @Route("/bills/add/estimate/lines", name="billandgo_bill_create_from_lines")
-         * @param Request $req
-         * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-         */
+     * @Route("/bills/add/estimate/lines", name="billandgo_bill_create_from_lines")
+     * @param Request $req
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function addBillFromEstimateLines(Request $req)
     {
         $user = $this->getUser();
@@ -536,8 +570,10 @@ class DocumentController extends Controller
             $ar401 = ["disconnected"];
             return new Response(json_encode($ar401), 401);
         }
-        if (false === $this->getLimitation("bill")) {
-            return $this->redirect($this->generateUrl("billandgo_limitation"));
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
 
         $post = $req->request->all();
@@ -616,19 +652,24 @@ class DocumentController extends Controller
     }
 
     /**
-         * create a facture form an estimate, refered by estimate_id
-         *
-         * @Route("bills/add/estimate/{estimate_id}", name="billandgo_bill_create_from_estimate")
-         * @param                                     Request $req         post request from the facturation form
-         * @param                                     int     $estimate_id estimate id
-         * @return                                    \Symfony\Component\HttpFoundation\RedirectResponse|Response
-         */
+     * create a facture form an estimate, refered by estimate_id
+     *
+     * @Route("bills/add/estimate/{estimate_id}", name="billandgo_bill_create_from_estimate")
+     * @param                                     Request $req         post request from the facturation form
+     * @param                                     int     $estimate_id estimate id
+     * @return                                    \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
     public function createFromEstimateAction(Request $req, int $estimate_id)
     {
         $user = $this->getUser();
         if (!is_object($user)) {
             $ar401 = ["disconnected"];
             return new Response(json_encode($ar401), 401);
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
 
         if ($req->isMethod('POST')) {
@@ -686,10 +727,10 @@ class DocumentController extends Controller
     }
 
     /**
-         * @Route("bills/add/project/{project_id}", name="billandgo_bill_create_from_project")
-         * @param Request $req, int $project_id
-         * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-         */
+     * @Route("bills/add/project/{project_id}", name="billandgo_bill_create_from_project")
+     * @param Request $req, int $project_id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
     public function createFromProjectAction(Request $req, int $project_id)
     {
         $user = $this->getUser();
@@ -697,7 +738,11 @@ class DocumentController extends Controller
             $ar401 = ["disconnected"];
             return new Response(json_encode($ar401), 401);
         }
-
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
+        }
         if ($req->isMethod('POST')) {
             $manager = $this->getDoctrine()->getManager();
             $project = $manager->getRepository('BillAndGoBundle:Project')->find($project_id);
@@ -752,12 +797,12 @@ class DocumentController extends Controller
     }
 
     /**
-         * @Route("documents/{doc_id}/send", name="billandgo_document_send_email")
-         * @Method("GET")
-         * @param int     $doc_id
-         * @param Request $req    get request containing client_id
-         * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-         */
+     * @Route("documents/{doc_id}/send", name="billandgo_document_send_email")
+     * @Method("GET")
+     * @param int     $doc_id
+     * @param Request $req    get request containing client_id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
     public function sendEmail(int $doc_id, Request $req)
     {
         //check user
@@ -765,6 +810,11 @@ class DocumentController extends Controller
         if (!is_object($user)) {
             $ar401 = ["disconnected"];
             return new Response(json_encode($ar401), 401);
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
 
         $manager = $this->getDoctrine()->getManager();
@@ -793,7 +843,7 @@ class DocumentController extends Controller
             $rand = 0;
         }
 
-        if ($user->getPlan() != "billandgo_paid_plan") {
+        if ($user->getPlan() != "paid") {
             $sender = array('billandgo@iumio.com' => "Bill&Go Service");
         } else {
             $sender = array($user->getEmail() => ucfirst(strtolower($user->getFirstname()))
@@ -834,13 +884,13 @@ class DocumentController extends Controller
     }
 
     /**
-         * @Route("documents/{doc_id}/return/{token}/{answer}", name="billandgo_document_email_accept")
-         * @Method("GET")
-         * @param int $doc_id
-         * @param int $token
-         * @param int $answer
-         * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-         */
+     * @Route("documents/{doc_id}/return/{token}/{answer}", name="billandgo_document_email_accept")
+     * @Method("GET")
+     * @param int $doc_id
+     * @param int $token
+     * @param int $answer
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
     public function answerEmail(int $doc_id, int $token, int $answer)
     {
         $manager = $this->getDoctrine()->getManager();
@@ -869,64 +919,28 @@ class DocumentController extends Controller
         return new Response("401");
     }
 
-    public function getLimitation($type)
-    {
-        $user = $this->getUser();
-        if (!is_object($user)) { // || !$user instanceof UserInterface
-            throw new AccessDeniedException('This user does not have access to this section.');
-        }
-
-        $manager = $this->getDoctrine()->getManager();
-        $projects = ($manager->getRepository('BillAndGoBundle:Project')->findByRefUser($user));
-        $bills = ($manager->getRepository('BillAndGoBundle:Document')->findAllBill($user->getId()));
-        $quotes = ($estimates = $manager->getRepository('BillAndGoBundle:Document')->findAllEstimate($user->getId()));
-        $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
-        if ($user->getPlan() != "billandgo_paid_plan") {
-            switch ($type) {
-                case 'project':
-                    if (count($projects) >= 15) {
-                        return (false);
-                    }
-                    return (true);
-                    break;
-                case 'bill':
-                    if (count($bills) >= 15) {
-                        return (false);
-                    }
-                    return (true);
-                    break;
-                case 'quote':
-                    if (count($quotes) >= 15) {
-                        return (false);
-                    }
-                    return (true);
-                    break;
-                case 'client':
-                    if (count($clients) >= 15) {
-                        return (false);
-                    }
-                    return (true);
-                    break;
-            }
-        }
-        return (true);
-    }
-
 
     /**
-         * @Route("document/{id}/generate", name="billandgo_document_generate")
-         * @Method("GET")
-         * @param int $id
-         * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-         */
+     * @Route("document/{id}/generate", name="billandgo_document_generate")
+     * @Method("GET")
+     * @param int $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @throws
+     */
     public function generateDocumentAction(int $id)
     {
         $manager = $this->getDoctrine()->getManager();
+        $assetsManager = new Package(new EmptyVersionStrategy());
         $document = $manager->getRepository('BillAndGoBundle:Document')->find($id);
         $user = $this->getUser();
         if (!is_object($user)) {
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
         if ($document != null) {
             $manager = $this->getDoctrine()->getManager();
@@ -934,53 +948,39 @@ class DocumentController extends Controller
                 $ar401 = ["wrong user"];
                 return new Response(json_encode($ar401), 401);
             }
-
             $document = $manager->getRepository('BillAndGoBundle:Document')->find($id);
-
-            $taxes = $manager->getRepository('BillAndGoBundle:Tax')->findAll();
-            $suggestions = $this->suggestionService->getList($user);
         }
 
-        $companyName = $user->getCompanyname();
-        $companyAdress = $user->getAddress()."<br>".$user->getZipCode()." ".$user->getCity()." ".$user->getCountry();
+        $selectedTemplate = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $user->getId(), "name" => "pdf_bill_quote_choice"));
 
-        $companySite = $user->getEmail();
-        $companyTel = $user->getMobile();
+        $selectedTemplateCustom = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $user->getId(), "name" => "pdf_bill_quote_custom"));
+
+        $selfName = $user->getCompanyname();
+        $selfAdress = $user->getAddress();
+        $selfZipCode = $user->getZipCode();
+        $selfSiret = $user->getSiret();
+
+        $selfCity = $user->getCity();
+        $selfCountry = $user->getCountry();
+
+        $selfEmail = $user->getEmail();
+        $selfTel = $user->getMobile();
 
         $clientName = $document->getRefClient()->getCompanyName();
-        $clientAdress = $document->getRefClient()->getAdress()."<br>".
-            $document->getRefClient()->getZipcode()." ".
-            $document->getRefClient()->getCity()." ".
-            $document->getRefClient()->getCountry();
+        $clientAdress = $document->getRefClient()->getAdress();
+        $clientZipCode =   $document->getRefClient()->getZipcode();
+        $clientCity =  $document->getRefClient()->getCity();
+        $clientCountry =  $document->getRefClient()->getCountry();
 
+        $docNumber = $document->getNumber();
+        $docType = ($document->isEstimate())? "DEVIS" : "FACTURE";
 
-        $factureNumber = $document->getNumber();
-
-        //$document = new Document();
-        $documenttype = ($document->isEstimate())? "Devis" : "Facture";
-
-        $htmlpageheader = '<htmlpageheader name="myheader">
-<table class="company">
-<tr>
-<td style="color:#0000BB;"><span style="font-weight: bold; font-size: 14pt;">'.$companyName.'</span>
-<br />'.$companyAdress.'<br />'. $companySite .'<br />
-<span style="font-family:dejavusanscondensed;">&#9742;</span>'. $companyTel .'</td>
-<td style="text-align: right;">'.$documenttype.' .<br /><span style="font-weight: bold; font-size: 12pt;">'. $factureNumber .'</span></td>
-</tr>
-</table>
-</htmlpageheader>';
-
-        $htmlpagefooter = '<htmlpagefooter name="myfooter">
-<div class="htmlpgfooter">
-Page {PAGENO} of {nb}
-</div>
-</htmlpagefooter>';
-
-        $date_time = $document->getSentDate();
+        $date_time =
+            (null != $document->getSentDate() ) ? $document->getSentDate() : (new \DateTime())->format("Y-m-d");
         $intl_date_formatter = new \IntlDateFormatter('fr_FR', \IntlDateFormatter::FULL, \IntlDateFormatter::NONE);
         $date =  $intl_date_formatter->format($date_time);
-
-        $line = '';
 
         $totalHT = 0;
         $tax = "";
@@ -988,86 +988,11 @@ Page {PAGENO} of {nb}
 
         $lines = ($document->isEstimate())? $document->getRefLines() : $document->getRefLinesB();
         foreach ($lines as $one) {
-            //$one = new Line();
-            $line .= '<tr>
-                <td align="center">'.$one->getQuantity().'</td>
-                <td>'.$one->getName() . " : ".$one->getDescription().'</td>
-                <td class="cost">'.$one->getPrice().'€</td>
-                <td class="cost" colspan="2">'.$one->getQuantity()*$one->getPrice().'€</td>
-                </tr>';
             $totalHT += $one->getQuantity()*$one->getPrice();
             $taxtotal += ($one->getRefTax()->getPercent() * ($one->getQuantity()*$one->getPrice())) / 100;
             $tax =  $one->getRefTax()->getName();
         }
 
-                    $content = '
-            <!-- ITEMS HERE -->
-            '.
-                        $line.'
-            <!-- END ITEMS HERE -->
-            <tr>
-            <td class="blanktotal" colspan="1" rowspan="3"></td>
-            
-            <td class="totals " colspan="2">Sous total:</td>
-            <td class="totals cost" colspan="2">'.$totalHT.'€</td>
-            </tr>
-            <tr>
-            <td class="totals" colspan="2">'.$tax.' :</td>
-            <td class="totals cost" colspan="2">'.$taxtotal.'€</td>
-            </tr>
-            <tr>
-            <td class="totals" colspan="2"><b>TOTAL:</b></td>
-            <td class="totals cost" colspan="2"><b>'.($totalHT + $taxtotal).'€</b></td>
-            </tr>
-            ';
-
-                    $html = '
-            <html>
-            <head>
-            </head>
-            <body>'.
-                        '<!--mpdf'.$htmlpageheader.$htmlpagefooter.'
-            
-            <sethtmlpageheader name="myheader" value="on" show-this-page="1" />
-            <sethtmlpagefooter name="myfooter" value="on" />
-            mpdf-->
-            
-            
-            <div style="text-align: right">Date: '.$date.'</div><br />
-            
-            <table class="client" cellpadding="10">
-            <tr>
-            <td><span style="font-size: 10pt; color: #555555; font-family: sans;">CLIENT :</span>
-            <br />'.$clientName.'<br />'.$clientAdress.'<br />
-            </td>
-            </tr>
-            </table><br />
-            
-            <p class="projectName">'.$documenttype.' </p><br />
-            <table class="items" cellpadding="10">
-            <thead>
-            <tr>
-            <td width="15%">Quantite</td>
-            <td width="50%">Description</td>
-            <td width="15%">Prix Unit HT</td>
-            <td width="20%" colspan="2">Prix Total HT</td>
-            </tr>
-            </thead>
-            <br>
-            <br>
-            <div style="text-align: right"><strong>Coordonnées bancaires : </strong>:<br> '.$date.'</div><br />
-            <tbody>
-            '.$content.'
-            </tbody>
-            </table>
-            <br>
-            '.((!$document->isEstimate())?
-            '<div style="text-align: left"><strong>Coordonnées bancaires : </strong><br> NOM BANQUE : '.$user->getBanque().' <br> IBAN : '.$user->getIban().'<br>BIC : '.$user->getBic().'</div><br />
-            ' : '')   .'
-            </body>
-            </html>
-            ';
-        $path = (getenv('MPDF_ROOT')) ? getenv('MPDF_ROOT') : __DIR__;
         $mpdf = new \Mpdf\Mpdf([
             'margin_left' => 20,
             'margin_right' => 15,
@@ -1076,19 +1001,48 @@ Page {PAGENO} of {nb}
             'margin_header' => 10,
             'margin_footer' => 10
         ]);
-        $stylesheet = file_get_contents(__DIR__.'/../../../pdf_generation/styles.css');
+
+        if (null === $selectedTemplateCustom) {
+            $content = $this->renderView("BillAndGoBundle:document:pdf/".((null === $selectedTemplate)?
+                    "pdf.document.type.1":$selectedTemplate->getValue()).".html.twig",
+                array(
+                    "document" => $document,
+                    "user" => $user,
+                    "selfPremium" => ("paid" == $user->getPlan()) ? true : false,
+                    "sentDate" => $date,
+                    "lines" => $lines,
+                    "totalHT" => $totalHT,
+                    "taxtotal" => $taxtotal,
+                    "tax" => $tax,
+                    "selfCompanyName" => $selfName,
+                    "clientName" => $clientName,
+                    "clientAddress" => $clientAdress,
+                    "clientZipCode" => $clientZipCode,
+                    "clientCity" => $clientCity,
+                    "clientCountry" => $clientCountry,
+                    "selfCompanyAdress" => $selfAdress,
+                    "selfCompanyZipCode" => $selfZipCode,
+                    "selfCompanyCity" => $selfCity,
+                    "selfCompanyCountry" => $selfCountry,
+                    "selfCompanyEmail" => $selfEmail,
+                    "selfSiret" => $selfSiret,
+                    "selfCompanyTel" => $selfTel,
+                    "docNumber" => $docNumber,
+                    "docType" => $docType,
+                    "selfCompanyLogo" =>
+                        $assetsManager->getUrl('uploads/user/company/'.$user->getCompanyLogoPath())
+
+                ));
+        }
+
 
         $mpdf->SetProtection(array('print'));
+        $mpdf->WriteHTML($content, 0);
         $mpdf->SetTitle(strtolower($document->getNumber()."_".$document->getRefClient()->getCompanyName()));
-        //$mpdf->SetAuthor("BillandGo.");
-        //$mpdf->SetWatermarkText("Payé");
         $mpdf->showWatermarkText = true;
         $mpdf->watermark_font = 'DejaVuSansCondensed';
         $mpdf->watermarkTextAlpha = 0.1;
         $mpdf->SetDisplayMode('fullpage');
-
-        $mpdf->WriteHTML($stylesheet, 1);
-        $mpdf->WriteHTML($html, 0);
         return new Response($mpdf->Output());
     }
 }

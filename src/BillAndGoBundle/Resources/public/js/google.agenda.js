@@ -97,27 +97,126 @@ $(function() {
             }
         },
         height: 700,
+        editable: false,
+        selectable: true,
         visibleRange: {
             start: firstDay,
             end: lastDay
         },
+        //When u select some space in the calendar do the following:
+        select: function (start, end, allDay) {
+            //do something when space selected
+            //Show 'add event' modal
+            console.log(start);
+            $('#eName').val("");
+            $('#eDescription').val("");
+            $('#eLocation').val("");
+            $('#eDueDate').val("");
+            $("#eStartDate").datepicker( "setDate", new Date(start));
+
+            $('#createEventModal').modal('show');
+        },
+
+        //When u drop an event in the calendar do the following:
+        eventDrop: function (event, delta, revertFunc) {
+            //do something when event is dropped at a new location
+        },
+
+        //When u resize an event in the calendar do the following:
+        eventResize: function (event, delta, revertFunc) {
+            //do something when event is resized
+        },
+
+        eventRender: function(event, element) {
+            $(element).tooltip({title: event.title});
+        },
+
+        //Activating modal for 'when an event is clicked'
+        eventClick: function (event) {
+            $('#modalTitle').html(event.title);
+            $('#modalBody').html(event.description);
+            $('#fullCalModal').modal();
+        },
+
         /*events: idg,*/
 
         eventRender: function (event, element) {
             element.attr('href', 'javascript:void(0);');
             element.click(function() {
                 $("#eventTitle").html((event.title));
-                $("#startTime").html(moment(event.start).format('DD/MM/Y à hh:mm:ss'));
-                $("#endTime").html(moment(event.end).format('DD/MM/Y à hh:mm:ss'));
+                $("#startTime").html(moment(event.start).format('DD/MM/Y'));
+                $("#endTime").html(moment(event.end).format('DD/MM/Y'));
                 $("#eventInfo").html(event.description);
                 $("#eventLink").attr('href', event.url);
                 $("#eventLocation").html(event.location);
                 $("#eventContent").modal('show');
             });
+
+            element.append( "<span class='closeon btn btn-danger text-center'><i class='fa fa-remove'></i></span>");
+            element.find(".closeon").click(function() {
+                if (confirm('Vous êtes sûr de vouloir supprimer l\'évènement ' + event.title + '?')) {
+                    $('#calendar').fullCalendar('removeEvents', event._id);
+                    var request = gapi.client.calendar.events.delete({
+                        'calendarId': 'primary',
+                        'eventId': event.id
+                    });
+                    request.execute(function(event) {
+                    });
+                }
+            });
         }
     });
 });
 
+
+$('#submitButton').on('click', function(e){
+    // We don't want this to act as a link so cancel the link action
+    e.preventDefault();
+
+    doSubmit();
+});
+
+function zeroPadded(val) {
+    if (val >= 10)
+        return val;
+    else
+        return '0' + val;
+}
+
+
+function doSubmit(){
+    $("#createEventModal").modal('hide');
+    console.log(new Date(moment($('#eDueDate').val()).format('Y/M/D')));
+    var event = {
+        title: $('#eName').val(),
+        start: new Date($('#eStartDate').val()),
+        end: new Date(moment($('#eDueDate').val()).format('Y/M/D')),
+        description: $('#eDescription').val(),
+        location: $('#eLocation').val(),
+    };
+    $("#calendar").fullCalendar('renderEvent', event, true);
+
+    var d = new Date($('#eStartDate').val());
+    var d1 = new Date($('#eDueDate').val());
+    var event1 = {
+        'summary': $('#eName').val(),
+        'location':$('#eLocation').val(),
+        'description': $('#eDescription').val(),
+        'start': {
+            'dateTime': d.getFullYear()+"-"+zeroPadded(d.getMonth() + 1)+"-"+zeroPadded(d.getDate())+"T00:00:00"
+        },
+        'end': {
+            'dateTime':d1.getFullYear()+"-"+zeroPadded(d1.getMonth() + 1)+"-"+zeroPadded(d1.getDate())+"T00:00:00"
+        }
+    };
+
+    var request = gapi.client.calendar.events.insert({
+        'calendarId': 'primary',
+        'resource': event1
+    });
+    request.execute(function(event) {
+    });
+}
 
 // Client ID and API key from the Developer Console
 var CLIENT_ID = '1004743587999-bq41bcvaibn4480ou05mt1dgb53q2cp2.apps.googleusercontent.com';
