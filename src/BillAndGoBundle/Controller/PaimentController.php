@@ -44,13 +44,19 @@ class PaimentController extends Controller
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
         }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
+        }
         $em = $this->getDoctrine()->getManager();
         $paiments = $em->getRepository('BillAndGoBundle:Paiment')->findByRefUser($user);
         return $this->render(
             'BillAndGoBundle:Paiment:index.html.twig',
             array(
             'paiments' => $paiments,
-            'user' => $user
+            'user' => $user,
+                'usersub' => $usersub
             )
         );
     }
@@ -68,6 +74,11 @@ class PaimentController extends Controller
         if (!is_object($user)) {
             $ar401 = ["disconnected"];
             return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
         $manager = $this->getDoctrine()->getManager();
         $paiment = new Paiment();
@@ -92,7 +103,8 @@ class PaimentController extends Controller
             'BillAndGoBundle:Paiment:add.html.twig',
             array(
             'form' => $form->createView(),
-            'user' => $user
+            'user' => $user,
+                'usersub' => $usersub
             )
         );
     }
@@ -111,6 +123,11 @@ class PaimentController extends Controller
         if (!is_object($user)) {
             $ar401 = ["disconnected"];
             return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
         $manager = $this->getDoctrine()->getManager();
         $document = $manager->getRepository('BillAndGoBundle:Document')->find($id);
@@ -145,6 +162,11 @@ class PaimentController extends Controller
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
         }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
+        }
         if ($paiment->getRefUser() != $user) {
             $ar401 = ["wrong user"];
             return new Response(json_encode($ar401), 401);
@@ -156,6 +178,7 @@ class PaimentController extends Controller
             'paiment' => $paiment,
             'user' => $user,
             'delete_form' => $deleteForm->createView(),
+                'usersub' => $usersub
             )
         );
     }

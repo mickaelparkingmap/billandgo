@@ -1,0 +1,166 @@
+<html>
+<head>
+    <style type="text/css">
+        body {font-family: sans-serif;
+            font-size: 10pt;
+        }
+        p { margin: 0pt; }
+        table.items {
+            border: 0.1mm solid #000000;
+            width : 100%;
+            font-size: 9pt;
+            border-collapse: collapse;
+        }
+        td { vertical-align: top; }
+        .items td {
+            border: 0.1mm solid #000000;
+        }
+        table thead td { background-color: #EEEEEE;
+            text-align: center;
+            border: 0.1mm solid #000000;
+            font-variant: small-caps;
+        }
+        .items td.blanktotal {
+            background-color: #EEEEEE;
+            border: 0.1mm solid #000000;
+            background-color: #FFFFFF;
+            border: 0mm none #000000;
+            border-top: 0.1mm solid #000000;
+            border-right: 0.1mm solid #000000;
+        }
+        .items td.totals {
+            text-align: right;
+            border: 0.1mm solid #000000;
+        }
+        .items td.cost {
+            text-align: "." center;
+        }
+        .items td.info {
+            color: green;
+        }
+        .projectName {
+            font-weight: bold;
+            font-size: 12pt;
+        }
+        table.company {
+            width : 100%;
+        }
+        .company td {width : 50%;}
+        table.client {
+            margin-left: 300pt;
+            width : 100%;
+            font-family: serif;
+        }
+        .client td {
+            border: 0.1mm solid #888888;
+            width : 100%;
+        }
+        .htmlpgfooter {
+            border-top: 1px solid #000000;
+            font-size: 9pt;
+            text-align: center;
+            padding-top: 3mm;
+        }
+    </style>
+</head>
+<body>
+
+<!--mpdf
+<htmlpageheader name="Pdf_template_header_1">
+        <table class="company">
+            <tr>
+                <td style="color:#0000BB;">
+                    <span style="font-weight: bold; font-size: 14pt;">{{ selfCompanyName }}</span>
+                    <br/>
+                    {{ selfCompanyAdress }}
+                    <br>
+                    {{ selfCompanyZipCode }} {{ selfCompanyCity }} <br>
+                    {{ selfCompanyCountry }}
+                    <br/>
+                    {{ selfCompanyEmail }}
+                    <br/>
+                    <span style="font-family:dejavusanscondensed;">&#9742;</span> {{ selfCompanyTel }}
+                </td>
+                 <td style="text-align: right;">{{ docType }}<br/>
+                    <span style="font-weight: bold; font-size: 12pt;">{{ docNumber }}</span>
+                 </td>
+            </tr>
+        </table>
+</htmlpageheader>
+<htmlpagefooter name="Pdf_template_footer_1">
+    <div class="htmlpgfooter">
+        Page {PAGENO} of {nb} <br>
+        {% if selfSiret is not null %}
+        SIRET : {{ selfSiret }}
+        {% endif %}
+        {% if false == selfPremium %}
+        Document généré par <a href="https://www.billandgo.fr">Bill&Go</a>, un produit <a href="https://www.iumio.com">iumio</a>
+        {% endif %}
+    </div>
+</htmlpagefooter>
+<sethtmlpageheader name="Pdf_template_header_1" value="on" show-this-page="1" />
+<sethtmlpagefooter name="Pdf_template_footer_1" value="on" />
+mpdf-->
+<div style="text-align: right">Date: {{ sentDate }}</div><br />
+
+<table class="client" cellpadding="10">
+    <tr>
+        <td><span style="font-size: 10pt; color: #555555; font-family: sans;">CLIENT :</span>
+            <br />{{  clientName }}<br />{{ clientAddress }} <br/> {{ clientZipCode }} {{ clientCity }} <br/> {{ clientCountry }}<br />
+        </td>
+    </tr>
+</table>
+<br />
+
+<p class="projectName">{{ docType }} </p><br />
+<table class="items" cellpadding="10">
+    <thead>
+    <tr>
+        <td width="15%">Quantite</td>
+        <td width="50%">Description</td>
+        <td width="15%">Prix Unit HT</td>
+        <td width="20%" colspan="2">Prix Total HT</td>
+    </tr>
+    </thead>
+    <br>
+    <br>
+    <div style="text-align: right"></div><br />
+    <tbody>
+
+
+    {% for one in lines %}
+
+        <tr>
+            <td align="center">{{ one.getQuantity() }}</td>
+            <td>{{ one.getName()  }} :  {{ one.getDescription() }}</td>
+            <td class="cost">{{ one.getPrice()  }}€</td>
+            <td class="cost" colspan="2">{{ one.getQuantity() * one.getPrice() }}€</td>
+        </tr>
+
+    {% endfor %}
+    <tr>
+        <td class="blanktotal" colspan="1" rowspan="3"></td>
+
+        <td class="totals " colspan="2">Sous total:</td>
+        <td class="totals cost" colspan="2">{{ totalHT }}€</td>
+    </tr>
+    <tr>
+        <td class="totals" colspan="2">{{ tax }}</td>
+        <td class="totals cost" colspan="2">{{ taxtotal }}€</td>
+    </tr>
+    <tr>
+        <td class="totals" colspan="2"><b>TOTAL:</b></td>
+        <td class="totals cost" colspan="2"><b>{{ totalHT + taxtotal }}€</b></td>
+    </tr>
+    </tbody>
+</table>
+<br>
+{% if document.isEstimate()  %}
+    {% if user.getBanque() is not null and user.getIban() is not  null and user.getBic() is not  null %}
+        <div style="text-align: left"><strong>Coordonnées bancaires : </strong><br> NOM BANQUE : {{ user.getBanque() }} <br> IBAN : {{ user.getIban() }}<br>BIC : {{ user.getBic() }}</div><br />
+    {% endif %}
+{% endif %}
+</body>
+</html>
+
+

@@ -118,7 +118,7 @@ function listUpcomingEvents() {
                 }
 
                 html = html + (
-                    ' <div class="col-md-3 onlick" onclick="location.href=\'' + url_ga + '\'">\n' +
+                    ' <div class="col-md-6 onlick" onclick="location.href=\'' + url_ga + '\'">\n' +
                     '                    <!-- Widget: user widget style 1 -->\n' +
                     '                    <div class="box box-widget widget-user-2 box-client ' + color[i] + '-client">\n' +
                     '                        <!-- Add the bg color to the header using any of the bg-* classes -->\n' +

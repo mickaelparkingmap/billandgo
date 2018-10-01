@@ -62,14 +62,6 @@ set status_fr = {
                         </div><!-- /.info-box-content -->
                     </div><!-- /.info-box -->
                 </div><!-- /.col -->
-
-                {% if user.plan == null and limitation == false %}
-                    <div class="col-md-12 ">
-                        <div class="callout callout-info">
-                            <h5><i class="fa fa-info"></i> Vous utilisez actuellement de la version gratuite de Bill&Go et vous avez dépassé le quotat imposé. Si vous souhaitez profiter de fonctionnalités payantes et la suppression de ce message, Veuillez nous contacter <a href=" https://www.billandgo.fr/edition-premium/">ici</a></h5>
-                        </div>
-                    </div>
-                {% endif %}
             </div>
             {# good #}
             <div class="box box-default">
@@ -1080,6 +1072,9 @@ set status_fr = {
 
 
 {% block javascripts %}
+    <script>
+        var syncTask = "{{ syncTask }}";
+    </script>
     {{ parent() }}
     <script>
         //filter

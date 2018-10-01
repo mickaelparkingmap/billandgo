@@ -188,14 +188,28 @@ setTimeout(function(){
 
 
 function step3($step, $pag, index){
-    console.log('3')
-    ;
+
     if (indexes(index) > 0) {
         return false;
+    }
+    var result = { };
+    $.each($('#fos_user_registration_register').serializeArray(), function() {
+        if (this.name === "g-recaptcha-response") {
+            result["grecaptcharesponse"] = this.value;
+        }
+        else {
+            result[this.name] = this.value
+        }
+    });
+
+    if (result.grecaptcharesponse == "") {
+        $(".error-captcha").show();
+        return ;
     }
 
 // animate the step out
     $step.parents('.modal-wrap').addClass('animate-up');
+
 
     $("#fos_user_registration_register").submit();
     /*setTimeout(function(){

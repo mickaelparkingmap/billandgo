@@ -124,12 +124,6 @@ class User extends BaseUser
      */
     private $bic;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="plan", type="text", length=65535, nullable=true)
-     */
-    private $plan;
 
     /**
      * @var string
@@ -488,23 +482,6 @@ class User extends BaseUser
         return $this->iban;
     }
 
-    /**
-     * @return string
-     */
-    public function getPlan() : ?string
-    {
-        return $this->plan;
-    }
-
-    /**
-     * @param string $plan
-     */
-    public function setPlan(string $plan)
-    {
-        $this->plan = $plan;
-    }
-
-
 
     /**** *****/
 
@@ -518,9 +495,9 @@ class User extends BaseUser
     /**
      * @Assert\File(
      *     maxSize = "5M",
-     *     mimeTypes = {"image/jpeg", "image/gif", "image/png", "image/tiff"},
-     *     maxSizeMessage = "The maxmimum allowed file size is 5MB.",
-     *     mimeTypesMessage = "Only the filetypes image are allowed.")
+     *     mimeTypes = {"image/jpg", "image/gif", "image/png", "image/tiff"},
+     *     maxSizeMessage = "La taille de fichier maximale autorisée est de 5 Mo.",
+     *     mimeTypesMessage = "Seules les images de types de fichiers sont autorisées.")
      */
     protected $company_logo;
 
@@ -579,8 +556,8 @@ class User extends BaseUser
      * @Assert\File(
      *     maxSize = "5M",
      *     mimeTypes = {"image/jpeg", "image/gif", "image/png", "image/tiff"},
-     *     maxSizeMessage = "The maxmimum allowed file size is 5MB.",
-     *     mimeTypesMessage = "Only the filetypes image are allowed.")
+     *     maxSizeMessage = "La taille de fichier maximale autorisée est de 5 Mo.",
+     *     mimeTypesMessage = "Seules les images de types de fichiers sont autorisées.")
      */
     protected $user_skin;
 
@@ -841,8 +818,7 @@ class User extends BaseUser
             'email'         => $this->email,
             'phone'         => $this->phone,
             'mobile'        => $this->mobile,
-            'enabled'       => $this->enabled,
-            'plan'          => $this->plan,
+            'enabled'       => $this->enabled
         ];
         $data['location'] = [
             'address'       => $this->address,

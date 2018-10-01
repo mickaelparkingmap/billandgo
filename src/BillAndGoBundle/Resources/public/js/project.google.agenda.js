@@ -19,7 +19,7 @@ $(".billandgo_add_project").submit(function (e) {
     var desc = $("#billandgobundle_project_description").val();
 
     console.log(client, name, deadline, desc);
-    if (statusG === 1) {
+    if (statusG === 1 && syncTask === "active") {
         addEvent(client, name, deadline, desc)
     }
     else {
@@ -37,7 +37,7 @@ $("#createprojectwithoutdesc").submit(function (e) {
     var deadline = $("#project_deadline").val();
     var desc = $("#pdescription").html();
     console.log(client, name, deadline, desc);
-    if (statusG === 1) {
+    if (statusG === 1 && syncTask === "active") {
         addEvent2(client, name, deadline, desc, $("#createprojectwithoutdesc"))
     }
     else {
@@ -55,7 +55,7 @@ $(".form_project").each(function () {
         var deadline = $(this).find(".project_deadline").val();
         var desc = $(this).find(".pdesc").html();
         console.log(client, name, deadline, desc);
-        if (statusG === 1) {
+        if (statusG === 1 && syncTask === "active") {
             addEvent2(client, name, deadline, desc, $(this))
         }
         else {

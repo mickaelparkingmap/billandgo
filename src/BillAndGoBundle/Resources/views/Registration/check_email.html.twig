@@ -19,50 +19,80 @@
     <meta name="msapplication-config" content="{{ asset('bundles/billandgo/img/browserconfig.xml') }}" />
     <meta name="theme-color" content="#ffffff">
     <link rel="icon" type="image/x-icon" href="{{ asset('bundles/billandgo/img/favicon.ico') }}"/>
+    <link href="{{ asset('bundles/billandgo/css/common.css') }}" type="text/css" rel="stylesheet"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 
     {% block stylesheets %}
-        <link href="{{ asset('bundles/billandgo/assets/bootstrap/dist/css/bootstrap.min.css') }}" type="text/css" rel="stylesheet"/>
-        <link href="{{ asset('bundles/billandgo/assets/font-awesome/css/font-awesome.min.css') }}" type="text/css" rel="stylesheet"/>
-        <link href="{{ asset('bundles/billandgo/assets/Ionicons/css/ionicons.min.css') }}" type="text/css" rel="stylesheet"/>
-        <link href="{{ asset('bundles/billandgo/assets/iCheck/square/blue.css') }}" type="text/css" rel="stylesheet"/>
-        <link href="{{ asset('bundles/billandgo/css/_all-skins.min.css') }}" type="text/css" rel="stylesheet"/>
-        <link href="{{ asset('bundles/billandgo/css/AdminLTE.min.css') }}" type="text/css" rel="stylesheet"/>
-        <link href="{{ asset('bundles/billandgo/css/style.css') }}" type="text/css" rel="stylesheet"/>
-        <link href="{{ asset('bundles/billandgo/css/common.css') }}" type="text/css" rel="stylesheet"/>
-        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
-
-        <!-- Google Font -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118804156-2"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', 'UA-118804156-2');
-        </script>
-
+        <link href="{{ asset('bundles/billandgo/css/register.css') }}" type="text/css" rel="stylesheet"/>
     {% endblock %}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118804156-2"></script>
+
+
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-118804156-2');
+    </script>
 
 </head>
 
 
 <body class="hold-transition login-page">
-<div class="login-box">
+
+
+
+<div class="modal-wrap">
+    <div class="center-block">
+        <a class="center" href="/" >
+            <img src="{{ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150" >
+        </a>
+    </div>
+    <div class="modal-header"><span></span><span></span><span></span>
+    </div>
+
+    <div class="modal-bodies">
+
+        <div class="modal-body modal-body-step-0 is-showing">
+            <div class="title">C'est parfait !</div>
+            <div class="description">Un e-mail a été envoyé à l'adresse <strong>{{ user.email }}</strong> afin que vous puissiez confirmer l'inscription au service Bill&Go. <br> Veuillez cliquer sur le lien dans l'email afin d'activer votre compte.</div>
+
+            <br>
+            <div class="text-center">
+                <div class="button" onclick="location.href='{{ path('fos_user_security_login') }}'">Retour au site</div>
+            </div>
+        </div>
+
+
+        <!-- <div class="modal-body modal-body-step-4">
+             <div class="title">Step 4</div>
+             <div class="description">Check your email for the game results.</div>
+             <div class="text-center">
+                 <div class="button">Done!</div>
+             </div>
+         </div>-->
+    </div>
+</div>
+
+
+
+
+<!--<div class="login-box">
     <div class="login-logo">
         <a href="/">
             <img src="{{ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="200" >
         </a>
-    </div>
+    </div>-->
+
+
+
     <!-- /.login-logo -->
-    <div class="login-box-body">
+    <!--<div class="login-box-body">
         <p class="login-box-msg"><strong>Hello</strong></p>
         <p class="login-box-message"><small>Un e-mail a été envoyé à l'adresse {{ user.email }} afin que vous puissiez confirmer l'inscription au service Bill&Go. <br> Veuillez cliquer sur le lien afin d'activer votre compte</small></p>
 
@@ -71,21 +101,15 @@
     <div class="login-box-body">
         <p><small> Vous avez déjà un compte ?</small></p>
         <div class="text-center btn btn-outline center-block"> <a href="{{ path('fos_user_security_login') }}" class="text-center">Connectez-vous</a></div>
-    </div>
+    </div>-->
     <!-- /.login-box-body -->
-</div>
+<!--</div>-->
+
 <footer class="text-right login-footer">
-    <strong>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go.</strong> All rights reserved. - <small>Bill&Go is an <a href="https://iumio.com">iumio component</a></small>
+    <br>
+    <small>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go. Tous droits réservés. Bill&Go est un produit <a href="https://www.iumio.com">iumio</a></small> - <a href="{{ path('billandgo_ml') }}" target="_blank">Mentions légales et Politiques de confidentialités</a>
 </footer>
-<div class="privacy-banner" style="border-top: 2px solid #f3624f; display: none;">
-    <div>
-        <p>
-            Nous utilisons des cookies pour fournir et améliorer nos services. En utilisant notre site, vous acceptez les cookies.
-            <a class="banner-accept" href="#" style="background: #f3624f">Accepter</a>
-            <a class="banner-learn" href="{{ path('billandgo_ml') }}" target="_blank">Plus d'informations</a>
-        </p>
-    </div>
-</div>
+
 {% block javascripts %}
     <script src="{{ asset('bundles/billandgo/assets/jquery/dist/jquery.min.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/assets/jquery-ui/jquery-ui.min.js') }}"></script>

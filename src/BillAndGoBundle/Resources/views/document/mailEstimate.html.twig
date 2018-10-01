@@ -102,7 +102,8 @@
                 <!--  Logo  -->
                 <tr>
                     <td>
-                        {% if user.plan != "billandgo_paid_plan" %}
+
+                        {% if usersub["plan"] == "free" %}
                         <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150"  alt="" title="" border="0" style="border:0; display:inline-block;"/>
                         {% elseif user.getUserSkinPath() is not null %}
                             <img src="{{ app.request.getSchemeAndHttpHost() ~ '/uploads/user/company/' ~ user.getCompanyLogoPath() }} " width="150"  alt="" title="" border="0" style="border:0; display:inline-block;"/>
@@ -345,7 +346,7 @@
                             </tr>
                         {% endif %}
                     {% endif %}
-                    {% if user.plan != "billandgo_paid_plan" %}
+                    {% if usersub["plan"] == "free" %}
                     <tr>
                         <td width="100%" height="20">&nbsp;</td>
                     </tr>
@@ -630,7 +631,7 @@
 
 
         <!--  footer  -->
-        {% if user.plan != "billandgo_paid_plan" %}
+        {% if usersub["plan"] == "free" %}
 <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#fff" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
 
     <tr>
@@ -650,7 +651,7 @@
                         <table align="left" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full_width center_txt">
                             <tr>
                                 <td>
-                                    {% if user.plan != "billandgo_paid_plan" %}
+                                    { {% if usersub["plan"] == "free" %}
                                     <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150"  alt="" title="" border="0" style="border:0; display:inline-block;"/>
                                     {% elseif user.getUserSkinPath() is not null %}
                                         <img src="{{ app.request.getSchemeAndHttpHost() ~ '/uploads/user/company/' ~ user.getCompanyLogoPath() }} " width="150"  alt="" title="" border="0" style="border:0; display:inline-block;"/>

@@ -13,41 +13,16 @@
 
 namespace BillAndGoBundle\Controller;
 
+use FOS\UserBundle\Model\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Tests\Controller\ContainerAwareController;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class DefaultController extends Controller
 {
-
-    /* public function indexAction()
-    {
-        $user = $this->getUser();
-        if (!is_object($user)) { // || !$user instanceof UserInterface
-            throw new AccessDeniedException('This user does not have access to this section.');
-        }
-        return ($this->redirect("/bill"));
-        //return $this->render('BillAndGoBundle:Default:index.html.twig');
-    }*/
-
-    /**
-     * @Route("/limited", name="billandgo_limitation")
-     */
-    public function limitedAction()
-    {
-        $user = $this->getUser();
-        if (!is_object($user)) { // || !$user instanceof UserInterface
-            throw new AccessDeniedException('This user does not have access to this section.');
-        }
-
-        return $this->render(
-            'BillAndGoBundle:Default:limited.html.twig',
-            array(
-            'user' => $user,
-            )
-        );
-    }
-
     /**
      * Legal mention page
      * @Route("/mentions-legales", name="billandgo_ml")
@@ -62,7 +37,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * Legal mention page
+     * User data page
      * @Route("/mes-donnees/", name="billandgo_datas")
      */
     public function dataAction()
@@ -71,11 +46,17 @@ class DefaultController extends Controller
         if (!is_object($user)) { // || !$user instanceof UserInterface
             throw new AccessDeniedException('This user does not have access to this section.');
         }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
+        }
 
         return $this->render(
             'BillAndGoBundle:Default:datas.html.twig',
             array(
                 'user' => $user,
+                'usersub' => $usersub
             )
         );
     }
@@ -89,12 +70,18 @@ class DefaultController extends Controller
         if (!is_object($user)) { // || !$user instanceof UserInterface
             throw new AccessDeniedException('This user does not have access to this section.');
         }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
+        }
 
         $manager = $this->getDoctrine()->getManager();
         $projects = ($manager->getRepository('BillAndGoBundle:Project')->findByRefUser($user));
         $bills = ($manager->getRepository('BillAndGoBundle:Document')->findAllBill($user->getId()));
         $repoDoc = $manager->getRepository('BillAndGoBundle:Document');
         $quotes = ($estimates = $repoDoc->findAllEstimate($user->getId()));
+        $paiments = $manager->getRepository('BillAndGoBundle:Paiment')->findByRefUser($user);
         $billpaidm = 0;
         $billtotalm = 0;
         $quotesacceptm = 0;
@@ -112,10 +99,7 @@ class DefaultController extends Controller
             if ($one->isBillPaid() && $n == $now) {
                 $billpaidm++;
             }
-
-            if ($n == $now) {
-                $billtotalm++;
-            }
+            $billtotalm++;
         }
 
 
@@ -129,10 +113,7 @@ class DefaultController extends Controller
             if ($one->getStatus() == "accepted" && $n == $now) {
                 $quotesacceptm++;
             }
-
-            if ($n == $now) {
-                $quotestotalm++;
-            }
+            $quotestotalm++;
         }
 
         $cb = ($repoDoc->getBillOrQuote((new \DateTime())->format("Y"), 0, $user->getId(),
@@ -140,66 +121,92 @@ class DefaultController extends Controller
         $cq = ($repoDoc->getBillOrQuote((new \DateTime())->format("Y"), 1, $user->getId(),
             $this->getDoctrine()->getConnection()));
 
+
         $clients = count($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
+
         return $this->render(
             'BillAndGoBundle:Default:dashboard.html.twig',
             array(
-            'user' => $user,
-            'project' => count($projects),
-            'projects' => $projects,
-            'bills' => count($bills),
-            'quotes' => count($quotes),
-            'clients' => $clients,
-            'billpaidm' => $billpaidm,
-            'billtotalm' => $billtotalm,
-            'quotestotalm' => $quotestotalm,
-            'quotesacceptm' => $quotesacceptm,
-            'enddate' => date("t/m/Y", strtotime((new \DateTime())->format('Y-m-d'))),
+                'user' => $user,
+                'project' => count($projects),
+                'projects' => $projects,
+                'bills' => count($bills),
+                'quotes' => count($quotes),
+                'clients' => $clients,
+                'billpaidm' => $billpaidm,
+                'billtotalm' => $billtotalm,
+                'quotestotalm' => $quotestotalm,
+                'quotesacceptm' => $quotesacceptm,
+                'paiments' => $paiments,
+                "usersub" => $usersub,
+                'enddate' => date("t/m/Y", strtotime((new \DateTime())->format('Y-m-d'))),
                 "cb" => $cb, "cq" => $cq
             )
         );
     }
 
-    public function getLimitation($type)
-    {
-        $user = $this->getUser();
-        if (!is_object($user)) { // || !$user instanceof UserInterface
-            throw new AccessDeniedException('This user does not have access to this section.');
-        }
+    public static function userSubscription(UserInterface $user, ContainerAwareInterface $containerAware) {
 
-        $manager = $this->getDoctrine()->getManager();
-        $projects = ($manager->getRepository('BillAndGoBundle:Project')->findByRefUser($user));
-        $bills = ($manager->getRepository('BillAndGoBundle:Document')->findAllBill($user->getId()));
-        $quotes = ($estimates = $manager->getRepository('BillAndGoBundle:Document')->findAllEstimate($user->getId()));
-        $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
-        if ($user->getPlan() != "billandgo_paid_plan") {
-            switch ($type) {
-                case 'project':
-                    if (count($projects) >= 15) {
-                        return (false);
-                    }
-                    return (true);
-                    break;
-                case 'bill':
-                    if (count($bills) >= 15) {
-                        return (false);
-                    }
-                    return (true);
-                    break;
-                case 'quote':
-                    if (count($quotes) >= 15) {
-                        return (false);
-                    }
-                    return (true);
-                    break;
-                case 'client':
-                    if (count($clients) >= 15) {
-                        return (false);
-                    }
-                    return (true);
-                    break;
+        $manager = $containerAware->getDoctrine()->getManager();
+        $planFree = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $user->getId(), "name" => "user_free_plan"));
+
+        $planPaid = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $user->getId(), "name" => "user_paid_plan"));
+
+        $current = new \DateTime();
+        $plan = "free";
+        $end = $current;
+        $remaining = 0;
+        $msg = "OK";
+
+        if (null == $planPaid && null != $planFree) {
+            $planFreeEnd = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+                array("user" => $user->getId(), "name" => "user_free_plan_end"));
+
+            $end = \DateTime::createFromFormat('Y-m-d H:i:s', $planFreeEnd->getValue());
+            $remaining  = $current->diff($end);
+            $remaining = $remaining->format('%R%a');
+            if ($remaining <= 0) {
+                $anonToken = new AnonymousToken('theTokensKey', 'anon.', array());
+                $containerAware->get('security.token_storage')->setToken($anonToken);
+                $msg = "Votre version d'essai a expiré. Veuillez contacter le service Bill&Go".
+                    " afin de souscrire à un abonnement. <a href='http://billandgo.fr'>Contactez-nous</a>";
+                $response = new \Symfony\Component\HttpFoundation\Response();
+
+                $response->setStatusCode(200);
+                $response->headers->set('Refresh', 'url='.
+                    $containerAware->generateUrl("fos_user_security_login"));
+
+                $response->send();
+
             }
         }
-        return (true);
+        elseif (null != $planPaid) {
+            $plan = "paid";
+            $planPaidEnd = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+                array("user" => $user->getId(), "name" => "user_paid_plan_end"));
+
+            $end = \DateTime::createFromFormat('Y-m-d H:i:s', $planPaidEnd->getValue());
+            $remaining  = $current->diff($end);
+            $remaining = $remaining->format('%R%a');
+            if ($remaining <= 0) {
+                $anonToken = new AnonymousToken('theTokensKey', 'anon.', array());
+                $containerAware->get('security.token_storage')->setToken($anonToken);
+                $msg = "Votre abonnement a expiré. Veuillez contacter le service Bill&Go afin de le".
+                    " renouveller. <a href='http://billandgo.fr'>Contactez-nous</a>";
+                $response = new \Symfony\Component\HttpFoundation\Response();
+
+                $response->setStatusCode(200);
+                $response->headers->set('Refresh', 'url='.
+                    $containerAware->generateUrl("fos_user_security_login"));
+
+                $response->send();
+
+            }
+        }
+        return (["plan" => $plan, "end" => $end, "remaining" => $remaining, "msg" => $msg]);
     }
+
+
 }

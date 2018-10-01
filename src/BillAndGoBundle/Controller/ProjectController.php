@@ -54,14 +54,18 @@ class ProjectController extends Controller
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
         }
-
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
+        }
         $list_project = $this->projectService->getProjectList($user);
         return $this->render(
             'BillAndGoBundle:Project:index.html.twig',
             array(
-            'list' => $list_project,
-            'user' => $user,
-            'limitation' =>  $this->getLimitation("project")
+                'list' => $list_project,
+                'user' => $user,
+                'usersub' => $usersub
             )
         );
     }
@@ -80,6 +84,11 @@ class ProjectController extends Controller
         if (!is_object($user)) {
             $ar401 = ["not connected"];
             return new Response(json_encode($ar401), 401);
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
         if ($id > 0) {
             $project = $this->projectService->getProject($user, $id);
@@ -100,10 +109,11 @@ class ProjectController extends Controller
                 return $this->render(
                     'BillAndGoBundle:Project:full.html.twig',
                     array(
-                    'project' => $project,
-                    'taxes' => $taxes,
-                    'form' => $form->createView(),
-                    'user' => $user
+                        'project' => $project,
+                        'taxes' => $taxes,
+                        'form' => $form->createView(),
+                        'user' => $user,
+                        'usersub' => $usersub
                     )
                 );
             }
@@ -178,9 +188,12 @@ class ProjectController extends Controller
             $ar401 = ["disconnected"];
             return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
         }
-        if (false === $this->getLimitation("project")) {
-            return $this->redirect($this->generateUrl("billandgo_limitation"));
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
+
         $manager = $this->getDoctrine()->getManager();
         $project = new Project();
         $form = $this->createForm(ProjectType::class, $project, array('uid' => $user->getId()));
@@ -193,11 +206,15 @@ class ProjectController extends Controller
                 return $this->redirect($this->generateUrl("billandgo_project_view", array('id' => $project->getId())));
             }
         }
+        $sync = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $user->getId(), "name" => "sync_task_calendar"));
         return $this->render(
             'BillAndGoBundle:Project:add.html.twig',
             array(
-            'form' => $form->createView(),
-            'user' => $user
+                'form' => $form->createView(),
+                'user' => $user,
+                'usersub' => $usersub,
+                'syncTask' => (null === $sync)? "inactive" : $sync->getValue()
             )
         );
     }
@@ -217,9 +234,10 @@ class ProjectController extends Controller
             $ar401 = ["disconnected"];
             return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
         }
-
-        if (false === $this->getLimitation("project")) {
-            return $this->redirect($this->generateUrl("billandgo_limitation"));
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
 
         $manager = $this->getDoctrine()->getManager();
@@ -260,6 +278,11 @@ class ProjectController extends Controller
         if (!is_object($user)) {
             $ar401 = ["disconnected"];
             return new Response(json_encode($ar401), 401);
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
         $post = $req->request->all();
         $lines_id = array();
@@ -323,6 +346,11 @@ class ProjectController extends Controller
             $ar401 = ["disconnected"];
             return new Response(json_encode($ar401), 401);
         }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
+        }
         if ($id > 0) {
             $manager = $this->getDoctrine()->getManager();
             $project = $manager->getRepository('BillAndGoBundle:Project')->find($id);
@@ -353,6 +381,11 @@ class ProjectController extends Controller
         $user = $this->getUser();
         if (!is_object($user)) {
             throw new AccessDeniedException('This user does not have access to this section.');
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
         if ($id > 0) {
             $manager = $this->getDoctrine()->getManager();
@@ -460,6 +493,11 @@ class ProjectController extends Controller
         if (!is_object($user)) {
             throw new AccessDeniedException('disconnected');
         }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
+        }
         $avalaible_status = [
             "draw", "estimated", "accepted",
             "planned", "working", "waiting", "validated",
@@ -483,46 +521,5 @@ class ProjectController extends Controller
     }
 
 
-    public function getLimitation($type)
-    {
-        $user = $this->getUser();
-        if (!is_object($user)) { // || !$user instanceof UserInterface
-            throw new AccessDeniedException('This user does not have access to this section.');
-        }
 
-        $manager = $this->getDoctrine()->getManager();
-        $projects = ($manager->getRepository('BillAndGoBundle:Project')->findByRefUser($user));
-        $bills = ($manager->getRepository('BillAndGoBundle:Document')->findAllBill($user->getId()));
-        $quotes = ($estimates = $manager->getRepository('BillAndGoBundle:Document')->findAllEstimate($user->getId()));
-        $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
-        if ($user->getPlan() != "billandgo_paid_plan") {
-            switch ($type) {
-                case 'project':
-                    if (count($projects) >= 15) {
-                        return (false);
-                    }
-                    return (true);
-                    break;
-                case 'bill':
-                    if (count($bills) >= 15) {
-                        return (false);
-                    }
-                    return (true);
-                    break;
-                case 'quote':
-                    if (count($quotes) >= 15) {
-                        return (false);
-                    }
-                    return (true);
-                    break;
-                case 'client':
-                    if (count($clients) >= 15) {
-                        return (false);
-                    }
-                    return (true);
-                    break;
-            }
-        }
-        return (true);
-    }
 }

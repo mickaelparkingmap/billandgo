@@ -1,0 +1,185 @@
+{% extends "BillAndGoBundle::base.html.twig" %}
+{% block title %}Bill&Go - Vos paramètres{% endblock %}
+ {% block advanced_stylesheets %}
+     <link  href="{{ asset('bundles/billandgo/assets/imageviewer/imageviewer.css') }}" rel="stylesheet">
+ {% endblock %}
+  {% block fos_user_content %}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Vos paramètres
+                <small>Hello, {{ user.firstname|capitalize }} {{ user.lastname |upper }}, voici les paramètres de votre compte</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><i class="fa fa-wrench"></i> Paramètres</li>
+                <li class="active"><i class="fa fa-legal"></i> Informations</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+
+            <!--<div class="row">
+                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link onlick" onclick="location.href='{{ path('fos_user_profile_edit') }}'">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green"><i class="fa fa-edit"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text"><strong>Template PDF</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>-->
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <!-- Widget: user widget style 1 -->
+                    <div class="box box-widget widget-user-2 box-client bg-black-client">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="widget-user-header  bg-black" style="background: url('{{ asset('bundles/billandgo/img/street.png') }}') center center;">
+
+                            <!-- /.widget-user-image -->
+                            <h3 class="widget-user-username">Template PDF </h3>
+                            <h5 class="widget-user-desc">Vous pouvez sélectionner le modèle de facture/devis que vous souhaitez </h5>
+                        </div>
+                        <div class="box-footer no-padding">
+                            <div class="panel-body">
+                               <div class="col-md-12 alert-pdf" style="display: none">
+
+                               </div>
+                                <form method="post" class="selected-template-pdf" action="{{ path('billandgo_parameters_pdf_template_save') }}">
+                                <div class="col-md-6">
+                                    <h5>Selectionnez le modèle de PDF : </h5>
+                                    <div class="form-group">
+                                        <select name="pdfchoice" class="form-control pdfchoice">
+                                            {% for one in filepdf %}
+                                                <option value="{{ one["realname"] }}" {% if one["realname"] == pdfchoice %}selected{% endif %}>{{ one["shortname"] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-success">Valider</button>
+                                </div>
+
+                                <!--<ul class="nav nav-pills nav-justified">
+                                    <li class="active">
+                                        <a data-toggle="tab" href="#cli-1-info">
+                                            Infos
+                                        </a>
+                                    </li>
+                                </ul>-->
+                                <div class="tab-content col-md-6">
+                                    <h5>Voici le rendu : </h5>
+                                    <div id="cli-1-info" class="tab-pane fade in active bg-info center-block text-center" >
+                                        {% for one in filepdf %}
+                                            {% if one["realname"] == pdfchoice %}
+                                            <img width="120" id="image" src="{{ asset( 'bundles/billandgo/img/pdf/' ~ one["realname"]  ~ '.png' )}}" >
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.widget-user -->
+                </div>
+
+
+                <!-- /.col -->
+
+            <div class="col-md-6">
+
+                    <div class="box box-widget widget-user-2 box-client bg-black-client">
+
+                        <div class="widget-user-header  bg-black" style="background: url('{{ asset('bundles/billandgo/img/billandgo-2.jpg') }}') center center;">
+
+
+                            <h3 class="widget-user-username">Agenda </h3>
+                            <h5 class="widget-user-desc">Selectionnez les options pour votre agenda Bill&Go </h5>
+                        </div>
+                        <div class="box-footer no-padding">
+                            <div class="panel-body">
+                                <div class="col-md-12 alert-task" style="display: none">
+
+                                </div>
+                                <div class="tab-content">
+                                    <div id="cli-1-info" class="tab-pane fade in active bg-info">
+                                <form method="post" class="selected-task-calendar" action="{{ path('billandgo_parameters_calendar_task_save') }}">
+
+                                    <div class="row">
+                                        <div class="col-md-6 col-sm-6 col-xs-12 onlick column-link"  id="authorize-button" style="display: none;">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-green"><i class="fa fa-sign-in"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text"><strong>Connectez-vous (Google)</strong></span>
+                                                </div><!-- /.info-box-content -->
+                                            </div><!-- /.info-box -->
+                                        </div><!-- /.col -->
+                                        <div class="col-md-6 col-sm-6 col-xs-12 onlick column-link"  id="signout-button" style="display: none;">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-red"><i class="fa fa-sign-out"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text"><strong>Déconnectez-vous (Google) </strong></span>
+                                                </div><!-- /.info-box-content -->
+                                            </div><!-- /.info-box -->
+                                        </div><!-- /.col -->
+                                    </div>
+
+
+                                    <div class="agenda-element2" style="display: none">
+
+                                    <h5>Chaque projet doit être synchronisée avec le calendrier</h5>
+                                        <div class="radio">
+                                            <label for="syncok">
+                                                <input type="radio" class="" name="syncktask" value="active" {% if syncTask == "active" %}checked="checked"{% endif %}>
+                                                Oui</label>
+
+                                        </div>
+                                        <div class="radio">
+                                            <label for="syncnok">
+                                                <input type="radio" class="" name="syncktask" value="inactive" {% if syncTask == "inactive" %}checked="checked"{% endif %}>
+                                                Non
+                                            </label>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-success form-control">Valider</button>
+
+                                    </div>
+                                </form>
+                            </div>
+                                </div>
+                        </div>
+
+                        </div>
+                    </div>
+            </div>
+            </div>
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+{% endblock %}
+{% block advanced_javascripts %}
+    <script src="{{ asset('bundles/billandgo/assets/imageviewer/imageviewer.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/js/google.agenda.parameters.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/js/parameters.js') }}"></script>
+
+    <script type="text/javascript">
+        var wrap = document.getElementById('cli-1-info');
+        var viewer = new ViewBigimg()
+
+        wrap.onclick = function (e) {
+            if (e.target.nodeName === 'IMG') {
+                // viewer.show(e.target.src.replace('.jpg', '-big.jpg'))
+                viewer.show(e.target.src)
+            }
+        }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
+
+{% endblock %}

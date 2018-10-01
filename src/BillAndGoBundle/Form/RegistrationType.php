@@ -37,7 +37,7 @@ class RegistrationType extends AbstractType
             ->add('zip_code', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Code postal', 'required' => 'required')))
             ->add('city', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Ville', 'required' => 'required')))
             ->add('country', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Pays', 'required' => 'required', 'value' => 'FRANCE', 'disabled' => 'disabled')))
-            ->add('phone', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Votre numéro de téléphone')))
+            ->add('phone', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Votre numéro de téléphone', 'required' => false)))
             ->add('mobile', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Votre numéro de mobile', 'required' => 'required')))
             ->add('plainPassword', LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\RepeatedType'), array(
                 'label' => false,

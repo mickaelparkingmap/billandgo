@@ -56,6 +56,23 @@
     text-transform: none!important;
 }
 
+.fc-widget-content {
+    background-color: white;
+}
+
+
+.fc-day-grid-event {
+    display: -webkit-box!important;
+    display: -ms-flexbox!important;
+    display: flex!important;
+    -webkit-box-align: center!important;
+    -ms-flex-align: center!important;
+    align-items: center!important;
+}
+.fc-day-grid-event span {
+    margin-left: 8px!important;
+}
+
 .loading-element {
     position: absolute;
     left: 0px;

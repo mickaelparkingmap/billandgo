@@ -35,6 +35,11 @@ class TaxController extends Controller
             $ar401 = ["not admin"];
             return new Response(json_encode($ar401), 401);
         }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
+        }
         $manager = $this->getDoctrine()->getManager();
         $taxes = $manager->getRepository('BillAndGoBundle:Tax')->findAll();
 
@@ -42,7 +47,8 @@ class TaxController extends Controller
             'BillAndGoBundle:Tax:index.html.twig',
             array(
             'taxes' => $taxes,
-            'user' => $user
+            'user' => $user,
+                'usersub' => $usersub
             )
         );
     }
@@ -60,6 +66,11 @@ class TaxController extends Controller
         if ($user->getId() != 1) {
             $ar401 = ["not admin"];
             return new Response(json_encode($ar401), 401);
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
         }
         $manager = $this->getDoctrine()->getManager();
         $check = $manager->getRepository("BillAndGoBundle:Tax")->findByName("TVA taux normal");
@@ -106,44 +117,5 @@ class TaxController extends Controller
         return $this->redirectToRoute("billandgo_tax_index");
     }
 
-    public function getLimitation($type)
-    {
-        $user = $this->getUser();
-        if (!is_object($user)) { // || !$user instanceof UserInterface
-            throw new AccessDeniedException('This user does not have access to this section.');
-        }
 
-        $manager = $this->getDoctrine()->getManager();
-        $projects = ($manager->getRepository('BillAndGoBundle:Project')->findByRefUser($user));
-        $bills = ($manager->getRepository('BillAndGoBundle:Document')->findAllBill($user->getId()));
-        $quotes = ($estimates = $manager->getRepository('BillAndGoBundle:Document')->findAllEstimate($user->getId()));
-        $clients = ($manager->getRepository('BillAndGoBundle:Client')->findByUserRef($user));
-        switch ($type) {
-            case 'project':
-                if (count($projects) >= 15) {
-                    return (false);
-                }
-                return (true);
-                break;
-            case 'bill':
-                if (count($bills) >= 15) {
-                    return (false);
-                }
-                return (true);
-                break;
-            case 'quote':
-                if (count($quotes) >= 15) {
-                    return (false);
-                }
-                return (true);
-                break;
-            case 'client':
-                if (count($clients) >= 15) {
-                    return (false);
-                }
-                return (true);
-                break;
-        }
-        return (true);
-    }
 }

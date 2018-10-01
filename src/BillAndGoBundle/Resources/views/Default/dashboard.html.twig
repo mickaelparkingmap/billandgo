@@ -26,15 +26,15 @@
         </section>
 
         <!-- Main content -->
-        <section class="content">
+        <div class="content">
             <div class="row">
-                {% if user.plan == null %}
-                <div class="col-md-12 box box-edited">
-                    <div class="callout callout-info">
-                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                        <h5><i class="fa fa-info"></i> Vous utilisez actuellement de la version gratuite de Bill&Go. Vous êtes limité à 15 factures, 15 projets, 15 devis et 15 clients (<a href=" https://www.billandgo.fr/limitation-edition-standard/">Voir les limitation de la version standard</a>). <br> Si vous souhaitez profiter de fonctionnalités payantes et la suppression de ce message, Veuillez nous contacter <a href=" https://www.billandgo.fr/edition-premium/">ici</a></h5>
+                {% if usersub["plan"] == "free" %}
+                    <div class="col-md-12 box box-edited">
+                        <div class="callout callout-info">
+                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            <h5><i class="fa fa-info"></i> Vous utilisez actuellement de la version gratuite de Bill&Go. Il vous reste {{ usersub["remaining"] }} jour(s) d'essai (<a href=" https://www.billandgo.fr/limitation-edition-standard/">Voir les limitation de la version gratuite</a>). <br> Si vous souhaitez profiter de fonctionnalités payantes et la suppression de ce message, Veuillez nous contacter <a href=" https://www.billandgo.fr/edition-premium/">ici</a>. Passé ce délai, vous ne pourrez plus vous connecter au service.</h5>
+                        </div>
                     </div>
-                </div>
                 {% endif %}
                 <div class="col-md-3 col-sm-6 col-xs-12 onlick " onclick="location.href='{{ path('billandgo_project_list') }}'">
                     <div class="info-box">
@@ -78,9 +78,11 @@
                 </div><!-- /.col -->
             </div>
 
+            <div class="row">
+            <div class="col-md-6">
             <div class="box box-default">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Les derniers projets en cours <small>(Limité à 3)</small></h3>
+                    <h3 class="box-title">Les derniers projets en cours </h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div>
@@ -91,14 +93,14 @@
                             {% set nbcolor = 0 %}
                             {% set maxcolor = 6 %}
                             {% set color = ['bg-yellow', 'bg-green', 'bg-purple', 'bg-black', 'bg-blue', 'bg-red'] %}
-                            {% for p in projects if nbp < 3 %}
-                                <div class="col-md-4 onlick" onclick="location.href='{{ path('billandgo_project_view', {'id': p.id}) }}'">
+                            {% for p in projects if nbp < 4 %}
+                                <div class="col-md-6 onlick" onclick="location.href='{{ path('billandgo_project_view', {'id': p.id}) }}'">
                                     <!-- Widget: user widget style 1 -->
                                     <div class="box box-widget widget-user-2 box-client {{ color[nbcolor] }}-client">
                                         <!-- Add the bg color to the header using any of the bg-* classes -->
                                         <div class="widget-user-header  {{ color[nbcolor] }}">
                                             <div class="widget-user-image" style="margin-top: -35px;">
-                                            <span class="img-circle"><i class="fa fa-industry fa-3x ppdashbboard" ></i> </span>
+                                                <span class="img-circle"><i class="fa fa-industry fa-3x ppdashbboard" ></i> </span>
                                             </div>
                                             <!-- /.widget-user-image -->
                                             <h3 class="widget-user-username"> Projet {{ p.name|capitalize }} </h3>
@@ -126,16 +128,14 @@
                     </div>
 
                 </div>
+
             </div>
-
-
-
-
-
+            </div>
+            <div class="col-md-6">
 
             <div class="box box-default" id="row_google_agenda" path-elem="{{ path('billandgo_organizer_show') }}">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Vos évènements à venir <small>(Limité à 4)</small></h3>
+                    <h3 class="box-title">Vos évènements à venir </h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div>
@@ -148,63 +148,113 @@
 
                 </div>
             </div>
-
-
+            </div>
+        </div>
+            {% set nbPaiments = 0 %}
+            {% set total = 0 %}
+            {% set nbcolor = 0 %}
+            {% set maxcolor = 6 %}
+            {% set color = ['bg-yellow', 'bg-green', 'bg-purple', 'bg-black', 'bg-blue', 'bg-red'] %}
+            {% for paiment in paiments %}
+                {% set total = total + paiment.amount %}
+                {% set nbPaiments = nbPaiments + 1 %}
+                {% set paymenttype = "Non connu" %}
+                {% if paiment.mode == "order" %}
+                    {% set paymenttype = "Virement bancaire" %}
+                {% elseif paiment.mode == "cash" %}
+                    {% set paymenttype = "Espèce" %}
+                {% elseif paiment.mode == "cheque" %}
+                    {% set paymenttype = "Chèque" %}
+                {% endif %}
+                {%  set nbcolor = nbcolor + 1 %}
+                {% if nbcolor >= maxcolor %}
+                    {%  set nbcolor = 0 %}
+                {% endif %}
+            {% endfor %}
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
 
                     <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
                     <!-- /.box -->
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- solid sales graph -->
+                            <div class="box box-solid bg-teal-gradient">
+                                <!-- /.box-body -->
+                                <div class="box-footer no-border">
+                                    <div class="row">
+                                        <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+                                            <div class="progress-group">
+                                                <span class="progress-text">Facture(s) payée(s)</span>
+                                                <span class="progress-number text-green"><b>{{ billpaidm }}</b>/{{ billtotalm }}</span>
 
-            <div class="row">
-                <div class="col-md-12">
-                    <!-- solid sales graph -->
-                    <div class="box box-solid bg-teal-gradient">
-                        <!-- /.box-body -->
-                        <div class="box-footer no-border">
-                            <div class="row">
-                                <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-                                    <div class="progress-group">
-                                        <span class="progress-text">Facture(s) payée(s)</span>
-                                        <span class="progress-number text-green"><b>{{ billpaidm }}</b>/{{ billtotalm }}</span>
+                                                <div class="progress sm">
+                                                    <div class="progress-bar progress-bar-aqua bg-teal" style="width: {% if billtotalm > 0 %}{{ billpaidm * 100 / billtotalm }}{% else %}0{% endif %}%"></div>
+                                                </div>
+                                            </div>
 
-                                        <div class="progress sm">
-                                            <div class="progress-bar progress-bar-aqua bg-teal" style="width: {% if billtotalm > 0 %}{{ billpaidm * 100 / billtotalm }}{% else %}0{% endif %}%"></div>
+                                            <div class="knob-label"><strong>Factures payées</strong></div>
                                         </div>
-                                    </div>
+                                        <!-- ./col -->
+                                        <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+                                            <!-- /.progress-group -->
+                                            <div class="progress-group">
+                                                <span class="progress-text">Devis accepté(s)</span>
+                                                <span class="progress-number text-green"><b>{{ quotesacceptm }}</b>/{{ quotestotalm }}</span>
 
-                                    <div class="knob-label"><strong>Factures payées</strong></div>
-                                </div>
-                                <!-- ./col -->
-                                <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-                                    <!-- /.progress-group -->
-                                    <div class="progress-group">
-                                        <span class="progress-text">Devis accepté(s)</span>
-                                        <span class="progress-number text-green"><b>{{ quotesacceptm }}</b>/{{ quotestotalm }}</span>
+                                                <div class="progress sm">
+                                                    <div class="progress-bar progress-bar-aqua bg-teal" style="width: {% if quotestotalm > 0 %}{{ quotesacceptm * 100 / quotestotalm }}{% else %}0{% endif %}%"></div>
+                                                </div>
+                                            </div>
 
-                                        <div class="progress sm">
-                                            <div class="progress-bar progress-bar-aqua bg-teal" style="width: {% if quotestotalm > 0 %}{{ quotesacceptm * 100 / quotestotalm }}{% else %}0{% endif %}%"></div>
+                                            <div class="knob-label"><strong>Devis acceptés</strong></div>
                                         </div>
+                                        <!-- ./col -->
+                                        <!--<div class="col-xs-4 text-center">
+                                            <input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60"
+                                                   data-fgColor="#39CCCC">
+
+                                            <div class="knob-label">In-Store</div>
+                                        </div>-->
+                                        <!-- ./col -->
                                     </div>
-
-                                    <div class="knob-label"><strong>Devis acceptés</strong></div>
+                                    <!-- /.row -->
                                 </div>
-                                <!-- ./col -->
-                                <!--<div class="col-xs-4 text-center">
-                                    <input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60"
-                                           data-fgColor="#39CCCC">
-
-                                    <div class="knob-label">In-Store</div>
-                                </div>-->
-                                <!-- ./col -->
+                                <!-- /.box-footer -->
                             </div>
-                            <!-- /.row -->
+                            <!-- /.box -->
                         </div>
-                        <!-- /.box-footer -->
                     </div>
-                    <!-- /.box -->
+                </div>
+                <div class="col-md-6">
+                    <div class="box box-default">
+                        <div class="box-header with-border">
+                            <h4><strong>Statistiques des paiements par mois (Année {{ 'now'|date('Y') }})</strong></h4>
+                            <div class="box-header with-border">
+                            </div>
+                            <div class="box-body">
+                                <div id="bar-chart" style="height: 300px;"></div>
+                            </div>
+
+                            <!-- /.box-body-->
+
+
+
+
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                            </div>
+
+                            <h4><strong>Détails</strong></h4>
+                            <ul>
+                                <li><strong>Totaux des paiements :</strong> <span class="badge bg-green">{{ total }}€</span></li>
+                                <li><strong>Nombres de paiements :</strong> {{ nbPaiments }}</li>
+                            </ul>
+                        </div>
+                        <!-- /.box-header -->
+
+                        <!-- /.box-body -->
+                    </div>
                 </div>
             </div>
         </section>
@@ -215,22 +265,30 @@
 
 {% endblock fos_user_content %}
 {% block advanced_javascripts %}
-    <script src="{{ asset('bundles/billandgo/assets/jquery-slimscroll/jquery.slimscroll.min.js') }}"></script>
-    <script src="{{ asset('bundles/billandgo/assets/fastclick/lib/fastclick.js') }}"></script>
-    <script src="{{ asset('bundles/billandgo/assets/jquery-knob/js/jquery.knob.js') }}"></script>
-    <script src="{{ asset('bundles/billandgo/assets/jquery-sparkline/dist/jquery.sparkline.min.js') }}"></script>
+<script src="{{ asset('bundles/billandgo/assets/jquery-slimscroll/jquery.slimscroll.min.js') }}"></script>
+<script src="{{ asset('bundles/billandgo/assets/fastclick/lib/fastclick.js') }}"></script>
+<script src="{{ asset('bundles/billandgo/assets/jquery-knob/js/jquery.knob.js') }}"></script>
+<script src="{{ asset('bundles/billandgo/assets/jquery-sparkline/dist/jquery.sparkline.min.js') }}"></script>
+<!-- FLOT CHARTS -->
+<script src="{{ asset('bundles/billandgo/assets/Flot/jquery.flot.js') }}"></script>
+<!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
+<script src="{{ asset('bundles/billandgo/assets/Flot/jquery.flot.resize.js') }}"></script>
+<!-- FLOT PIE PLUGIN - also used to draw donut charts -->
+<script src="{{ asset('bundles/billandgo/assets/Flot/jquery.flot.pie.js') }}"></script>
+<!-- FLOT CATEGORIES PLUGIN - Used to draw bar charts -->
+<script src="{{ asset('bundles/billandgo/assets/Flot/jquery.flot.categories.js') }}"></script>
 
 <script type="text/javascript">
 
 
-     {%  set counta = 0 %}
-     {%  set countb = 0 %}
-     {%  set breaka = 1 %}
-     {%  set breakb = 1 %}
-     var cb = [{% for i in 01..12 %}{%  set breaka = 1 %}{% for a in cb if breaka == 1 %} {% set counta = 0 %}{% if (a["mt"] == i) %}{% set counta = a["counter"] %}{% set breaka = 0 %}{% endif %}{% endfor %}{% if i < 12 %}{{  counta }},{% else %}{{ counta }}{% endif %}{% endfor %}];
-     var cq = [{% for i in 01..12 %}{%  set breakb = 1 %}{% for b in cq if breakb == 1 %} {% set countb = 0 %}{% if (b["mt"] == i) %}{% set countb = b["counter"] %}{% set breakb = 0 %}{% endif %}{% endfor %}{% if i < 12 %}{{  countb }},{% else %}{{ countb }}{% endif %}{% endfor %}];
+    {%  set counta = 0 %}
+    {%  set countb = 0 %}
+    {%  set breaka = 1 %}
+    {%  set breakb = 1 %}
+    var cb = [{% for i in 01..12 %}{%  set breaka = 1 %}{% for a in cb if breaka == 1 %} {% set counta = 0 %}{% if (a["mt"] == i) %}{% set counta = a["counter"] %}{% set breaka = 0 %}{% endif %}{% endfor %}{% if i < 12 %}{{  counta }},{% else %}{{ counta }}{% endif %}{% endfor %}];
+    var cq = [{% for i in 01..12 %}{%  set breakb = 1 %}{% for b in cq if breakb == 1 %} {% set countb = 0 %}{% if (b["mt"] == i) %}{% set countb = b["counter"] %}{% set breakb = 0 %}{% endif %}{% endfor %}{% if i < 12 %}{{  countb }},{% else %}{{ countb }}{% endif %}{% endfor %}];
 
-     var year = {{ 'now'|date('Y') }};
+    var year = {{ 'now'|date('Y') }};
     Highcharts.chart('container', {
         chart: {
             type: 'line'
@@ -262,10 +320,165 @@
             data: cb
         }]
     });
+
+    $(function () {
+        /*
+         * Flot Interactive Chart
+         * -----------------------
+         */
+        // We use an inline data source in the example, usually data would
+        // be fetched from a server
+
+        /*
+         * END INTERACTIVE CHART
+         */
+
+
+        /*
+         * BAR CHART
+         * ---------
+         */
+
+        var m = [];
+
+        {% set array2 = [] %}
+        {% for paiment in paiments %}
+
+        {% if  paiment.datePaiment|date('m') == 1 %}
+
+        {% if 'Janvier' in array2|keys %}
+        {% set array2 = array2|merge({ 'Janvier': array2['Janvier'] + paiment.amount}) %}
+        {% else %}
+        {% set array2 = array2|merge({ 'Janvier': paiment.amount}) %}
+        {% endif %}
+
+        {% elseif  paiment.datePaiment|date('m') == 2 %}
+        {% if 'Février' in array2|keys %}
+        {% set array2 = array2|merge({ 'Février': array2['Février'] + paiment.amount}) %}
+        {% else %}
+        {% set array2 = array2|merge({ 'Février': paiment.amount}) %}
+        {% endif %}
+
+        {% elseif  paiment.datePaiment|date('m') == 3 %}
+        {% if 'Mars' in array2|keys %}
+        {% set array2 = array2|merge({ 'Mars': array2['Mars'] + paiment.amount}) %}
+        {% else %}
+        {% set array2 = array2|merge({ 'Mars': paiment.amount}) %}
+        {% endif %}
+
+        {% elseif  paiment.datePaiment|date('m') == 4 %}
+        {% if 'Avril' in array2|keys %}
+        {% set array2 = array2|merge({ 'Avril': array2['Avril'] + paiment.amount}) %}
+        {% else %}
+        {% set array2 = array2|merge({ 'Avril': paiment.amount}) %}
+        {% endif %}
+
+        {% elseif  paiment.datePaiment|date('m') == 5 %}
+        {% if 'Mai' in array2|keys %}
+        {% set array2 = array2|merge({ 'Mai': array2['Mai'] + paiment.amount}) %}
+        {% else %}
+        {% set array2 = array2|merge({ 'Mai': paiment.amount}) %}
+        {% endif %}
+
+        {% elseif  paiment.datePaiment|date('m') == 6 %}
+        {% if 'Juin' in array2|keys %}
+        {% set array2 = array2|merge({ 'Juin': array2['Juin'] + paiment.amount}) %}
+        {% else %}
+        {% set array2 = array2|merge({ 'Juin': paiment.amount}) %}
+        {% endif %}
+
+        {% elseif  paiment.datePaiment|date('m') == 7 %}
+        {% if 'Juillet' in array2|keys %}
+        {% set array2 = array2|merge({ 'Juillet': array2['Juillet'] + paiment.amount}) %}
+        {% else %}
+        {% set array2 = array2|merge({ 'Juillet': paiment.amount}) %}
+        {% endif %}
+
+        {% elseif  paiment.datePaiment|date('m') == 8 %}
+
+        {% if 'Août' in array2|keys %}
+        {% set array2 = array2|merge({ 'Août': array2['Août'] + paiment.amount}) %}
+        {% else %}
+        {% set array2 = array2|merge({ 'Août': paiment.amount}) %}
+        {% endif %}
+
+        {% elseif  paiment.datePaiment|date('m') == 9 %}
+        {% if 'Septembre' in array2|keys %}
+        {% set array2 = array2|merge({ 'Septembre': array2['Septembre'] + paiment.amount}) %}
+        {% else %}
+        {% set array2 = array2|merge({ 'Septembre': paiment.amount}) %}
+        {% endif %}
+
+        {% elseif  paiment.datePaiment|date('m') == 10 %}
+        {% if 'Octobre' in array2|keys %}
+        {% set array2 = array2|merge({ 'Octobre': array2['Octobre'] + paiment.amount}) %}
+        {% else %}
+        {% set array2 = array2|merge({ 'Octobre': paiment.amount}) %}
+        {% endif %}
+
+        {% elseif  paiment.datePaiment|date('m') == 11 %}
+        {% if 'Novembre' in array2|keys %}
+        {% set array2 = array2|merge({ 'Novembre': array2['Novembre'] + paiment.amount}) %}
+        {% else %}
+        {% set array2 = array2|merge({ 'Novembre': paiment.amount}) %}
+        {% endif %}
+
+        {% elseif  paiment.datePaiment|date('m') == 12 %}
+        {% if 'Décembre' in array2|keys %}
+        {% set array2 = array2|merge({ 'Décembre': array2['Décembre'] + paiment.amount}) %}
+        {% else %}
+        {% set array2 = array2|merge({ 'Décembre': paiment.amount}) %}
+        {% endif %}
+        {% endif %}
+
+        {% endfor %}
+        var bar_data = {
+            data : [
+                {% for key,value in array2 %}
+                ['{{ key }}', '{{ value }}'],
+                {% endfor %}
+            ],
+            color: '#3c8dbc'
+        };
+        $.plot('#bar-chart', [bar_data], {
+            grid  : {
+                borderWidth: 1,
+                borderColor: '#f3f3f3',
+                tickColor  : '#f3f3f3'
+            },
+            series: {
+                bars: {
+                    show    : true,
+                    barWidth: 0.5,
+                    align   : 'center'
+                }
+            },
+            xaxis : {
+                mode      : 'categories',
+                tickLength: 0
+            }
+        })
+        /* END BAR CHART */
+
+
+    });
+
+    /*
+     * Custom Label formatter
+     * ----------------------
+     */
+    function labelFormatter(label, series) {
+        return '<div style="font-size:13px; text-align:center; padding:2px; color: #fff; font-weight: 600;">'
+            + label
+            + '<br>'
+            + Math.round(series.percent) + '%</div>'
+    }
+
+
 </script>
 
-    <script src="{{ asset('bundles/billandgo/js/dashboard.google.agenda.js') }}"></script>
-    <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
+<script src="{{ asset('bundles/billandgo/js/dashboard.google.agenda.js') }}"></script>
+<script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
 {% endblock %}
 
 

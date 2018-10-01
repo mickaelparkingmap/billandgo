@@ -9,6 +9,22 @@
 }
 
 
+.g-recaptcha {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+
+.error-captcha {
+    color: red;
+    padding: 10px;
+    text-align: center;
+    display: none;
+}
+
 body {
 
     background: #3498db url(../img/billandgo-nature.jpg);

@@ -86,15 +86,20 @@
             <div class="content">
 
                 <div class="login-box-body">
-                    <h2 class="login-box-msg"><strong>{{ legal["name"] }}</strong></h2>
+                    <h2 class="login-box-msg"><strong>{% if legal is not null %} {{ legal["name"] }}  {% else %} Mentions Légales {% endif %}</strong></h2>
 
 
                     <div>
+                        {% if legal is not null %}
                         {{ legal["content"]|raw }}
+                        {% else %}
+                            <h3>Ne vous inquiétez pas, nous sommes en pleines rédactions de ces mentions ;)</h3>
+                        {% endif %}
                     </div>
 
-
+                        {% if legal is not null %}
                     <p>Cette page a été publiée le {{ legal["publicationDate"]|date("d/m/Y") }}</p>
+                     {% endif %}          
                 </div>
             </div>
 
