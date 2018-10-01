@@ -13,6 +13,7 @@
 
 namespace BillAndGoBundle\Controller;
 
+use BillAndGoBundle\Entity\UserOption;
 use FOS\UserBundle\Model\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -204,6 +205,40 @@ class DefaultController extends Controller
                 $response->send();
 
             }
+        }
+        else if (null == $planPaid && null == $planFree) {
+            $manager = $containerAware->getDoctrine()->getManager();
+            $us = new UserOption();
+            $us->setUser($user);
+            $us->setName("pdf_bill_quote_choice");
+            $us->setValue("pdf.document.type.1");
+            $manager->persist($us);
+            $manager->flush();
+
+            $us1 = new UserOption();
+            $us1->setUser($user);
+            $us1->setName("user_free_plan");
+            $us1->setValue("active");
+            $manager->persist($us1);
+            $manager->flush();
+
+
+            $dateNow = new \DateTime();
+            $us2 = new UserOption();
+            $us2->setUser($user);
+            $us2->setName("user_free_plan_start");
+            $us2->setValue(($dateNow)->format("Y-m-d H:i:s"));
+            $manager->persist($us2);
+            $manager->flush();
+
+
+            $dateEdited = $dateNow->modify('+30 days');
+            $us3 = new UserOption();
+            $us3->setUser($user);
+            $us3->setName("user_free_plan_end");
+            $us3->setValue(($dateEdited)->format("Y-m-d H:i:s"));
+            $manager->persist($us3);
+            $manager->flush();
         }
         return (["plan" => $plan, "end" => $end, "remaining" => $remaining, "msg" => $msg]);
     }
