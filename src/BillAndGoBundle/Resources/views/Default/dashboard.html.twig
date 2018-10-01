@@ -133,6 +133,23 @@
             </div>
             <div class="col-md-6">
 
+                <div class="box box-default" id="row_google_agenda_hide" >
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Vos évènements à venir </h3>
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        </div>
+                        <div class="box-body">
+                            <hr/>
+                            <div class="">
+                                <p> Connectez-vous à votre compte Google afin de profiter de cette fonctionnalitée</p>
+
+                                <button type="button" class="btn btn-primary" onclick="location.href='{{ path('billandgo_parameters_show') }}'">Aller dans mes paramètres</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             <div class="box box-default" id="row_google_agenda" path-elem="{{ path('billandgo_organizer_show') }}">
                 <div class="box-header with-border">
                     <h3 class="box-title">Vos évènements à venir </h3>

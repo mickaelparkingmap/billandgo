@@ -101,7 +101,7 @@ class RegistrationController extends FOSController
                 $dateEdited = $dateNow->modify('+30 days');
                 $us3 = new UserOption();
                 $us3->setUser($user);
-                $us3->setName("user_free_plan_start");
+                $us3->setName("user_free_plan_end");
                 $us3->setValue(($dateEdited)->format("Y-m-d H:i:s"));
                 $manager->persist($us3);
                 $manager->flush();

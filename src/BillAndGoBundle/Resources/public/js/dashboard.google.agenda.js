@@ -59,9 +59,11 @@ var url_ga = null;
 function updateSigninStatus(isSignedIn) {
     if (isSignedIn) {
         url_ga = $("#row_google_agenda").attr("path-elem");
+        $("#row_google_agenda_hide").hide();
         listUpcomingEvents();
     } else {
        $("#row_google_agenda").hide();
+        $("#row_google_agenda_hide").show();
     }
 }
 
