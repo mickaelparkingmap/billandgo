@@ -146,6 +146,13 @@ class User extends BaseUser
      */
     private $unsubscribe;
 
+
+    /** @ORM\Column(name="github_id", type="string", length=255, nullable=true) */
+    protected $github_id;
+    /** @ORM\Column(name="github_access_token", type="string", length=255, nullable=true) */
+    protected $github_access_token;
+
+
     /**
      * @return string
      */
@@ -798,6 +805,39 @@ class User extends BaseUser
     }
 
     /**
+     * @return mixed
+     */
+    public function getGithubId()
+    {
+        return $this->github_id;
+    }
+
+    /**
+     * @param mixed $github_id
+     */
+    public function setGithubId($github_id): void
+    {
+        $this->github_id = $github_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGithubAccessToken()
+    {
+        return $this->github_access_token;
+    }
+
+    /**
+     * @param mixed $github_access_token
+     */
+    public function setGithubAccessToken($github_access_token): void
+    {
+        $this->github_access_token = $github_access_token;
+    }
+
+
+    /**
      * @return string
      */
     public function getFull() : string
@@ -833,4 +873,7 @@ class User extends BaseUser
         ];
         return json_encode($data);
     }
+
+
+
 }

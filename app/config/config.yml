@@ -46,6 +46,7 @@ twig:
 doctrine:
     dbal:
         driver: pdo_mysql
+        server_version: 5.7
         host: '%database_host%'
         port: '%database_port%'
         dbname: '%database_name%'
@@ -74,7 +75,6 @@ swiftmailer:
     #auth_mode: "%mailer_auth_mode%"
     #port: "%mailer_port%"
     spool: { type: memory }
-
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
@@ -123,3 +123,24 @@ fos_oauth_server:
     auth_code_class:     BillAndGo\ApiBundle\Entity\AuthCode
     service:
         user_provider: fos_user.user_provider.username             # This property will be used when valid credentials are given to load the user upon access token creation
+
+
+hwi_oauth:
+    # list of names of the firewalls in which this bundle is active, this setting MUST be set
+    connect:
+        account_connector: app.fos_user.oauth_provider
+    fosub:
+        username_iterations: 30
+        properties:
+            # these properties will be used/redefined later in the custom FOSUBUserProvider service.
+            github: github_id
+            gitlab: gitlab_id
+    firewall_names: ["main"]
+    resource_owners:
+        github:
+            type:                github
+            client_id:           2be8f4a70380a8497b8b
+            client_secret:       eeb3ee6780a7dab892ec5f24c643094f1da91120
+            scope:               'user,user:email,read:user'
+            options:
+                csrf: true

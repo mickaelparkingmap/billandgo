@@ -27,6 +27,11 @@ class SecurityController extends FOSController
      */
     public function loginAction(Request $request)
     {
+        $user = $this->getUser();
+        if (is_object($user)) { // || !$user instanceof UserInterface
+            return ($this->redirectToRoute("billandgo_dashboard"));
+        }
+
         /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
         $session = $request->getSession();
 

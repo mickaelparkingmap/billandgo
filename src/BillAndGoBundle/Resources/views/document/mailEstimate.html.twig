@@ -150,7 +150,7 @@
                     <td>
                         <table width="450" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="content_width" align="left">
                             <tr>
-                                <td style="color: #000; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 600; letter-spacing:1px;">Bonjour {{ contact.firstname|capitalize }} {{ contact.lastname|capitalize }}, <br> vous avez reçu {% if (type == "bill") %}une facture{% else %}un devis{% endif %} {{ document.number }} de la part de <b>{{ user.companyname }}</b> ({{ user.firstname|capitalize }} {{ user.lastname|capitalize }}). <br> Vous pouvez {% if (type == "bill") %}la{% else %}le{% endif %} consulter ci-dessous </td>
+                                <td style="color: #000; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 600; letter-spacing:1px;">Bonjour {{ contact.firstname|capitalize }} {{ contact.lastname|capitalize }}, <br> vous avez reçu {% if (type == "bill") %}une facture{% else %}un devis{% endif %} {{ document.number }} de la part de <b style="font-weight: 900">{{ user.companyname }}</b>. <br> Vous pouvez consulter ce document ci-dessous. </td>
                             </tr>
                         </table>
                     </td>
@@ -194,10 +194,22 @@
                             <p style="font-weight: normal">
                                 {{ user.firstname|capitalize }} {{ user.lastname|capitalize }}<br/>
                                 {{ user.address }}<br/>
-                                {{ user.city }}<br/>
-                                <a href="tel:{{ user.phone }}">{{ user.phone }}</a>
-                                {% if (user.phone and user.mobile) %} / {% endif %}
-                                <a href="tel:{{ user.mobile }}">{{ user.mobile }}</a>
+                                {{ user.city }}
+                            </p>
+                            <br>
+                            <br>
+                        </th>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="row" style="border-collapse: collapse; border-spacing: 0; display: table; padding: 0; position: relative; text-align: left; vertical-align: top; width: 100%">
+                    <tbody>
+                    <tr style="padding: 0; text-align: left; vertical-align: top;">
+                        <th style="padding-left:25px;text-align: right">
+
+                            <h3><b>{{ document.refClient.companyName }}</b></h3>
+                            <p style="font-weight: normal">
+                                {{ document.refClient.adress }} <br> {{ document.refClient.zipcode }} <br> {{ document.refClient.city }}, {{ document.refClient.country }}
                             </p>
                             <br>
                             <br>
@@ -214,19 +226,16 @@
                                 <tr style="padding: 0; text-align: left; vertical-align: top;">
                                     <th style="Margin: 0; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: normal; line-height: 1.3; margin: 0; padding: 0; text-align: left;">
                                         {% block contentmail %}
-                                            <h1 style="Margin: 0; Margin-bottom: 10px; color: inherit; font-family: Helvetica, Arial, sans-serif; font-size: 34px; font-weight: normal; line-height: 1.3; margin: 0; margin-bottom: 10px; padding: 0; text-align: right; word-wrap: normal;">
+                                            <h2 style="Margin: 0; Margin-bottom: 10px; color: inherit; font-family: Helvetica, Arial, sans-serif; font-size: 34px; font-weight: normal; line-height: 1.3; margin: 0; margin-bottom: 10px; padding: 0; text-align: right; word-wrap: normal;">
                                                 {% if (type == "bill") %}
                                                     Facture
                                                 {% else %}
                                                     Devis
                                                 {% endif %}
                                                 {{ document.number }}
-                                            </h1>
-                                            <br>
-                                            <br>
-                                            <h2 style="text-align:right">
-                                                {{ document.HT + document.VAT }}€ TTC
                                             </h2>
+                                            <br>
+                                            <br>
                                             <br>
                                             <br>
                                             <table class="row" style="border-collapse: collapse; border-spacing: 0; display: table; padding: 0; position: relative; text-align: left; vertical-align: top; width: 100%;">
@@ -313,7 +322,7 @@
                             {% else %}
                                 validité
                             {% endif %}
-                            : {{ document.delayDate|date('d-m-Y') }}
+                            : {{ document.delayDate|date('d/m/Y') }}
                             </h3>
                         </td>
                     </tr>
@@ -603,7 +612,7 @@
                         <table width="100%" cellpadding="0" cellspacing="0" align="center" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; text-align:center;">
                             <tr>
                                 <td align="center" style="text-align:center;">
-                                    <a href="#" style="display:block; width:100%; color: #3d4959; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600;text-decoration:none;">Télécharger en PDF</a>
+                                    <a href="{{ url('billandgo_document_generate_public', {'id': document.id, 'token': rand}) }}" style="display:block; width:100%; color: #3d4959; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600;text-decoration:none;">Télécharger en PDF</a>
                                     </a>
                                 </td>
                             </tr>
@@ -651,7 +660,7 @@
                         <table align="left" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full_width center_txt">
                             <tr>
                                 <td>
-                                    { {% if usersub["plan"] == "free" %}
+                                    {% if usersub["plan"] == "free" %}
                                     <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150"  alt="" title="" border="0" style="border:0; display:inline-block;"/>
                                     {% elseif user.getUserSkinPath() is not null %}
                                         <img src="{{ app.request.getSchemeAndHttpHost() ~ '/uploads/user/company/' ~ user.getCompanyLogoPath() }} " width="150"  alt="" title="" border="0" style="border:0; display:inline-block;"/>
@@ -725,7 +734,7 @@
                         <table align="left" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full_width center_txt">
                             <tr>
                                 <td style="color: #414d5f; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 12px; letter-spacing:.5px; font-weight: 400;">
-                                    © {{ "now"|date("Y") }} <a href="https://www.billandgo.fr" target="_blank" style="color: #414d5f; font-weight: 600; text-decoration:none;">Bill&Go</a>. All Rights Reserved - <small>Bill&Go is an <a href="https://iumio.com">iumio component</a></small>
+                                    © {{ "now"|date("Y") }} <a href="https://www.billandgo.fr" target="_blank" style="color: #414d5f; font-weight: 600; text-decoration:none;">Bill&Go</a>.Tous droits réservés - <small>Bill&Go est un produit <a href="https://www.iumio.com">iumio</a></small>
                                 </td>
                             </tr>
                         </table>
