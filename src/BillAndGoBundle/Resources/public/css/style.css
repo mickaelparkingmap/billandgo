@@ -29,6 +29,10 @@
     overflow-x: auto;
 }
 
+.main-footer {
+    margin-left: 0px!important;
+}
+
 .skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side {
     background-color: transparent!important;
 }
