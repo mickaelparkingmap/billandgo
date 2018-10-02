@@ -37,6 +37,7 @@
         "nelmio/api-doc-bundle": "^3.2",
         "php-http/curl-client": "^1.7",
         "php-http/httplug-bundle": "^1.11",
+
         "sensio/distribution-bundle": "^5.0.19",
         "sensio/framework-extra-bundle": "^3.0.2",
         "symfony/finder": "^4.1",
