@@ -34,8 +34,8 @@ var addEvent = function () {
                     id : event.id,
                     title: event.summary,
                     allDay: allday,
-                    start: formatingDate2(event.start),
-                    end: formatingDate2(event.end),
+                    start: formatingDate(event.start),
+                    end: formatingDate(event.end),
                     url: event.htmlLink,
                     backgroundColor : '#f2634f',
                     borderColor: '#f2634f',
@@ -124,7 +124,7 @@ $(function() {
 
         //When u resize an event in the calendar do the following:
         eventResize: function (event, delta, revertFunc) {
-            //do something when event is resized
+
         },
 
         eventRender: function(event, element) {
@@ -137,7 +137,6 @@ $(function() {
             $('#modalBody').html(event.description);
             $('#fullCalModal').modal();
         },
-
         /*events: idg,*/
 
         eventRender: function (event, element) {
@@ -185,8 +184,8 @@ function zeroPadded(val) {
 
 
 function doSubmit(){
+    console.log($('#eDueDate').val());
     $("#createEventModal").modal('hide');
-    console.log(new Date(moment($('#eDueDate').val()).format('Y/M/D')));
     var event = {
         title: $('#eName').val(),
         start: new Date($('#eStartDate').val()),
@@ -203,10 +202,10 @@ function doSubmit(){
         'location':$('#eLocation').val(),
         'description': $('#eDescription').val(),
         'start': {
-            'dateTime': d.getFullYear()+"-"+zeroPadded(d.getMonth() + 1)+"-"+zeroPadded(d.getDate())+"T00:00:00"
+            'date': d.getFullYear()+"-"+zeroPadded(d.getMonth() + 1)+"-"+zeroPadded(d.getDate())
         },
         'end': {
-            'dateTime':d1.getFullYear()+"-"+zeroPadded(d1.getMonth() + 1)+"-"+zeroPadded(d1.getDate())+"T00:00:00"
+            'date':d1.getFullYear()+"-"+zeroPadded(d1.getMonth() + 1)+"-"+zeroPadded(d1.getDate())
         }
     };
 
@@ -257,8 +256,8 @@ function initClient() {
 
         // Handle the initial sign-in state.
         updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-        authorizeButton.onclick = handleAuthClick;
-        signoutButton.onclick = handleSignoutClick;
+        //authorizeButton.onclick = handleAuthClick;
+        //signoutButton.onclick = handleSignoutClick;
     });
 }
 
@@ -347,12 +346,9 @@ function listUpcomingEvents() {
                     '                            </div>\n' +
                     '                            <!-- /.widget-user-image -->\n' +
                     '                            <h5 class="widget-user-username"> ' + event.summary + '  </h5>\n' +
-                    '                            <h5 class="widget-user-desc">Début : ' + when + '</h5>\n' +
+                    '                            <h5 class="widget-user-desc">Début : ' + when +  (("undefined" !== typeof event.end && "" !== event.end) ?' <br> Fin : ' + end : '')+' </h5>\n' +
                     (("undefined" !== typeof event.location && "" !== event.location) ?
                         '                            <h5 class="widget-user-desc">Lieu : ' + event.location + '</h5>\n' : "") +
-                    (("undefined" !== typeof event.end && "" !== event.end) ?
-                        '                            <h5 class="widget-user-desc">Fin : ' + end + '</h5>\n' : "") +
-                    '\n' +
                     '                        </div>\n' +
                     '                        <div class="box-footer no-padding">\n' +
                     '                            <div class="panel-body">\n' +

@@ -148,6 +148,37 @@ set status_fr = {
                                         </li>
                                         {% endif %}
                                         {% endif %}
+
+
+<hr>
+
+
+
+                                        {% if document.refClient and document.refClient.contacts|length > 0%}
+                                            <h5><strong>Envoyez votre {{ min_fr }} à un des contacts :</strong> </h5>
+
+                                                <div class="row">
+                                                    <form action="{{ path("billandgo_document_send_email", {"doc_id": document.id}) }}" method="get">
+                                                        <div class="form-group col-md-12 col-xs-12">
+
+                                                            <select dir="rtl" class="form-control bg-black" name="contact" style="color:#fff;">
+                                                                {% for contact in document.refClient.contacts %}
+                                                                    <option value="{{ contact.id }}">{{ contact.email }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-12 col-xs-12">
+                                                            <button type="submit" class="btn bg-black btn-outline center-block" style="width: 100%">
+                                                                <i class="fa fa-envelope"></i> Envoyer
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                        {% else %}
+                                        {% endif %}
+
+
+
                                         {% if document.status == "accepted" %}
                                         <li>
                                             {% set diffAnswer = date(date()).diff(document.answerDate) %}

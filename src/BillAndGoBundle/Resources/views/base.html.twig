@@ -499,7 +499,7 @@
 
     <footer class="main-footer">
         <div class="pull-right hidden-xs">
-            <b>Version</b> 1.5.2
+            <b>Version</b> 1.6.0
         </div>
         <strong>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go.</strong> Tous droits réservés. - <small>Bill&Go est un produit <a href="https://iumio.com">iumio</a></small> - <a href="{{ path('billandgo_ml') }}" target="_blank">Mentions légales et Politiques de confidentialités</a>
     </footer>
@@ -566,7 +566,7 @@
                 return day + ' ' + monthNames[monthIndex] + ' ' + year+ ' à '+ h+':'+i+':'+s;
             }
             else {
-                return day + ' ' + monthNames[monthIndex] + ' ' + year;
+                return day + ' ' + monthNames[monthIndex] + '  ' + year;
             }
         };
 
@@ -605,11 +605,11 @@
                     s = '0' + s;
                 }
                 //return (date.toUTCString());
-                return (year + '-' + (monthIndex) + '-' + day+ 'T'+ h+':'+i+':'+s);
+                return ( day + '-'+(monthIndex) + year + 'T'+ h+':'+i+':'+s);
             }
             else {
                 //return (date.toUTCString());
-                return (year + '-' + (monthIndex) + '-' + day);
+                return ( day + '-'+(monthIndex) +'-'+ year);
             }
         };
 

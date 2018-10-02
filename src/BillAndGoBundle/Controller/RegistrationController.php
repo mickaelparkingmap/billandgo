@@ -44,6 +44,11 @@ class RegistrationController extends FOSController
      */
     public function registerAction(Request $request)
     {
+        $user = $this->getUser();
+        if (is_object($user)) { // || !$user instanceof UserInterface
+           return ($this->redirectToRoute("billandgo_dashboard"));
+        }
+
         /** @var $formFactory FactoryInterface */
         $formFactory = $this->get('fos_user.registration.form.factory');
         /** @var $userManager UserManagerInterface */

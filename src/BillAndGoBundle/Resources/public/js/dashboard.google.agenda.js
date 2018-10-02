@@ -113,14 +113,14 @@ function listUpcomingEvents() {
             var color = ['bg-green', 'bg-purple', 'bg-black', 'bg-blue'];
             for (var i = 0; i < events.length; i++) {
                 var event = events[i];
-                var when = formatingDate(event.start);
-                var end = formatingDate(event.end);
+                var when = formatingDate2(event.start);
+                var end = formatingDate2(event.end);
                 if (!when) {
                     when = event.start.date;
                 }
 
                 html = html + (
-                    ' <div class="col-md-6 onlick" onclick="location.href=\'' + url_ga + '\'">\n' +
+                    ' <div class="col-md-6 onlick" onclick="location.href=\'' + event.htmlLink + '\'">\n' +
                     '                    <!-- Widget: user widget style 1 -->\n' +
                     '                    <div class="box box-widget widget-user-2 box-client ' + color[i] + '-client">\n' +
                     '                        <!-- Add the bg color to the header using any of the bg-* classes -->\n' +
@@ -129,13 +129,10 @@ function listUpcomingEvents() {
                     '                                <span class="img-circle"><i class="fa fa-calendar-o fa-3x ppdashbboard" ></i> </span>\n' +
                     '                            </div>\n' +
                     '                            <!-- /.widget-user-image -->\n' +
-                    '                            <h5 class="widget-user-username"> ' + event.summary + '  </h5>\n' +
-                    '                            <h5 class="widget-user-desc">Début : ' + when + '</h5>\n' +
+                    '                            <h5 class="widget-user-username" > ' + event.summary + '  </h5>\n' +
+                    '                            <h5 class="widget-user-desc">Début : ' + when +  (("undefined" !== typeof event.end && "" !== event.end) ?' <br> Fin : ' + end : '')+' </h5>\n' +
                     (("undefined" !== typeof event.location && "" !== event.location) ?
                         '                            <h5 class="widget-user-desc">Lieu : ' + event.location + '</h5>\n' : "") +
-                    (("undefined" !== typeof event.end && "" !== event.end) ?
-                        '                            <h5 class="widget-user-desc">Fin : ' + end + '</h5>\n' : "") +
-                    '\n' +
                     '                        </div>\n' +
                     '                        <div class="box-footer no-padding">\n' +
                     '                            <div class="panel-body">\n' +

@@ -7,7 +7,7 @@
 {% block fos_user_content %}
 
     <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
+    <div class="content-wrapper organizer">
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
@@ -25,23 +25,24 @@
         <section class="content">
 
             <div class="row">
-                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link"  id="authorize-button" style="display: none;">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-green"><i class="fa fa-sign-in"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text"><strong>Connectez-vous (Google)</strong></span>
-                        </div><!-- /.info-box-content -->
-                    </div><!-- /.info-box -->
+                <div class="col-md-12 col-sm-12 col-xs-12 onlick column-link"  id="authorize-button" style="display: none;">
+
+                            <p> Connectez-vous à votre compte Google afin de profiter de cette fonctionnalitée</p>
+
+                            <button type="button" class="btn btn-primary" onclick="location.href='{{ path('billandgo_parameters_show') }}'">Aller dans mes paramètres</button>
+                        <!-- /.info-box-content -->
                 </div><!-- /.col -->
-                <div class="col-md-3 col-sm-6 col-xs-12 onlick column-link"  id="signout-button" style="display: none;">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-red"><i class="fa fa-sign-out"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text"><strong>Déconnectez-vous (Google) </strong></span>
-                        </div><!-- /.info-box-content -->
-                    </div><!-- /.info-box -->
+                <div class="col-md-12 col-sm-12 col-xs-12 onlick column-link"  id="signout-button" style="display: none;">
+
+
+                        <p> Pour désactiver cette fonctionnalitée, veuillez vous déconnecter de votre compte Google depuis Bill&Go</p>
+
+                        <button type="button" class="btn btn-primary" onclick="location.href='{{ path('billandgo_parameters_show') }}'">Aller dans mes paramètres</button>
+
+                    <!-- /.info-box -->
                 </div><!-- /.col -->
             </div>
+            <hr>
 
 
             <div class="row" >

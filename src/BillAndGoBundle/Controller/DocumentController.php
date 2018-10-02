@@ -35,6 +35,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class DocumentController
@@ -843,7 +844,7 @@ class DocumentController extends Controller
             $rand = 0;
         }
 
-        if ($user->getPlan() != "paid") {
+        if ($usersub["plan"] === "free") {
             $sender = array('billandgo@iumio.com' => "Bill&Go Service");
         } else {
             $sender = array($user->getEmail() => ucfirst(strtolower($user->getFirstname()))
@@ -862,7 +863,8 @@ class DocumentController extends Controller
                         "document" => $document,
                         "user" => $user,
                         "rand" => $rand,
-                        "contact" => $contact
+                        "contact" => $contact,
+                        "usersub" => $usersub
                     )
                 ),
                 "text/html"
@@ -896,7 +898,7 @@ class DocumentController extends Controller
         $manager = $this->getDoctrine()->getManager();
         $document = $manager->getRepository('BillAndGoBundle:Document')->find($doc_id);
         if ($document == null) {
-            return new Response("404");
+           throw new NotFoundHttpException("Content not found");
         }
         if ($document->getToken() == $token) {
             if (($answer == 1) && ($document->getStatus() == "estimated")) {
@@ -916,8 +918,10 @@ class DocumentController extends Controller
                 return new Response("dommage ! :'(");
             }
         }
-        return new Response("401");
+        throw new NotFoundHttpException("Content not found");
     }
+
+
 
 
     /**
@@ -929,14 +933,53 @@ class DocumentController extends Controller
      */
     public function generateDocumentAction(int $id)
     {
+        return $this->generateDocument($id);
+    }
+
+    /**
+     * @Route("document/{id}/generate/public/{token}", name="billandgo_document_generate_public")
+     * @Method("GET")
+     * @param int $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @throws
+     */
+    public function generatePublicDocumentAction(int $id, int $token)
+    {
+        return $this->generateDocument($id, true, $token);
+    }
+
+
+    /** Generate document PDF
+     * @param int $id Document id
+     * @param bool $public If public generation
+     * @param int|null $token Document token
+     * @return Response
+     * @throws \Mpdf\MpdfException
+     */
+    public function generateDocument(int $id, bool $public = false, int $token = null)
+    {
         $manager = $this->getDoctrine()->getManager();
         $assetsManager = new Package(new EmptyVersionStrategy());
-        $document = $manager->getRepository('BillAndGoBundle:Document')->find($id);
-        $user = $this->getUser();
-        if (!is_object($user)) {
-            $ar401 = ["not connected"];
-            return new Response(json_encode($ar401), 401);
+        if (false === $public) {
+            $document = $manager->getRepository('BillAndGoBundle:Document')->find($id);
+            $user = $this->getUser();
+            if (!is_object($user)) {
+                $ar401 = ["not connected"];
+                return new Response(json_encode($ar401), 401);
+            }
         }
+        else {
+            $document = $manager->getRepository('BillAndGoBundle:Document')->findOneBy(
+                array("id" => $id, "token" => $token));
+
+            if (null === $document) {
+                throw new NotFoundHttpException("Vous n'avez pas accès à ce document");
+            }
+            else {
+                $user = $document->getRefUser();
+            }
+        }
+
         $usersub = DefaultController::userSubscription($user, $this);
         if ($usersub["remaining"] <= 0) {
             $this->addFlash("error", $usersub["msg"]);
@@ -1008,7 +1051,7 @@ class DocumentController extends Controller
                 array(
                     "document" => $document,
                     "user" => $user,
-                    "selfPremium" => ("paid" == $user->getPlan()) ? true : false,
+                    "selfPremium" => ("paid" == $usersub["plan"]) ? true : false,
                     "sentDate" => $date,
                     "lines" => $lines,
                     "totalHT" => $totalHT,
