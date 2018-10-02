@@ -32,3 +32,22 @@ fos_user_change_password:
 #fos_user_resetting:
 #    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
  #   prefix: /resetting
+
+
+#HWIOAuthBundle routes
+hwi_oauth_redirect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+    prefix:   /connect
+
+hwi_oauth_connect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/connect.xml"
+    prefix:   /connect
+
+hwi_oauth_login:
+    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+    prefix:   /login
+
+github_login:
+    path: /connect/check-github
+
+

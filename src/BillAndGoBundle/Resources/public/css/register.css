@@ -85,7 +85,7 @@ label:first-child {
     border-bottom: none;
 }
 
-.button, .button-start,
+.button, .button-start,.button-autologin,
 .rerun-button {
     padding: 10px 20px;
     border-radius: 3px;
@@ -108,7 +108,7 @@ label:first-child {
     display: inline-block;
     cursor: pointer;
 }
-.button:hover, .button-start:hover,
+.button:hover, .button-start:hover,.button-autologin
 .rerun-button:hover {
     background: #f4704a;
 }

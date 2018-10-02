@@ -16,6 +16,7 @@ namespace BillAndGoBundle\Controller;
 
 use BillAndGoBundle\Entity\Paiment;
 use BillAndGoBundle\Entity\Project;
+use BillAndGoBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\DependencyInjection\Container;
@@ -234,6 +235,10 @@ class DataController extends Controller
         $user->setMobile(md5($user->getMobile()));
         $user->setPhone(md5($user->getPhone()));
         $user->setSiret(md5($user->getSiret()));
+        $user->setGithubAccessToken(NULL);
+        $user->setGithubId(NULL);
+        /*$user->setGitlabaccessToken(NULL);
+        $user->setGitlabId(NULL);*/
 
         $user->setBanque(md5($user->getBanque()));
         $user->setIban(md5($user->getIban()));

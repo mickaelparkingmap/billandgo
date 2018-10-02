@@ -23,6 +23,14 @@ security:
 
             logout:       true
             anonymous:    true
+            oauth:
+                resource_owners:
+                   github:          "/connect/check-github"
+                login_path:        /login
+                use_forward:       true
+                failure_path:      /login
+                oauth_user_provider:
+                    service: app.fos_user.oauth_provider
             remember_me:
                 secret:   '%kernel.secret%'
                 lifetime: 604800 # 1 week in seconds
@@ -35,6 +43,7 @@ security:
             fos_oauth: true                            # OAuth2 protected resource
             stateless: true                            # Do no set session cookies
             anonymous: false                           # Anonymous access is not allowed
+
 
     access_control:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }

@@ -36,7 +36,7 @@ set status_fr = {
             <h1>
                 <span id="doc_type">{{ maj_fr }}</span>
                 <small>
-                    <span id="doc_number">{{ document.number }}</span><i> pour le client {{ document.refClient.companyName }}</i>
+                    <span id="doc_number">{{ document.number }}</span> pour le client <strong>{{ document.refClient.companyName }}</strong></i>
                 </small>
             </h1>
             <ol class="breadcrumb">
@@ -111,7 +111,7 @@ set status_fr = {
 
             {% set client = document.refClient %}
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-6">
 
                     <!-- Widget: user widget style 1 -->
                     <div class="box box-widget widget-user-2">
@@ -132,61 +132,31 @@ set status_fr = {
                                         <li><strong>Status : </strong> {{ status_fr[document.status]|capitalize }}</li>
                                         <li><strong>Montant {% if not document.isEstimate %}payé{% endif %} : </strong> {% if not document.isEstimate %}{{ document.sumPaiments }} € sur {% endif %}{{ document.getHT + document.VAT }} €</li>
                                         {% if document.sentDate %}
-                                        <li><strong>Date d'envoi : </strong> {{ document.sentDate|date('d-m-Y') }}
+                                        <li><strong>Date d'envoi : </strong> {{ document.sentDate|date('d/m/Y') }}
                                                 {% set diffSent = date(date()).diff(document.sentDate) %}
                                                 {% set leftSent = diffSent.days %}
-                                                <small class="color-grey">({{ leftSent }} jours)</small></li>
+                                                <small class="color-grey">({{ leftSent }} jour(s))</small></li>
 
                                         {% endif %}
                                         {% if document.isEstimate %}
                                         {% if document.delayDate %}
                                         <li>
-                                            <strong>Date de validité : </strong>  {{ document.delayDate|date('d-m-Y') }}
+                                            <strong>Date de validité : </strong>  {{ document.delayDate|date('d/m/Y') }}
                                                 {% set diffDelay = date(date()).diff(document.delayDate) %}
                                                 {% set leftDelay = diffDelay.days %}
-                                                <small class="color-grey">reste {{ leftDelay }} jours</small>
+                                                <small class="color-grey">reste {{ leftDelay }} jour(s)</small>
                                         </li>
                                         {% endif %}
                                         {% endif %}
-
-
-<hr>
-
-
-
-                                        {% if document.refClient and document.refClient.contacts|length > 0%}
-                                            <h5><strong>Envoyez votre {{ min_fr }} à un des contacts :</strong> </h5>
-
-                                                <div class="row">
-                                                    <form action="{{ path("billandgo_document_send_email", {"doc_id": document.id}) }}" method="get">
-                                                        <div class="form-group col-md-12 col-xs-12">
-
-                                                            <select dir="rtl" class="form-control bg-black" name="contact" style="color:#fff;">
-                                                                {% for contact in document.refClient.contacts %}
-                                                                    <option value="{{ contact.id }}">{{ contact.email }}</option>
-                                                                {% endfor %}
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-12 col-xs-12">
-                                                            <button type="submit" class="btn bg-black btn-outline center-block" style="width: 100%">
-                                                                <i class="fa fa-envelope"></i> Envoyer
-                                                            </button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                        {% else %}
-                                        {% endif %}
-
-
 
                                         {% if document.status == "accepted" %}
                                         <li>
                                             {% set diffAnswer = date(date()).diff(document.answerDate) %}
                                             {% set leftAnswer = diffAnswer.days %}
                                         <strong class="color-{{ document.status }}">Date de validation : </strong>
-                                                    <span class="color-{{ document.status }}">{{ document.answerDate|date('d-m-Y') }}</span>
+                                                    <span class="color-{{ document.status }}">{{ document.answerDate|date('d/m/Y') }}</span>
 
-                                                    <small class="color-grey"> - il y a {{ leftAnswer }} jours</small>
+                                                    <small class="color-grey"> - il y a {{ leftAnswer }} jour(s)</small>
 
                                         </li>
                                         {% elseif document.status == "refused" %}
@@ -196,13 +166,14 @@ set status_fr = {
                                             <strong class="color-{{ document.status }}">Date de refus : </strong>
                                                     <span class="color-{{ document.status }}">{{ document.answerDate|date('d-m-Y') }}</span>
 
-                                                    <small class="color-grey">il y a {{ leftAnswer }} jours</small>
+                                                    <small class="color-grey">il y a {{ leftAnswer }} jour(s)</small>
                                         </li>
                                         {% endif %}
                                     </ul>
                                 </div>
                                 <div class="col-md-6">
-                                    <h4>Actions</h4>
+                                    <h4>Actions </h4>
+                                    <small class="text-info"><i class="fa fa-info"></i> Effectuer des actions manuellement</small>
 
                                         <div class="box-footer text-left">
                                             {% if modify %}
@@ -307,14 +278,14 @@ set status_fr = {
 
                                                     <div class="">
                                                         <a class="btn btn-success btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'accepted'}) }}">
-                                                            Devis accepté
+                                                            Accepter le devis
                                                         </a>
                                                     </div>
                                                     <div class="">
                                                         <a class="btn btn-warning btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'canceled'}) }}">Annuler devis</a>
                                                     </div>
                                                     <div class="">
-                                                        <a class="btn btn-danger btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'refused'}) }}">Devis refusé</a>
+                                                        <a class="btn btn-danger btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'refused'}) }}">Refuser le devis</a>
                                                     </div>
 
                                             {% elseif document.status == "accepted" %}
@@ -475,7 +446,7 @@ set status_fr = {
                     <!-- /.widget-user -->
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                     {{ include("BillAndGoBundle:Devis:fullclient.html.twig") }}
                 </div>
 
@@ -749,6 +720,28 @@ set status_fr = {
                 });
             }
         );
+
+        $(".form-contact-send").submit(function (e) {
+            e.preventDefault();
+            $(".send-btn-contact").attr("disabled", "disabled");
+            $.ajax({
+                url : $(this).attr("action"),
+                type : 'GET',
+                data: $(this).serialize(),
+                success : function(data, statut){ // success est toujours en place, bien sûr !
+                    $(".alert-contact-send").html("<div class='alert alert-success'>Le document a bien été envoyé à ce contact</span>").show();
+                },
+
+                error : function(resultat, statut, erreur){
+                    $(".alert-contact-send").html("<div class='alert alert-success'>Une erreur s'est produite : l'envoi n'a pas pu être effectué</span>").show();
+                }
+            });
+
+            setTimeout(function () {
+                $(".alert-contact-send").hide();
+                $(".send-btn-contact").removeAttr("disabled");
+            }, 6000);
+        });
 
         var imgDoc = '{{ asset('uploads/user/company/'~user.getCompanyLogoPath ) }}';
     </script>
