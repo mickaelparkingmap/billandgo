@@ -18,14 +18,18 @@ use BillAndGoBundle\Entity\Line;
 use BillAndGoBundle\Entity\Project;
 use BillAndGoBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use BillAndGoBundle\Form\ProjectType;
 use BillAndGoBundle\Form\LineProjectType;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class ProjectController extends Controller
 {
@@ -476,6 +480,47 @@ class ProjectController extends Controller
         $line->setDeadline(new \DateTime($edit['deadline']));
         $manager->flush();
         return 0;
+    }
+
+
+    /**
+     *
+     * @Route("project/{id}/edit/save", name="billandgo_project_edit_save")
+     * @Method("POST")
+     * @param int $id
+     * @param Request $request
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function editDesc(int $id, Request $request)
+    {
+        $user = $this->getUser();
+        if (!is_object($user)) {
+            $ar401 = ["not connected"];
+            return new Response(json_encode($ar401), 401);
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
+        }
+
+        $desc = $request->get("desc");
+
+        if (null != $desc) {
+            $manager = $this->getDoctrine()->getManager();
+            $project = $this->getDoctrine()->getRepository('BillAndGoBundle:Project')->
+            findOneBy(["id" => $id, "refUser" => $user->getId()]);
+            if ($project == null) {
+                throw new NotFoundHttpException("Projet non trouvée");
+            }
+
+            //$document = new Document();
+            $project->setDescription($desc);
+            $manager->merge($project);
+            $manager->flush();
+            return new JsonResponse(["OK"]);
+        }
+        throw new NotFoundHttpException("Valeur Description nulle");
     }
 
     /**

@@ -55,6 +55,24 @@ class DocumentRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+
+    /**
+     * @param int $refuser
+     * @param string $q
+     * @return array
+     */
+    public function findAllDoc(int $refuser, string $q) : array
+    {
+        $qb = $this->createQueryBuilder('doc');
+        $qb
+            ->select('doc')
+            ->where('doc.refUser = :user')
+            ->andWhere('doc.description LIKE :q OR doc.number LIKE :q')
+            ->setParameter('user', $refuser)
+            ->setParameter('q', '%'.$q.'%');
+        return $qb->getQuery()->getResult();
+    }
+
     /**
      * @param User $user
      * @param string $type

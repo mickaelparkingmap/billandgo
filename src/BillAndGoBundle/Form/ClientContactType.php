@@ -33,7 +33,7 @@ class ClientContactType extends AbstractType
             ->add('lastname', TextType::class, array('label' => 'Nom'))
             ->add('firstname', TextType::class, array('label' => 'Prénom'))
             ->add('email', EmailType::class, array('label' => 'E-mail'))
-            ->add('phone', TextType::class, array('label' => 'Téléphone'))
+            ->add('phone', TextType::class, array('label' => 'Téléphone', "required" => false))
             ->add('mobile', TextType::class, array('label' => 'Mobile', 'attr'  => array('class' => 'form-control')))
         ;
     }

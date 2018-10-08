@@ -73,7 +73,16 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <ul>
-                                        <li><strong>Description : </strong> {{ project.description }}</li>
+                                        <li><strong>Description : </strong> <span id="pdescription">{{ project.description }}</span> <a href="#" class="btn btn-primary btn-outline edit-desc">Editer la description</a>
+                                            <div class="form-desc-edited form-group " style="display: none;">
+                                                <textarea class="desc-edited form-control">{{ project.description|trim }}</textarea>
+                                                <div class="text-left">
+                                                    <br>
+                                                    <input type="button" value="Annuler" class="canceled-desc-edit btn btn-danger">
+                                                    <input type="button" value="Sauvegarder" class="save-desc-edit btn btn-success">
+
+                                                </div>
+                                            </div></li>
                                         <li><strong>Date de début du projet : </strong> {{ project.begin|date('Y-m-d') }}</li>
                                         <li><strong>Deadline : </strong> {{ project.deadLine|date('Y-m-d') }}</li>
                                     </ul>
@@ -122,6 +131,7 @@
                 </div>
                 <div class="col-md-5">
                     {% if project.refClient != NULL %}
+                        {% set document = project.refClient %}
                         {% set client = project.refClient %}
                         {{ include("BillAndGoBundle:Devis:fullclient.html.twig") }}
                     {% endif %}
@@ -583,6 +593,34 @@
                 }
             );
         });
+
+        $(".edit-desc").click(function () {
+            $(".form-desc-edited").show();
+            $(".edit-desc").hide();
+        });
+
+        $(".canceled-desc-edit").click(function () {
+            $(".form-desc-edited").hide();
+            $(".edit-desc").show();
+        });
+
+        $(".save-desc-edit").click(function () {
+            var q = $(".desc-edited").val();
+            $.ajax({
+                url : "{{ path('billandgo_project_edit_save', {"id": project.id}) }}",
+                type : 'POST',
+                data: {desc : q},
+                success : function(data, statut){ // success est toujours en place, bien sûr !
+                    $("#pdescription").html(q);
+                    $(".form-desc-edited").hide();
+                    $(".edit-desc").show();
+                },
+
+                error : function(resultat, statut, erreur){
+                }
+            });
+        });
+
         $('#billandgobundle_line_deadline').datepicker();
         $('.datepick').datepicker();
         $('#bill_creation').datepicker();

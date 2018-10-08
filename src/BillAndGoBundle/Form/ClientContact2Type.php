@@ -34,9 +34,10 @@ class ClientContact2Type extends AbstractType
             ->add('firstname', TextType::class, array('label' => 'Prénom'))
             ->add('lastname', TextType::class, array('label' => 'Nom'))
             ->add('email', EmailType::class, array('label' => 'E-mail'))
-            ->add('phone', TextType::class, array('label' => 'Téléphone'))
+            ->add('phone', TextType::class, array('label' => 'Téléphone', "required" => false))
             ->add('mobile', TextType::class, array('label' => 'Mobile'))
-            ->add('save', SubmitType::class, array('label' => 'Valider', 'attr' => array("class" => "btn btn-success btn-outline pull-right")))
+            ->add('save', SubmitType::class, array('label' => 'Valider',
+                'attr' => array("class" => "btn btn-success btn-outline pull-right")))
         ;
     }
     

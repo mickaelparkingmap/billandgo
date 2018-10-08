@@ -1077,6 +1077,7 @@ set status_fr = {
     </script>
     {{ parent() }}
     <script>
+
         //filter
         $('#estimateFilterAll').addClass('active');
 
@@ -1107,6 +1108,8 @@ set status_fr = {
                 $('#estimateFilterAccepted').removeClass('active');
             }
         );
+
+
         $('#project_deadline').datepicker();
         $('#bill_delay').datepicker();
         $('#document-filter-begin').datepicker();

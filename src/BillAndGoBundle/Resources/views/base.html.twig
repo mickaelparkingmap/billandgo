@@ -74,7 +74,7 @@
                             <img class="img-circle" src="{% if user.getUserSkinPath() is null %}{{ asset('bundles/billandgo/img/default_user.png') }}{% else %}{{ '/uploads/user/avatar/'~user.getUserSkinPath()}} {% endif %}" />
                         </li>
                         <li class="name-side inline-block-e">
-                            {{ user.username |capitalize }}
+                           {% if user.firstname is not null and user.lastname is not null %} <small>{{ user.firstname|capitalize }} {{ user.lastname|capitalize }}</small>{% else %}<span style="font-size: 12px">{{ user.username }}</span>{% endif %}
                         </li>
                         {% if user.jobtype is not null %}
                             <li class="jobtype-side"><small>
@@ -331,16 +331,11 @@
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar ">
             <!-- search form -->
-            {#<form action="#" method="get" class="sidebar-form">
+            <div class="sidebar-form">
                 <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="Search...">
-                    <span class="input-group-btn">
-                        <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i
-                                    class="fa fa-search"></i>
-                        </button>
-                    </span>
+                    <input type="text" name="q" class="form-control" placeholder="Rechercher..." id="gb-search">
                 </div>
-            </form>#}
+            </div>
             <!-- /.search form -->
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu" data-widget="tree">
@@ -498,10 +493,10 @@
     {% endblock fos_user_content %}
 
     <footer class="main-footer">
-        <div class="pull-right hidden-xs">
-            <b>Version</b> 1.6.0 SUN-SIX
-        </div>
-        <strong>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go.</strong> Tous droits réservés. - <small>Bill&Go est un produit <a href="https://iumio.com">iumio</a></small> - <a href="{{ path('billandgo_ml') }}" target="_blank">Mentions légales et Politiques de confidentialités</a>
+        <small> <strong> Copyright &copy; {{ "now"|date("Y") }} - Bill&Go.</strong> Tous droits réservés. - <small>Bill&Go est un produit <a href="https://iumio.com">iumio</a></small> - <a href="{{ path('billandgo_ml') }}" target="_blank">Mentions légales et Politiques de confidentialités</a>
+        <div class="pull hidden-xs">
+           <b>Version</b> 1.6.2 SUN-SIX-TWO</div>
+        </small>
     </footer>
     <!-- Add the sidebar's background. This div must be placed immediately after the control sidebar -->
     <div class="control-sidebar-bg"></div>
@@ -517,6 +512,17 @@
     </div>
 </div>
 
+<div id="search">
+    <button type="button" class="close">×</button>
+    <div>
+        <input type="search" value="" placeholder="Tapez votre recherche" class="search_in_progress" url="{{ path("billandgo_search_global") }}"/>
+    </div>
+    <div class="row">
+        <div class="col-md-12 results-search">
+
+        </div>
+    </div>
+</div>
 <!--  Scripts-->
 
 {% block javascripts %}
@@ -612,6 +618,96 @@
                 return ( day + '-'+(monthIndex) +'-'+ year);
             }
         };
+
+
+        $(function () {
+            $('#gb-search').on('click', function(event) {
+                event.preventDefault();
+                $('#search').addClass('open');
+                $("body").addClass("noscroll");
+                $(this).attr("disabled", "disabled");
+                $(".search_in_progress").val("");
+                $(".results-search").html("");
+                $('#search > form > input[type="search"]').focus();
+            });
+
+            $('#search, #search button.close').on('click keyup', function(event) {
+                if (event.target == this || event.target.className == 'close' || event.keyCode == 27) {
+                    $("body").removeClass("noscroll");
+                    $(this).removeClass('open');
+                    $("#gb-search").removeAttr("disabled");
+                }
+            });
+
+            /**
+             * Returns a random number between min (inclusive) and max (exclusive)
+             */
+            function getRandomInt(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            var timer = 0;
+            var bg = ["primary", "green", "red", "black", "orange", "yellow", "purple"];
+            function globalSearch (){
+                var q =  $.trim($(".search_in_progress").val());
+                if ("" !== q) {
+                    $.ajax({
+                        url : $(".search_in_progress").attr("url"),
+                        type : 'POST',
+                        data: {q : q},
+                        success : function(data, statut){ // success est toujours en place, bien sûr !
+                            var rs = data["results"];
+                            if (null !== null || rs.length !== 0) {
+                                var temp = "";
+                                $.each(rs, function (index, value) {
+
+                                    var rm = getRandomInt(0, 6);
+                                   
+                                    temp +=
+                                        '    <div class="col-lg-3 col-xs-6 element-search">\n' +
+                                        '                <!-- small box -->\n' +
+                                        '                <div class="small-box bg-'+bg[rm]+'">\n' +
+                                        '                    <div class="inner">\n' +
+                                        '                        <h4><strong>'+value["name"]+'</strong></h4>\n' +
+                                        '\n' +
+                                        '                        <p>'+value["summary"]+'</p>\n' +
+                                        '                    </div>\n' +
+                                        '                    <div class="icon">\n' +
+                                        '                        <i class="ion ion-search"></i>\n' +
+                                        '                    </div>\n' +
+                                        '                    <a href="'+value["url"]+'" class="small-box-footer">\n' +
+                                        '                        Accéder <i class="fa fa-arrow-circle-right"></i>\n' +
+                                        '                    </a>\n' +
+                                        '                </div>\n' +
+                                        '\n' +
+                                        '            </div>';
+
+                                })
+
+                                $(".results-search").html(temp);
+                            }
+                        },
+
+                        error : function(resultat, statut, erreur){
+
+                        }
+
+                    });
+                }
+                else {
+                    $(".results-search").html("");
+                }
+                return false;
+            }
+            $(".search_in_progress").on('keyup', function(e){
+                if (timer) {
+                    clearTimeout(timer);
+                }
+                timer = setTimeout(globalSearch, 400);
+            });
+
+        });
+
 
     </script>
     <script type="text/javascript">

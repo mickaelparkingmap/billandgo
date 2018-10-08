@@ -122,13 +122,23 @@ set status_fr = {
                             </div>
                             <!-- /.widget-user-image -->
                             <h3 class="widget-user-username">Informations</h3>
-                            <h5 class="widget-user-desc">Descriptions, ...</h5>
+                            <h5 class="widget-user-desc">Descriptions, Status, Montants, ...</h5>
                         </div>
                         <div class="box-footer">
                             <div class="row">
                                 <div class="col-md-6">
                                     <ul>
-                                        <li><strong>Description : </strong> <span id="pdescription">{{ document.description }}</span></li>
+                                        <li><strong>Description : </strong> <span id="pdescription">{{ document.description }}</span> <a href="#" class="btn btn-primary btn-outline edit-desc">Editer la description</a>
+                                        <div class="form-desc-edited form-group " style="display: none;">
+                                            <textarea class="desc-edited form-control">{{ document.description|trim }}</textarea>
+                                            <div class="text-left">
+                                                <br>
+                                                <input type="button" value="Annuler" class="canceled-desc-edit btn btn-danger">
+                                            <input type="button" value="Sauvegarder" class="save-desc-edit btn btn-success">
+
+                                            </div>
+                                        </div>
+                                        </li>
                                         <li><strong>Status : </strong> {{ status_fr[document.status]|capitalize }}</li>
                                         <li><strong>Montant {% if not document.isEstimate %}payé{% endif %} : </strong> {% if not document.isEstimate %}{{ document.sumPaiments }} € sur {% endif %}{{ document.getHT + document.VAT }} €</li>
                                         {% if document.sentDate %}
@@ -721,6 +731,24 @@ set status_fr = {
             }
         );
 
+        var se = 0;
+        $(document).ready(function () {
+            $("#billandgobundle_line_refTax option").each(
+                function() {
+                   if ($(this).val() != "") {
+                       if ($(this).is(':selected')) {
+                           return;
+                       }
+                   }
+                    se++;
+
+                   if (6 === se) {
+                       $("#billandgobundle_line_refTax option[value='5']").attr("selected", "selected");
+                   }
+                }
+            );
+        });
+
         $(".form-contact-send").submit(function (e) {
             e.preventDefault();
             $(".send-btn-contact").attr("disabled", "disabled");
@@ -742,6 +770,35 @@ set status_fr = {
                 $(".send-btn-contact").removeAttr("disabled");
             }, 6000);
         });
+
+        $(".edit-desc").click(function () {
+           $(".form-desc-edited").show();
+           $(".edit-desc").hide();
+        });
+
+        $(".canceled-desc-edit").click(function () {
+            $(".form-desc-edited").hide();
+            $(".edit-desc").show();
+        });
+
+        $(".save-desc-edit").click(function () {
+            var q = $(".desc-edited").val();
+            $.ajax({
+                url : "{{ path('billandgo_document_edit_save', {"doc_id": document.id}) }}",
+                type : 'POST',
+                data: {desc : q},
+                success : function(data, statut){ // success est toujours en place, bien sûr !
+                   $("#pdescription").html(q);
+                    $(".form-desc-edited").hide();
+                    $(".edit-desc").show();
+                },
+
+                error : function(resultat, statut, erreur){
+                }
+            });
+        });
+
+
 
         var imgDoc = '{{ asset('uploads/user/company/'~user.getCompanyLogoPath ) }}';
     </script>
