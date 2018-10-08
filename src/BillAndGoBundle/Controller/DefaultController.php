@@ -13,17 +13,61 @@
 
 namespace BillAndGoBundle\Controller;
 
+use BillAndGoBundle\Entity\Client;
+use BillAndGoBundle\Entity\Document;
+use BillAndGoBundle\Entity\Project;
 use BillAndGoBundle\Entity\UserOption;
 use FOS\UserBundle\Model\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Tests\Controller\ContainerAwareController;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 class DefaultController extends Controller
 {
+
+    private $base = array(
+        ["name" => "Mes devis", "url" => "billandgo_estimate_index", "type" => "base",
+            "summary" => "Accéder à vos devis"],
+        ["name" => "Mes facture", "url" => "billandgo_bill_index", "type" => "base",
+            "summary" => "Accéder à vos factures"],
+        ["name" => "Mes paiements", "url" => "billandgo_paiment_index", "type" => "base",
+            "summary" => "Accéder à vos paiements"],
+        ["name" => "Ajouter un paiement", "url" => "billandgo_paiment_add", "type" => "base",
+            "summary" => "Ajouter un nouveau paiement"],
+        ["name" => "Ajouter un projet", "url" => "billandgo_project_add", "type" => "base",
+            "summary" => "Ajouter un nouveau projet"],
+        ["name" => "Mes projets", "url" => "billandgo_project_list", "type" => "base",
+            "summary" => "Accéder à vos projets"],
+        ["name" => "Editer mon profil", "url" => "fos_user_profile_edit", "type" => "base",
+            "summary" => "Vous pouvez éditer votre profil"],
+        ["name" => "Mon profil", "url" => "fos_user_profile_show", "type" => "base",
+            "summary" => "Accéder à vos projets"],
+        ["name" => "Paramètres de votre agenda", "url" => "billandgo_parameters_show",
+            "type" => "base", "summary" => "Editer les options de votre agenda"],
+        ["name" => "Modèle de PDF", "url" => "billandgo_parameters_show", "type" => "base",
+            "summary" => "Editer le modèle de vos factures, devis"],
+        ["name" => "Template PDF", "url" => "billandgo_parameters_show", "type" => "base",
+            "summary" => "Editer le template de vos factures, devis"],
+        ["name" => "Mon agenda", "url" => "billandgo_organizer_show", "type" => "base",
+            "summary" => "Accéder à votre agenda"],
+        ["name" => "Mes données", "url" => "billandgo_datas", "type" => "base",
+            "summary" => "Accéder à vos données"],
+        ["name" => "Désinscription", "url" => "billandgo_datas", "type" => "base",
+            "summary" => "Désinscrivez-vous du service Bill&Go"],
+        ["name" => "Exporter des données", "url" => "billandgo_datas", "type" => "base",
+            "summary" => "Exporter vos données"],
+        ["name" => "Mes clients", "url" => "billandgo_clients_list", "type" => "base",
+            "summary" => "Accéder à la liste de vos clients"],
+        ["name" => "Ajouter un client", "url" => "billandgo_clients_add", "type" => "base",
+            "summary" => "Ajouter un nouveau client"],
+    );
+
     /**
      * Legal mention page
      * @Route("/mentions-legales", name="billandgo_ml")
@@ -241,6 +285,100 @@ class DefaultController extends Controller
             $manager->flush();
         }
         return (["plan" => $plan, "end" => $end, "remaining" => $remaining, "msg" => $msg]);
+    }
+
+    /**
+     * @Route("/search-global", name="billandgo_search_global")
+     * @Method({"POST"})
+     */
+    public function searchGlobalAction(Request $request)
+    {
+        $vals = [];
+        $q = $request->get("q");
+        if (in_array($q, [null, ""])) {
+            return (new JsonResponse(["results" => null]));
+        }
+
+        $user = $this->getUser();
+        if (!is_object($user)) { // || !$user instanceof UserInterface
+            return (new JsonResponse(500, ["results" => []]));
+        }
+
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            return (new JsonResponse(500, ["results" => []]));
+        }
+
+        $vals = $this->arrayFind($q , $this->base);
+
+        $repoDoc = $this->getDoctrine()->getRepository(Document::class);
+        $docs = $repoDoc->findAllDoc($user->getId(), $q);
+        foreach ($docs as $one) {
+            $vals[] = ["name" => (($one->isEstimate())? "Devis" : "Facture" )." : ".$one->getNumber(),
+                "url" => $this->generateUrl("billandgo_document_view", ["id" => $one->getId()]),
+                "type" => "database",
+                "summary" => $this->reduceText($one->getDescription(), 100)];
+        }
+
+        $repoProj = $this->getDoctrine()->getRepository(Project::class);
+        $proj = $repoProj->findAllProject($user->getId(), $q);
+        foreach ($proj as $one) {
+            $vals[] = ["name" => "Projet : ".$one->getName() ,
+                "url" => $this->generateUrl("billandgo_project_view",
+                    ["id" => $one->getId()]), "type" => "database",
+                "summary" => $this->reduceText($one->getDescription(), 100)];
+        }
+
+
+        $repoCli = $this->getDoctrine()->getRepository(Client::class);
+        $cli = $repoCli->findAllClient($user->getId(), $q);
+        foreach ($cli as $one) {
+            $vals[] = ["name" => "Client : ".$one->getCompanyname() ,
+                "url" => $this->generateUrl("billandgo_clients_view",
+                    ["id" => $one->getId()]), "type" => "database",
+                "summary" => $this->reduceText($one->getAdress().", ".$one->getZipcode()." ".
+                    $one->getCity(), 100)];
+        }
+
+        return (new JsonResponse(["results" => $vals]));
+
+    }
+
+    /**
+     * @param $needle
+     * @param array $haystack
+     * @return array
+     */
+    private function arrayFind($needle, array $haystack)
+    {
+        $elems = [];
+        foreach ($haystack as $key => $value) {
+            if (false !== stripos($value["name"], $needle) || false !== stripos($value["summary"], $needle)) {
+                if ("base" === $value["type"]) {
+                    $value["url"] = $this->generateUrl($value["url"]);
+                }
+
+                $elems[] = $value;
+            }
+        }
+        return ($elems);
+    }
+
+    /**
+     * @param string $str
+     * @param int $limit
+     * @return string
+     */
+    private function reduceText(string $str, int $limit) {
+        if (strlen($str) <= $limit) {
+            return $str;
+        }
+        $string = substr($str, 0, $limit);
+        if (false !== ($breakpoint = strrpos($string, " "))) {
+            $string = substr($string, 0, $breakpoint);
+        }
+
+        return ($string ." ...");
     }
 
 

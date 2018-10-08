@@ -55,7 +55,6 @@
                                 <div class="tab-content">
                                     <div id="cli-1-info" class="tab-pane fade in active bg-info" >
                                         <ul>
-                                            <li><strong>Nom d'utilisateur : </strong>{{user.username}}</li>
                                             <li><strong>Email : </strong>{{user.email}}</li>
                                             <li><strong>Mobile : </strong>{{user.mobile}}</li>
                                             <li><strong>Status : </strong>{% if user.jobtype == null %}Non renseigné{% else %}{{status_jobtype_fr[user.jobtype]}}{% endif %}</li>

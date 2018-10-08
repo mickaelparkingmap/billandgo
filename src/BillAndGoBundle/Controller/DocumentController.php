@@ -33,6 +33,7 @@ use BillAndGoBundle\Form\LineEstimateType;
 use BillAndGoBundle\Form\LineBillType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -919,6 +920,47 @@ class DocumentController extends Controller
             }
         }
         throw new NotFoundHttpException("Content not found");
+    }
+
+
+    /**
+     *
+     * @Route("documents/{doc_id}/edit/save", name="billandgo_document_edit_save")
+     * @Method("POST")
+     * @param int $doc_id
+     * @param Request $request
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function editDesc(int $doc_id, Request $request)
+    {
+        $user = $this->getUser();
+        if (!is_object($user)) {
+            $ar401 = ["not connected"];
+            return new Response(json_encode($ar401), 401);
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
+        }
+
+        $desc = $request->get("desc");
+
+        if (null != $desc) {
+            $manager = $this->getDoctrine()->getManager();
+            $document = $this->getDoctrine()->getRepository('BillAndGoBundle:Document')->
+            findOneBy(["id" => $doc_id, "refUser" => $user->getId()]);
+            if ($document == null) {
+               throw new NotFoundHttpException("Document non trouvée");
+            }
+
+            //$document = new Document();
+            $document->setDescription($desc);
+            $manager->merge($document);
+            $manager->flush();
+            return new JsonResponse(["OK"]);
+        }
+        throw new NotFoundHttpException("Valeur Description nulle");
     }
 
 

@@ -45,7 +45,7 @@ class LineEstimateType extends AbstractType
                 'required' => true,
                 'choice_label' => 'name',
                 'multiple'     => false,
-                'placeholder' => 'Sélectionnez une taxe :'
+                'placeholder' => 'Sélectionnez une taxe :',
             ))
             ->add('estimatedTime', NumberType::class, array(
                 'required' => false

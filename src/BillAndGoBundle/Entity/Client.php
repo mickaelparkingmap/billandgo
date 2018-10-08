@@ -22,7 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Client
  *
  * @ORM\Table(name="client", indexes={@ORM\Index(name="idx_client", columns={"user_ref"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="BillAndGoBundle\Repository\ClientRepository")
  */
 class Client
 {

@@ -23,7 +23,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Project
  *
  * @ORM\Table(name="project")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="BillAndGoBundle\Repository\ProjectRepository")
  */
 class Project
 {
