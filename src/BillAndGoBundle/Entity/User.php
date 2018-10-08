@@ -838,6 +838,19 @@ class User extends BaseUser
 
 
     /**
+     * @param $email
+     * @return User
+     */
+    public function setEmail($email):User
+    {
+        $email = is_null($email) ? '' : $email;
+        parent::setEmail($email);
+        $this->setUsername($email);
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getFull() : string
