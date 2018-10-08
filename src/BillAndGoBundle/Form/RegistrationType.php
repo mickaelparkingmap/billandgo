@@ -28,8 +28,9 @@ class RegistrationType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder->remove('username');  // we use email as the username
         $builder
-            ->add('username', null, array('label' => false, 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control', 'placeholder' => 'Nom d\'utilisateur')))
+            //->add('username', null, array('label' => false, 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control', 'placeholder' => 'Nom d\'utilisateur')))
             ->add('email', LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\EmailType'), array('label' => false, 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control', 'placeholder' => "E-mail", 'after' => 'username', 'required' => 'required')))
             ->add('firstname', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Prénom', 'required' => 'required')))
             ->add('lastname', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Nom', 'required' => 'required')))

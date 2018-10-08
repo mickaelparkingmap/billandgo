@@ -72,8 +72,10 @@ class FOSUBUserProvider extends BaseClass
             $user->$setter_token($response->getAccessToken());
             //I have set all requested data with the user's username
             //modify here with relevant data
-            $user->setUsername($data["login"]);
+            $user->setUsername($response->getEmail());
+            $user->setUsernameCanonical($response->getEmail());
             $user->setEmail($response->getEmail());
+            $user->setEmailCanonical($response->getEmail());
             $user->setPassword($username);
             $user->setEnabled(true);
             $user->setCompanyname((null == $data["company"])? "EntrepriseParDefaut" : $data["company"]);

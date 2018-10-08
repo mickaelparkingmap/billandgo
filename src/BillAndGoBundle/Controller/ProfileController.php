@@ -126,22 +126,23 @@ class ProfileController extends BaseController
         $form->handleRequest($request);
 
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $userFounded = $userRepo->findOneBy(array("email" => $user->getEmail()));
+        $userFounded = $userRepo->findOneBy(array("username" => $user->getUsername()));
 
 
         if (null !== $userFounded && $userFounded->getId() != $user->getId()) {
-            $form->addError(new FormError("Vous ne pouvez pas utiliser cet e-mail"));
+            $form->addError(new FormError("Vous ne pouvez pas utiliser cet e-mail.".
+                " Un utilisateur la possède déjà."));
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $manager = $this->getDoctrine()->getManager();
 
-
-
             $userManager = $this->get('fos_user.user_manager');
             $event = new FormEvent($form, $request);
             $dispatcher->dispatch(FOSUserEvents::PROFILE_EDIT_SUCCESS, $event);
 
+            $user->setEmail($user->getUsername());
+            $user->setEmailCanonical($user->getUsername());
             $userManager->updateUser($user);
 
             if (null === $response = $event->getResponse()) {

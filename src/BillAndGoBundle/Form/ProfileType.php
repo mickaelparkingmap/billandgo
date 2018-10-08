@@ -40,9 +40,10 @@ class ProfileType extends AbstractType
         if (!empty($options['validation_groups'])) {
             $constraintsOptions['groups'] = array(reset($options['validation_groups']));
         }
+        $builder->remove('username');  // we use email as the username
         $builder
             ->add('email', EmailType::class, array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control')))
-            ->add('username', null, array('label' => 'Nom d\'utilisateur', 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control')))
+            //->add('username', null, array('label' => 'Nom d\'utilisateur', 'translation_domain' => 'FOSUserBundle', 'attr'  => array('class' => 'form-control')))
             ->add('companyname', null, array('label' => 'Nom de votre société', 'attr'  => array('class' => 'form-control')))
             ->add('firstname', null, array('label' => 'Prénom', 'attr'  => array('class' => 'form-control')))
             ->add('lastname', null, array('label' => 'Nom', 'attr'  => array('class' => 'form-control')))
