@@ -102,14 +102,14 @@
             <div class="content">
 
                 <div class="login-box-body">
-                    <h2 class="login-box-msg"><strong>{% if legal is not null %} {{ legal["name"] }}  {% else %} Mentions Légales {% endif %}</strong></h2>
+                    <h2 class="login-box-msg"><strong>Mentions Légales et Politiques de confidentialités du site Bill&Go </strong></h2>
 
 
                     <div>
                         {% if legal is not null %}
                         {{ legal["content"]|raw }}
                         {% else %}
-                            <h3>Ne vous inquiétez pas, nous sommes en pleines rédactions de ces mentions ;)</h3>
+                            <h3>Ne vous inquiétez pas, nous sommes en train de rédiger de ces mentions ;)</h3>
                         {% endif %}
                     </div>
 

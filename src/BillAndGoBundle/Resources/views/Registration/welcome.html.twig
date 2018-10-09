@@ -31,6 +31,7 @@
                 background: #E7E7E7;
             }
 
+
             p,h1,h2,h3,h4{
                 margin-top:0;
                 margin-bottom:0;
@@ -57,6 +58,10 @@
                 -webkit-box-shadow: 0 0 7px #cdcccc;
                 -moz-box-shadow: 0 0 7px #cdcccc;
                 -o-box-shadow: 0 0 7px #cdcccc;
+            }
+
+            .cl {
+                color: #206fc5!important;
             }
         </style>
 
@@ -141,7 +146,7 @@
                                     <tr>
                                         <td style="color: #000; font-family: 'Raleway', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 500; letter-spacing:1px;">Bonjour {{ user.firstname|capitalize }}, <br>
                                             Merci d'avoir choisi Bill&Go. Votre compte utilisateur a été créé avec succès. <br> <br>
-                                             Votre nom d'utilisateur est <span style="color: #526178">{{ user.email }}</span> qui vous servira à vous connecter à la plateforme.
+                                            Votre nom d'utilisateur est <span style="color: #526178"><a class="cl" href="{{ qb }}">{{ user.email }}</a></span> qui vous servira à vous connecter à la plateforme.
 
                                              <br>
                                              <br>
@@ -191,7 +196,7 @@
 </td>
                                                     <td align="left" style="text-align:left;">
 
-                                                <h3 style="color: #206fc5">Créez vos devis et factures » </h3>
+                                                        <h3 style="color: #206fc5"><a class="cl" href="{{ proj }}">Gérer vos projets » </a></h3>
                                                 <span style="color: #0000009c;font-weight: 600;">Toute la paperasse de vos projets de A à Z.</span>
 
                                                     </td>
@@ -222,7 +227,7 @@
 </td>
                                                     <td align="left" style="text-align:left;">
 
-<h3 style="color: #206fc5">Visualisez vos finances » </h3>
+                                                        <h3 style="color: #206fc5"><a class="cl" href="{{ financial }}">Visualisez vos finances » </a></h3>
 <span style="color: #0000009c;font-weight: 600;">Voyez d’un coup d’œil l’évolution de vos charges et profits.</span>
                                                     </td>
                                                 </tr>
@@ -252,7 +257,7 @@
 </td>
                                                     <td align="left" style="text-align:left;">
 
-<h3 style="color: #206fc5">Consultez votre agenda » </h3>
+<h3 style="color: #206fc5"><a class="cl" href="{{ calendar }}"> Consultez votre agenda »</a> </h3>
 <span style="color: #0000009c;font-weight: 600;">Pour gérer vos rendez-vous et organiser votre temps.</span>
                                                     </td>
                                                 </tr>
