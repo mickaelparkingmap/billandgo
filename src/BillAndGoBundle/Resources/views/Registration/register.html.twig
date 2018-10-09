@@ -20,6 +20,7 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('bundles/billandgo/img/favicon.ico') }}"/>
     <link href="{{ asset('bundles/billandgo/assets/font-awesome/css/font-awesome.css') }}" type="text/css" rel="stylesheet"/>
     <link href="{{ asset('bundles/billandgo/css/common.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('bundles/billandgo/assets/bootstrap/dist/css/bootstrap.css') }}" type="text/css" rel="stylesheet"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link href='https://fonts.googleapis.com/css?family=Roboto:300,400' rel='stylesheet' type='text/css'>
     <link rel="stylesheet"
@@ -53,17 +54,18 @@
 
 </head>
 
-<body class="hold-transition login-page">
+<body class="">
 
 
-
-
+<div class="container">
 {% block fos_user_content %}
     {% include "@FOSUser/Registration/register_content.html.twig" %}
 {% endblock fos_user_content %}
     <div class="push"></div>
 
-<footer class="text-right login-footer">
+
+</div>
+<footer class="text-right login-footer footer">
     <br>
     <small>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go. Tous droits réservés. Bill&Go est un produit <a href="https://www.iumio.com">iumio</a></small> - <a href="{{ path('billandgo_ml') }}" target="_blank">Mentions légales et Politiques de confidentialités</a>
 </footer>
@@ -82,6 +84,12 @@
     <script src="{{ asset('bundles/billandgo/assets/jquery-ui/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/js/register.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/js/common.js') }}"></script>
+
+    {%  if not form.vars.valid %}
+        <script type="text/javascript">
+            $(".button-start").click();
+        </script>
+    {% endif %}
 {% endblock %}
 
 </body>

@@ -27,7 +27,7 @@ body {
     left: 0;
     width: 50%;
     height: 100%;
-    background: #e74c3c url(../img/billandgo-nature.jpg);
+    background: #e74c3c url(../img/billandgo-4.jpg);
     background-size: cover;
     background-position: 50% 50%;
 }
@@ -241,7 +241,7 @@ a:hover {
 
 .column1 {
 
-    background: #3498db url(../img/billandgo-2.jpg);
+    background: #3498db url(../img/billandgo-3.jpg);
     background-size: cover;
     background-position: 50% 50%;
     /*border-right: 2px solid white;*/
@@ -252,7 +252,7 @@ a:hover {
 }
 
 .column2 {
-    background: #3498db url(../img/billandgo-1.jpg);
+    background: #3498db url(../img/billandgo-4.jpg);
     background-size: cover;
     background-position: 50% 50%;
 }
@@ -288,7 +288,7 @@ a:hover {
     #slideBox {
         margin: 0;
         width: 100%;
-        background: #3498db url(../img/billandgo-nature.jpg);
+        background: #3498db url(../img/billandgo-4.jpg);
         background-size: cover;
         background-position: 50% 50%;
 

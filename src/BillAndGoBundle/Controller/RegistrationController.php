@@ -28,6 +28,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Validator\Constraints\DateTime;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Controller managing the registration.
@@ -112,7 +113,25 @@ class RegistrationController extends FOSController
                 $manager->flush();
 
 
+                $mailer = $this->get("mailer");
+                $message = (new \Swift_Message(ucfirst( "Bienvenue sur Bill&Go Service")))
+                    ->setFrom('noreply@billandgo.fr')
+                    ->setTo($user->getEmail())
+                    ->setBody(
+                        $this->renderView(
+                        // app/Resources/views/Emails/registration.html.twig
+                            'BillAndGoBundle:Registration:welcome.html.twig',
+                            array('user' => $user)
+                        ),
+                        'text/html'
+                    )
+
+                ;
+
+                $mailer->send($message);
+
                 if (null === $response = $event->getResponse()) {
+
                     $url = $this->generateUrl('fos_user_registration_confirmed');
                     $response = new RedirectResponse($url);
                 }
@@ -200,6 +219,7 @@ class RegistrationController extends FOSController
 
         if (null === $response = $event->getResponse()) {
             $url = $this->generateUrl('fos_user_registration_confirmed');
+
             $response = new RedirectResponse($url);
         }
 
@@ -218,11 +238,30 @@ class RegistrationController extends FOSController
             throw new AccessDeniedException('This user does not have access to this section.');
         }
 
+       /* $mailer = $this->get("mailer");
+        $message = (new \Swift_Message(ucfirst( "Bienvenue sur Bill&Go Service")))
+            ->setFrom('noreply@billandgo.fr')
+            ->setTo($user->getEmail())
+            ->setBody(
+                $this->renderView(
+                // app/Resources/views/Emails/registration.html.twig
+                    'BillAndGoBundle:Registration:welcome.html.twig',
+                    array('user' => $user)
+                ),
+                'text/html'
+            )
+
+        ;
+
+        $mailer->send($message);*/
+
+
         return $this->render('@FOSUser/Registration/confirmed.html.twig', array(
             'user' => $user,
             'targetUrl' => $this->getTargetUrlFromSession(),
         ));
     }
+
 
     /**
      * @return mixed
