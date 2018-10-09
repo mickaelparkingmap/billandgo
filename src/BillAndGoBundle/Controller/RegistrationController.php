@@ -26,6 +26,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Routing\Annotation\Route;
@@ -114,6 +115,10 @@ class RegistrationController extends FOSController
 
 
                 $mailer = $this->get("mailer");
+                $qb = $this->generateUrl("billandgo_dashboard", [], UrlGenerator::ABSOLUTE_URL);
+                $fin = $this->generateUrl("billandgo_paiment_index", [], UrlGenerator::ABSOLUTE_URL);
+                $cal = $this->generateUrl("billandgo_organizer_show", [], UrlGenerator::ABSOLUTE_URL);
+                $proj = $this->generateUrl("billandgo_project_list", [], UrlGenerator::ABSOLUTE_URL);
                 $message = (new \Swift_Message(ucfirst( "Bienvenue sur Bill&Go Service")))
                     ->setFrom('noreply@billandgo.fr')
                     ->setTo($user->getEmail())
@@ -121,7 +126,8 @@ class RegistrationController extends FOSController
                         $this->renderView(
                         // app/Resources/views/Emails/registration.html.twig
                             'BillAndGoBundle:Registration:welcome.html.twig',
-                            array('user' => $user)
+                            array('user' => $user, "qb" => $qb, "financial" => $fin, "calendar" => $cal,
+                                "proj" => $proj)
                         ),
                         'text/html'
                     )
@@ -261,6 +267,27 @@ class RegistrationController extends FOSController
             'targetUrl' => $this->getTargetUrlFromSession(),
         ));
     }
+
+
+    /*public function testAction()
+    {
+        $user = $this->getUser();
+        if (!is_object($user) || !$user instanceof UserInterface) {
+            throw new AccessDeniedException('This user does not have access to this section.');
+        }
+
+        $qb = $this->generateUrl("billandgo_dashboard", [], UrlGenerator::ABSOLUTE_URL);
+        $fin = $this->generateUrl("billandgo_paiment_index", [], UrlGenerator::ABSOLUTE_URL);
+        $cal = $this->generateUrl("billandgo_organizer_show", [], UrlGenerator::ABSOLUTE_URL);
+        $proj = $this->generateUrl("billandgo_project_list", [], UrlGenerator::ABSOLUTE_URL);
+
+        return $this->render('BillAndGoBundle:Registration:welcome.html.twig', array(
+            'user' => $user,
+            'targetUrl' => $this->getTargetUrlFromSession(), "qb" => $qb, "financial" => $fin, "calendar" => $cal,
+            "proj" => $proj
+        ));
+    }*
+
 
 
     /**
