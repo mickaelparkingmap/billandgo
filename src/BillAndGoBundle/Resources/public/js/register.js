@@ -5,7 +5,7 @@ stepIndex = $step.index(),
 $pag = $('.modal-header span').eq(stepIndex);
 console.log($pag)
     //check_required_inputs();
-if(stepIndex === 0 || stepIndex === 1 || stepIndex === 2) { step1($step, $pag, stepIndex); }
+if(stepIndex === 0 /*|| stepIndex === 2*/) { step1($step, $pag, stepIndex); }
 else { step3($step, $pag, stepIndex); }
 
 });
@@ -83,11 +83,6 @@ function indexes(i) {
     $(".error").remove();
     $(".form-control").removeClass("error-b");
     if (1 === i) {
-        if ("" === $("#fos_user_registration_form_username").val()) {
-            val++;
-            $("#fos_user_registration_form_username").addClass("error-b");
-            $("#fos_user_registration_form_username").before('<span class="error">Veuillez renseigner un nom d\'utilisateur</span');
-        }
         if ("" === $("#fos_user_registration_form_firstname").val()) {
             val++;
             $("#fos_user_registration_form_firstname").addClass("error-b");
@@ -110,6 +105,7 @@ function indexes(i) {
             $("#fos_user_registration_form_plainPassword_first").addClass("error-b");
             $("#fos_user_registration_form_plainPassword_second").addClass("error-b");
             $("#fos_user_registration_form_plainPassword_first").before('<span class="error">Les mots de passes ne correspondent pas</span');
+            $("#fos_user_registration_form_plainPassword_second").before('<span class="error">Les mots de passes ne correspondent pas</span');
         }
         else if (!isStrongPwd1($.trim($("#fos_user_registration_form_plainPassword_first").val()))) {
             val++;
@@ -117,9 +113,14 @@ function indexes(i) {
             $("#fos_user_registration_form_plainPassword_second").addClass("error-b");
             $("#fos_user_registration_form_plainPassword_first").before('<span class="error">Le mot de passe doit avoir au moins 8 caractères avec au moins une lettre majuscule, une lettre minuscule, un chiffre et un caratère spécial !@#$%&;*() "</span');
         }
+        if ("" === $("#fos_user_registration_form_companyname").val()) {
+            val++;
+            $("#fos_user_registration_form_companyname").addClass("error-b");
+            $("#fos_user_registration_form_companyname").before('<span class="error">Veuillez renseigner le nom de votre société</span');
+        }
 
     }
-    else if (2 === i) {
+    /*else if (2 === i) {
         if ("" === $("#fos_user_registration_form_address").val()) {
             val++;
             $("#fos_user_registration_form_address").addClass("error-b");
@@ -148,12 +149,8 @@ function indexes(i) {
         }
     }
     else if (3 === i) {
-        if ("" === $("#fos_user_registration_form_companyname").val()) {
-            val++;
-            $("#fos_user_registration_form_companyname").addClass("error-b");
-            $("#fos_user_registration_form_companyname").before('<span class="error">Veuillez renseigner le nom de votre société</span');
-        }
-    }
+
+    }*/
 
     return val;
 }

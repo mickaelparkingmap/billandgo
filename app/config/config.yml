@@ -87,7 +87,7 @@ fos_user:
             sender_name:    Bill&Go Service
     registration:
             confirmation:
-                enabled: true
+                enabled: false
                 template:   BillAndGoBundle:Registration:email.html.twig
                 from_email:
                         address:        noreply@billandgo.fr

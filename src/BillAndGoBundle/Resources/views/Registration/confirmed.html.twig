@@ -25,6 +25,7 @@
     <link href='https://fonts.googleapis.com/css?family=Roboto:300,400' rel='stylesheet' type='text/css'>
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link href="{{ asset('bundles/billandgo/assets/bootstrap/dist/css/bootstrap.css') }}" type="text/css" rel="stylesheet"/>
 
     {% block stylesheets %}
         <link href="{{ asset('bundles/billandgo/css/register.css') }}" type="text/css" rel="stylesheet"/>
@@ -44,21 +45,21 @@
 </head>
 
 
-<body class="hold-transition login-page">
-<div class="modal-wrap">
+<body class="">
+<div class="container ">
+<div class="modal-wrap row">
     <div class="center-block">
         <a class="center" href="/" >
             <img src="{{ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150" >
         </a>
     </div>
-    <div class="modal-header"><span></span><span></span><span></span>
-    </div>
+</div>
 
-    <div class="modal-bodies">
+    <div class="modal-bodies ">
 
         <div class="modal-body modal-body-step-0 is-showing">
             <div class="title">C'est terminée {{ user.firstname|capitalize }}!</div>
-            <div class="description">Merci d'avoir confirmé votre compte<br> Vous pouvez dès maintenant profiter de l'ensemble du service Bill&Go</div>
+            <div class="description">Merci d'avoir confirmé votre compte.<br> Vous pouvez dès maintenant profiter de l'ensemble du service Bill&Go. <br> <small>Vous allez recevoir dans quelques instants un courriel de bienvenue afin de vous présenter le service. (Vérifier dans vos spams au cas où). </small></div>
 
             <br>
             <div class="text-center">
@@ -75,13 +76,14 @@
              </div>
          </div>-->
     </div>
-</div>
-
-
-<footer class="text-right login-footer">
+<footer class="text-right login-footer footer">
     <br>
     <small>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go. Tous droits réservés. Bill&Go est un produit <a href="https://www.iumio.com">iumio</a></small> - <a href="{{ path('billandgo_ml') }}" target="_blank">Mentions légales et Politiques de confidentialités</a>
 </footer>
+    </div>
+</body>
+
+
 
 {% block javascripts %}
     <script src="{{ asset('bundles/billandgo/assets/jquery/dist/jquery.min.js') }}"></script>

@@ -11,51 +11,88 @@
 
 
 
-<div class="modal-wrap">
+<div class="modal-wrap row">
     <div class="center-block">
         <a class="center" href="/" >
             <img src="{{ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150" >
         </a>
     </div>
-    <div class="modal-header"><span></span><span></span><span></span>
     </div>
 
     {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'id': 'fos_user_registration_register'}}) }}
 
     <div class="modal-bodies">
 
-        <div class="modal-body modal-body-step-0 is-showing">
+        <div class="modal-body modal-body-step-0  {%  if form.vars.valid %}is-showing{% endif %}">
             <div class="title">Commencer dès maintenant votre inscription sur Bill&Go</div>
-            <div class="description">Votre inscription se déroulera en 3 étapes afin d'obtenir les informations requises pour votre compte sur Bill&Go.</div>
+            <div class="description">Votre inscription se déroulera en une étape afin d'obtenir les informations requises pour votre compte sur Bill&Go. </div>
 
             <br>
             <div class="text-center">
                 <div class="button-start">Commencer mon inscription</div>
             </div>
             <br>
-            <div class="text-center">
-                <div class="button-old" onclick="location.href='{{ path('fos_user_security_login') }}'">J'ai déjà un compte</div>
+            <div class="text-center row">
+                <button  type="button" class="button-old col-md-6" onclick="location.href='{{ path('fos_user_security_login') }}'">J'ai déjà un compte</button>
+                <button type="button" class="button-autologin col-md-6" onclick="location.href='/connect/github'"><i class="fa fa-github"></i> Inscription avec Github </button>
+
             </div>
             <br>
-            <div class="text-center">
-                <button type="button" class="button-autologin" onclick="location.href='/connect/github'"><i class="fa fa-github"></i> Inscription avec Github </button>
-            </div>
         </div>
         <div class="modal-body modal-body-step-1">
-            <div class="title">Etape 1</div>
-            <div class="description">Informations nécéssaires à vous identifier</div>
-
+            <div class="title">Informations requises</div>
                 {#{ form_row(form.username) }#}
-                {{ form_row(form.email) }}
+            <div class="row">
+                <div class="description col-md-12">Informations nécéssaires à vous identifier</div>
+                <div class="col-md-6">
+                    {{ form_row(form.firstname) }}
+                </div>
+                <div class="col-md-6">
             {{ form_row(form.lastname) }}
-                {{ form_row(form.firstname) }}
-                {{ form_row(form.plainPassword) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.email) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="description col-md-12">Renseignez le mot de passe que vous souhaitez</div>
+
+                <div class="col-md-6">
+                {{ form_row(form.plainPassword.first) }}
+                </div>
+
+                <div class="col-md-6">
+                    {{ form_row(form.plainPassword.second) }}
+                </div>
+
+            </div>
+
+
+            <div class="row">
+                <div class="description col-md-12">Pour finir, quelques informations sur votre votre métier</div>
+                <div class="col-md-6">
+                    {{ form_row(form.companyname) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.job_type) }}
+                </div>
+            </div>
+
+
+
+            <div class="g-recaptcha" data-sitekey="6LeadXIUAAAAAH6eWdLVwmF4BUSm2zCK4NuIh8ZR"></div>
+
+            <div class="error-captcha">Veuillez validez le captcha avant de soumettre le formulaire</div>
             <br>
+            <div class="text-center fade-in">
+                <div class="button button-submit">Terminer mon inscription</div>
+            </div>
+            <!--<br>
                 <div class="text-center">
                     <div class="button button-submit">Suivant</div>
-                </div>
+                </div>-->
         </div>
-        <div class="modal-body modal-body-step-2">
+        <!--<div class="modal-body modal-body-step-2">
             <div class="title">Etape 2</div>
             <div class="description">Votre adresse et coordonnées téléphoniques</div>
 
@@ -84,7 +121,7 @@
             <div class="text-center fade-in">
                 <div class="button button-submit">Terminer mon inscription</div>
             </div>
-        </div>
+        </div>-->
        <!-- <div class="modal-body modal-body-step-4">
             <div class="title">Step 4</div>
             <div class="description">Check your email for the game results.</div>
@@ -94,4 +131,4 @@
         </div>-->
     </div>
     {{ form_end(form) }}
-</div>
+

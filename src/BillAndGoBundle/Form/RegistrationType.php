@@ -48,7 +48,7 @@ class RegistrationType extends AbstractType
                 'second_options' => array('label' =>  false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Confirmer votre mot de passe', 'required' => 'required')),
                 'invalid_message' => 'fos_user.password.mismatch',
             ))
-            ->add('companyname', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Nom de votre société', 'required' => 'required')))
+            ->add('companyname', null, array('label' => false, 'attr'  => array('class' => 'form-control', 'placeholder' => 'Société', 'required' => 'required')))
             ->add('job_type', ChoiceType::class, array(
                 'choices' => array(
                     'Freelance' => 'freelance',
