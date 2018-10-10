@@ -847,8 +847,7 @@ class DocumentController extends Controller
 
         $sender = array('noreply@billandgo.fr' => "Bill&Go Service");
 
-        $message = \Swift_Message::newInstance()
-            ->setSubject($readableType." : ".$document->getNumber()." de ".$user->getCompanyName())
+        $message = ((new \Swift_Message(($readableType." : ".$document->getNumber()." de ".$user->getCompanyName()))))
             ->setFrom($sender)
             ->setTo($contact->getEmail())
             ->setBody(
@@ -865,7 +864,8 @@ class DocumentController extends Controller
                 ),
                 "text/html"
             );
-        $this->get("mailer")->send($message);
+        $mailer = $this->get("mailer");
+        $mailer->send($message);
         $document->setToken($rand);
         $manager->flush();
         /*return $this->render("BillAndGoBundle:document:mailEstimate.html.twig",
