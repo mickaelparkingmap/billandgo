@@ -120,7 +120,7 @@ class RegistrationController extends FOSController
                 $cal = $this->generateUrl("billandgo_organizer_show", [], UrlGenerator::ABSOLUTE_URL);
                 $proj = $this->generateUrl("billandgo_project_list", [], UrlGenerator::ABSOLUTE_URL);
                 $message = (new \Swift_Message(ucfirst( "Bienvenue sur Bill&Go Service")))
-                    ->setFrom('noreply@billandgo.fr')
+                    ->setFrom(array('noreply@billandgo.fr' => "Bill&Go Service"))
                     ->setTo($user->getEmail())
                     ->setBody(
                         $this->renderView(

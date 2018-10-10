@@ -845,12 +845,7 @@ class DocumentController extends Controller
             $rand = 0;
         }
 
-        if ($usersub["plan"] === "free") {
-            $sender = array('billandgo@iumio.com' => "Bill&Go Service");
-        } else {
-            $sender = array($user->getEmail() => ucfirst(strtolower($user->getFirstname()))
-                . " ". ucfirst(strtolower($user->getLastname())));
-        }
+        $sender = array('noreply@billandgo.fr' => "Bill&Go Service");
 
         $message = \Swift_Message::newInstance()
             ->setSubject($readableType." : ".$document->getNumber()." de ".$user->getCompanyName())
