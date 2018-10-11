@@ -36,7 +36,7 @@
                                         <td>{{ contact.firstname }}</td>
                                         <td>{{ contact.lastname }}</td>
                                         <td style="padding-top: 0">
-                                            <form action="{{ path("billandgo_document_send_email", {"doc_id": document.id}) }}" method="GET" class="form-contact-send">
+                                            <form action="{{ path("billandgo_document_send_email", {"doc_id": document.id}) }}" method="post" class="form-contact-send">
                                                         <input type="hidden" name="contact" value="{{ client.id }}"/>
                                                 <button type="submit" class="btn btn-primary btn-outline no-border send-btn-contact">Envoyer le document à ce contact</button>
                                             </form>
