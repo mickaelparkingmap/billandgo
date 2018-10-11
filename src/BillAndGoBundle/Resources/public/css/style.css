@@ -802,9 +802,6 @@ div.success, div.notice {
     background:#0ff;
 }
 
-#row_google_agenda {
-display: none;
-}
 
 .results-search {
     overflow: auto;
