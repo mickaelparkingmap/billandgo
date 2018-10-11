@@ -17,7 +17,7 @@
         <div class="box-footer no-padding">
             <div class="panel-body">
                 <div class="tab-content">
-                    <div id="cli-1-info" class="tab-pane fade in active bg-info">
+                    <div id="cli-1-info" class="tab-pane fade in active bg-info" style="overflow: auto">
                         <h5 class="">Contacts de ce client</h5>
                         <p class="alert-contact-send" style="display: none"></p>
                         {% if client.contacts is empty %}
@@ -37,7 +37,7 @@
                                         <td>{{ contact.lastname }}</td>
                                         <td style="padding-top: 0">
                                             <form action="{{ path("billandgo_document_send_email", {"doc_id": document.id}) }}" method="post" class="form-contact-send">
-                                                        <input type="hidden" name="contact" value="{{ client.id }}"/>
+                                                        <input type="hidden" name="contact" value="{{ contact.id }}"/>
                                                 <button type="submit" class="btn btn-primary btn-outline no-border send-btn-contact">Envoyer le document à ce contact</button>
                                             </form>
 

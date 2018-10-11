@@ -1113,26 +1113,26 @@ set status_fr = {
         $(".listing-form-send").submit(function (e) {
             e.preventDefault();
             $(".send-btn-contact").attr("disabled", "disabled");
+            var that = $(this);
             $.ajax({
                 url : $(this).attr("action"),
                 type : 'POST',
                 data: $(this).serialize(),
                 success : function(data, statut){ // success est toujours en place, bien sûr !
-                    $(".alert-contact-send").html("<div class='alert alert-success'>Le document a bien été envoyé à ce contact</span>").show();
+                    that.parent().find(".alert-contact-send").html("<div class='alert alert-success'>Le document a bien été envoyé à ce contact</span>").show();
                 },
 
                 error : function(resultat, statut, erreur){
-                    $(".alert-contact-send").html("<div class='alert alert-success'>Une erreur s'est produite : l'envoi n'a pas pu être effectué</span>").show();
+                    that.parent().find(".alert-contact-send").html("<div class='alert alert-success'>Une erreur s'est produite : l'envoi n'a pas pu être effectué</span>").show();
                 }
             });
 
             setTimeout(function () {
-                $(".alert-contact-send").hide();
+                that.parent().find(".alert-contact-send").hide();
                 $(".send-btn-contact").removeAttr("disabled");
                 location.reload();
             }, 6000);
         });
-
 
         $('#project_deadline').datepicker();
         $('#bill_delay').datepicker();
