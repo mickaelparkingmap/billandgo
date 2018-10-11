@@ -304,13 +304,30 @@ class DocumentController extends Controller
             $this->addFlash("error", $usersub["msg"]);
             return ($this->redirectToRoute("fos_user_security_login"));
         }
+
+        $st = $this->editDocStatus($id, $status);
+        if (2 === $st) {
+            $ar401 = ["wrong user"];
+            return new Response(json_encode($ar401), 401);
+        }
+        elseif (1 === $st) {
+            return $this->redirect($this->generateUrl("billandgo_document_view", array('id' => $id)));
+        }
+        else {
+            $ar404 = ["document doesn't exist"];
+            return new Response(json_encode($ar404), 404);
+        }
+    }
+
+    public function editDocStatus(int $id, string $status)
+    {
+        $user = $this->getUser();
         if (($id > 0) && (in_array($status, $this->status))) {
             $manager = $this->getDoctrine()->getManager();
             $document = $manager->getRepository('BillAndGoBundle:Document')->find($id);
             if ($document != null) {
                 if ($document->getRefUser() != $user) {
-                    $ar401 = ["wrong user"];
-                    return new Response(json_encode($ar401), 401);
+                    return (2);
                 }
                 $old_status = $document->getStatus();
                 if ($status == "canceled") {
@@ -346,11 +363,10 @@ class DocumentController extends Controller
                     $this->linesStatus($document, $status);
                 }
                 $manager->flush();
-                return $this->redirect($this->generateUrl("billandgo_document_view", array('id' => $id)));
+               return (1);
             }
         }
-        $ar404 = ["document doesn't exist"];
-        return new Response(json_encode($ar404), 404);
+       return (0);
     }
 
     private function linesStatus($document, $status)
@@ -800,7 +816,7 @@ class DocumentController extends Controller
 
     /**
      * @Route("documents/{doc_id}/send", name="billandgo_document_send_email")
-     * @Method("GET")
+     * @Method("POST")
      * @param int     $doc_id
      * @param Request $req    get request containing client_id
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
@@ -810,8 +826,7 @@ class DocumentController extends Controller
         //check user
         $user = $this->getUser();
         if (!is_object($user)) {
-            $ar401 = ["disconnected"];
-            return new Response(json_encode($ar401), 401);
+            return new JsonResponse(["code" => "401", "msg" => "Veuillez vous connecter", 401]);
         }
         $usersub = DefaultController::userSubscription($user, $this);
         if ($usersub["remaining"] <= 0) {
@@ -820,7 +835,7 @@ class DocumentController extends Controller
         }
 
         $manager = $this->getDoctrine()->getManager();
-        $contact_id = $req->query->get("contact");
+        $contact_id = $req->get("contact");
         $document = $manager->getRepository('BillAndGoBundle:Document')->find($doc_id);
         $contact = $manager->getRepository("BillAndGoBundle:ClientContact")->find($contact_id);
         if ($document == null) {
@@ -830,8 +845,7 @@ class DocumentController extends Controller
             return $this->redirect($this->generateUrl("billandgo_document_view", array('id' => $doc_id)));
         }
         if (($document->getRefUser() != $user) || ($document->getRefUser() != $user)) {
-            $ar401 = ['wrong user'];
-            return new Response(json_encode($ar401), 401);
+            return new JsonResponse(["code" => "404", "msg" => "Document inexistant", 404]);
         }
 
         $readableType = "";
@@ -868,17 +882,9 @@ class DocumentController extends Controller
         $mailer->send($message);
         $document->setToken($rand);
         $manager->flush();
-        /*return $this->render("BillAndGoBundle:document:mailEstimate.html.twig",
-            array(
-                "type" => $type,
-                "document" => $document,
-                "user" => $user,
-                "rand" => $rand
-            ));*/
-        if ($document->isEstimate()) {
-            return $this->redirectToRoute("billandgo_document_edit_status", array("id" => $doc_id, "status" => "estimated"));
-        }
-        return $this->redirectToRoute("billandgo_document_edit_status", array("id" => $doc_id, "status" => "billed"));
+
+        $this->editDocStatus($doc_id, (($document->isEstimate())? "estimated": "billed"));
+        return new JsonResponse(["code" => 200, "msg" => "Le document a bien été envoyé"], 200);
     }
 
     /**

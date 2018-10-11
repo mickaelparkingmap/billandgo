@@ -754,7 +754,7 @@ set status_fr = {
             $(".send-btn-contact").attr("disabled", "disabled");
             $.ajax({
                 url : $(this).attr("action"),
-                type : 'GET',
+                type : 'POST',
                 data: $(this).serialize(),
                 success : function(data, statut){ // success est toujours en place, bien sûr !
                     $(".alert-contact-send").html("<div class='alert alert-success'>Le document a bien été envoyé à ce contact</span>").show();

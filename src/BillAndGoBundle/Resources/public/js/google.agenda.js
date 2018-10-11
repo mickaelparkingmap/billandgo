@@ -274,6 +274,7 @@ function updateSigninStatus(isSignedIn) {
         listUpcomingEvents();
         addEvent();
         $("#calendar").show();
+        $(".row_pre_event").show();
     } else {
         $("#calendar").hide();
         $("#row_event_append, .row_pre_event").hide();

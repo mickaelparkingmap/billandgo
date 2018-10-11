@@ -371,7 +371,8 @@ set status_fr = {
                                                     <h5><strong>Envoyez votre {{ min_fr }} à un des contacts ci-dessous :</strong> </h5>
                                                     {% if doc.refClient.contacts|length > 0 %}
                                                         <div class="row">
-                                                            <form action="{{ path("billandgo_document_send_email", {"doc_id": doc.id}) }}" method="get">
+                                                            <p class="alert-contact-send" style="display: none"></p>
+                                                            <form action="{{ path("billandgo_document_send_email", {"doc_id": doc.id}) }}" method="post" class="listing-form-send">
                                                                 <div class="form-group col-md-6 col-xs-12">
 
                                                                     <select dir="rtl" class="form-control {{ color[nbcolor] }}" name="contact" style="color:#fff;">
@@ -381,7 +382,7 @@ set status_fr = {
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-md-6 col-xs-12">
-                                                                    <button type="submit" class="btn {{ color[nbcolor] }} btn-outline center-block">
+                                                                    <button type="submit" class="btn {{ color[nbcolor] }} btn-outline center-block send-btn-contact">
                                                                         <i class="fa fa-envelope"></i> Envoyer
                                                                     </button>
                                                                 </div>
@@ -732,5 +733,29 @@ set status_fr = {
     <script>
         $('#document-filter-begin').datepicker();
         $('#document-filter-end').datepicker();
+
+        $(".listing-form-send").submit(function (e) {
+            e.preventDefault();
+            $(".send-btn-contact").attr("disabled", "disabled");
+            $.ajax({
+                url : $(this).attr("action"),
+                type : 'POST',
+                data: $(this).serialize(),
+                success : function(data, statut){ // success est toujours en place, bien sûr !
+                    $(".alert-contact-send").html("<div class='alert alert-success'>Le document a bien été envoyé à ce contact</span>").show();
+                },
+
+                error : function(resultat, statut, erreur){
+                    $(".alert-contact-send").html("<div class='alert alert-success'>Une erreur s'est produite : l'envoi n'a pas pu être effectué</span>").show();
+                }
+            });
+
+            setTimeout(function () {
+                $(".alert-contact-send").hide();
+                $(".send-btn-contact").removeAttr("disabled");
+                location.reload();
+            }, 6000);
+        });
     </script>
+
 {% endblock %}
