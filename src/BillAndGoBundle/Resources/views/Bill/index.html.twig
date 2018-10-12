@@ -97,12 +97,12 @@ set status_fr = {
                                             <div id="bill-{{ nbbill }}-desc" class="tab-pane fade in active bg-info row">
                                                 <div class="col-md-6">
                                                 {% if bill.sendTime %}
-                                                    envoyée le {{ bill.sendTime|date('d-m-Y') }}
+                                                    envoyée le {{ bill.sendTime|date('d/m/Y') }}
                                                 {% else %}
-                                                    créée le {{ bill.creation|date('d-m-Y') }}
+                                                    créée le {{ bill.creation|date('d/m/Y') }}
                                                 {% endif %}
                                                 </div>
-                                                <p class="col-md-6">à payer pour le {{ bill.paimentDate|date('d-m-Y') }}</p>
+                                                <p class="col-md-6">à payer pour le {{ bill.paimentDate|date('d/m/Y') }}</p>
                                                 <p>
                                                     {{ bill.description|length > 300 ? bill.description|slice(0, 300) ~ '...' : bill.description  }}
                                                 </p>

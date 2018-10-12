@@ -174,7 +174,7 @@ set status_fr = {
                                             {% set diffAnswer = date(date()).diff(document.answerDate) %}
                                             {% set leftAnswer = diffAnswer.days %}
                                             <strong class="color-{{ document.status }}">Date de refus : </strong>
-                                                    <span class="color-{{ document.status }}">{{ document.answerDate|date('d-m-Y') }}</span>
+                                                    <span class="color-{{ document.status }}">{{ document.answerDate|date('d/m/Y') }}</span>
 
                                                     <small class="color-grey">il y a {{ leftAnswer }} jour(s)</small>
                                         </li>
@@ -434,7 +434,7 @@ set status_fr = {
                                             {% for paiment in document.refPaiment %}
                                                 <tr>
                                                     <td>
-                                                        {{ paiment.datePaiment|date('d-m-Y') }}
+                                                        {{ paiment.datePaiment|date('d/m/Y') }}
                                                     </td>
                                                     <td>
                                                         {{ paiment.amount }}
@@ -674,10 +674,32 @@ set status_fr = {
     <script src="{{ asset('bundles/billandgo/assets/pdfmake/build/vfs_fonts.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/js/generatePdf.js') }}"></script>
     <script>
-        $('#billandgobundle_line_deadline').datepicker();
+        $('#billandgobundle_line_deadline').datepicker(
+            {
+                language: 'fr',
+                autoclose: true,
+                todayHighlight: true
+            }
+        );
         $('#bill_creation').datepicker();
         $('#bill_paiment').datepicker();
-        $('#project_deadline').datepicker();
+        $('#project_deadline').datepicker({
+            language: 'fr',
+            autoclose: true,
+            todayHighlight: true
+        });
+
+
+        $("#createprojectwithoutdesc").on('submit', function (e) {
+            e.preventDefault();
+            if ($("#project_deadline").length) {
+                var elemcho = $("#project_deadline").val();
+                var resDate = elemcho.split("/");
+                $("#project_deadline").val(resDate[2]+"-"+resDate[1]+"-"+resDate[0]+" 00:00:00");
+
+            }
+            $(this).unbind("submit").submit();
+        });
         $('.datepick').datepicker();
         $("#transfoButton").hide();
         $("#transfoButton2").hide();

@@ -166,8 +166,8 @@ set status_fr = {
                                                 <div id="cli-{{ doc.number }}-info" class="tab-pane fade in active bg-info" >
 
                                                     <ul>
-                                                        <li><strong>Date d'envoi :</strong> {{ doc.sentDate|date('d-m-Y') }} </li>
-                                                        <li><strong>Date de validité :</strong> {{ doc.delayDate|date('d-m-Y') }} </li>
+                                                        <li><strong>Date d'envoi :</strong> {{ doc.sentDate|date('d/m/Y') }} </li>
+                                                        <li><strong>Date de validité :</strong> {{ doc.delayDate|date('d/m/Y') }} </li>
                                                     </ul>
 
                                                     <div class="row">
@@ -348,12 +348,12 @@ set status_fr = {
                                                     <div class="col-md-6">
                                                         Envoyé le :
                                                         <br/>
-                                                        {{ doc.sentDate|date('d-m-Y') }}
+                                                        {{ doc.sentDate|date('d/m/Y') }}
                                                     </div>
                                                     <div class="col-sm-6">
                                                         Valide jusqu'au :
                                                         <br/>
-                                                        {{ doc.delayDate|date('d-m-Y') }}
+                                                        {{ doc.delayDate|date('d/m/Y') }}
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -563,8 +563,8 @@ set status_fr = {
                                             <div class="tab-content">
                                                 <div id="cli-{{ doc.number }}-info" class="tab-pane fade in active bg-info" >
                                                     <ul>
-                                                        <li><strong>Date d'envoi :</strong> {{ doc.sentDate|date('d-m-Y') }} </li>
-                                                        <li><strong>Date de validité : </strong>{{ doc.delayDate|date('d-m-Y') }}</li>
+                                                        <li><strong>Date d'envoi :</strong> {{ doc.sentDate|date('d/m/Y') }} </li>
+                                                        <li><strong>Date de validité : </strong>{{ doc.delayDate|date('d/m/Y') }}</li>
                                                     </ul>
                                                     {% if doc.refClient %}
                                                         <h5><strong>Envoyez votre {{ min_fr }} à un des contacts ci-dessous :</strong> </h5>
@@ -736,14 +736,14 @@ set status_fr = {
                                                 <div id="cli-{{ doc.number }}-info" class="tab-pane fade in active bg-info" >
 
                                                     <ul>
-                                                        <li><strong>Date d'envoi :</strong> {{ doc.sentDate|date('d-m-Y') }} </li>
+                                                        <li><strong>Date d'envoi :</strong> {{ doc.sentDate|date('d/m/Y') }} </li>
                                                         {% if doc.answerDate %}
                                                             <li><strong>
                                                                     {{ status_fr[doc.status]|capitalize }} le : </strong>
-                                                                {{ doc.answerDate|date('d-m-Y') }}
+                                                                {{ doc.answerDate|date('d/m/Y') }}
                                                             </li>
                                                         {% else %}
-                                                            <li><strong>Date de validité : </strong>{{ doc.delayDate|date('d-m-Y') }}</li>
+                                                            <li><strong>Date de validité : </strong>{{ doc.delayDate|date('d/m/Y') }}</li>
                                                         {%  endif %}
                                                     </ul>
                                                 </div>
@@ -891,26 +891,26 @@ set status_fr = {
                                                     <ul>
 
                                                             {% if doc.answerDate %}
-                                                                <li><strong>Date d'envoi : </strong>{{ doc.sentDate|date('d-m-Y') }}</li>
+                                                                <li><strong>Date d'envoi : </strong>{{ doc.sentDate|date('d/m/Y') }}</li>
 
                                                         {% if doc.answerDate %}
                                                             <li>
                                                                 <strong>
                                                                     {{ status_fr[doc.status] }} le :
                                                                 </strong>
-                                                                {{ doc.answerDate|date('d-m-Y') }}
+                                                                {{ doc.answerDate|date('d/m/Y') }}
                                                             </li>
                                                         {% else %}
                                                             <li>
                                                                 <strong>
                                                                     Date de validité :
                                                                 </strong>
-                                                                {{ doc.delayDate|date('d-m-Y') }}
+                                                                {{ doc.delayDate|date('d/m/Y') }}
                                                             </li>
                                                         {%  endif %}
 
                                                         {% else %}
-                                                            <li><strong>Date d'envoi : </strong>{{ doc.sentDate|date('d-m-Y') }}</li>
+                                                            <li><strong>Date d'envoi : </strong>{{ doc.sentDate|date('d/m/Y') }}</li>
                                                         {% endif %}
 
                                                     </ul>
@@ -1110,6 +1110,17 @@ set status_fr = {
             }
         );
 
+        $("#form_project").on('submit', function (e) {
+            e.preventDefault();
+            if ($("#project_deadline").length) {
+                var elemcho = $("#project_deadline").val();
+                var resDate = elemcho.split("/");
+                $("#project_deadline").val(resDate[2]+"-"+resDate[1]+"-"+resDate[0]+" 00:00:00");
+
+            }
+            $(this).unbind("submit").submit();
+        });
+
         $(".listing-form-send").submit(function (e) {
             e.preventDefault();
             $(".send-btn-contact").attr("disabled", "disabled");
@@ -1134,10 +1145,26 @@ set status_fr = {
             }, 6000);
         });
 
-        $('#project_deadline').datepicker();
-        $('#bill_delay').datepicker();
-        $('#document-filter-begin').datepicker();
-        $('#document-filter-end').datepicker();
+        $('#project_deadline').datepicker({
+            language: 'fr',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#bill_delay').datepicker({
+            language: 'fr',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#document-filter-begin').datepicker({
+            language: 'fr',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#document-filter-end').datepicker({
+            language: 'fr',
+            autoclose: true,
+            todayHighlight: true
+        });
     </script>
     <script src="{{ asset('bundles/billandgo/js/project.google.agenda.js') }}"></script>
     <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>

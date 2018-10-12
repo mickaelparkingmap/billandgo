@@ -43,6 +43,12 @@
     {{ parent() }}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.fr.min.js"></script>
     <script>
-        $('#billandgobundle_line_deadline').datepicker();
+        $('#billandgobundle_line_deadline').datepicker(
+            {
+                language: 'fr',
+                autoclose: true,
+                todayHighlight: true
+            }
+        );
     </script>
 {% endblock %}

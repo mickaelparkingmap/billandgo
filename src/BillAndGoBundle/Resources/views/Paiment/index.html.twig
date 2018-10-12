@@ -66,7 +66,7 @@
                                         {% endif %}
 
                                         <p>Type de paiement : {{ paymenttype }}</p>
-                                        <p>Date de paiement : {% if paiment.datePaiment %}{{ paiment.datePaiment|date('d-m-Y') }}{% else %}Non renseigné{% endif %}</p>
+                                        <p>Date de paiement : {% if paiment.datePaiment %}{{ paiment.datePaiment|date('d/m/Y') }}{% else %}Non renseigné{% endif %}</p>
                                         {% if paiment.refBill|first %}
                                         <p>Référence facture : <a style="color: white" href="{{ path('billandgo_document_view', {'id' : paiment.refBill|first.id}) }}">{{ paiment.refBill|first.number }}</a></p>
                                         {% endif %}

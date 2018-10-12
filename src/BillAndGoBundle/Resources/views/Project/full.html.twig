@@ -83,8 +83,8 @@
 
                                                 </div>
                                             </div></li>
-                                        <li><strong>Date de début du projet : </strong> {{ project.begin|date('Y-m-d') }}</li>
-                                        <li><strong>Deadline : </strong> {{ project.deadLine|date('Y-m-d') }}</li>
+                                        <li><strong>Date de début du projet : </strong> {{ project.begin|date('d/m/Y') }}</li>
+                                        <li><strong>Deadline : </strong> {{ project.deadLine|date('d/m/Y') }}</li>
                                     </ul>
                                 </div>
                                 <div class="col-md-6">
@@ -273,7 +273,7 @@
                                                                         <div class="form-group row">
                                                                             <label for="deadLine"  class="col-md-12">Délai</label>
                                                                             <div class="col-md-12">
-                                                                            <input type="text" class="datepick form-control" name="deadLine" value="{{ line.deadLine|date('d-m-Y') }}">
+                                                                            <input type="text" class="datepick form-control" name="deadLine" value="{{ line.deadLine|date('d/m/Y') }}">
                                                                             </div>
                                                                         </div>
                                                                         </div>
@@ -348,7 +348,7 @@
                                     </td>
                                     <td>
                                         {% if line.deadLine %}
-                                            <span>{{ line.deadline|date('d-m-Y') }}</span>
+                                            <span>{{ line.deadline|date('d/m/Y') }}</span>
                                             <br/>
                                             {% if leftDays <= 7 %}
                                                 <span class="btn btn-danger btn-outline">
@@ -621,7 +621,13 @@
             });
         });
 
-        $('#billandgobundle_line_deadline').datepicker();
+        $('#billandgobundle_line_deadline').datepicker(
+            {
+                language: 'fr',
+                autoclose: true,
+                todayHighlight: true
+            }
+        );
         $('.datepick').datepicker();
         $('#bill_creation').datepicker();
         $('#bill_paiment').datepicker();

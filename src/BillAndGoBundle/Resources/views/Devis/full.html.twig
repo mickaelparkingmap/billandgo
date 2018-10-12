@@ -75,7 +75,7 @@
                                 <div class="row">
                                     <div class="col-sm-4 text-center">
                                         <a href="{{ path('billandgo_bill_view', {'id': bill.id}) }}" class="btn btn-info">
-                                            {{ bill.number }} ({{ bill.sendTime|date('d-m-Y') }})
+                                            {{ bill.number }} ({{ bill.sendTime|date('d/m/Y') }})
                                         </a>
                                     </div>
                                 </div>
@@ -123,12 +123,12 @@
                 <div class="row">
                     <div class="col-sm-6">
                         {% if devis.sendTime %}
-                            <h4 class="color-sent">Date d'envoi : {{ devis.sendTime|date('d-m-Y') }}</h4>
+                            <h4 class="color-sent">Date d'envoi : {{ devis.sendTime|date('d/m/Y') }}</h4>
                         {%  endif %}
                     </div>
                     <div class="col-sm-6 text-right">
                         {% if devis.responseTime %}
-                            <h4 class="color-{{ devis.status }}">{{ status_fr[devis.status] }} le {{ devis.responseTime|date('d-m-Y') }}</h4>
+                            <h4 class="color-{{ devis.status }}">{{ status_fr[devis.status] }} le {{ devis.responseTime|date('d/m/Y') }}</h4>
                         {%  endif %}
                     </div>
                 </div>

@@ -17,10 +17,11 @@ $(".billandgo_add_project").submit(function (e) {
     var name = $("#billandgobundle_project_name").val();
     var deadline = $("#billandgobundle_project_deadline").val();
     var desc = $("#billandgobundle_project_description").val();
+    var res = deadline.split("/");
+    $("#billandgobundle_project_deadline").val(res[2]+"-"+res[1]+"-"+res[0]+" 00:00:00");
 
-    console.log(client, name, deadline, desc);
     if (statusG === 1 && syncTask === "active") {
-        addEvent(client, name, deadline, desc)
+        addEvent(client, name, deadline, desc);
     }
     else {
         $(".billandgo_add_project").unbind("submit").submit();
