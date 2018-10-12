@@ -151,11 +151,11 @@ set status_fr = {
                                                     <div id="cli-{{ doc.number }}-info" class="tab-pane fade in active bg-info" >
 
                                                         <ul>
-                                                            <li><strong>Date d'envoi :</strong> {{ doc.sentDate|date('d-m-Y') }} </li>
+                                                            <li><strong>Date d'envoi :</strong> {{ doc.sentDate|date('d/m/Y') }} </li>
                                                             {% if doc.answerDate %}
-                                                                <li><strong>{{ status_fr[doc.status] }} :</strong> {{ doc.answerDate|date('d-m-Y') }}</li>
+                                                                <li><strong>{{ status_fr[doc.status] }} :</strong> {{ doc.answerDate|date('d/m/Y') }}</li>
                                                             {% else %}
-                                                            <li><strong>Délai de paiement :</strong> {{ doc.delayDate|date('d-m-Y') }}</li>
+                                                            <li><strong>Délai de paiement :</strong> {{ doc.delayDate|date('d/m/Y') }}</li>
                                                             {%  endif %}
                                                         </ul>
 
@@ -172,7 +172,7 @@ set status_fr = {
                                                                 <tbody>
                                                                 {% for paiment in doc.refPaiment %}
                                                                     <tr>
-                                                                        <td>{{ paiment.datePaiment|date('d-m-Y') }}</td>
+                                                                        <td>{{ paiment.datePaiment|date('d/m/Y') }}</td>
                                                                         <td>  <a href="{{ path('billandgo_paiment_show', { 'id': paiment.id }) }}">
                                                                                 {{ paiment.amount }}€
                                                                             </a></td>
@@ -365,7 +365,7 @@ set status_fr = {
                                                 <div id="cli-{{ doc.number }}-info" class="tab-pane fade in active bg-info" >
 
                                                     <ul>
-                                                        <li><strong>Date de création :</strong> {{ doc.sentDate|date('d-m-Y') }} </li>
+                                                        <li><strong>Date de création :</strong> {{ doc.sentDate|date('d/m/Y') }} </li>
                                                     </ul>
 
                                                     <h5><strong>Envoyez votre {{ min_fr }} à un des contacts ci-dessous :</strong> </h5>
@@ -513,7 +513,7 @@ set status_fr = {
                                                     <div id="cli-{{ doc.number }}-info" class="tab-pane fade in active bg-info" >
 
                                                         <ul>
-                                                            <li><strong>Date d'envoi :</strong> {{ doc.sentDate|date('d-m-Y') }} </li>
+                                                            <li><strong>Date d'envoi :</strong> {{ doc.sentDate|date('d/m/Y') }} </li>
                                                         </ul>
 
                                                         <h5><strong>Paiement : </strong></h5>
@@ -529,7 +529,7 @@ set status_fr = {
                                                                     <tbody>
                                                                     {% for paiment in doc.refPaiment %}
                                                                         <tr>
-                                                                            <td>{{ paiment.datePaiment|date('d-m-Y') }}</td>
+                                                                            <td>{{ paiment.datePaiment|date('d/m/Y') }}</td>
                                                                             <td>  <a href="{{ path('billandgo_paiment_show', { 'id': paiment.id }) }}">
                                                                                     {{ paiment.amount }}€
                                                                                 </a></td>
@@ -667,7 +667,7 @@ set status_fr = {
                             <div id="cli-{{ doc.number }}-info" class="tab-pane fade in active bg-info" >
 
                                 <ul>
-                                    <li><strong>Date de création :</strong> {{ doc.sentDate|date('d-m-Y') }} </li>
+                                    <li><strong>Date de création :</strong> {{ doc.sentDate|date('d/m/Y') }} </li>
                                 </ul>
                             </div>
 

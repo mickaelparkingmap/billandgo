@@ -728,6 +728,34 @@
     <script src="{{ asset('bundles/billandgo/js/script.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/js/generatePdf.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/js/common.js') }}"></script>
+    <script type="text/javascript">
+        (function($){
+            $.fn.datepicker.dates['fr'] = {
+                days: ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
+                daysShort: ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
+                daysMin: ["di", "lu", "ma", "me", "je", "ve", "sa"],
+                months: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
+                monthsShort: ["janv.", "févr.", "mars", "avril", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."],
+                today: "Aujourd'hui",
+                monthsTitle: "Mois",
+                clear: "Effacer",
+                weekStart: 1,
+                format: "yyyy/mm/dd"
+            };
+
+            $("#billandgobundle_line_save").on('click', function (e) {
+                e.preventDefault();
+                if ($("#billandgobundle_line_deadline").length) {
+                    var elemcho = $("#billandgobundle_line_deadline").val();
+                    var resDate = elemcho.split("/");
+                    $("#billandgobundle_line_deadline").val(resDate[2]+"-"+resDate[1]+"-"+resDate[0]+" 00:00:00");
+
+                }
+                $(this).unbind("click").click();
+            });
+        }(jQuery));
+    </script>
+
 {% endblock %}
 {% if usersub["plan"] == "paid" %}
     <!--Start of Tawk.to Script-->
