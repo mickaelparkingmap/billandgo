@@ -17,13 +17,14 @@ $(".billandgo_add_project").submit(function (e) {
     var name = $("#billandgobundle_project_name").val();
     var deadline = $("#billandgobundle_project_deadline").val();
     var desc = $("#billandgobundle_project_description").val();
-    var res = deadline.split("/");
-    $("#billandgobundle_project_deadline").val(res[2]+"-"+res[1]+"-"+res[0]+" 00:00:00");
 
     if (statusG === 1 && syncTask === "active") {
         addEvent(client, name, deadline, desc);
     }
     else {
+        var res = deadline.split("/");
+        $("#billandgobundle_project_deadline").val(res[2]+"-"+res[1]+"-"+res[0]+" 00:00:00");
+
         $(".billandgo_add_project").unbind("submit").submit();
     }
 
@@ -39,9 +40,17 @@ $("#createprojectwithoutdesc").submit(function (e) {
     var desc = $("#pdescription").html();
     console.log(client, name, deadline, desc);
     if (statusG === 1 && syncTask === "active") {
-        addEvent2(client, name, deadline, desc, $("#createprojectwithoutdesc"))
+        addEvent2(client, name, deadline, desc, $("#createprojectwithoutdesc"), function () {
+            var res = deadline.split("/");
+            $("#project_deadline").val(res[2]+"-"+res[1]+"-"+res[0]+" 00:00:00");
+
+            $("#createprojectwithoutdesc").unbind("submit").submit();
+        });
     }
     else {
+        var res = deadline.split("/");
+        $("#project_deadline").val(res[2]+"-"+res[1]+"-"+res[0]+" 00:00:00");
+
         $("#createprojectwithoutdesc").unbind("submit").submit();
     }
 
@@ -57,9 +66,17 @@ $(".form_project").each(function () {
         var desc = $(this).find(".pdesc").html();
         console.log(client, name, deadline, desc);
         if (statusG === 1 && syncTask === "active") {
-            addEvent2(client, name, deadline, desc, $(this))
+            addEvent2(client, name, deadline, desc, $(this), function () {
+                var res = deadline.split("/");
+                $(".project_deadline").val(res[2]+"-"+res[1]+"-"+res[0]+" 00:00:00");
+
+                $(this).unbind("submit").submit();
+            });
         }
         else {
+            var res = deadline.split("/");
+            $(".project_deadline").val(res[2]+"-"+res[1]+"-"+res[0]+" 00:00:00");
+
             $(this).unbind("submit").submit();
         }
 
@@ -115,6 +132,8 @@ var addEvent = function (client, name, deadline, desc) {
     });
 
     request.execute(function(event) {
+        var res = deadline.split("/");
+        $("#billandgobundle_project_deadline").val(res[2]+"-"+res[1]+"-"+res[0]+" 00:00:00");
         $(".billandgo_add_project").unbind("submit").submit();
     });
 
