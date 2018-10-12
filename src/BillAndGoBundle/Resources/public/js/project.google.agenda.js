@@ -19,7 +19,9 @@ $(".billandgo_add_project").submit(function (e) {
     var desc = $("#billandgobundle_project_description").val();
 
     if (statusG === 1 && syncTask === "active") {
-        addEvent(client, name, deadline, desc);
+        var resG = deadline.split("/");
+        resG = resG[1]+"/"+resG[0]+"/"+resG[2];
+        addEvent(client, name, resG, desc);
     }
     else {
         var res = deadline.split("/");
@@ -40,7 +42,9 @@ $("#createprojectwithoutdesc").submit(function (e) {
     var desc = $("#pdescription").html();
     console.log(client, name, deadline, desc);
     if (statusG === 1 && syncTask === "active") {
-        addEvent2(client, name, deadline, desc, $("#createprojectwithoutdesc"), function () {
+        var resG = deadline.split("/");
+        resG = resG[1]+"/"+resG[0]+"/"+resG[2];
+        addEvent2(client, name, resG, desc, $("#createprojectwithoutdesc"), function () {
             var res = deadline.split("/");
             $("#project_deadline").val(res[2]+"-"+res[1]+"-"+res[0]+" 00:00:00");
 
@@ -66,7 +70,9 @@ $(".form_project").each(function () {
         var desc = $(this).find(".pdesc").html();
         console.log(client, name, deadline, desc);
         if (statusG === 1 && syncTask === "active") {
-            addEvent2(client, name, deadline, desc, $(this), function () {
+            var resG = deadline.split("/");
+            resG = resG[1]+"/"+resG[0]+"/"+resG[2];
+            addEvent2(client, name, resG, desc, $(this), function () {
                 var res = deadline.split("/");
                 $(".project_deadline").val(res[2]+"-"+res[1]+"-"+res[0]+" 00:00:00");
 
