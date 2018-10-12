@@ -21,7 +21,7 @@ $(".billandgo_add_project").submit(function (e) {
     if (statusG === 1 && syncTask === "active") {
         var resG = deadline.split("/");
         resG = resG[1]+"/"+resG[0]+"/"+resG[2];
-        addEvent(client, name, resG, desc);
+        addEvent(client, name, resG, desc, $(".billandgo_add_project"),  $("#billandgobundle_project_deadline"));
     }
     else {
         var res = deadline.split("/");
@@ -44,12 +44,7 @@ $("#createprojectwithoutdesc").submit(function (e) {
     if (statusG === 1 && syncTask === "active") {
         var resG = deadline.split("/");
         resG = resG[1]+"/"+resG[0]+"/"+resG[2];
-        addEvent2(client, name, resG, desc, $("#createprojectwithoutdesc"), function () {
-            var res = deadline.split("/");
-            $("#project_deadline").val(res[2]+"-"+res[1]+"-"+res[0]+" 00:00:00");
-
-            $("#createprojectwithoutdesc").unbind("submit").submit();
-        });
+        addEvent(client, name, resG, desc, $("#createprojectwithoutdesc"), $("#project_deadline"));
     }
     else {
         var res = deadline.split("/");
@@ -72,12 +67,7 @@ $(".form_project").each(function () {
         if (statusG === 1 && syncTask === "active") {
             var resG = deadline.split("/");
             resG = resG[1]+"/"+resG[0]+"/"+resG[2];
-            addEvent2(client, name, resG, desc, $(this), function () {
-                var res = deadline.split("/");
-                $(".project_deadline").val(res[2]+"-"+res[1]+"-"+res[0]+" 00:00:00");
-
-                $(this).unbind("submit").submit();
-            });
+            addEvent(client, name, resG, desc, $("#createprojectwithoutdesc"), $(this).find(".project_deadline"));
         }
         else {
             var res = deadline.split("/");
@@ -91,34 +81,7 @@ $(".form_project").each(function () {
 
 
 
-var addEvent2 = function (client, name, deadline, desc, id) {
-    var event = {
-        'summary': 'Projet : '+ name,
-        'description': 'Projet pour le client '+ client + ' - ' + desc,
-        'start': {
-            'dateTime': (new Date()).toISOString(),
-            'timeZone': 'Europe/Paris'
-        },
-        'end': {
-            'dateTime': (new Date(deadline)).toISOString(),
-            'timeZone': 'Europe/Paris'
-        }
-    };
-
-    var request = gapi.client.calendar.events.insert({
-        'calendarId': 'primary',
-        'resource': event
-    });
-
-    request.execute(function(event) {
-        id.unbind("submit").submit();
-    });
-
-
-};
-
-
-var addEvent = function (client, name, deadline, desc) {
+var addEvent = function (client, name, deadline, desc, a1, a2) {
     var event = {
         'summary': 'Projet : '+ name,
         'description': 'Projet pour le client '+ client + ' - ' + desc,
@@ -139,8 +102,8 @@ var addEvent = function (client, name, deadline, desc) {
 
     request.execute(function(event) {
         var res = deadline.split("/");
-        $("#billandgobundle_project_deadline").val(res[2]+"-"+res[1]+"-"+res[0]+" 00:00:00");
-        $(".billandgo_add_project").unbind("submit").submit();
+        a2.val(res[2]+"-"+res[0]+"-"+res[1]+" 00:00:00");
+        a1.unbind("submit").submit();
     });
 
 
