@@ -1,0 +1,29 @@
+<html>
+{% set app = null %}
+<head>
+    <style type="text/css">
+        {{ style|raw }}
+    </style>
+</head>
+<body>
+
+<!--mpdf
+<htmlpageheader name="Pdf_template_header_1">
+         {% include template_from_string(header) %}
+</htmlpageheader>
+<htmlpagefooter name="Pdf_template_footer_1">
+    <div class="htmlpgfooter">
+         {% include template_from_string(footer) %}
+        {% if false == selfPremium %}
+        <p style="text-align:center"><small>Document généré par <a href="https://www.billandgo.fr">Bill&Go</a>, un produit <a href="https://www.iumio.com">iumio</a></smal></p>
+        {% endif %}
+    </div>
+</htmlpagefooter>
+<sethtmlpageheader name="Pdf_template_header_1" value="on" show-this-page="1" />
+<sethtmlpagefooter name="Pdf_template_footer_1" value="on" />
+mpdf-->
+{% include template_from_string(body) %}
+</body>
+</html>
+
+

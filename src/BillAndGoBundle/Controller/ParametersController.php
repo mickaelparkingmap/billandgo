@@ -32,6 +32,7 @@ use Symfony\Component\Validator\Constraints\Date;
  */
 class ParametersController extends Controller
 {
+
     /** Get available PDF template
      * @return array Templates
      */
@@ -50,7 +51,7 @@ class ParametersController extends Controller
         if (!empty($filepdf)) {
             sort($filepdf);
         }
-        //$filepdf[] = ["realname" => "custom", "shortname" => "Personnalisé"];
+        $filepdf[] = ["realname" => "custom", "shortname" => "Personnalisé"];
 
         return ($filepdf);
     }
@@ -84,6 +85,18 @@ class ParametersController extends Controller
         $sync = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
             array("user" => $user->getId(), "name" => "sync_task_calendar"));
 
+        $selectedTemplateCustomStyle = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $user->getId(), "name" => "pdf_bill_quote_custom_style"));
+
+        $selectedTemplateCustomHeader = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $user->getId(), "name" => "pdf_bill_quote_custom_header"));
+
+        $selectedTemplateCustomBody = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $user->getId(), "name" => "pdf_bill_quote_custom_body"));
+
+        $selectedTemplateCustomFooter = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $user->getId(), "name" => "pdf_bill_quote_custom_footer"));
+
         $filepdf = $this->getAvailableTemplate();
 
         if (null === $selectedTemplateCustom) {
@@ -95,11 +108,15 @@ class ParametersController extends Controller
         return $this->render(
             'BillAndGoBundle:Parameters:show_content.html.twig',
             array(
-            'user' => $user,
+                'user' => $user,
                 "filepdf" => $filepdf,
                 'pdfchoice' => $pdftype,
                 'usersub' => $usersub,
-                'syncTask' => (null === $sync)? "inactive" : $sync->getValue()
+                'syncTask' => (null === $sync)? "inactive" : $sync->getValue(),
+                'ctf' => null === $selectedTemplateCustomFooter? "" : $selectedTemplateCustomFooter->getValue(),
+                'ctb' => null === $selectedTemplateCustomBody? "" : $selectedTemplateCustomBody->getValue(),
+                'cth' => null === $selectedTemplateCustomHeader? "" : $selectedTemplateCustomHeader->getValue(),
+                'cts' => null === $selectedTemplateCustomStyle? "" : $selectedTemplateCustomStyle->getValue(),
             )
         );
     }
@@ -138,31 +155,125 @@ class ParametersController extends Controller
         $selectedTemplateCustom = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
             array("user" => $user->getId(), "name" => "pdf_bill_quote_custom"));
 
-        if (null !== $selectedTemplate) {
-            $selectedTemplate->setValue($selected);
-            $manager->merge($selectedTemplate);
-            $manager->flush();
-        }
+        $selectedTemplateCustomStyle = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $user->getId(), "name" => "pdf_bill_quote_custom_style"));
 
-        else if (null !== $selectedTemplateCustom) {
-            $manager->remove($selectedTemplateCustom);
+        $selectedTemplateCustomHeader = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $user->getId(), "name" => "pdf_bill_quote_custom_header"));
+
+        $selectedTemplateCustomBody = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $user->getId(), "name" => "pdf_bill_quote_custom_body"));
+
+        $selectedTemplateCustomFooter = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $user->getId(), "name" => "pdf_bill_quote_custom_footer"));
+
+
+        $style = $request->get("cpstyle");
+        $header = $request->get("cpheader");
+        $body = $request->get("cpbody");
+        $footer = $request->get("cpfooter");
+
+        if ("custom" !== $selected) {
+
+            if (null === $selectedTemplate) {
+                $us = new UserOption();  $us->setName("pdf_bill_quote_choice");
+                $us->setValue($selected);
+                $manager->persist($us);
+                $manager->flush();
+            }
+            else {
+                $selectedTemplate->setValue($selected);
+                $manager->merge($selectedTemplate);
+                $manager->flush();
+            }
+
+            if (null !== $selectedTemplateCustom) {
+                $manager->remove($selectedTemplateCustom);
+                $manager->flush();
+
+                $manager->remove($selectedTemplateCustomStyle);
+                $manager->flush();
+
+                $manager->remove($selectedTemplateCustomHeader);
+                $manager->flush();
+
+                $manager->remove($selectedTemplateCustomBody);
+                $manager->flush();
+
+                $manager->remove($selectedTemplateCustomFooter);
+                $manager->flush();
+            }
+
+        }
+        elseif (null !== $selectedTemplateCustom) {
+
+            $selectedTemplateCustomStyle->setValue($style);
+            $manager->merge($selectedTemplateCustomStyle);
             $manager->flush();
+
+
+            $selectedTemplateCustomHeader->setValue($header);
+            $manager->merge($selectedTemplateCustomHeader);
+            $manager->flush();
+
+
+            $selectedTemplateCustomBody->setValue($body);
+            $manager->merge($selectedTemplateCustomBody);
+            $manager->flush();
+
+
+            $selectedTemplateCustomFooter->setValue($footer);
+            $manager->merge($selectedTemplateCustomFooter);
+            $manager->flush();
+
+
         }
         else {
             $us = new UserOption();
             $us->setUser($user);
-            if ("custom" === $selected) {
-
-            }
-            else {
-                $us->setName("pdf_bill_quote_choice");
-                $us->setValue($selected);
-            }
+            $us->setName("pdf_bill_quote_custom");
+            $us->setValue("active");
 
             $manager->persist($us);
             $manager->flush();
-        }
 
+            //// STYLE
+            $us1 = new UserOption();
+            $us1->setUser($user);
+            $us1->setName("pdf_bill_quote_custom_style");
+            $us1->setValue($style);
+
+            $manager->persist($us1);
+            $manager->flush();
+
+
+            //// HEADER
+            $us1 = new UserOption();
+            $us1->setUser($user);
+            $us1->setName("pdf_bill_quote_custom_header");
+            $us1->setValue($header);
+
+            $manager->persist($us1);
+            $manager->flush();
+
+            //// BODT
+            $us1 = new UserOption();
+            $us1->setUser($user);
+            $us1->setName("pdf_bill_quote_custom_body");
+            $us1->setValue($body);
+
+            $manager->persist($us1);
+            $manager->flush();
+
+            //// FOOTER
+            $us1 = new UserOption();
+            $us1->setUser($user);
+            $us1->setName("pdf_bill_quote_custom_footer");
+            $us1->setValue($footer);
+
+            $manager->persist($us1);
+            $manager->flush();
+        }
 
         return new JsonResponse(["code" => 200, "msg" => "Le template choisi a bien été sauvegardé", 200]);
     }
@@ -209,4 +320,5 @@ class ParametersController extends Controller
 
         return new JsonResponse(["code" => 200, "msg" => "Votre choix a bien été sauvegardé", 200]);
     }
+
 }
