@@ -34,7 +34,12 @@ change_password:
     submit: Change password
     flash:
         success: The password has been changed
-
+email:
+    already_used: 'Cet e-mail est déjà utilisé'
+    blank: 'Please enter an email.'
+    short: 'The email is too short.'
+    long: 'The email is too long.'
+    invalid: 'The email is not valid.'
 # Registration
 registration:
     check_email: An email has been sent to %email%. It contains an activation link you must click to activate your account.

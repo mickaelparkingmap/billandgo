@@ -1120,6 +1120,101 @@ class DocumentController extends Controller
 
                 ));
         }
+        else {
+
+            $document->setRefUser(null);
+            $manager = $this->getDoctrine()->getManager();
+            $selectedTemplateCustomStyle = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+                array("user" => $user->getId(), "name" => "pdf_bill_quote_custom_style"));
+
+            $selectedTemplateCustomHeader = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+                array("user" => $user->getId(), "name" => "pdf_bill_quote_custom_header"));
+
+            $selectedTemplateCustomBody = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+                array("user" => $user->getId(), "name" => "pdf_bill_quote_custom_body"));
+
+            $selectedTemplateCustomFooter = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+                array("user" => $user->getId(), "name" => "pdf_bill_quote_custom_footer"));
+
+
+            if (null === $user) {
+                throw new NotFoundHttpException("Document non trouvé");
+            }
+
+
+            $global =   array(
+                "document" => $document,
+                "selfFirstname" => $user->getFirstname(),
+                "selfLastname" => $user->getLastname(),
+                "selfEmail" => $user->getEmail(),
+                "selfBanque" => $user->getBanque(),
+                "selfBic" => $user->getBic(),
+                "selfIban" => $user->getIban(),
+                "selfPremium" => ("paid" == $usersub["plan"]) ? true : false,
+                "sentDate" => $date,
+                "lines" => $lines,
+                "totalHT" => $totalHT,
+                "taxtotal" => $taxtotal,
+                "tax" => $tax,
+                "selfCompanyName" => $selfName,
+                "clientName" => $clientName,
+                "clientAddress" => $clientAdress,
+                "clientZipCode" => $clientZipCode,
+                "clientCity" => $clientCity,
+                "clientCountry" => $clientCountry,
+                "selfCompanyAdress" => $selfAdress,
+                "selfCompanyZipCode" => $selfZipCode,
+                "selfCompanyCity" => $selfCity,
+                "selfCompanyCountry" => $selfCountry,
+                "selfCompanyEmail" => $selfEmail,
+                "selfSiret" => $selfSiret,
+                "selfCompanyTel" => $selfTel,
+                "docNumber" => $docNumber,
+                "docType" => $docType,
+                "selfCompanyLogo" =>
+                    $assetsManager->getUrl('uploads/user/company/'.$user->getCompanyLogoPath())
+
+            );
+
+            $content = $this->renderView("BillAndGoBundle:document:base/pdf/pdf.document.type.0.html.twig",
+                array(
+                    'footer' => null === $selectedTemplateCustomFooter? "" : $selectedTemplateCustomFooter->getValue(),
+                    'body' => null === $selectedTemplateCustomBody? "" : $selectedTemplateCustomBody->getValue(),
+                    'header' => null === $selectedTemplateCustomHeader? "" : $selectedTemplateCustomHeader->getValue(),
+                    'style' => null === $selectedTemplateCustomStyle? "" : $selectedTemplateCustomStyle->getValue(),
+                    "document" => $document,
+                    "selfFirstname" => $user->getFirstname(),
+                    "selfLastname" => $user->getLastname(),
+                    "selfEmail" => $user->getEmail(),
+                    "selfBank" => $user->getBanque(),
+                    "selfBic" => $user->getBic(),
+                    "selfIban" => $user->getIban(),
+                    "selfPremium" => ("paid" == $usersub["plan"]) ? true : false,
+                    "sentDate" => $date,
+                    "lines" => $lines,
+                    "totalHT" => $totalHT,
+                    "taxtotal" => $taxtotal,
+                    "tax" => $tax,
+                    "selfCompanyName" => $selfName,
+                    "clientName" => $clientName,
+                    "clientAddress" => $clientAdress,
+                    "clientZipCode" => $clientZipCode,
+                    "clientCity" => $clientCity,
+                    "clientCountry" => $clientCountry,
+                    "selfCompanyAdress" => $selfAdress,
+                    "selfCompanyZipCode" => $selfZipCode,
+                    "selfCompanyCity" => $selfCity,
+                    "selfCompanyCountry" => $selfCountry,
+                    "selfCompanyEmail" => $selfEmail,
+                    "selfSiret" => $selfSiret,
+                    "selfCompanyTel" => $selfTel,
+                    "docNumber" => $docNumber,
+                    "docType" => $docType,
+                    "selfCompanyLogo" =>
+                        $assetsManager->getUrl('uploads/user/company/'.$user->getCompanyLogoPath())
+
+                ));
+        }
 
 
         $mpdf->SetProtection(array('print'));
@@ -1131,4 +1226,5 @@ class DocumentController extends Controller
         $mpdf->SetDisplayMode('fullpage');
         return new Response($mpdf->Output());
     }
+
 }

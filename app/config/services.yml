@@ -42,3 +42,7 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+    acme.twig.extension.loader:
+        class:        Twig_Extension_StringLoader
+        tags:
+        - { name: 'twig.extension' }

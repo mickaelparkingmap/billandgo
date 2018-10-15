@@ -4,7 +4,13 @@ $(document).ready(function(){
         $.ajax({
             url : $(this).attr("action"),
             type : 'POST',
-            data: {"pdfchoice" : $(".pdfchoice option:selected").val()},
+            data: {
+                "pdfchoice" : $(".pdfchoice option:selected").val(),
+                "cpstyle" : $.trim($(".custom-template-style").val()),
+                "cpheader" : $.trim($(".custom-template-header").val()),
+                "cpbody" : $.trim($(".custom-template-body").val()),
+                "cpfooter" : $.trim($(".custom-template-footer").val())
+            },
             success : function(data, statut){ // success est toujours en place, bien sûr !
                 if (500 === data["code"]) {
                     $(".alert-pdf").html(" <div class=\"alert alert-danger\">"+(data['msg'])+"</div>");
@@ -35,7 +41,15 @@ $(document).ready(function(){
         console.log("dede");
         var selected = $(".pdfchoice option:selected").val();
         if ("custom" !== selected) {
+            $("#image").fadeIn('slow');;
+            $(".render").fadeIn('slow');;
             $("#image").attr("src", base+selected+".png");
+            $(".custom-template").fadeOut('slow');
+        }
+        else {
+            $("#image").fadeOut('slow');
+            $(".render").fadeOut('slow');
+            $(".custom-template").fadeIn('slow');
         }
     });
 
