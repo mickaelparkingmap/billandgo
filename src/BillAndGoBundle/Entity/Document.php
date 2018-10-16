@@ -140,6 +140,9 @@ class Document
     private $status;
 
     /**
+     * The date on which the document has been sent to the client contact.
+     * Null it has not been sent.
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="sentDate", type="date", nullable=true)
@@ -147,6 +150,10 @@ class Document
     private $sentDate;
 
     /**
+     * The date on which the estimate will be seen as refused if not accepted,
+     * or the bill seen as late if not totally paid.
+     * Set upon creation, by default at the end of the next month.
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="delayDate", type="date", nullable=true)
@@ -154,6 +161,9 @@ class Document
     private $delayDate;
 
     /**
+     * The date on which the estimate has been accepted of refused by the client contact.
+     * Null if no answer.
+     *
      * @var \DateTime
      *
      * @ORM\Column(name="answerDate", type="date", nullable=true)
@@ -161,6 +171,9 @@ class Document
     private $answerDate;
 
     /**
+     * All paiments linked to the bill.
+     * Used to know if the bill is paid.
+     *
      * @var Collection
      *
      * @ORM\ManyToMany(targetEntity="Paiment", inversedBy="refBill")
@@ -172,6 +185,9 @@ class Document
     private $refPaiment;
 
     /**
+     * Random token used for secure communication with the client contact
+     * who will be able to accept or refuse an estimate from the mail.
+     *
      * @var int
      *
      * @ORM\Column(name="token", type="integer", nullable=true)
