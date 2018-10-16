@@ -20,7 +20,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Document
+ * Document is either a bill or an estimate, depending of its type.
+ * It can be seen as a collection of Lines, with meta-infos.
  *
  * @ORM\Table(name="document")
  * @ORM\Entity(repositoryClass="BillAndGoBundle\Repository\DocumentRepository")
@@ -28,6 +29,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Document
 {
     /**
+     * The internal id of the document.
+     *
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -37,6 +40,8 @@ class Document
     private $id;
 
     /**
+     * The user who created the document. He is the only one who can see it, edit it, use it.
+     *
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="User")
@@ -47,6 +52,8 @@ class Document
     private $refUser;
 
     /**
+     * The client for who the document is. The document can then be sent to one of the client's contact.
+     *
      * @var Client
      *
      * @ORM\ManyToOne(targetEntity="Client")
@@ -57,6 +64,10 @@ class Document
     private $refClient;
 
     /**
+     * The collection of Lines is the core of the document.
+     * Each Line represents an item estimated/billed.
+     * This field is used if the document is an estimate.
+     *
      * @var Collection
      *
      * @ORM\ManyToMany(targetEntity="Line", inversedBy="refEstimate")
@@ -68,6 +79,10 @@ class Document
     private $refLines;
 
     /**
+     * The collection of Lines is the core of the document.
+     * Each Line represents an item estimated/billed.
+     * This field is used if the document is a bill.
+     *
      * @var Collection
      *
      * @ORM\ManyToMany(targetEntity="Line", inversedBy="refBill")
@@ -79,6 +94,9 @@ class Document
     private $refLinesB;
 
     /**
+     * The official number of the document, used for external/legal reference.
+     * It is auto-generated for legal motives : a user's bills must have bills with successive numbers.
+     *
      * @var string
      *
      * @ORM\Column(name="number", type="string", length=255)
@@ -86,6 +104,9 @@ class Document
     private $number;
 
     /**
+     * Since a document can be either a bill or an estimate, a boolean has been used.
+     * True if estimate, false if bill.
+     *
      * @var bool
      *
      * @ORM\Column(name="type", type="boolean")
@@ -93,6 +114,8 @@ class Document
     private $type;
 
     /**
+     * The description of the document, wich will appear on the pdf.
+     *
      * @var string
      *
      * @ORM\Column(name="description", type="text", nullable=true)
