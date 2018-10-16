@@ -19,7 +19,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Client
+ * Client represents a client or prospect to which estimates, projects and bills will be linked.
+ * It can be a company, with one or several contacts, or a particular wxith a single contact, himself.
  *
  * @ORM\Table(name="client", indexes={@ORM\Index(name="idx_client", columns={"user_ref"})})
  * @ORM\Entity(repositoryClass="BillAndGoBundle\Repository\ClientRepository")
@@ -27,6 +28,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Client
 {
     /**
+     * The name of the company. If an individual, it will be composed by its firstname and lastname.
+     *
      * @var string
      *
      * @ORM\Column(name="company_name", type="string", length=255, nullable=true)
@@ -34,6 +37,10 @@ class Client
     private $companyName;
 
     /**
+     * The postal adress of the company, minus the zip code and the city.
+     * It is used by billing.
+     * Although it is nullable, it must be filled, even for an individual.
+     *
      * @var string
      *
      * @ORM\Column(name="adress", type="text", length=65535, nullable=true)
@@ -41,6 +48,8 @@ class Client
     private $adress;
 
     /**
+     * The zipcode of the postal adress of the company.
+     *
      * @var string
      *
      * @ORM\Column(name="zipcode", type="text", nullable=true)
@@ -48,6 +57,8 @@ class Client
     private $zipcode;
 
     /**
+     * The city of the postal adress of the company.
+     *
      * @var string
      *
      * @ORM\Column(name="city", type="text", length=65535, nullable=true)
@@ -55,6 +66,9 @@ class Client
     private $city;
 
     /**
+     * The country of the company.
+     * If both the user and the company are located in France, the field is not mandatory.
+     *
      * @var string
      *
      * @ORM\Column(name="country", type="text", length=65535, nullable=true)
@@ -62,6 +76,8 @@ class Client
     private $country;
 
     /**
+     * The internal id.
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
@@ -71,6 +87,9 @@ class Client
     private $id;
 
     /**
+     * The user who created this client.
+     * Only this user will be able to see it, use it and edit it.
+     *
      * @var \BillAndGoBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="BillAndGoBundle\Entity\User")
@@ -81,6 +100,9 @@ class Client
     private $userRef;
 
     /**
+     * The collection of contacts in this company.
+     * At least one must be created to be able to send estimates or bills.
+     *
      * @ORM\ManyToMany(targetEntity="ClientContact", cascade={"all"}, orphanRemoval=true)
      * @ORM\JoinTable(name="client_clientcontact",
      *      joinColumns={@ORM\JoinColumn(name="client_id", referencedColumnName="id")},
@@ -92,7 +114,7 @@ class Client
 
 
     /**
-     * Set companyName
+     * Set companyName after removing tags.
      *
      * @param string $companyName
      *
@@ -115,7 +137,7 @@ class Client
     }
 
     /**
-     * Set adress
+     * Set adress after removing tags.
      *
      * @param string $adress
      *
@@ -138,7 +160,7 @@ class Client
     }
 
     /**
-     * Set zipcode
+     * Set zipcode after removing tags.
      *
      * @param string $zipcode
      *
@@ -161,7 +183,7 @@ class Client
     }
 
     /**
-     * Set city
+     * Set city after removing tags.
      *
      * @param string $city
      *
@@ -184,7 +206,7 @@ class Client
     }
 
     /**
-     * Set country
+     * Set country after removing tags.
      *
      * @param string $country
      *
@@ -240,6 +262,8 @@ class Client
     }
     
     /**
+     * Add a contact to the client.
+     *
      * @param ClientContact $contact
      *
      * @return Client
@@ -251,6 +275,8 @@ class Client
     }
     
     /**
+     * Remove a specified contact from the client, it it is found.
+     *
      * @param ClientContact $contact
      *
      * @return Client
@@ -262,6 +288,8 @@ class Client
     }
 
     /**
+     * Returns collection of contacts.
+     *
      * @return Collection(ClientContact)
      */
     public function getContacts() : Collection
@@ -271,6 +299,7 @@ class Client
 
     /**
      * Client constructor.
+     * Sets the contacts as an empty ArrayCollection.
      */
     public function __construct()
     {
@@ -278,6 +307,8 @@ class Client
     }
 
     /**
+     * Returns json containing data of the client and its contacts.
+     *
      * @return string
      */
     public function stringify() : string
