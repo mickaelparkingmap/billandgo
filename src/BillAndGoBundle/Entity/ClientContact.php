@@ -18,7 +18,10 @@ namespace BillAndGoBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ClientContact
+ * ClientContact is a contact, owned by a Client,
+ * representing an individual working here.
+ * For example, a client can have different contacts for accounting and project management.
+ * If the client is an individual, it will the only contact.
  *
  * @ORM\Table(name="client_contact")
  * @ORM\Entity
@@ -26,6 +29,8 @@ use Doctrine\ORM\Mapping as ORM;
 class ClientContact
 {
     /**
+     * The first name of the contact.
+     *
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=100, nullable=true)
@@ -33,6 +38,8 @@ class ClientContact
     private $firstname;
 
     /**
+     * The last name of the contact.
+     *
      * @var string
      *
      * @ORM\Column(name="lastname", type="string", length=100, nullable=true)
@@ -40,6 +47,8 @@ class ClientContact
     private $lastname;
 
     /**
+     * The email of the contact, to which mails will be sent. Do not spam him !
+     *
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
@@ -47,6 +56,8 @@ class ClientContact
     private $email;
 
     /**
+     * The phone number of the contact.
+     *
      * @var string
      *
      * @ORM\Column(name="phone", type="string", length=12, nullable=true)
@@ -54,6 +65,8 @@ class ClientContact
     private $phone;
 
     /**
+     * The mobile phone number of the contact.
+     *
      * @var string
      *
      * @ORM\Column(name="mobile", type="string", length=12, nullable=true)
@@ -61,6 +74,8 @@ class ClientContact
     private $mobile;
 
     /**
+     * The internal id of the contact
+     *
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
@@ -72,7 +87,7 @@ class ClientContact
 
 
     /**
-     * Set firstname
+     * Set firstname after removing tags
      *
      * @param string $firstname
      *
@@ -95,7 +110,7 @@ class ClientContact
     }
 
     /**
-     * Set lastname
+     * Set lastname after removing tags
      *
      * @param string $lastname
      *
@@ -118,7 +133,7 @@ class ClientContact
     }
 
     /**
-     * Set email
+     * Set email after removing tags
      *
      * @param string $email
      *
@@ -141,7 +156,7 @@ class ClientContact
     }
 
     /**
-     * Set phone
+     * Set phone after removing tags
      *
      * @param string $phone
      *
@@ -164,7 +179,7 @@ class ClientContact
     }
 
     /**
-     * Set mobile
+     * Set mobile after removing tags
      *
      * @param string $mobile
      *
