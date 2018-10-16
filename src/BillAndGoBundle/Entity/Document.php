@@ -123,6 +123,16 @@ class Document
     private $description;
 
     /**
+     * The status of the document. It can be :
+     * * draw : the document is a draw, has not been sent and can be edited. Default status on creation.
+     * * canceled : the document has been canceled.
+     * * estimated : the estimate has been sent to the client and is waiting for response.
+     * * refused : the estimate has been sent to the client, who has declined it.
+     * * accepted : the estimate has been sent to the client, who has accepted it.
+     * * billed : the bill has been sent to the client and is wainting for paiment.
+     * * partially : the bill has been sent to the client and has been partially paid.
+     * * paid : the bill has been sent to the client and has been fully paid.
+     *
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=255)
