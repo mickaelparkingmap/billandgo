@@ -196,6 +196,7 @@ class Document
 
     /**
      * Constructor
+     * sets an empty ArrayCollection for reflines.
      */
     public function __construct()
     {
@@ -213,7 +214,7 @@ class Document
     }
 
     /**
-     * Set number
+     * Set number after removing tags
      *
      * @param string $number
      *
@@ -222,6 +223,7 @@ class Document
     public function setNumber(string $number) : self
     {
         $this->number = trim(strip_tags(strip_tags($number)));
+        
         return $this;
     }
 
@@ -236,7 +238,7 @@ class Document
     }
 
     /**
-     * Set description
+     * Set description after removing tags
      *
      * @param string|null $description
      *
@@ -245,6 +247,7 @@ class Document
     public function setDescription(?string $description) : self
     {
         $this->description = trim(strip_tags($description));
+        
         return $this;
     }
 
@@ -259,7 +262,7 @@ class Document
     }
 
     /**
-     * Set us
+     * Set status
      *
      * @param string $status
      *
@@ -268,6 +271,7 @@ class Document
     public function setStatus(string $status) : self
     {
         $this->status = $status;
+        
         return $this;
     }
 
@@ -291,6 +295,7 @@ class Document
     public function setSentDate(\DateTime $sentDate) : self
     {
         $this->sentDate = $sentDate;
+        
         return $this;
     }
 
@@ -314,6 +319,7 @@ class Document
     public function setDelayDate(\DateTime $delayDate) : self
     {
         $this->delayDate = $delayDate;
+        
         return $this;
     }
 
@@ -337,6 +343,7 @@ class Document
     public function setAnswerDate(\DateTime $answerDate) : self
     {
         $this->answerDate = $answerDate;
+        
         return $this;
     }
 
@@ -360,6 +367,7 @@ class Document
     public function setRefUser(?User $refUser = null) : self
     {
         $this->refUser = $refUser;
+        
         return $this;
     }
 
@@ -383,6 +391,7 @@ class Document
     public function setRefClient(?Client $refClient = null) : self
     {
         $this->refClient = $refClient;
+        
         return $this;
     }
 
@@ -406,6 +415,7 @@ class Document
     public function setType(bool $type) : self
     {
         $this->type = $type;
+        
         return $this;
     }
 
@@ -420,7 +430,7 @@ class Document
     }
 
     /**
-     * Add refLine
+     * Add a Line to refLine, the collection of estimate lines
      *
      * @param Line $refLine
      *
@@ -429,11 +439,12 @@ class Document
     public function addRefLine(Line $refLine)
     {
         $this->refLines[] = $refLine;
+        
         return $this;
     }
 
     /**
-     * Remove refLine
+     * Remove a Line from refLine if it is found.
      *
      * @param Line $refLine
      *
@@ -442,11 +453,12 @@ class Document
     public function removeRefLine(Line $refLine) : self
     {
         $this->refLines->removeElement($refLine);
+        
         return $this;
     }
 
     /**
-     * Get refLines
+     * Get refLines, Lines of an estimate
      *
      * @return Collection
      */
@@ -456,7 +468,7 @@ class Document
     }
 
     /**
-     * Add refLinesB
+     * Add a Line to refLinesB, the collection of bill Lines.
      *
      * @param Line $refLinesB
      *
@@ -465,11 +477,12 @@ class Document
     public function addRefLinesB(Line $refLinesB) : self
     {
         $this->refLinesB[] = $refLinesB;
+        
         return $this;
     }
 
     /**
-     * Remove refLinesB
+     * Remove a Line from refLinesB if it is found
      *
      * @param Line $refLinesB
      */
@@ -479,7 +492,7 @@ class Document
     }
 
     /**
-     * Get refLinesB
+     * Get refLinesB, the collection of bill Lines 
      *
      * @return Collection
      */
@@ -489,7 +502,7 @@ class Document
     }
 
     /**
-     * Add refPaiment
+     * Link a Paiment to the document.
      *
      * @param Paiment $refPaiment
      *
@@ -498,11 +511,12 @@ class Document
     public function addRefPaiment(Paiment $refPaiment) : self
     {
         $this->refPaiment[] = $refPaiment;
+        
         return $this;
     }
 
     /**
-     * Remove refPaiment
+     * Remove a paiment if found.
      *
      * @param Paiment $refPaiment
      *
@@ -511,11 +525,12 @@ class Document
     public function removeRefPaiment(Paiment $refPaiment) : self
     {
         $this->refPaiment->removeElement($refPaiment);
+        
         return $this;
     }
 
     /**
-     * Get refPaiment
+     * Get a collection of paiments linked to the document.
      *
      * @return Collection
      */
@@ -525,7 +540,9 @@ class Document
     }
 
     /**
-     * get sum of lines HT
+     * get sum of lines HT.
+     * 0 if no line.
+     * sum the refLines if estimate, the refLinesB if bill.
      *
      * @return float
      */
@@ -541,11 +558,14 @@ class Document
                 $ht += $line->getPrice() * $line->getQuantity();
             }
         }
+        
         return $ht;
     }
 
     /**
      * get sum of lines VAT
+     * 0 if no line.
+     * sum the refLines if estimate, the refLinesB if bill.
      *
      * @return float
      */
@@ -561,11 +581,12 @@ class Document
                 $vat += $line->getPrice() * $line->getQuantity() * $line->getRefTax()->getPercent() / 100;
             }
         }
+        
         return $vat;
     }
 
     /**
-     * get sum of paiments
+     * get sum of paiments linked to the document
      *
      * @return float
      */
@@ -575,11 +596,14 @@ class Document
         foreach ($this->refPaiment as $paiment) {
             $sum += $paiment->getAmount();
         }
+        
         return $sum;
     }
 
     /**
-     * are all lines transformed in project or bills ?
+     * Are all lines transformed in project or bills ?
+     * Checks for each estimat eline if there is a project or a bill linked to this line.
+     *
      * @return bool
      */
     public function areLinesTransformed() : bool
@@ -596,7 +620,9 @@ class Document
     }
 
     /**
-     * is bill paid
+     * Is bill paid ?
+     * Checks if the sum of Paiments is equal or above the TTC price of the bill.
+     * 
      * @return bool
      */
     public function isBillPaid() : bool
@@ -606,7 +632,7 @@ class Document
 
 
     /**
-     * Set token
+     * Set token.
      *
      * @param integer $token
      *
@@ -615,6 +641,7 @@ class Document
     public function setToken(int $token) : self
     {
         $this->token = $token;
+        
         return $this;
     }
 
@@ -629,6 +656,7 @@ class Document
     }
 
     /**
+     * Returns a json built with the document data and its Lines data.
      * @return string
      */
     public function stringify() : string
