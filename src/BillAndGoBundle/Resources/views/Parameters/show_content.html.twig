@@ -51,7 +51,7 @@
                           <div class="widget-user-header  bg-black" style="background: url('{{ asset('bundles/billandgo/img/street.png') }}') center center;">
 
                               <!-- /.widget-user-image -->
-                              <h3 class="widget-user-username">Template PDF </h3>
+                              <h3 class="widget-user-username">Modèle Devis/Facture </h3>
                               <h5 class="widget-user-desc">Vous pouvez sélectionner le modèle de facture/devis que vous souhaitez </h5>
                           </div>
                           <div class="box-footer no-padding">
@@ -92,21 +92,26 @@
                                       </div>
                                       <div class="custom-template tab-content" {% if "custom" != pdfchoice %}style="display: none"{% endif %}>
                                           <div class="col-md-12">
-                                              <h5>Style  <small>Voici le block style de votre template</small></h5>
+                                              <br>
+                                              <p>Vous avez sélectionné le modèle personnalisé pour vos documents. Ce mode nécessite des connaissances dans le langage Twig (<a href="https://twig.symfony.com/doc/2.x/" target="_blank">Voir la documentation</a>) afin que vous puissiez récupérer les informations de votre document. <br>
+                                              Si vous souhaitez comprendre comment se construit ce modèle personnalisé sur Bill&Go, rendez-vous vers cette documentation : <a class="text-red" target="_blank" href="https://www.billandgo.fr/documentation/">Documentation du modèle personnalisé Bill&Go</a>
+                                              </p>
+                                              <br>
+                                              <h5>Style  <small>Ici vous pouvez insérer le style de votre modèle</small></h5>
 
                                               <textarea name="cpstyle" id="custom-template-style" class="custom-template-style form-control">{{ cts }}</textarea>
                                           </div>
                                           <div class="col-md-12">
-                                              <h5>Header  <small>Voici l'entête de votre template</small></h5>
+                                              <h5>Header  <small>Ce code correspondra à l'entête de votre document</small></h5>
 
                                               <textarea name="cpheader" id="custom-template-header" class="custom-template-header form-control">{{ cth }}</textarea>
                                           </div>
                                           <div class="col-md-12">
-                                              <h5>Body  <small>Voici le corps de votre template</small></h5>
+                                              <h5>Body  <small>Voici le corps de votre modèle</small></h5>
                                               <textarea name="cpbody" id="custom-template-body" class="custom-template-body form-control">{{ ctb }}</textarea>
                                           </div>
                                           <div class="col-md-12">
-                                              <h5>Footer  <small>Voici le pied de page de votre template</small></h5>
+                                              <h5>Footer  <small>Voici le pied de page de votre modèle</small></h5>
                                               <textarea name="cpfooter"  id="custom-template-footer" class="custom-template-footer form-control">{{ ctf }}</textarea>
                                           </div>
                                           <div class="col-md-12"><hr></div>
