@@ -17,6 +17,13 @@ $(document).ready(function() {
     $("#project_modal_todos").hide();
     $("#project_modal_submit").hide();
     $("#project_modal_client_ok").click(function (e) {
+        if ("" == $.trim($("#billandgobundle_project_refClient option:selected").val())) {
+            if (typeof $(".error") != "undefined")
+                $(".error").remove();
+            $("#billandgobundle_project_refClient").parent().append("<span class='text-red error'>Veuillez sélectionner un client</span>");
+            return ;
+        }
+        $(".error").remove();
         //check if client selected
         $("#project_modal_client").hide();
         $("#project_modal_name").show();
@@ -27,6 +34,13 @@ $(document).ready(function() {
     });
     $("#project_modal_name_ok").click(function (e) {
         //check if name
+        if ("" == $.trim($("#billandgobundle_project_name").val())) {
+            if (typeof $(".error") != "undefined")
+                $(".error").remove();
+            $("#billandgobundle_project_name").parent().append("<span class='text-red error'>Veuillez renseigner un nom de projet</span>");
+            return ;
+        }
+        $(".error").remove();
         $("#project_modal_name").hide();
         $("#project_modal_dates").show();
     });
@@ -36,6 +50,13 @@ $(document).ready(function() {
     });
     $("#project_modal_dates_ok").click(function (e) {
         //check if name
+        if ("" == $.trim($("#billandgobundle_project_deadline").val())) {
+            if (typeof $(".error") != "undefined")
+                $(".error").remove();
+            $("#billandgobundle_project_deadline").parent().append("<span class='text-red error'>Veuillez renseigner une deadline</span>");
+            return ;
+        }
+        $(".error").remove();
         $("#project_modal_dates").hide();
         $("#project_modal_description").show();
     });
@@ -45,6 +66,13 @@ $(document).ready(function() {
     });
     $("#project_modal_description_ok").click(function (e) {
         //check if name
+        if ("" == $.trim($("#billandgobundle_project_description").val())) {
+            if (typeof $(".error") != "undefined")
+                $(".error").remove();
+            $("#billandgobundle_project_description").parent().append("<span class='text-red error'>Veuillez renseigner une description</span>");
+            return ;
+        }
+        $(".error").remove();
         $("#project_modal_description").hide();
         $("#project_modal_todos").show();
         $("#project_modal_submit").show();

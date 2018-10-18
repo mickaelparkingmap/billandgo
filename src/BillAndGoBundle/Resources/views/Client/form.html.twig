@@ -11,7 +11,7 @@ Pays
 
 <div class="form-group row" id="client_modal_name">
     <div class="col-md-12">
-        <h4> {{ form_label(form.companyName, "Nom de l'entreprise", {'label_attr': {'class': 'control-label'}}) }}</h4>
+        <h4> {{ form_label(form.companyName, "Nom de l'entreprise", {'label_attr': {'class': 'control-label', 'data-validation-length': 'min1'}}) }}</h4>
     </div>
     <div class="col-md-6">
         {{ form_errors(form.companyName) }}

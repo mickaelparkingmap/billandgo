@@ -19,6 +19,13 @@ $(document).ready(function() {
     $("#client_modal_value").hide();
     $("#client_modal_name_ok").click(function (e) {
         //check if name
+        if ("" == $.trim($("#billandgobundle_client_companyName").val())) {
+            if (typeof $(".error") != "undefined")
+                $(".errorbillandgobundle_client_companyName").remove();
+            $("#billandgobundle_client_companyName").parent().append("<span class='text-red error errorbillandgobundle_client_companyName'>Veuillez renseigner le nom de l'entreprise</span>");
+            return ;
+        }
+        $(".error").remove();
         $("#client_modal_name").hide();
         $("#client_modal_country").show();
     });
@@ -37,11 +44,57 @@ $(document).ready(function() {
     });
     $("#client_modal_location_ok").click(function (e) {
         //check if name
+        if ("" == $.trim($("#billandgobundle_client_adress").val()) || "" == $.trim($("#billandgobundle_client_zipcode").val()) || "" == $.trim($("#billandgobundle_client_city").val())) {
+            if (typeof $(".error") != "undefined")
+                $(".error").remove();
+            if ("" == $.trim($("#billandgobundle_client_adress").val()))
+                $("#billandgobundle_client_adress").parent().append("<span class='text-red error errorbillandgobundle_client_adress'>Veuillez renseigner l'adresse</span>");
+            if ("" == $.trim($("#billandgobundle_client_zipcode").val()) )
+                $("#billandgobundle_client_zipcode").parent().append("<span class='text-red error errorbillandgobundle_client_zipcode'>Veuillez renseigner le code postal</span>");
+            if ("" == $.trim($("#billandgobundle_client_city").val()) )
+                $("#billandgobundle_client_city").parent().append("<span class='text-red error errorbillandgobundle_client_city'>Veuillez renseigner la ville</span>");
+
+
+            return ;
+        }
+
+        $(".error").remove();
         $("#client_modal_location").hide();
         $("#client_modal_contacts").show();
     });
     $("#client_modal_contacts_ok").click(function (e) {
         //check if name
+        if ("" == $.trim($("input[id^=billandgobundle_client_contacts_][id$=_lastname]").val()) || "" == $.trim($("input[id^=billandgobundle_client_contacts_][id$=_firstname]").val()) ||
+            "" == $.trim($("input[id^=billandgobundle_client_contacts_][id$=_email]").val()) || "" == $.trim($("input[id^=billandgobundle_client_contacts_][id$=_mobile]").val())
+        ) {
+
+            if (typeof $(".error") != "undefined")
+                $(".error").remove();
+            $("input[id^=billandgobundle_client_contacts_][id$=_lastname]").each(function () {
+                if ("" == $.trim($(this).val()))
+                    $(this).parent().append("<span class='text-red error'>Veuillez renseigner le nom</span>");
+            });
+
+            $("input[id^=billandgobundle_client_contacts_][id$=_firstname]").each(function () {
+                if ("" == $.trim($(this).val()))
+                    $(this).parent().append("<span class='text-red error'>Veuillez renseigner le prénom</span>");
+            });
+
+            $("input[id^=billandgobundle_client_contacts_][id$=_email]").each(function () {
+                if ("" == $.trim($(this).val()))
+                    $(this).parent().append("<span class='text-red error'>Veuillez renseigner l'email</span>");
+            });
+
+            $("input[id^=billandgobundle_client_contacts_][id$=_mobile]").each(function () {
+                if ("" == $.trim($(this).val()))
+                    $(this).parent().append("<span class='text-red error'>Veuillez renseigner le numéro de mobile</span>");
+            });
+           return ;
+        }
+
+        $(".error").remove();
+
+
         $("#client_modal_location").hide();
         $("#client_modal_contacts").hide();
         $("#client_modal_submit").show();
