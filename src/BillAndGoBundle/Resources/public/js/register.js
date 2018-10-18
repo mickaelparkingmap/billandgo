@@ -45,7 +45,7 @@ function validateEmail(email) {
 
 function isStrongPwd1(password) {
 
-    var regExp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%&*()]).{8,}/;
+    var regExp = /(?=.*\d)(?=.*[a-z]).{8,}/;
 
     var validPassword = regExp.test(password);
 
@@ -111,7 +111,7 @@ function indexes(i) {
             val++;
             $("#fos_user_registration_form_plainPassword_first").addClass("error-b");
             $("#fos_user_registration_form_plainPassword_second").addClass("error-b");
-            $("#fos_user_registration_form_plainPassword_first").before('<span class="error">Le mot de passe doit avoir au moins 8 caractères avec au moins une lettre majuscule, une lettre minuscule, un chiffre et un caratère spécial !@#$%&;*() "</span');
+            $("#fos_user_registration_form_plainPassword_first").before('<span class="error">Le mot de passe doit avoir au moins 8 caractères et un chiffre</span');
         }
         if ("" === $("#fos_user_registration_form_companyname").val()) {
             val++;
