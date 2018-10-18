@@ -40,7 +40,27 @@ $("#createprojectwithoutdesc").submit(function (e) {
     var name = $("#project_name").val();
     var deadline = $("#project_deadline").val();
     var desc = $("#pdescription").html();
-    console.log(client, name, deadline, desc);
+
+    if ("" != $("#project_deadline").val()) {
+        var elemcho = $("#project_deadline").val();
+        var resDate = elemcho.split("/");
+        console.log(resDate.length)
+        if (isNaN(Date.parse(resDate[2]+"-"+resDate[1]+"-"+resDate[0])) || resDate.length !== 3) {
+            if (typeof $(".error") != "undefined")
+                $(".error").remove();
+            $("#project_deadline").parent().append("<span class='error text-red'>Veuillez renseigner une deadline valide</span>")
+            return false;
+        }
+
+    }
+    else {
+        if (typeof $(".error") != "undefined")
+            $(".error").remove();
+        $("#project_deadline").parent().append("<span class='error text-red'>Veuillez renseigner une deadline</span>")
+        return false;
+    }
+
+
     if (statusG === 1 && syncTask === "active") {
         var resG = deadline.split("/");
         resG = resG[1]+"/"+resG[0]+"/"+resG[2];

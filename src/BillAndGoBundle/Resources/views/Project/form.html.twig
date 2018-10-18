@@ -9,13 +9,16 @@
         <h4>{{ form_label(form.refClient, "Client", {'label_attr': {'class': 'control-label'}}) }}</h4>
     </div>
     <div class="col-md-6">
+
         {{ form_errors(form.refClient) }}
         {{ form_widget(form.refClient, {'attr': {'class': 'form-control'}}) }}
+
     </div>
 
     <div class="col-md-6">
         <span class="btn btn-success btn-outline" id="project_modal_client_ok">Suivant <i class="fa fa-arrow-right"></i> </span>
     </div>
+
 </div>
 
 
@@ -78,4 +81,3 @@
 
 {{ form_rest(form) }}
 {{ form_end(form) }}
-
