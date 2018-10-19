@@ -16,9 +16,10 @@ namespace BillAndGoBundle\Controller;
 use AppBundle\Service\ProjectService;
 use BillAndGoBundle\Entity\Line;
 use BillAndGoBundle\Entity\Project;
+use BillAndGoBundle\Entity\Tax;
 use BillAndGoBundle\Entity\User;
+use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -109,7 +110,7 @@ class ProjectController extends Controller
                         $project = $manager->getRepository('BillAndGoBundle:Project')->find($id);
                     }
                 }
-                $taxes = $manager->getRepository('BillAndGoBundle:Tax')->findAll($id);
+                $taxes = $manager->getRepository(Tax::class)->findAll();
                 return $this->render(
                     'BillAndGoBundle:Project:full.html.twig',
                     array(
@@ -190,7 +191,7 @@ class ProjectController extends Controller
         $user = $this->getUser();
         if (!is_object($user)) {
             $ar401 = ["disconnected"];
-            return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
+            return new Response(json_encode($ar401), 401);
         }
         $usersub = DefaultController::userSubscription($user, $this);
         if ($usersub["remaining"] <= 0) {
@@ -236,7 +237,7 @@ class ProjectController extends Controller
         $user = $this->getUser();
         if (!is_object($user)) {
             $ar401 = ["disconnected"];
-            return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
+            return new Response(json_encode($ar401), 401);
         }
         $usersub = DefaultController::userSubscription($user, $this);
         if ($usersub["remaining"] <= 0) {
@@ -261,6 +262,7 @@ class ProjectController extends Controller
         $project->setBegin(new \DateTime());
         $project->setDescription($estimate->getDescription());
         $project->setRefClient($estimate->getRefClient());
+        /** @var Line $line */
         foreach ($estimate->getRefLines() as $line) {
             $project->addRefLine($line);
             $line->addRefProject($project);
@@ -319,6 +321,7 @@ class ProjectController extends Controller
             $project->setDeadline(new \DateTime($deadline));
         }
         foreach ($lines_id as $line_id) {
+            /** @var Line $line */
             $line = $manager->getRepository('BillAndGoBundle:Line')->find($line_id);
             if ($line->getRefUser() != $user) {
                 $ar401 = ['wrong user'];
@@ -362,7 +365,7 @@ class ProjectController extends Controller
             if (($project != null) && ($line != null)) {
                 if (($project->getRefUser() != $user) || ($line->getRefUser() != $user)) {
                     $ar401 = ["not your project or line"];
-                    return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
+                    return new Response(json_encode($ar401), 401);
                 }
                 $project->addRefLine($line);
                 $manager->flush();
@@ -398,7 +401,7 @@ class ProjectController extends Controller
             if (($project != null) && ($line != null)) {
                 if (($project->getRefUser() != $user) || ($line->getRefUser() != $user)) {
                     $ar401 = ["not your project or line"];
-                    return new \Symfony\Component\HttpFoundation\Response(json_encode($ar401), 401);
+                    return new Response(json_encode($ar401), 401);
                 }
                 $project->removeRefLine($line);
                 $manager->flush();
@@ -526,11 +529,11 @@ class ProjectController extends Controller
     /**
      * edit status of a line
      *
-     * @param                                                       int    $id      id of the project
-     * @param                                                       int    $id_line id of the line to edit
-     * @param                                                       String $status  new status : draw, estimated, accepted, planned, working, waiting, validated, billing, billed, canceled
+     * @param int    $id      id of the project
+     * @param int    $id_line id of the line to edit
+     * @param String $status  new status : draw, estimated, accepted, planned, working, waiting, validated, billing, billed, canceled
      * @Route("/projects/{id}/line/{id_line}/edit/status/{status}", name="billandgo_project_line_edit_status")
-     * @return                                                      \Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function editLineStatus($id, $id_line, $status)
     {
@@ -565,6 +568,29 @@ class ProjectController extends Controller
         return new Response(json_encode($ar404), 404);
     }
 
+    /**
+     * @Route("project/{id}/create_repo", name="billandgo_project_create_repo")
+     * @Method("POST")
+     *
+     * @param int $id
+     * @param Request $request
+     * @return Response
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     */
+    public function createRepo(int $id, Request $request): Response
+    {
+        $user = $this->getUser();
+        if (!is_object($user)) {
+            throw new AccessDeniedException('disconnected');
+        }
+        $repoName = $request->get("name");
+        if (!$repoName) {
+            throw new \Exception("missing name parameter");
+        }
+        $public = (null === $request->get("private"));
+        $this->projectService->createRepo($user, $id, $repoName, $public);
 
-
+        return $this->redirect($this->generateUrl("billandgo_project_view", ["id" => $id]));
+    }
 }

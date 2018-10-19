@@ -99,6 +99,14 @@ class Project
 
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="github_repo", type="text", length=255, nullable=true)
+     */
+    private $repoName;
+
+
+    /**
      * Set begin
      *
      * @param \DateTime|null $begin
@@ -254,7 +262,6 @@ class Project
     public function __construct()
     {
         $this->refLines = new  ArrayCollection();
-        $this->lines = new ArrayCollection();
     }
 
     /**
@@ -291,6 +298,32 @@ class Project
     public function getRefLines() : Collection
     {
         return $this->refLines;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRepoName(): ?string
+    {
+        return $this->repoName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRepoUrl(): ?string
+    {
+        return "https://github.com/".$this->getRepoName();
+    }
+
+    /**
+     * @param string $repoName
+     * @return Project
+     */
+    public function setRepoName(?string $repoName): Project
+    {
+        $this->repoName = $repoName;
+        return $this;
     }
 
     /**
