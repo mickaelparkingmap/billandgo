@@ -89,10 +89,9 @@ class DefaultController extends Controller
      */
     public function testGithubUrlTokenAction()
     {
-        /** @var User $user */
-        $user = $this->getUser();
-        $githubClient = new \Github\Client();
         try {
+            $user = $this->getUser();
+            $githubClient = new \Github\Client();
         $githubClient->authenticate($user->getGithubAccessToken(), null,\Github\Client::AUTH_URL_TOKEN);
             $newRepo = $githubClient->api('repo')->create('test-urltoken', "for test", "repo-homepage.com", true);
         } catch (\Exception $exception) {
@@ -108,10 +107,9 @@ class DefaultController extends Controller
      */
     public function testGithubUrlClientAction()
     {
-        /** @var User $user */
-        $user = $this->getUser();
-        $githubClient = new \Github\Client();
         try {
+            $user = $this->getUser();
+            $githubClient = new \Github\Client();
             $githubClient->authenticate($user->getGithubId(), $user->getGithubAccessToken(), \Github\Client::AUTH_URL_CLIENT_ID);
             $newRepo = $githubClient->api('repo')->create('test-urlclient', "for test", "repo-homepage.com", true);
         } catch (\Exception $exception) {
@@ -127,10 +125,9 @@ class DefaultController extends Controller
      */
     public function testGithubHttpTokenAction()
     {
-        /** @var User $user */
-        $user = $this->getUser();
-        $githubClient = new \Github\Client();
         try {
+            $user = $this->getUser();
+            $githubClient = new \Github\Client();
             $githubClient->authenticate($user->getGithubAccessToken(), null,\Github\Client::AUTH_HTTP_TOKEN);
             $newRepo = $githubClient->api('repo')->create('test-httptoken', "for test", "repo-homepage.com", true);
         } catch (\Exception $exception) {
