@@ -141,6 +141,6 @@ hwi_oauth:
             type:                github
             client_id:           2be8f4a70380a8497b8b
             client_secret:       eeb3ee6780a7dab892ec5f24c643094f1da91120
-            scope:               'user,user:email,read:user,repo,gist''
+            scope:               'user,user:email,read:user,repo,gist'
             options:
                 csrf: true
