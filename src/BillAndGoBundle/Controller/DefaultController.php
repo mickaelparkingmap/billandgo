@@ -16,6 +16,7 @@ namespace BillAndGoBundle\Controller;
 use BillAndGoBundle\Entity\Client;
 use BillAndGoBundle\Entity\Document;
 use BillAndGoBundle\Entity\Project;
+use BillAndGoBundle\Entity\User;
 use BillAndGoBundle\Entity\UserOption;
 use FOS\UserBundle\Model\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -24,6 +25,7 @@ use Symfony\Bundle\FrameworkBundle\Tests\Controller\ContainerAwareController;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -79,6 +81,54 @@ class DefaultController extends Controller
         return $this->render(
             'BillAndGoBundle:Default:ml.html.twig', ["legal" => $legal]
         );
+    }
+
+    /**
+     * @Route("/test/github/urltoken", name="billandgo_test_github_urltoken")
+     * @return Response
+     */
+    public function testGithubUrlTokenAction()
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $githubClient = new \Github\Client();
+        $githubClient->authenticate($user->getGithubAccessToken(), null,\Github\Client::AUTH_URL_TOKEN);
+        $newRepo = $githubClient->api('repo')->create('test-urltoken', "for test", "repo-homepage.com", true);
+        dump($newRepo);
+        die;
+        return new Response(json_encode($newRepo));
+    }
+
+    /**
+     * @Route("/test/github/urlclient", name="billandgo_test_github_urlclient")
+     * @return Response
+     */
+    public function testGithubUrlClientAction()
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $githubClient = new \Github\Client();
+        $githubClient->authenticate($user->getGithubId(), $user->getGithubAccessToken(), \Github\Client::AUTH_URL_CLIENT_ID);
+        $newRepo = $githubClient->api('repo')->create('test-urlclient', "for test", "repo-homepage.com", true);
+        dump($newRepo);
+        die;
+        return new Response(json_encode($newRepo));
+    }
+
+    /**
+     * @Route("/test/github/httptoken", name="billandgo_test_github_httptoken")
+     * @return Response
+     */
+    public function testGithubHttpTokenAction()
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $githubClient = new \Github\Client();
+        $githubClient->authenticate($user->getGithubAccessToken(), null,\Github\Client::AUTH_HTTP_TOKEN);
+        $newRepo = $githubClient->api('repo')->create('test-httptoken', "for test", "repo-homepage.com", true);
+        dump($newRepo);
+        die;
+        return new Response(json_encode($newRepo));
     }
 
     /**
