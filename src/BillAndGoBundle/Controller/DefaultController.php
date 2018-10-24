@@ -92,10 +92,13 @@ class DefaultController extends Controller
         /** @var User $user */
         $user = $this->getUser();
         $githubClient = new \Github\Client();
+        try {
         $githubClient->authenticate($user->getGithubAccessToken(), null,\Github\Client::AUTH_URL_TOKEN);
-        $newRepo = $githubClient->api('repo')->create('test-urltoken', "for test", "repo-homepage.com", true);
-        dump($newRepo);
-        die;
+            $newRepo = $githubClient->api('repo')->create('test-urltoken', "for test", "repo-homepage.com", true);
+        } catch (\Exception $exception) {
+            return new Response($exception->getMessage());
+        }
+
         return new Response(json_encode($newRepo));
     }
 
@@ -108,10 +111,13 @@ class DefaultController extends Controller
         /** @var User $user */
         $user = $this->getUser();
         $githubClient = new \Github\Client();
-        $githubClient->authenticate($user->getGithubId(), $user->getGithubAccessToken(), \Github\Client::AUTH_URL_CLIENT_ID);
-        $newRepo = $githubClient->api('repo')->create('test-urlclient', "for test", "repo-homepage.com", true);
-        dump($newRepo);
-        die;
+        try {
+            $githubClient->authenticate($user->getGithubId(), $user->getGithubAccessToken(), \Github\Client::AUTH_URL_CLIENT_ID);
+            $newRepo = $githubClient->api('repo')->create('test-urlclient', "for test", "repo-homepage.com", true);
+        } catch (\Exception $exception) {
+            return new Response($exception->getMessage());
+        }
+
         return new Response(json_encode($newRepo));
     }
 
@@ -124,10 +130,13 @@ class DefaultController extends Controller
         /** @var User $user */
         $user = $this->getUser();
         $githubClient = new \Github\Client();
-        $githubClient->authenticate($user->getGithubAccessToken(), null,\Github\Client::AUTH_HTTP_TOKEN);
-        $newRepo = $githubClient->api('repo')->create('test-httptoken', "for test", "repo-homepage.com", true);
-        dump($newRepo);
-        die;
+        try {
+            $githubClient->authenticate($user->getGithubAccessToken(), null,\Github\Client::AUTH_HTTP_TOKEN);
+            $newRepo = $githubClient->api('repo')->create('test-httptoken', "for test", "repo-homepage.com", true);
+        } catch (\Exception $exception) {
+            return new Response($exception->getMessage());
+        }
+
         return new Response(json_encode($newRepo));
     }
 
