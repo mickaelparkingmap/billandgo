@@ -152,6 +152,56 @@ class User extends BaseUser
     /** @ORM\Column(name="github_access_token", type="string", length=255, nullable=true) */
     protected $github_access_token;
 
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="register_date", type="datetime", nullable=true)
+     */
+    protected $registerDate;
+
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="register_type", type="string", length=255, nullable=true)
+     */
+    protected $registerType;
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getRegisterDate(): ?\DateTime
+    {
+        return $this->registerDate;
+    }
+
+    /**
+     * @param \DateTime $registerDate
+     */
+    public function setRegisterDate(\DateTime $registerDate): void
+    {
+        $this->registerDate = $registerDate;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getRegisterType(): ?string
+    {
+        return $this->registerType;
+    }
+
+    /**
+     * @param null|string $registerType
+     */
+    public function setRegisterType(?string $registerType): void
+    {
+        $this->registerType = $registerType;
+    }
+
+
+
+
 
     /**
      * @return string

@@ -28,20 +28,23 @@
 
 
                 </div>
-                {% for message in flash %}
-                <div class="callout callout-danger">
-                    {{ message|raw }}
-                </div>
-                {% endfor %}
                 <form action="{{ path("fos_user_security_check") }}" method="post">
                     {% if csrf_token %}
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
                     {% endif %}
-                    {% if error %}
+                    {% if error and flash.type is not defined%}
                         <div class="callout callout-danger">
                             <h4> Identifiants invalide </h4>
                         </div>
+                        {% elseif error and flash.type is defined%}
+                        <script type="text/javascript">
+                            function popup() {
+                                location.href="#popup1"
+                            }
+                            window.onload = popup;
+                        </script>
                     {% endif %}
+
                     <div class="form-group">
 
                         <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" class="form-control" placeholder="Identifiant"/>
@@ -89,6 +92,42 @@
                 <button type="button" id="connectnow">Je me connecte</button>
 
             </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="popup1" id="popup1" {% if flash.type is not defined %}style="display: none" {% endif %}>
+    <div class="popup1-inner">
+        <div class="popup1__photo">
+            <img src="{{ asset('bundles/billandgo/img/billandgo-3.jpg') }}" alt="">
+        </div>
+        <div class="popup1__text">
+            <div class="formshowedText">
+            <h4>Il existe déjà un compte avec cette e-mail :  {% if error and flash.type is defined%}<a href="mailto:{{ flash.email }}">{{ flash.email }}</a>{% endif %} <br> Si vous le souhaitez, vous pouvez l'associer avec votre compte github</h4>
+            <h4>Souhaitez-vous associer votre compte ?</h4>
+
+            <p><a href="#" class="button-great">Oui </a> <a href="#"class="btn btn-danger-edited">Non </a></p>
+            </div>
+           <div class="formshowed" style="display: none">
+                <h4> Renseignez votre mot de passe pour le compte {% if error and flash.type is defined%}<a href="mailto:{{ flash.email }}">{{ flash.email }}</a>{% endif %}</h4>
+                <form action="{{ path("fos_user_security_check") }}" method="post">
+                    {% if csrf_token %}
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+                    {% endif %}
+                    <div class="form-group">
+
+                        <input type="hidden" name="_username" value="{% if error and flash.type is defined%}{{ flash.email }}{% endif %}" required="required" class="form-control" placeholder="Identifiant"/>
+                        <input type="hidden" name="_github_id" value="{% if error and flash.github_id is defined%}{{ flash.github_id }}{% endif %}" required="required" class="form-control" />
+                        <input type="hidden" name="_access_token" value="{% if error and flash.access_token is defined%}{{ flash.access_token }}{% endif %}" required="required" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <input type="password"  name="_password" required="required" class="form-control" placeholder="Mot de passse"/>
+                    </div>
+                    <button  name="_submit">Valider</button>
+                    <button id="_back" name="back" class="btn-danger-edited">Annuler</button>
+                </form>
+           </div>
         </div>
     </div>
 </div>

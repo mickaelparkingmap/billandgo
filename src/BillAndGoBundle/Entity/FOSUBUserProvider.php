@@ -15,6 +15,7 @@
 namespace BillAndGoBundle\Entity;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use \Symfony\Component\Security\Core\User\UserInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
@@ -55,9 +56,10 @@ class FOSUBUserProvider extends BaseClass
     {
         $username = $response->getUsername();
         $user = $this->userManager->findUserBy(array($this->getProperty($response) => $username));
+        $userEmail = $this->userManager->findUserBy(array("username" => $response->getEmail()));
         //when the user is registrating
 
-        if (null === $user) {
+        if (null === $user && null === $userEmail) {
             $service = $response->getResourceOwner()->getName();
             $data = $response->getData();
             if (null !== $this->userManager->findUserBy(array("email" => $response->getEmail()))) {
@@ -72,15 +74,23 @@ class FOSUBUserProvider extends BaseClass
             $user->$setter_token($response->getAccessToken());
             //I have set all requested data with the user's username
             //modify here with relevant data
+            $user->setRegisterDate(new \DateTime());
+            $user->setRegisterType("github");
             $user->setUsername($response->getEmail());
             $user->setUsernameCanonical($response->getEmail());
             $user->setEmail($response->getEmail());
             $user->setEmailCanonical($response->getEmail());
             $user->setPassword($username);
             $user->setEnabled(true);
-            $user->setCompanyname((null == $data["company"])? "EntrepriseParDefaut" : $data["company"]);
+            $user->setCompanyname((null == $data["company"])? "Votre Entreprise" : $data["company"]);
             $this->userManager->updateUser($user);
             return $user;
+        }
+        elseif(null != $userEmail) {
+            $session = new Session();
+            $session->getFlashBag()->set("error", array("type" => "oauth_login", "existing account",
+                "email" => $response->getEmail(), "github_id" => $username, "access_token" => $response->getAccessToken()));
+            return ($user);
         }
         //if user exists - go with the HWIOAuth way
         $user = parent::loadUserByOAuthUserResponse($response);

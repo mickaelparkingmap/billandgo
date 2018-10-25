@@ -25,7 +25,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Github\Client as GithubClient;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-class ProjectService extends Controller
+class  ProjectService extends Controller
 {
     /** @var EntityManager */
     private $entityManager;
@@ -97,7 +97,7 @@ class ProjectService extends Controller
         if (!$project->getRepoName() && $user->getGithubAccessToken() && $user->getGithubId()) {
             $githubClient = new GithubClient();
             //@todo replace by using user.auth
-            $githubClient->authenticate("*", "*", GithubClient::AUTH_HTTP_PASSWORD);
+            $githubClient->authenticate("*", $user->getGithubAccessToken(), GithubClient::AUTH_HTTP_PASSWORD);
             /** @var Repo $githubRepoApi */
             $githubRepoApi = $githubClient->api("repo");
             try {

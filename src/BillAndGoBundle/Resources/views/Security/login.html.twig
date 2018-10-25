@@ -88,6 +88,17 @@
     <script src="{{ asset('bundles/billandgo/assets/jquery-ui/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/js/login.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/js/common.js') }}"></script>
+    <script type="text/javascript">
+        $(".button-great").click(function (e) {
+            e.preventDefault();
+            $(".formshowedText").hide();
+            $(".formshowed").show();
+        });
+
+        $(".btn-danger-edited").click(function () {
+            location.reload();
+        })
+    </script>
 {% endblock %}
 
 
