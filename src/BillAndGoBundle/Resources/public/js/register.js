@@ -45,7 +45,7 @@ function validateEmail(email) {
 
 function isStrongPwd1(password) {
 
-    var regExp = /(?=.*\d)(?=.*[a-z]).{8,}/;
+    var regExp = /(?=.*\d)(?=.*[A-z]).{8,}/;
 
     var validPassword = regExp.test(password);
 
