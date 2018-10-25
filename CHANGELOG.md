@@ -109,6 +109,14 @@ https://www.iumio.com
 - User custom template
 - Disable accessing global variable 
 
+## [1.6.6] - 2018-10-26
+###### SUN-DOUBLE-SIX Version
+
+- Add user existing github association 
+- Create repo from project
+- Add registration date
+- Add registration type
+
 
 [STABLE RELEASE]: https://github.com/iumio/billandgo
 [1.2.0]: https://github.com/iumio/billandgo/releases/tag/v1.2.0
@@ -117,4 +125,5 @@ https://www.iumio.com
 [1.2.3]: https://github.com/iumio/billandgo/releases/tag/v1.2.3
 [1.2.4]: https://github.com/iumio/billandgo/releases/tag/v1.2.4
 [1.6.5]: https://github.com/iumio/billandgo/releases/tag/v1.6.5
+[1.6.6]: https://github.com/iumio/billandgo/releases/tag/v1.6.6
 

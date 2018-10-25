@@ -11,6 +11,7 @@
 
 namespace BillAndGoBundle\Controller;
 
+use BillAndGoBundle\Entity\User;
 use BillAndGoBundle\Entity\UserOption;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\FormEvent;
@@ -78,6 +79,8 @@ class RegistrationController extends FOSController
                 $event = new FormEvent($form, $request);
                 $dispatcher->dispatch(FOSUserEvents::REGISTRATION_SUCCESS, $event);
 
+                $user->setRegisterDate(new \DateTime());
+                $user->setRegisterType("standard");
                 $userManager->updateUser($user);
 
 

@@ -60,6 +60,8 @@
                                             <li><strong>Status : </strong>{% if user.jobtype == null %}Non renseigné{% else %}{{status_jobtype_fr[user.jobtype]}}{% endif %}</li>
                                             <li><strong>Licence : </strong>{% if usersub["plan"] == "free" %}Standard - Gratuite{% elseif usersub["plan"] == "paid" %}Premium - Payante {% endif %} : Valide jusqu'au {{ usersub["end"]|date("d/m/Y") }}</li>
                                             <li><strong>Dernière connexion : </strong>{{user.lastlogin|date('d/m/Y à H:i:s')}}</li>
+                                            <li><strong>Date d'inscription : </strong>{{user.registerDate|date('d/m/Y à H:i:s')}}</li>
+                                            <li><strong>Type d'inscription : </strong>{% if user.getRegisterType() == "standard" and user.getGithubId() is null %}Standard{% elseif user.getRegisterType() == "standard" and user.getGithubId() is not null %}Standard avec compte Github associée  <i class="fa fa-github"></i>{% elseif user.getRegisterType()  == "github" %}<i class="fa fa-github"></i> Github{% else %}Inconnu{% endif %}</li>
                                         </ul>
                                     </div>
 
