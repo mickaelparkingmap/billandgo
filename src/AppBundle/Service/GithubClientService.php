@@ -14,17 +14,19 @@
 
 namespace AppBundle\Service;
 
-
 use BillAndGoBundle\Entity\Project;
 use BillAndGoBundle\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityNotFoundException;
 use Github\Api\Repo;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Github\Client as GithubClient;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
+/**
+ * Class GithubClientService
+ * @package AppBundle\Service
+ */
 class  GithubClientService extends Controller
 {
     /** @var EntityManager */
@@ -62,7 +64,6 @@ class  GithubClientService extends Controller
             throw new \Exception("user does not have github access registered");
         }
         $githubClient = new GithubClient();
-        $githubClient = new GithubClient();
         $githubClient->authenticate(null, $user->getGithubAccessToken(), GithubClient::AUTH_HTTP_PASSWORD);
         /** @var Repo $githubRepoApi */
         $githubRepoApi = $githubClient->api("repo");
@@ -77,5 +78,24 @@ class  GithubClientService extends Controller
         }
 
         return $project;
+    }
+
+    /**
+     * @param User $user
+     * @return ArrayCollection
+     * @throws \Exception
+     */
+    public function listOfRepo (
+        User $user
+    ) : ArrayCollection
+    {
+        if (!$user ->getGithubAccessToken() || $user->getGithubId()) {
+            throw new \Exception("user does not have github access registered");
+        }
+        $githubClient = new GithubClient();
+        $githubClient->authenticate(null, $user->getGithubAccessToken(), GithubClient::AUTH_HTTP_PASSWORD);
+        $repoArray = $githubClient->currentUser()->repositories();
+
+        return new ArrayCollection($repoArray);
     }
 }

@@ -13,6 +13,7 @@
 
 namespace BillAndGoBundle\Controller;
 
+use AppBundle\Service\GithubClientService;
 use AppBundle\Service\ProjectService;
 use BillAndGoBundle\Entity\Line;
 use BillAndGoBundle\Entity\Project;
@@ -38,6 +39,9 @@ class ProjectController extends Controller
     /** @var ProjectService $projectService */
     private $projectService;
 
+    /** @var GithubClientService $githubClientService */
+    private $githubClientService;
+
     /**
      * @param ContainerInterface|null $container
      */
@@ -45,6 +49,7 @@ class ProjectController extends Controller
     {
         parent::setContainer($container);
         $this->projectService = $this->get("AppBundle\Service\ProjectService");
+        $this->githubClientService = $this->get("AppBundle\Service\GithubClientService");
     }
     /**
      * list all projects
@@ -274,7 +279,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * @Route("/project/create/lines", name="billandgo_project_create_from_lines")
+     * @Route("/projects/create/lines", name="billandgo_project_create_from_lines")
      * @param Request $req
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
@@ -488,7 +493,7 @@ class ProjectController extends Controller
 
     /**
      *
-     * @Route("project/{id}/edit/save", name="billandgo_project_edit_save")
+     * @Route("projects/{id}/edit/save", name="billandgo_project_edit_save")
      * @Method("POST")
      * @param int $id
      * @param Request $request
@@ -569,7 +574,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * @Route("project/{id}/create_repo", name="billandgo_project_create_repo")
+     * @Route("projects/{id}/create_repo", name="billandgo_project_create_repo")
      * @Method("POST")
      *
      * @param int $id
@@ -592,5 +597,29 @@ class ProjectController extends Controller
         $this->projectService->createRepo($user, $id, $repoName, $public);
 
         return $this->redirect($this->generateUrl("billandgo_project_view", ["id" => $id]));
+    }
+
+    /**
+     * @Route("projects/{id}/list_repo", name="billandgo_project_list_repo")
+     * @Method("GET")
+     *
+     * @return Response
+     * @throws \Exception
+     */
+    public function listOfRepo(): Response
+    {
+        $user = $this->getUser();
+        $repos = $this->githubClientService->listOfRepo($user);
+        $returnList = [];
+        foreach ($repos as $repo) {
+            $returnList[] = [
+                "name"          => $repo["name"],
+                "private"       => $repo["private"],
+                "created_at"    => $repo["created_at"],
+                "updated_at"    => $repo["updated_at"]
+            ];
+        }
+
+        return new Response(json_encode($returnList));
     }
 }

@@ -91,10 +91,19 @@
                                                 <a href="{{ project.repoUrl }}" target="_blank">{{ project.repoName }}</a>
                                             </li>
                                         {% elseif user.githubId %}
-                                            <li><strong>GitHub :</strong>
-                                                <button type="button" class="btn btn-success btn-outline" data-toggle="modal" data-target="#createRepoModal">
-                                                    Créer un dépôt
-                                                </button>
+                                            <li>
+                                                <strong>GitHub :</strong>
+                                                <span class="dropdown">
+                                                    <button class="btn btn-success btn-outline dropdown-toggle" type="button" id="dropdownGitRepo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        Ajouter un dépôt
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownGitRepo">
+                                                        <ul id="gitList"></ul>
+                                                        <button type="button" class="btn btn-success btn-outline" data-toggle="modal" data-target="#createRepoModal">
+                                                            Créer un dépôt
+                                                        </button>
+                                                    </div>
+                                                </span>
                                             </li>
                                             <div class="modal fade text-center" id="createRepoModal" tabindex="-1" role="dialog" aria-labelledby="createRepoModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
@@ -702,5 +711,18 @@
         delayDate = new Date(nowDate.getFullYear(), nowDate.getMonth() + 1, 0);
         $('#bill_delay').datepicker('setDate', delayDate);
         $('#bill_delay_2').datepicker('setDate', delayDate);
+
+        //list of github repo
+        $('#dropdownGitRepo').click(function () {
+            if ($('#gitList>li').length < 1) {
+                $.getJSON("{{ path('billandgo_project_list_repo', {'id': project.id}) }}", function (data) {
+                    $.each(data, function (key, val) {
+                        $('#gitList').append(
+                            '<li><a class="dropdown-item btn btn-success btn-outline" href="#">' + val.name + '</a></li>'
+                        );
+                    });
+                });
+            }
+        });
     </script>
 {% endblock %}

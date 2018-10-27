@@ -20,9 +20,7 @@ use BillAndGoBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
-use Github\Api\Repo;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Github\Client as GithubClient;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class  ProjectService extends Controller
@@ -104,5 +102,4 @@ class  ProjectService extends Controller
 
         return $project;
     }
-
 }
