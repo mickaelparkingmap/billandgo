@@ -31,6 +31,10 @@ footer {
     display: none;
 }
 
+.title-mod {
+    text-transform: inherit!important;
+}
+
 body {
 
     background: #3498db url(../img/billandgo-1.jpg) no-repeat;
@@ -48,6 +52,10 @@ body {
     text-align: center;
     color: #666;
     margin-bottom: 30px;
+}
+
+.description-mod {
+    font-size: 20px;
 }
 
 input[type="text"],

@@ -418,20 +418,20 @@
                 <li class="treeview">
                     <a href="#">
                         <i class="fa fa-user"></i>
-                        <span>Profil</span>
+                        <span>Mon profil</span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-left pull-right"></i>
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="{{ path('fos_user_profile_show') }}"><i class="fa fa-eye"></i> Voir votre profil</a></li>
-                        <li><a href="{{ path('fos_user_profile_edit') }}"><i class="fa fa-edit"></i> Editer votre profil</a></li>
+                        <li><a href="{{ path('fos_user_profile_show') }}"><i class="fa fa-eye"></i> Voir mon profil</a></li>
+                        <li><a href="{{ path('fos_user_profile_edit') }}"><i class="fa fa-edit"></i> Editer mon profil</a></li>
                     </ul>
                 </li>
                 <li >
                     <a href="{{ path('billandgo_parameters_show') }}">
                         <i class="fa fa-gears"></i>
-                        <span>Vos paramètres</span>
+                        <span>Mes paramètres</span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-left pull-right"></i>
                         </span>
@@ -441,7 +441,7 @@
                 <li>
                     <a href="{{ path('billandgo_organizer_show') }}">
                         <i class="fa fa-calendar"></i>
-                        <span>Agenda (via Google)</span>
+                        <span>Mon agenda</span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-left pull-right"></i>
                         </span>
@@ -495,7 +495,7 @@
     <footer class="main-footer">
         <small> <strong> Copyright &copy; {{ "now"|date("Y") }} - Bill&Go.</strong> Tous droits réservés. - <small>Bill&Go est un produit <a href="https://iumio.com">iumio</a></small> - <a href="{{ path('billandgo_ml') }}" target="_blank">Mentions légales et Politiques de confidentialités</a>
         <div class="pull hidden-xs">
-           <b>Version</b> 1.6.6 SUN-DOUBLE-SIX</div>
+           <b>Version</b> 1.7.0 SUN-SEVEN</div>
         </small>
     </footer>
     <!-- Add the sidebar's background. This div must be placed immediately after the control sidebar -->
@@ -627,6 +627,7 @@
                 $("body").addClass("noscroll");
                 $(this).attr("disabled", "disabled");
                 $(".search_in_progress").val("");
+                $(".search_in_progress").focus();
                 $(".results-search").html("");
                 $('#search > form > input[type="search"]').focus();
             });
@@ -664,7 +665,8 @@
                                     var rm = getRandomInt(0, 6);
 
                                     temp +=
-                                        '    <div class="col-lg-3 col-xs-6 element-search">\n' +
+                                        '    <div class="col-lg-3 col-xs-6 element-search targeted-element" ' +
+                                        'onclick=\'location.href="'+value["url"]+'"\'>\n' +
                                         '                <!-- small box -->\n' +
                                         '                <div class="small-box bg-'+bg[rm]+'">\n' +
                                         '                    <div class="inner">\n' +

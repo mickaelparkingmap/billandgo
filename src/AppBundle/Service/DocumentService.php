@@ -126,6 +126,7 @@ class DocumentService extends Controller
         $document->setType(('estimate' === $type));
         $document->setStatus('draw');
         $document->setRefClient($client);
+        $document->setCreationDate(new \DateTime());
         $this->entityManager->persist($document);
         $this->entityManager->flush();
 

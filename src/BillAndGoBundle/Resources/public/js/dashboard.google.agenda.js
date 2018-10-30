@@ -88,7 +88,7 @@ function handleSignoutClick(event) {
  * @param {string} message Text to be placed in pre element.
  */
 function appendPre(message) {
-    var pre = document.getElementById('row_event_append');
+    var pre = document.getElementById('row_google_agenda');
     pre.innerHTML = message;
 }
 
@@ -110,7 +110,6 @@ function listUpcomingEvents() {
         var events = response.result.items;
         if (events.length > 0) {
             var html = "";
-            var color = ['bg-green', 'bg-purple', 'bg-black', 'bg-blue'];
             for (var i = 0; i < events.length; i++) {
                 var event = events[i];
                 var when = formatingDate2(event.start);
@@ -120,31 +119,43 @@ function listUpcomingEvents() {
                 }
 
                 html = html + (
-                    ' <div class="col-md-6 onlick" onclick="location.href=\'' + event.htmlLink + '\'">\n' +
-                    '                    <!-- Widget: user widget style 1 -->\n' +
-                    '                    <div class="box box-widget widget-user-2 box-client ' + color[i] + '-client">\n' +
-                    '                        <!-- Add the bg color to the header using any of the bg-* classes -->\n' +
-                    '                        <div class="widget-user-header ' + color[i] + ' ">\n' +
-                    '                            <div class="widget-user-image" style="margin-top: -35px;">\n' +
-                    '                                <span class="img-circle"><i class="fa fa-calendar-o fa-3x ppdashbboard" ></i> </span>\n' +
-                    '                            </div>\n' +
-                    '                            <!-- /.widget-user-image -->\n' +
-                    '                            <h5 class="widget-user-username" > ' + event.summary + '  </h5>\n' +
-                    '                            <h5 class="widget-user-desc">Début : ' + when +  (("undefined" !== typeof event.end && "" !== event.end) ?' <br> Fin : ' + end : '')+' </h5>\n' +
-                    (("undefined" !== typeof event.location && "" !== event.location) ?
-                        '                            <h5 class="widget-user-desc">Lieu : ' + event.location + '</h5>\n' : "") +
-                    '                        </div>\n' +
-                    '                        <div class="box-footer no-padding">\n' +
-                    '                            <div class="panel-body">\n' +
-                    '                            </div>\n' +
-                    '                        </div>\n' +
-                    '                    </div>\n' +
-                    '                    <!-- /.widget-user -->\n' +
-                    '                </div>');
+                    '' +
+                    ' <li class="item">\n' +
+                    '                                <div class="product-img">\n' +
+                    '                                    <i class="fa fa-calendar fa-2x"></i>\n' +
+                    '                                </div>\n' +
+                    '                                <div class="product-info">\n' +
+                    '                                    <a href="' + event.htmlLink + '" target="_blank" class="product-title">\n'
+                    + event.summary +
+                    '                                        <span class="text-sm label label-success pull-right">Début : ' + when + (("undefined" !== typeof event.end && "" !== event.end) ? ' <br><br> Fin : ' + end : '') + ' </span></a>\n' +
+                    '                                    <span class="product-description">\n' +
+                    '\n' + (("undefined" !== typeof event.location && "" !== event.location) ?
+                        '                           Lieu : ' + event.location : "") +
+                    '                                        </span>\n' +
+                    '                                </div>\n' +
+                    '                            </li>'
+                );
+
+
+                appendPre(html);
             }
-            appendPre(html);
         } else {
-            appendPre('<div class="callout callout-info col-md-12">Aucun évènement</div>');
+            appendPre(
+                '' +
+                ' <li class="item">\n' +
+                '                                <div class="product-img">\n' +
+                '                                    <i class="fa fa-calendar fa-2x"></i>\n' +
+                '                                </div>\n' +
+                '                                <div class="product-info">\n' +
+                '                                    <a href="#" target="_blank" class="product-title">Aucun évènement'
+               +
+                '                                       </a>\n' +
+                '                                    <span class="product-description">'+
+                '                                        </span>\n' +
+                '                                </div>\n' +
+                '                            </li>'
+            );
+
         }
 
     });

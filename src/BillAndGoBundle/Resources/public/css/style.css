@@ -123,6 +123,29 @@
     background: url(../img/loader.gif) center no-repeat #ffffff0a;
 }
 
+
+.form-group-e input[type="checkbox"] {
+    display: none;
+}
+
+.form-group-e input[type="checkbox"] + .btn-group-e > label span {
+    width: 10px;
+}
+
+.form-group-e input[type="checkbox"] + .btn-group-e > label span:first-child {
+    display: none;
+}
+.form-group-e input[type="checkbox"] + .btn-group-e > label span:last-child {
+    display: inline-block;
+}
+
+.form-group-e input[type="checkbox"]:checked + .btn-group-e > label span:first-child {
+    display: inline-block;
+}
+.form-group-e input[type="checkbox"]:checked + .btn-group-e > label span:last-child {
+    display: none;
+}
+
 .se-pre-con {
     position: fixed;
     left: 0px;
@@ -581,6 +604,8 @@ h3 {
     color: #d9534f;
 }
 
+
+
 .btn-primary.btn-outline:hover,
 .btn-success.btn-outline:hover,
 .btn-info.btn-outline:hover,
@@ -783,6 +808,24 @@ div.success, div.notice {
     background: rgba(34,34,34,0.75);
 
 }
+
+.box-title {
+    text-transform: inherit;
+}
+
+
+.skin-blue .sidebar-menu>li>.treeview-menu li a {
+    color: #000000;
+    padding: 12px;
+}
+
+.widget-user-username {
+    text-transform: none;
+}
+
+.targeted-element:hover {
+    cursor: pointer;
+}
 .blob-1,.blob-2{
     width:70px;
     height:70px;
@@ -799,7 +842,7 @@ div.success, div.notice {
 .blob-2{
     left:80%;
     animation:osc-r 2.5s ease infinite;
-    background:#0ff;
+    background: #ff5745;;
 }
 
 
@@ -808,6 +851,12 @@ div.success, div.notice {
     height: 50vh;
 }
 
+
+
+
+.alldayok{
+    display: none;
+}
 #search {
     position: fixed;
     top: 0px;

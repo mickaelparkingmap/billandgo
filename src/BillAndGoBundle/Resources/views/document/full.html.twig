@@ -30,7 +30,7 @@ set status_fr = {
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-
+        <input type="hidden" id="statusUser" value="{{ user.jobtype }}"/>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
@@ -111,9 +111,301 @@ set status_fr = {
 
             {% set client = document.refClient %}
             <div class="row">
-                <div class="col-md-6">
 
-                    <!-- Widget: user widget style 1 -->
+
+                <div class="col-md-7">
+
+                    <div class="box box-widget widget-user-2">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="widget-user-header bg-yellow">
+                            <div class="widget-user-image" style="margin-top: -35px">
+                                <i class="fa fa-info ppdashbboard fa-3x"></i>
+                            </div>
+                            <!-- /.widget-user-image -->
+                            <h3 class="widget-user-username">Informations sur {% if document.isEstimate %}ce devis{% else %}cette facture{% endif %} </h3>
+                            <h5 class="widget-user-desc">Obtenez les informations sur {% if document.isEstimate %}le devis{% else %}la facture{% endif %} {{ document.number }}</h5>
+                        </div>
+                        <div class="box-footer">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <ul class="products-list product-list-in-box">
+
+                                        <li class="item">
+                                            <div class="product-img">
+                                                <i class="fa fa-file-text fa-2x"></i>
+                                            </div>
+                                            <div class="product-info">
+                                                <div  class="product-title">
+                                                    <strong>Description  </strong>  <a href="#" class="btn btn-primary btn-outline edit-desc">Editer la description</a>
+                                                    <div class="form-desc-edited form-group " style="display: none;">
+                                                        <textarea class="desc-edited form-control" type="desc">{{ document.description|trim }}</textarea>
+                                                        <div class="text-left">
+                                                            <br>
+                                                            <input type="button" value="Annuler" class="canceled-desc-edit btn btn-danger">
+                                                            <input type="button" value="Sauvegarder" class="save-desc-edit btn btn-success">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <span class="product-description">
+                                            <span id="pdescription">{{ document.description }}</span>
+                                                    </span>
+
+                                            </div>
+                                        </li>
+
+                                        <li class="item">
+                                            <div class="product-img">
+                                                <i class="fa fa-eye fa-2x"></i>
+                                            </div>
+                                            <div class="product-info">
+                                                <div  class="product-title">
+                                                    <strong>Status  </strong>
+                                                </div>
+                                                <span class="product-description">
+                                            {{ status_fr[document.status]|capitalize }}
+                                        </span>
+                                            </div>
+                                        </li>
+
+
+                                        <li class="item">
+                                            <div class="product-img">
+                                                <i class="fa fa-euro fa-2x"></i>
+                                            </div>
+                                            <div class="product-info">
+                                                <div  class="product-title">
+                                                    <strong>Montant <strong> {% if not document.isEstimate %}payé{% endif %} </strong></strong>
+                                                </div>
+                                                <span class="product-description">
+                                             {% if not document.isEstimate %}{{ document.sumPaiments }} € sur {% endif %}{{ document.getHT + document.VAT }} €
+                                        </span>
+                                            </div>
+                                        </li>
+
+                                        {% if document.sentDate %}
+
+                                            <li class="item">
+                                                <div class="product-img">
+                                                    <i class="fa fa-send fa-2x"></i>
+                                                </div>
+                                                <div class="product-info">
+                                                    {% set diffSent = date(date()).diff(document.sentDate) %}
+                                                    {% set leftSent = diffSent.days %}
+                                                    <span class="text-sm label label-success pull-right">il y a {{ leftSent }} jour(s)</span>
+                                                    <div  class="product-title">
+                                                        <strong>Date d'envoi  </strong>
+                                                    </div>
+                                                    <span class="product-description">
+                                           {{ document.sentDate|date('d/m/Y') }}
+                                        </span>
+                                                </div>
+                                            </li>
+                                        {% endif %}
+                                        {% if document.isEstimate %}
+                                            {% if document.delayDate %}
+
+                                                <li class="item">
+                                                    <div class="product-img">
+                                                        <i class="fa fa-check-circle fa-2x"></i>
+                                                    </div>
+                                                    <div class="product-info">
+                                                        {% set diffDelay = (date('now')).diff(document.delayDate) %}
+                                                        {% set leftDelay = diffDelay.days %}
+                                                        <span class="text-sm label label-success pull-right">{% if diffDelay|date('%R') == "+" %}Il reste {{ leftDelay }}{% else %}Invalide depuis {{ leftDelay }}{% endif %} jour(s)</span>
+                                                        <div  class="product-title">
+                                                            <strong>Date de validité </strong>
+                                                        </div>
+                                                        <span class="product-description">
+                                           {{ document.delayDate|date('d/m/Y') }}
+                                        </span>
+                                                    </div>
+                                                </li>
+                                            {% endif %}
+                                        {% endif %}
+
+
+                                        {% if document.answerDateAccepted is not null %}
+
+
+                                            <li class="item">
+                                                <div class="product-img">
+                                                    <i class="fa fa-check fa-2x"></i>
+                                                </div>
+                                                <div class="product-info">
+                                                    {% set diffAnswer = date(date()).diff(document.answerDateAccepted) %}
+                                                    {% set leftAnswer = diffAnswer.days %}
+                                                    <span class="text-sm label label-success pull-right">Il y a {{ leftAnswer }} jour(s)</span>
+                                                    <div  class="product-title">
+                                                        <strong>Date de validation</strong>
+                                                    </div>
+                                                    <span class="product-description color-{{ document.status }}">
+                                          {{ document.answerDateAccepted|date('d/m/Y à H:i:s') }}
+                                        </span>
+                                                </div>
+                                            </li>
+
+                                        {% elseif document.answerDateRefused is not null %}
+
+
+                                            <li class="item">
+                                                <div class="product-img">
+                                                    <i class="fa fa-remove fa-2x"></i>
+                                                </div>
+                                                <div class="product-info">
+                                                    {% set diffAnswer = date(date()).diff(document.answerDateRefused) %}
+                                                    {% set leftAnswer = diffAnswer.days %}
+                                                    <span class="text-sm label label-success pull-right">Il y a {{ leftAnswer }} jour(s)</span>
+                                                    <div  class="product-title">
+                                                        <strong>Date de refus</strong>
+                                                    </div>
+                                                    <span class="product-description color-{{ document.status }}">
+                                          {{ document.answerDateRefused|date('d/m/Y à H:i:s') }}
+                                        </span>
+                                                </div>
+                                            </li>
+
+                                        {% endif %}
+
+                                        {% if document.refPaiment|first %}
+
+
+                                            <li class="item">
+                                                <div class="product-img">
+                                                    <i class="fa fa-eur fa-2x"></i>
+                                                </div>
+                                                <div class="product-info">
+                                                    <div  class="product-title">
+                                                        <strong>Liste des paiements</strong>
+                                                    </div>
+                                                    <span class="product-description">
+                                            <table class="table table-striped">
+                                                    <thead>
+                                                    <th>Date</th>
+                                                    <th>Montant</th>
+                                                    <th>Action</th>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for paiment in document.refPaiment %}
+                                                        <tr>
+                                                            <td>
+                                                                {{ paiment.datePaiment|date('d/m/Y') }}
+                                                            </td>
+                                                            <td>
+                                                                {{ paiment.amount }}
+                                                            </td>
+                                                            <td>
+                                                                <a href="{{ path('billandgo_paiment_show', { 'id': paiment.id }) }}">Voir le paiement</a>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                        </span>
+                                                </div>
+                                            </li>
+
+                                        {% endif %}
+
+
+
+                                        {% if document.isEstimate() %}
+                                        <li class="item">
+                                            <div class="product-img">
+                                                <i class="fa fa-edit fa-2x"></i>
+                                            </div>
+                                            <div class="product-info">
+                                                <div  class="product-title">
+                                                    <strong>Conditions de réalisation  </strong>
+                                                    {% if document.isEstimate() and document.status == "draw" %}
+                                                    <a href="#" class="btn btn-primary btn-outline edit-desc">Editer les conditions de réalisation</a>
+                                                    <div class="form-desc-edited form-group " style="display: none;">
+                                                        <textarea class="desc-edited form-control" type="crea">{{ document.makeCondition|trim }}</textarea>
+                                                        <div class="text-left">
+                                                            <br>
+                                                            <input type="button" value="Annuler" class="canceled-desc-edit btn btn-danger">
+                                                            <input type="button" value="Sauvegarder" class="save-desc-edit btn btn-success">
+
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                                <span class="product-description">
+                                            <span id="pdescription">{{ document.makeCondition }}</span>
+                                                    </span>
+
+                                            </div>
+                                        </li>
+                                        {% endif %}
+
+
+                                            <li class="item">
+                                                <div class="product-img">
+                                                    <i class="fa fa-arrow-circle-o-right fa-2x"></i>
+                                                </div>
+                                                <div class="product-info">
+                                                    <div  class="product-title">
+                                                        <strong>Conditions de paiement  </strong>
+                                                        {% if document.status == "draw" %}
+                                                        <a href="#" class="btn btn-primary btn-outline edit-desc">Editer les conditions de paiement</a>
+                                                        <div class="form-desc-edited form-group " style="display: none;">
+                                                            <textarea class="desc-edited form-control" type="cpai">{{ document.paymentCondition|trim }}</textarea>
+                                                            <div class="text-left">
+                                                                <br>
+                                                                <input type="button" value="Annuler" class="canceled-desc-edit btn btn-danger">
+                                                                <input type="button" value="Sauvegarder" class="save-desc-edit btn btn-success">
+
+                                                            </div>
+                                                        </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <span class="product-description">
+                                            <span id="pdescription">{{ document.paymentCondition }}</span>
+                                                    </span>
+
+                                                </div>
+                                            </li>
+
+
+
+                                            <li class="item">
+                                                <div class="product-img">
+                                                    <i class="fa fa-question fa-2x"></i>
+                                                </div>
+                                                <div class="product-info">
+                                                    <div  class="product-title">
+                                                        <strong>Conditions particulières  </strong>
+                                                        {% if document.status == "draw" %}
+                                                        <a href="#" class="btn btn-primary btn-outline edit-desc">Editer les conditions particulières</a>
+                                                        <div class="form-desc-edited form-group " style="display: none;">
+                                                            <textarea class="desc-edited form-control" type="cpar">{{ document.specCondition|trim }}</textarea>
+                                                            <div class="text-left">
+                                                                <br>
+                                                                <input type="button" value="Annuler" class="canceled-desc-edit btn btn-danger">
+                                                                <input type="button" value="Sauvegarder" class="save-desc-edit btn btn-success">
+
+                                                            </div>
+                                                        </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <span class="product-description">
+                                            <span id="pdescription">{{ document.specCondition }}</span>
+                                                    </span>
+
+                                                </div>
+                                            </li>
+                                    </ul>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    {{ include("BillAndGoBundle:Devis:fullclient.html.twig") }}
                     <div class="box box-widget widget-user-2">
                         <!-- Add the bg color to the header using any of the bg-* classes -->
                         <div class="widget-user-header bg-black">
@@ -121,72 +413,19 @@ set status_fr = {
                                 <i class="fa fa-info ppdashbboard fa-3x"></i>
                             </div>
                             <!-- /.widget-user-image -->
-                            <h3 class="widget-user-username">Informations</h3>
-                            <h5 class="widget-user-desc">Descriptions, Status, Montants, ...</h5>
+                            <h3 class="widget-user-username">Actions possible sur {% if document.isEstimate %}ce devis{% else %}cette facture{% endif %}</h3>
+                            <h5 class="widget-user-desc">Effectuer des actions sur {% if document.isEstimate %}le devis{% else %}la facture{% endif %} {{ document.number }}</h5>
                         </div>
                         <div class="box-footer">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <ul>
-                                        <li><strong>Description : </strong> <span id="pdescription">{{ document.description }}</span> <a href="#" class="btn btn-primary btn-outline edit-desc">Editer la description</a>
-                                        <div class="form-desc-edited form-group " style="display: none;">
-                                            <textarea class="desc-edited form-control">{{ document.description|trim }}</textarea>
-                                            <div class="text-left">
-                                                <br>
-                                                <input type="button" value="Annuler" class="canceled-desc-edit btn btn-danger">
-                                            <input type="button" value="Sauvegarder" class="save-desc-edit btn btn-success">
 
-                                            </div>
-                                        </div>
-                                        </li>
-                                        <li><strong>Status : </strong> {{ status_fr[document.status]|capitalize }}</li>
-                                        <li><strong>Montant {% if not document.isEstimate %}payé{% endif %} : </strong> {% if not document.isEstimate %}{{ document.sumPaiments }} € sur {% endif %}{{ document.getHT + document.VAT }} €</li>
-                                        {% if document.sentDate %}
-                                        <li><strong>Date d'envoi : </strong> {{ document.sentDate|date('d/m/Y') }}
-                                                {% set diffSent = date(date()).diff(document.sentDate) %}
-                                                {% set leftSent = diffSent.days %}
-                                                <small class="color-grey">({{ leftSent }} jour(s))</small></li>
+                                <div class="col-md-12">
 
-                                        {% endif %}
-                                        {% if document.isEstimate %}
-                                        {% if document.delayDate %}
-                                        <li>
-                                            <strong>Date de validité : </strong>  {{ document.delayDate|date('d/m/Y') }}
-                                                {% set diffDelay = date(date()).diff(document.delayDate) %}
-                                                {% set leftDelay = diffDelay.days %}
-                                                <small class="color-grey">reste {{ leftDelay }} jour(s)</small>
-                                        </li>
-                                        {% endif %}
-                                        {% endif %}
 
-                                        {% if document.status == "accepted" %}
-                                        <li>
-                                            {% set diffAnswer = date(date()).diff(document.answerDate) %}
-                                            {% set leftAnswer = diffAnswer.days %}
-                                        <strong class="color-{{ document.status }}">Date de validation : </strong>
-                                                    <span class="color-{{ document.status }}">{{ document.answerDate|date('d/m/Y') }}</span>
+                                    <div class="box-footer text-center">
 
-                                                    <small class="color-grey"> - il y a {{ leftAnswer }} jour(s)</small>
 
-                                        </li>
-                                        {% elseif document.status == "refused" %}
-                                        <li>
-                                            {% set diffAnswer = date(date()).diff(document.answerDate) %}
-                                            {% set leftAnswer = diffAnswer.days %}
-                                            <strong class="color-{{ document.status }}">Date de refus : </strong>
-                                                    <span class="color-{{ document.status }}">{{ document.answerDate|date('d/m/Y') }}</span>
-
-                                                    <small class="color-grey">il y a {{ leftAnswer }} jour(s)</small>
-                                        </li>
-                                        {% endif %}
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <h4>Actions </h4>
-                                    <small class="text-info"><i class="fa fa-info"></i> Effectuer des actions manuellement</small>
-
-                                        <div class="box-footer text-left">
-                                            {% if modify %}
+                                        {% if modify %}
                                             <button type="button" class="btn btn-success btn-outline" data-toggle="modal" data-target="#editModal">
                                                 Modifier votre {{ min_fr }}
                                             </button>
@@ -223,8 +462,8 @@ set status_fr = {
                                                     </div>
                                                 </div>
                                             </div>
-                                            {% endif %}
-                                            {% if not document.isEstimate %}
+                                        {% endif %}
+                                        {% if not document.isEstimate %}
                                             <button type="button" class="btn btn-danger btn-outline" data-toggle="modal" data-target="#createPaimentModal">
                                                 Créer un paiement
                                             </button>
@@ -242,11 +481,11 @@ set status_fr = {
                                                                 <form method="post" action="{{ path('billandgo_paiment_add_from_bill', {'id' : document.id}) }}">
                                                                     <div class="form-group col-md-6">
                                                                         <label for="project_name" class="col-form-label">Date</label>
-                                                                            <input class="form-control datepick" type="text" value="{{ "now"|date("m/d/Y") }}" id="paimentDate" name="paimentDate">
+                                                                        <input class="form-control datepick" type="text" value="{{ "now"|date("m/d/Y") }}" id="paimentDate" name="paimentDate">
                                                                     </div>
                                                                     <div class="form-group col-md-6">
                                                                         <label for="project_deadline" class="col-form-label">Montant</label>
-                                                                            <input class="form-control" type="number" step="0.01" name="paimentAmount" id="paimentAmount">
+                                                                        <input class="form-control" type="number" step="0.01" name="paimentAmount" id="paimentAmount">
                                                                     </div>
                                                                     <div class="form-group col-md-6">
 
@@ -258,7 +497,7 @@ set status_fr = {
                                                                         </select>
                                                                     </div>
                                                                     <div class="form-group col-md-12">
-                                                                    <button type="submit" class="btn btn-success btn-outline">Créer le paiment</button>
+                                                                        <button type="submit" class="btn btn-success btn-outline">Créer le paiment</button>
                                                                     </div>
                                                                 </form>
                                                             </div>
@@ -269,198 +508,165 @@ set status_fr = {
                                                     </div>
                                                 </div>
                                             </div>
-                                            {% endif %}
+                                        {% endif %}
 
 
-                                            {% if document.status == "refused" %}
-                                                <div class="">
-                                                    <a class="btn btn-info btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'draw'}) }}">Annuler devis</a>
-                                                </div>
-                                            {% elseif document.status == "canceled" %}
-                                                <div class="">
-                                                    {% if document.isEstimate %}
-                                                        <a class="btn btn-info btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'draw'}) }}">Restaurer devis</a>
-                                                    {% else %}
-                                                        <a class="btn btn-info btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'draw'}) }}">Restaurer facture</a>
-                                                    {% endif %}
-                                                </div>
-                                            {% elseif document.status == "estimated" %}
-
-                                                    <div class="">
-                                                        <a class="btn btn-success btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'accepted'}) }}">
-                                                            Accepter le devis
-                                                        </a>
-                                                    </div>
-                                                    <div class="">
-                                                        <a class="btn btn-warning btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'canceled'}) }}">Annuler devis</a>
-                                                    </div>
-                                                    <div class="">
-                                                        <a class="btn btn-danger btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'refused'}) }}">Refuser le devis</a>
-                                                    </div>
-
-                                            {% elseif document.status == "accepted" %}
-
-                                                    <div class="">
-                                                        <button type="button" class="btn btn-success btn-outline" data-toggle="modal" data-target="#createProjectModal">
-                                                            Créer un projet
-                                                        </button>
-                                                    </div>
-                                                        <div class="modal fade text-center" id="createProjectModal" tabindex="-1" role="dialog" aria-labelledby="createProjectModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title" id="createProjectModalLabel">Créer un projet</h5>
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                            <span aria-hidden="true">&times;</span>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-
-                                                                            <form method="post" action="{{ path('billandgo_project_create_from_estimate', {'estimateID' : document.id}) }}" id="createprojectwithoutdesc" attr-client="{{ document.refClient.companyName }}">
-                                                                                <div class="form-group row">
-                                                                                    <label for="project_name" class="col-sm-3 col-form-label">Nom</label>
-                                                                                    <div class="col-sm-9">
-                                                                                        <input class="form-control" type="text" placeholder="Entrez le nom du projet" id="project_name" name="name">
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="form-group row">
-                                                                                    <label for="project_deadline" class="col-sm-3 col-form-label">Deadline</label>
-                                                                                    <div class="col-sm-9">
-                                                                                        <input class="form-control" type="text" name="deadline" id="project_deadline">
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div ><small><strong><i class="fa fa-info"></i> La description sera créée à partir de celle du devis</strong></small></div>
-                                                                                <button type="submit" class="btn btn-success btn-outline">Créer le projet</button>
-                                                                            </form>
-                                                                        </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="submit" class="btn btn-secondary btn-danger btn-outline" data-dismiss="modal">Fermer</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-
-                                                <div class="">
-                                                    <a class="btn btn-warning btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'canceled'}) }}">Annuler devis</a>
-
-                                                </div>
-
-
-                                                        <button type="button" class="btn btn-success btn-outline" data-toggle="modal" data-target="#createBillModal">
-                                                            Créer une facture
-                                                        </button>
-                                                        <div class="modal fade text-center" id="createBillModal" tabindex="-1" role="dialog" aria-labelledby="createBillModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title" id="exampleModalLabel">Créer une facture</h5>
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                            <span aria-hidden="true">&times;</span>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                            <form method="post" action="{{ path('billandgo_bill_create_from_estimate', {'estimate_id' : document.id}) }}">
-                                                                                <div class="form-group">
-                                                                                    <label for="bill_delay" class="form-label">Date de paiement</label>
-                                                                                    <input id="bill_delay" name="delay" required="required" class="form-control" type="text">
-                                                                                </div>
-                                                                                <button type="submit" class="btn btn-success btn-outline">Créer la facture</button>
-                                                                            </form>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary btn-danger btn-outline" data-dismiss="modal">Fermer</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                            {% elseif document.status == "billed" %}
-                                                    <div class="">
-                                                        <a class="btn btn-warning btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'canceled'}) }}">Annuler facture</a>
-                                                    </div>
-                                            {% elseif document.status == "partially" %}
+                                        {% if document.status == "refused" %}
+                                            <div class="">
+                                                <a class="btn btn-info btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'draw'}) }}">Annuler devis</a>
+                                            </div>
+                                        {% elseif document.status == "canceled" %}
+                                            <div class="">
+                                                {% if document.isEstimate %}
+                                                    <a class="btn btn-info btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'draw'}) }}">Restaurer devis</a>
+                                                {% else %}
+                                                    <a class="btn btn-info btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'draw'}) }}">Restaurer facture</a>
+                                                {% endif %}
+                                            </div>
+                                        {% elseif document.status == "estimated" %}
 
                                             <div class="">
-                                                        <a class="btn btn-warning btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'canceled'}) }}">Annuler facture</a>
+                                                <a class="btn btn-success btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'accepted'}) }}">
+                                                    Accepter le devis
+                                                </a>
                                             </div>
-                                            {% elseif document.status == "paid" %}
+                                            <div class="">
+                                                <a class="btn btn-warning btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'canceled'}) }}">Annuler devis</a>
+                                            </div>
+                                            <div class="">
+                                                <a class="btn btn-danger btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'refused'}) }}">Refuser le devis</a>
+                                            </div>
 
-                                                    <div class="">
-                                                        <a class="btn btn-warning btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'canceled'}) }}">Annuler facture</a>
+                                        {% elseif document.status == "accepted" %}
+
+                                            <div class="">
+                                                <button type="button" class="btn btn-success btn-outline" data-toggle="modal" data-target="#createProjectModal">
+                                                    Créer un projet
+                                                </button>
+                                            </div>
+                                            <div class="modal fade text-center" id="createProjectModal" tabindex="-1" role="dialog" aria-labelledby="createProjectModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="createProjectModalLabel">Créer un projet</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+
+                                                            <form method="post" action="{{ path('billandgo_project_create_from_estimate', {'estimateID' : document.id}) }}" id="createprojectwithoutdesc" attr-client="{{ document.refClient.companyName }}">
+                                                                <div class="form-group row">
+                                                                    <label for="project_name" class="col-sm-3 col-form-label">Nom</label>
+                                                                    <div class="col-sm-9">
+                                                                        <input class="form-control" type="text" placeholder="Entrez le nom du projet" id="project_name" name="name">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group row">
+                                                                    <label for="project_deadline" class="col-sm-3 col-form-label">Deadline</label>
+                                                                    <div class="col-sm-9">
+                                                                        <input class="form-control" type="text" name="deadline" id="project_deadline">
+                                                                    </div>
+                                                                </div>
+                                                                <div ><small><strong><i class="fa fa-info"></i> La description sera créée à partir de celle du devis</strong></small></div>
+                                                                <button type="submit" class="btn btn-success btn-outline">Créer le projet</button>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="submit" class="btn btn-secondary btn-danger btn-outline" data-dismiss="modal">Fermer</button>
+                                                        </div>
                                                     </div>
-                                            {% elseif document.status == "draw" %}
+                                                </div>
+                                            </div>
+
+
+                                            <div class="">
+                                                <a class="btn btn-warning btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'canceled'}) }}">Annuler devis</a>
+
+                                            </div>
+
+
+                                            <button type="button" class="btn btn-success btn-outline" data-toggle="modal" data-target="#createBillModal">
+                                                Créer une facture
+                                            </button>
+                                            <div class="modal fade text-center" id="createBillModal" tabindex="-1" role="dialog" aria-labelledby="createBillModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Créer une facture</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form method="post" action="{{ path('billandgo_bill_create_from_estimate', {'estimate_id' : document.id}) }}">
+                                                                <div class="form-group">
+                                                                    <label for="bill_delay" class="form-label">Date de paiement</label>
+                                                                    <input id="bill_delay" name="delay" required="required" class="form-control" type="text">
+                                                                </div>
+                                                                <button type="submit" class="btn btn-success btn-outline">Créer la facture</button>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary btn-danger btn-outline" data-dismiss="modal">Fermer</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        {% elseif document.status == "billed" %}
+                                            <div class="">
+                                                <a class="btn btn-warning btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'canceled'}) }}">Annuler facture</a>
+                                            </div>
+                                        {% elseif document.status == "partially" %}
+
+                                            <div class="">
+                                                <a class="btn btn-warning btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'canceled'}) }}">Annuler facture</a>
+                                            </div>
+                                        {% elseif document.status == "paid" %}
+
+                                            <div class="">
+                                                <a class="btn btn-warning btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'canceled'}) }}">Annuler facture</a>
+                                            </div>
+                                        {% elseif document.status == "draw" %}
 
                                             <div class=" ">
-                                                        {% if document.isEstimate %}
+                                                {% if document.isEstimate %}
 
-                                                            <a class="btn btn-info btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'estimated'}) }}">Devis envoyé</a>
-                                                        {% else %}
-                                                            <a class="btn btn-info btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'billed'}) }}">Facture envoyée</a>
-                                                        {% endif %}
+                                                    <a class="btn btn-info btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'estimated'}) }}">Devis envoyé</a>
+                                                {% else %}
+                                                    <a class="btn btn-info btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'billed'}) }}">Facture envoyée</a>
+                                                {% endif %}
 
                                             </div>
-                                                <div class=" ">
-                                                        {% if document.isEstimate %}
-                                                            <a class="btn btn-warning btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'canceled'}) }}">Annuler devis</a>
-                                                        {% else %}
-                                                            <a class="btn btn-warning btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'canceled'}) }}">Annuler facture</a>
-                                                        {% endif %}
-                                                    </div>
+                                            <div class=" ">
+                                                {% if document.isEstimate %}
+                                                    <a class="btn btn-warning btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'canceled'}) }}">Annuler devis</a>
+                                                {% else %}
+                                                    <a class="btn btn-warning btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'canceled'}) }}">Annuler facture</a>
+                                                {% endif %}
+                                            </div>
 
-                                            {% else %}
-                                                <div class=" ">
-                                                    {% if document.isEstimate %}
-                                                        <a class="btn btn-info btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'draw'}) }}">Restaurer devis</a>
-                                                    {% else %}
-                                                        <a class="btn btn-info btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'draw'}) }}">Restaurer facture</a>
-                                                    {% endif %}
-                                                </div>
-                                            {% endif %}
+                                        {% else %}
+                                            <div class=" ">
+                                                {% if document.isEstimate %}
+                                                    <a class="btn btn-info btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'draw'}) }}">Restaurer devis</a>
+                                                {% else %}
+                                                    <a class="btn btn-info btn-outline" href="{{ path('billandgo_document_edit_status', {'id': document.id, 'status': 'draw'}) }}">Restaurer facture</a>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
 
 
-                                        </div>
+
+                                    </div>
                                 </div>
-                                <div class="col-md-12">
-                                    {% if document.refPaiment|first %}
-                                        <h4 class="text-left">Liste des paiements</h4>
-                                        <table class="table table-striped">
-                                            <thead>
-                                            <th>Date</th>
-                                            <th>Montant</th>
-                                            <th>Action</th>
-                                            </thead>
-                                            <tbody>
-                                            {% for paiment in document.refPaiment %}
-                                                <tr>
-                                                    <td>
-                                                        {{ paiment.datePaiment|date('d/m/Y') }}
-                                                    </td>
-                                                    <td>
-                                                        {{ paiment.amount }}
-                                                    </td>
-                                                    <td>
-                                                        <a href="{{ path('billandgo_paiment_show', { 'id': paiment.id }) }}">Voir le paiement</a>
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    {% endif %}
 
-                            </div>
                             </div>
                         </div>
 
                     </div>
-                    <!-- /.widget-user -->
                 </div>
-
-                <div class="col-md-6">
-                    {{ include("BillAndGoBundle:Devis:fullclient.html.twig") }}
-                </div>
-
-
 
 
                 <div class="col-md-12">
@@ -754,6 +960,7 @@ set status_fr = {
         );
 
         var se = 0;
+        var indexa = null;
         $(document).ready(function () {
             $("#billandgobundle_line_refTax option").each(
                 function() {
@@ -764,8 +971,11 @@ set status_fr = {
                    }
                     se++;
 
-                   if (6 === se) {
-                       $("#billandgobundle_line_refTax option[value='6']").attr("selected", "selected");
+                   if ($(this).html() == "Pas de TVA") {
+                       indexa = $(this).val();
+                   }
+                   if (6 === se && "self-entrepreneur" == $("#statusUser").val()) {
+                       $("#billandgobundle_line_refTax option[value='"+indexa+"']").attr("selected", "selected");
                    }
                 }
             );
@@ -794,8 +1004,8 @@ set status_fr = {
         });
 
         $(".edit-desc").click(function () {
-           $(".form-desc-edited").show();
-           $(".edit-desc").hide();
+           $(this).parent().find(".form-desc-edited").show();
+           $(this).hide();
         });
 
         $(".canceled-desc-edit").click(function () {
@@ -804,15 +1014,18 @@ set status_fr = {
         });
 
         $(".save-desc-edit").click(function () {
-            var q = $(".desc-edited").val();
+            var q = $(this).parent().parent().find(".desc-edited").val();
+            var type = $(this).parent().parent().find(".desc-edited").attr("type");
+            var that = $(this);
             $.ajax({
                 url : "{{ path('billandgo_document_edit_save', {"doc_id": document.id}) }}",
                 type : 'POST',
-                data: {desc : q},
+                data: {desc : q, type: type},
                 success : function(data, statut){ // success est toujours en place, bien sûr !
-                   $("#pdescription").html(q);
-                    $(".form-desc-edited").hide();
-                    $(".edit-desc").show();
+                    that.parent().parent().parent().parent().find(".product-description #pdescription").html(q)
+                   //$("#pdescription").html(q);
+                    that.parent().parent().parent().find(".form-desc-edited").hide();
+                    that.parent().parent().parent().parent().find(".edit-desc").show();
                 },
 
                 error : function(resultat, statut, erreur){

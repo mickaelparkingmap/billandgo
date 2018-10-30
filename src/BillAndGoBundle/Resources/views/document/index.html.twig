@@ -64,7 +64,7 @@ set status_fr = {
                 </div><!-- /.col -->
             </div>
             {# good #}
-            <div class="box box-default">
+            <div class="box box-info">
                 <div class="box-header with-border">
                     <h3 class="box-title">Vos {{ maj_fr }} en cours</h3>
                     <div class="box-tools pull-right">
@@ -302,177 +302,6 @@ set status_fr = {
                             {% if nbcolor >= maxcolor %}
                                 {%  set nbcolor = 0 %}
                             {% endif %}
-
-
-
-
-
-
-
-                             <!--   <div class="col-md-6 col-lg-4 text-center third-block estimate-block estimate-{{ doc.status }}">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h3 class="color-{{ doc.status }}">
-                                            <a href="{{ path('billandgo_document_view', {'id': doc.id}) }}">
-                                                {{ doc.number }}
-                                            </a>
-                                        </h3>
-                                        <h4 class="color-{{ doc.status }}">
-                                            pour
-                                            <a href="{{ path('billandgo_clients_view', {'id': doc.refClient.id}) }}">
-                                                {{ doc.refClient.companyName }}
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <ul class="nav nav-pills nav-justified">
-                                            <li class="active">
-                                                <a data-toggle="tab" href="#estimate-{{ doc.number }}-stat">
-                                                    {{ status_fr[doc.status] }}
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a data-toggle="tab" href="#estimate-{{ doc.number }}-desc">
-                                                    Description
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a data-toggle="tab" href="#estimate-{{ doc.number }}-fin">
-                                                    {{ doc.HT + doc.VAT }}€ TTC
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        <div class="tab-content">
-                                            <div id="estimate-{{ doc.number }}-stat" class="tab-pane fade in active bg-info">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        Envoyé le :
-                                                        <br/>
-                                                        {{ doc.sentDate|date('d/m/Y') }}
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        Valide jusqu'au :
-                                                        <br/>
-                                                        {{ doc.delayDate|date('d/m/Y') }}
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    {% if doc.status == "estimated" %}
-                                                        <div class="col-sm-6 text-left">
-                                                            <a class="btn btn-success" href="{{ path('billandgo_document_edit_status', {'id': doc.id, 'status': 'accepted'}) }}">
-                                                                <i class="fa fa-envelope-open"></i> Accepté
-                                                            </a>
-                                                        </div>
-                                                        <div class="col-sm-6 text-right">
-                                                            <a class="btn btn-danger" href="{{ path('billandgo_document_edit_status', {'id': doc.id, 'status': 'refused'}) }}">
-                                                                <i class="fa fa-envelope-open"></i> Refusé
-                                                            </a>
-                                                        </div>
-                                                    {% elseif doc.status == "accepted" %}
-                                                        <div class="col-sm-6 text-left">
-                                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createProjectModal">
-                                                                <i class="fa fa-industry"></i> Créer un projet
-                                                            </button>
-                                                            <div class="modal fade text-center" id="createProjectModal" tabindex="-1" role="dialog" aria-labelledby="createProjectModalLabel" aria-hidden="true">
-                                                                <div class="modal-dialog" role="document">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title" id="createProjectModalLabel">Créer un projet</h5>
-                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                <span aria-hidden="true">&times;</span>
-                                                                            </button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <div class="well">
-                                                                                <form method="post" action="{{ path('billandgo_project_create_from_estimate', {'estimateID' : doc.id}) }}">
-                                                                                    <div class="form-group row">
-                                                                                        <label for="project_name" class="col-sm-3 col-form-label">Nom</label>
-                                                                                        <div class="col-sm-9">
-                                                                                            <input class="form-control" type="text" value="Entrez le nom du projet" id="project_name" name="name">
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="form-group row">
-                                                                                        <label for="project_deadline" class="col-sm-3 col-form-label">Deadline</label>
-                                                                                        <div class="col-sm-9">
-                                                                                            <input class="form-control" type="text" name="deadline" id="project_deadline">
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <button type="submit" class="btn btn-success">Créer le projet</button>
-                                                                                </form>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-6 text-right">
-                                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createBillModal">
-                                                                <i class="fa fa-briefcase"></i> Créer une facture
-                                                            </button>
-                                                            <div class="modal fade text-center" id="createBillModal" tabindex="-1" role="dialog" aria-labelledby="createBillModalLabel" aria-hidden="true">
-                                                                <div class="modal-dialog" role="document">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title" id="exampleModalLabel">Créer une facture</h5>
-                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                <span aria-hidden="true">&times;</span>
-                                                                            </button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <div class="well">
-                                                                                <form method="post" action="{{ path('billandgo_bill_create_from_estimate', {'estimate_id' : doc.id}) }}">
-                                                                                    <div class="form-group">
-                                                                                        <label for="bill_delay" class="form-label">Date de paiement</label>
-                                                                                        <input id="bill_delay" name="delay" required="required" class="form-control" type="text">
-                                                                                    </div>
-                                                                                    <button type="submit" class="btn btn-success">Créer la facture</button>
-                                                                                </form>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                            <div id="estimate-{{ doc.number }}-desc" class="tab-pane fade in bg-info">
-                                                <p>
-                                                    {{ doc.description|length > 300 ? doc.description|slice(0, 300) ~ '...' : doc.description  }}
-                                                </p>
-                                            </div>
-                                            <div id="estimate-{{ doc.number }}-fin" class="tab-pane fade in bg-info">
-                                                <div class="row">
-                                                    <div class="col-sm-6">
-                                                        HT : {{ doc.HT }}€
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        HT : {{ doc.HT + doc.VAT }}€
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    {% for line in doc.refLines %}
-                                                        <div {% if (line.refProject|first or line.refBill|first) %}class="color-grey"{% endif %} >
-                                                            {% if (line.refProject|first or line.refBill|first) %}<em>{% endif %}
-                                                                {{ line.name }}
-                                                            {% if (line.refProject|first or line.refBill|first) %}</em>{% endif %}
-                                                            <span class="badge badge-success">
-                                                                {{ (line.refTax.percent + 100) / 100 * (line.price * line.quantity) }}€ TTC
-                                                            </span>
-                                                        </div>
-                                                    {% endfor %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>-->
                             {% endif %}
                         {% else %}
                             <div class="col-sm-12">
@@ -500,9 +329,9 @@ set status_fr = {
             </div>
 
             {# brouillons #}
-            <div class="box box-default collapsed-box">
+            <div class="box box-success ">
                 <div class="box-header with-border">
-                    <h3 class="box-title">brouillon{% if draws|length > 1 %}s{% endif %} ({{ draws|length }})</h3>
+                    <h3 class="box-title">Brouillon{% if draws|length > 1 %}s{% endif %} ({{ draws|length }})</h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse">
                             {% if draws|length > 0 %}<i class="fa fa-plus"></i>{% endif %}
@@ -672,7 +501,7 @@ set status_fr = {
             </div>
 
             {# transformed #}
-            <div class="box box-default collapsed-box">
+            <div class="box box-default">
                 <div class="box-header with-border">
                     {% if type == 'estimate' %}
                         <h3 class="box-title">Devis transformé{% if transformed|length > 1 %}s{% endif %} ({{ transformed|length }})</h3>
@@ -812,7 +641,7 @@ set status_fr = {
                         {% else %}
                             <div class="col-sm-12">
                                 <div class="callout callout-warning text-center">
-                                    <h4>Aucun {{ min_fr }} enregistré </h4>
+                                    <h4>Aucun {{ min_fr }} transformé </h4>
                                     <p>
                                         Vous n'avez pas encore saisi de {{ min_fr }}, ne perdez pas de temps,
                                         <a href="{{ path('billandgo_document_add', {'step': 1, 'type': type }) }}">Ajoutez-en !</a>
@@ -826,7 +655,7 @@ set status_fr = {
             </div>
 
             {# canceled/refused #}
-            <div class="box box-default collapsed-box">
+            <div class="box box-danger">
                 <div class="box-header with-border">
                     <h3 class="box-title">
                         Devis annulé{% if canceled|length > 1 %}s{% endif %}/refusé{% if canceled|length > 1 %}s{% endif %} ({{ canceled|length }})
@@ -1053,10 +882,7 @@ set status_fr = {
                         {% else %}
                             <div class="col-sm-12">
                                 <div class="callout callout-warning text-center">
-                                    <h4> Aucun {{ min_fr }} enregistré </h4>
-                                    <p>
-                                        Vous n'avez pas encore saisi de {{ min_fr }}
-                                    </p>
+                                    <h4> Aucun document annulé </h4>
                                 </div>
                             </div>
                         {% endfor %}

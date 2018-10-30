@@ -53,12 +53,31 @@ class ClientController extends Controller
             $this->addFlash("error", $usersub["msg"]);
             return ($this->redirectToRoute("fos_user_security_login"));
         }
-
         $clients = $this->clientService->getClientListFromUser($user);
+        $manager = $this->getDoctrine()->getManager();
+        $clientsDoc = [];
+
+        foreach ($clients as $one) {
+            $alldoc = $manager->getRepository('BillAndGoBundle:Document')->findAllDocByRefClient(
+                $user->getId(), $one->getId(), 3);
+            $allpro = $manager->getRepository('BillAndGoBundle:Project')->findAllProjByRefClient(
+                $user->getId(), $one->getId(), 3);
+
+            foreach ($alldoc as $two) {
+                $clientsDoc[$one->getId()][] = ["desc" => $two->getDescription(), "number" => $two->getNumber(),
+                    "type" => ($two->isEstimate())? "quote" : "bill" , "id" => $two->getId()];
+            }
+
+            foreach ($allpro as $three) {
+                $clientsDoc[$one->getId()][] = ["desc" => $three->getDescription(), "name" => $three->getName(),
+                    "type" => "project", "id" => $three->getId()]; }
+        }
+
         return $this->render(
             'BillAndGoBundle:Client:index.html.twig',
             array(
             'list' => $clients,
+            'clientDoc' => $clientsDoc,
             'user' => $user,
                 'usersub' => $usersub
             )
