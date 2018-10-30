@@ -92,7 +92,35 @@
                                             </ul>
                                         </div>
                                         <div id="cli-{{ nbclient }}-doc" class="tab-pane fade in bg-info">
-                                            <p><strong>Oups! Cette fonctionnalité arrive bientôt...</strong> <!--A venir : lien vers chaque devis, projet et facture lié au client--> </p>
+                                            {% if clientDoc[client.id] is defined %}
+                                            <h5>Derniers projets avec ce client :</h5>
+                                            <ul>
+
+                                                {% for spec in clientDoc[client.id] %}
+                                                    {% if spec["type"] == "project" %}
+                                                        <li><a href="{{ path('billandgo_project_view', {id: spec["id"]}) }}">Projet : {{ spec["name"] }}</a></li>
+
+                                                   {% endif %}
+                                                {% else %}
+                                                    <li>Aucun projet</li>
+                                                {% endfor %}
+                                            </ul>
+
+                                            <h5>Derniers documents avec ce client :</h5>
+                                            <ul>
+                                                {% for spec in clientDoc[client.id] %}
+                                                    {% if spec["type"] != "project" %}
+                                                        <li><a href="{{ path('billandgo_document_view', {id: spec["id"]}) }}">{{ spec["number"] }}</a></li>
+
+
+                                                    {% endif %}
+                                                {% else %}
+                                                    <li>Aucun document</li>
+
+                                                {% endfor %}
+                                            </ul>
+                                            {% endif %}
+
                                         </div>
                                         <div id="cli-{{ nbclient }}-con" class="tab-pane fade in bg-info">
                                             {% if client.contacts is empty %}

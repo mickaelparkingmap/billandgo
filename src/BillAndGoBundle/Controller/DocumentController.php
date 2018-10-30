@@ -332,9 +332,15 @@ class DocumentController extends Controller
                 $old_status = $document->getStatus();
                 if ($status == "canceled") {
                     $document->setStatus($status);
+                    $document->setAnswerDateRefused(null);
+                    $document->setAnswerDateAccepted(null);
                     $this->linesStatus($document, $status);
                 } elseif (($status == "draw") && ($old_status == "canceled")) {
                     $document->setSentDate(new \DateTime());
+                    $document->setStatus($status);
+                    $this->linesStatus($document, $status);
+                } elseif (($status == "draw") && ($old_status == "refused")) {
+                    $document->setSentDate(null);
                     $document->setStatus($status);
                     $this->linesStatus($document, $status);
                 } elseif (($status == "estimated") && ($old_status == "draw")) {
@@ -342,11 +348,17 @@ class DocumentController extends Controller
                     $document->setStatus($status);
                     $this->linesStatus($document, $status);
                 } elseif (($status == "accepted") && ($old_status == "estimated")) {
-                    $document->setAnswerDate(new \DateTime());
+                    $a = new \DateTime();
+                    $document->setAnswerDate($a);
+                    $document->setAnswerDateAccepted($a);
+                    $document->setAnswerDateRefused(null);
                     $document->setStatus($status);
                     $this->linesStatus($document, $status);
                 } elseif (($status == "refused") && ($old_status == "estimated")) {
-                    $document->setAnswerDate(new \DateTime());
+                    $a = new \DateTime();
+                    $document->setAnswerDate($a);
+                    $document->setAnswerDateAccepted(null);
+                    $document->setAnswerDateRefused($a);
                     $document->setStatus($status);
                     $this->linesStatus($document, $status);
                 } elseif (($status == "billed") && ($old_status == "draw")) {
@@ -459,7 +471,11 @@ class DocumentController extends Controller
         if (isset($edit['chrono']) && $edit['chrono']) {
             $line->setChronoTime($edit['chrono']);
         }
-        $line->setDeadline(new \DateTime($edit['deadline']));
+
+        $deadline = explode("/", $edit['deadline']);
+        $deadline = $deadline[2]."-".$deadline[1]."-".$deadline[0];
+
+        $line->setDeadline(new \DateTime($deadline));
         $manager->flush();
         return 0;
     }
@@ -649,6 +665,7 @@ class DocumentController extends Controller
         $bill->setRefUser($user);
         $bill->setRefClient($estimate->getRefClient());
         $bill->setType(0);
+        $bill->setCreationDate(new \DateTime());
         if (isset($deadline)) {
             $bill->setDelayDate(new \DateTime($deadline));
         }
@@ -729,6 +746,7 @@ class DocumentController extends Controller
             $bill->setDelayDate(new \DateTime($req->get("delay")));
             $bill->setType(0);
             $bill->setDescription($estimate->getDescription());
+            $bill->setCreationDate(new \DateTime());
             $bill->setStatus("draw");
             foreach ($estimate->getRefLines() as $line) {
                 /** @var Line $line */
@@ -799,6 +817,7 @@ class DocumentController extends Controller
             $bill->setNumber("FAC-" . date("Y-m-") . str_pad($index, 3, "0", STR_PAD_LEFT));
             $bill->setType(0);
             $bill->setDescription($project->getDescription());
+            $bill->setCreationDate(new \DateTime());
             $bill->setStatus("draw");
             foreach ($project->getRefLines() as $line) {
                 /** @var Line $line */
@@ -902,24 +921,105 @@ class DocumentController extends Controller
         if ($document == null) {
            throw new NotFoundHttpException("Content not found");
         }
+        if ($document->getToken() == $token && $document->getStatus() === "estimated") {
+            return $this->render(
+                "BillAndGoBundle:document:request.html.twig",
+                array(
+                    "type" => "devis",
+                    "number" => $document->getNumber(),
+                    "id" => $document->getId(),
+                    "token" => $document->getToken()
+                )
+            );
+        }
+        throw new NotFoundHttpException("Content not found");
+    }
+
+
+
+    /**
+     * @Route("documents/{doc_id}/return/{token}/{answer}/validate/", name="billandgo_document_email_anwser_validate")
+     * @Method("POST")
+     * @param int $doc_id
+     * @param int $token
+     * @param int $answer
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function answerEmailValidate(int $doc_id, int $token, int $answer)
+    {
+
+        $manager = $this->getDoctrine()->getManager();
+        $document = $manager->getRepository('BillAndGoBundle:Document')->find($doc_id);
+        if ($document == null) {
+            throw new NotFoundHttpException("Content not found");
+        }
+
+        $sync = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $document->getRefUser()->getId(), "name" => "alert_quote_bill_request"));
         if ($document->getToken() == $token) {
+
+            $usersub = DefaultController::userSubscription($document->getRefUser(), $this);
+            $a =  new \DateTime();
             if (($answer == 1) && ($document->getStatus() == "estimated")) {
-                $document->setAnswerDate(new \DateTime());
+                $document->setAnswerDateAccepted($a);
+                $document->setAnswerDate($a);
                 $document->setStatus("accepted");
                 $this->linesStatus($document, "accepted");
-                return $this->render(
-                    "BillAndGoBundle:document:accepted.html.twig",
-                    array(
-                        "type" => "devis",
-                    )
-                );
+
+                if (null != $sync && $sync->getValue() === "active") {
+                    $message = ((new \Swift_Message(("Le devis ".$document->getNumber()." a été accepté par le client ".
+                        $document->getRefClient()->getCompanyName()))))
+                        ->setTo($document->getRefUser()->getEmail())
+                        ->setFrom(array('noreply@billandgo.fr' => "Bill&Go Service"))
+                        ->setBody(
+                            $this->renderView(
+                                "BillAndGoBundle:document:mailAccepted.html.twig",
+                                array(
+
+                                    "document" => $document,
+                                    "user" => $document->getRefUser(),
+                                    "usersub" => $usersub
+                                )
+                            ),
+                            "text/html"
+                        );
+                    $mailer = $this->get("mailer");
+                    $mailer->send($message);
+                }
+                return new Response("OK");
             } elseif (($answer == 0) && ($document->getStatus() == "estimated")) {
-                $document->setAnswerDate(new \DateTime());
+
+                $document->setAnswerDateRefused($a);
+                $document->setAnswerDate($a);
                 $document->setStatus("refused");
                 $this->linesStatus($document, "refused");
-                return new Response("dommage ! :'(");
+                if (null != $sync && $sync->getValue() === "active") {
+                    $message = ((new \Swift_Message(("Le devis ".$document->getNumber()." a été refusé par le client ".
+                        $document->getRefClient()->getCompanyName()))))
+                        ->setTo($document->getRefUser()->getEmail())
+                        ->setFrom(array('noreply@billandgo.fr' => "Bill&Go Service"))
+                        ->setBody(
+                            $this->renderView(
+                                "BillAndGoBundle:document:mailRefused.html.twig",
+                                array(
+
+                                    "document" => $document,
+                                    "user" => $document->getRefUser(),
+                                    "usersub" => $usersub
+                                )
+                            ),
+                            "text/html"
+                        );
+                    $mailer = $this->get("mailer");
+                    $mailer->send($message);
+                }
+
+                return new Response("OK");
             }
+            throw new NotFoundHttpException("Content not found");
         }
+
+
         throw new NotFoundHttpException("Content not found");
     }
 
@@ -946,8 +1046,8 @@ class DocumentController extends Controller
         }
 
         $desc = $request->get("desc");
+        $type = $request->get("type");
 
-        if (null != $desc) {
             $manager = $this->getDoctrine()->getManager();
             $document = $this->getDoctrine()->getRepository('BillAndGoBundle:Document')->
             findOneBy(["id" => $doc_id, "refUser" => $user->getId()]);
@@ -956,12 +1056,26 @@ class DocumentController extends Controller
             }
 
             //$document = new Document();
-            $document->setDescription($desc);
+            switch ($type) {
+                case "desc" :
+                    $document->setDescription($desc);
+                    break;
+                case "cpai" :
+                    $document->setPaymentCondition($desc);
+                    break;
+                case "crea" :
+                    $document->setMakeCondition($desc);
+                    break;
+                case "cpar" :
+                    $document->setSpecCondition($desc);
+                    break;
+                default:
+                    throw new NotFoundHttpException("Type description inconnu");
+            }
             $manager->merge($document);
             $manager->flush();
             return new JsonResponse(["OK"]);
-        }
-        throw new NotFoundHttpException("Valeur Description nulle");
+
     }
 
 
@@ -1071,13 +1185,17 @@ class DocumentController extends Controller
         $totalHT = 0;
         $tax = "";
         $taxtotal = 0;
+        $taxRef  = 0;
+
 
         $lines = ($document->isEstimate())? $document->getRefLines() : $document->getRefLinesB();
         foreach ($lines as $one) {
             $totalHT += $one->getQuantity()*$one->getPrice();
             $taxtotal += ($one->getRefTax()->getPercent() * ($one->getQuantity()*$one->getPrice())) / 100;
             $tax =  $one->getRefTax()->getName();
+            $taxRef = $one->getRefTax();
         }
+
 
         $mpdf = new \Mpdf\Mpdf([
             'margin_left' => 20,
@@ -1088,7 +1206,9 @@ class DocumentController extends Controller
             'margin_footer' => 10
         ]);
 
+
         if (null === $selectedTemplateCustom) {
+
             $content = $this->renderView("BillAndGoBundle:document:pdf/".((null === $selectedTemplate)?
                     "pdf.document.type.1":$selectedTemplate->getValue()).".html.twig",
                 array(
@@ -1100,6 +1220,7 @@ class DocumentController extends Controller
                     "totalHT" => $totalHT,
                     "taxtotal" => $taxtotal,
                     "tax" => $tax,
+                    "refTax" => $taxRef,
                     "selfCompanyName" => $selfName,
                     "clientName" => $clientName,
                     "clientAddress" => $clientAdress,
@@ -1119,6 +1240,7 @@ class DocumentController extends Controller
                         $assetsManager->getUrl('uploads/user/company/'.$user->getCompanyLogoPath())
 
                 ));
+
         }
         else {
 
@@ -1171,10 +1293,12 @@ class DocumentController extends Controller
                 "selfCompanyTel" => $selfTel,
                 "docNumber" => $docNumber,
                 "docType" => $docType,
+                "refTax" => $taxRef,
                 "selfCompanyLogo" =>
                     $assetsManager->getUrl('uploads/user/company/'.$user->getCompanyLogoPath())
 
             );
+
 
             $content = $this->renderView("BillAndGoBundle:document:base/pdf/pdf.document.type.0.html.twig",
                 array(
@@ -1200,6 +1324,7 @@ class DocumentController extends Controller
                     "clientAddress" => $clientAdress,
                     "clientZipCode" => $clientZipCode,
                     "clientCity" => $clientCity,
+                    "refTax" => $taxRef,
                     "clientCountry" => $clientCountry,
                     "selfCompanyAdress" => $selfAdress,
                     "selfCompanyZipCode" => $selfZipCode,

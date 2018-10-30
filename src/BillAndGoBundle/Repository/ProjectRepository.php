@@ -42,4 +42,24 @@ class ProjectRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @param int $refuser
+     *
+     * @param int $refClient
+     * @return array
+     */
+    public function findAllProjByRefClient(int $refuser, int $refClient, int $limit = null) : array
+    {
+        $qb = $this->createQueryBuilder('proj');
+        $qb
+            ->select('proj')
+            ->where('proj.refUser = :user')
+            ->andWhere('proj.refClient = :client')
+            ->setMaxResults($limit)
+            ->orderBy("proj.id", "DESC")
+            ->setParameter('user', $refuser)
+            ->setParameter('client', $refClient);
+        return $qb->getQuery()->getResult();
+    }
+
 }

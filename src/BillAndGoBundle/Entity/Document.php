@@ -149,6 +149,16 @@ class Document
      */
     private $sentDate;
 
+
+    /**
+     * The date on which the document has been created.
+     *
+     * @var \DateTime
+     *
+     * @ORM\Column(name="creaationDate", type="date", nullable=true)
+     */
+    private $creationDate;
+
     /**
      * The date on which the estimate will be seen as refused if not accepted,
      * or the bill seen as late if not totally paid.
@@ -161,7 +171,7 @@ class Document
     private $delayDate;
 
     /**
-     * The date on which the estimate has been accepted of refused by the client contact.
+     * The date on which the estimate has been accepted or refused by the client contact.
      * Null if no answer.
      *
      * @var \DateTime
@@ -169,6 +179,55 @@ class Document
      * @ORM\Column(name="answerDate", type="date", nullable=true)
      */
     private $answerDate;
+
+
+    /**
+     * The date on which the estimate has been accepted  by the client contact.
+     * Null if no answer.
+     *
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="answerDateAccepted", type="datetime", nullable=true)
+     */
+    private $answerDateAccepted;
+
+
+    /**
+     * The date on which the estimate has been  refused by the client contact.
+     * Null if no answer.
+     *
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="answerDateRefused", type="datetime", nullable=true)
+     */
+    private $answerDateRefused;
+
+
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="paymentCondition", type="text", nullable=true)
+     */
+    private $paymentCondition;
+
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="makeCondition", type="text", nullable=true)
+     */
+    private $makeCondition;
+
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="specCondition", type="text", nullable=true)
+     */
+    private $specCondition;
+
+
 
     /**
      * All paiments linked to the bill.
@@ -286,13 +345,48 @@ class Document
     }
 
     /**
+     * @return \DateTime|null
+     */
+    public function getAnswerDateAccepted(): ?\DateTime
+    {
+        return $this->answerDateAccepted;
+    }
+
+    /**
+     * @param \DateTime|null $answerDateAccepted
+     */
+    public function setAnswerDateAccepted(?\DateTime $answerDateAccepted): void
+    {
+        $this->answerDateAccepted = $answerDateAccepted;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getAnswerDateRefused(): ?\DateTime
+    {
+        return $this->answerDateRefused;
+    }
+
+    /**
+     * @param \DateTime|null $answerDateRefused
+     */
+    public function setAnswerDateRefused(?\DateTime $answerDateRefused): void
+    {
+        $this->answerDateRefused = $answerDateRefused;
+    }
+
+
+
+
+    /**
      * Set sentDate
      *
      * @param \DateTime $sentDate
      *
      * @return Document
      */
-    public function setSentDate(\DateTime $sentDate) : self
+    public function setSentDate(?\DateTime $sentDate) : self
     {
         $this->sentDate = $sentDate;
         
@@ -356,6 +450,7 @@ class Document
     {
         return $this->answerDate;
     }
+
 
     /**
      * Set refUser
@@ -654,6 +749,73 @@ class Document
     {
         return $this->token;
     }
+
+    /**
+     * @return null|string
+     */
+    public function getPaymentCondition(): ?string
+    {
+        return $this->paymentCondition;
+    }
+
+    /**
+     * @param null|string $paymentCondition
+     */
+    public function setPaymentCondition(?string $paymentCondition): void
+    {
+        $this->paymentCondition = $paymentCondition;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getMakeCondition(): ?string
+    {
+        return $this->makeCondition;
+    }
+
+    /**
+     * @param null|string $makeCondition
+     */
+    public function setMakeCondition(?string $makeCondition): void
+    {
+        $this->makeCondition = $makeCondition;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getSpecCondition(): ?string
+    {
+        return $this->specCondition;
+    }
+
+    /**
+     * @param null|string $specCondition
+     */
+    public function setSpecCondition(?string $specCondition): void
+    {
+        $this->specCondition = $specCondition;
+    }
+
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreationDate(): \DateTime
+    {
+        return $this->creationDate;
+    }
+
+    /**
+     * @param \DateTime $creationDate
+     */
+    public function setCreationDate(\DateTime $creationDate): void
+    {
+        $this->creationDate = $creationDate;
+    }
+
+
 
     /**
      * Returns a json built with the document data and its Lines data.

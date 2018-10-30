@@ -44,7 +44,7 @@
 
               <div class="row">
 
-                  <div class="col-md-6">
+<section class="col-lg-6 connectedSortable ui-sortable">
                       <!-- Widget: user widget style 1 -->
                       <div class="box box-widget widget-user-2 box-client bg-black-client">
                           <!-- Add the bg color to the header using any of the bg-* classes -->
@@ -122,12 +122,12 @@
                           </div>
                       </div>
                       <!-- /.widget-user -->
-                  </div>
+
 
 
                   <!-- /.col -->
 
-                  <div class="col-md-6">
+
 
                       <div class="box box-widget widget-user-2 box-client bg-black-client">
 
@@ -135,7 +135,7 @@
 
 
                               <h3 class="widget-user-username">Agenda </h3>
-                              <h5 class="widget-user-desc">Selectionnez les options pour votre agenda Bill&Go </h5>
+                              <h5 class="widget-user-desc">Sélectionnez les options pour votre agenda Bill&Go </h5>
                           </div>
                           <div class="box-footer no-padding">
                               <div class="panel-body">
@@ -192,8 +192,53 @@
 
                           </div>
                       </div>
+                  </section>
+
+                  <section class="col-lg-6 connectedSortable ui-sortable">
+
+                      <div class="box box-widget widget-user-2 box-client bg-black-client">
+
+                          <div class="widget-user-header  bg-black" style="background: url('{{ asset('bundles/billandgo/img/billandgo-4.jpg') }}') center center;">
+
+
+                              <h3 class="widget-user-username">Devis/ Facture </h3>
+                              <h5 class="widget-user-desc">Sélectionnez les options pour vos devis/factures</h5>
+                          </div>
+                          <div class="box-footer no-padding">
+                              <div class="panel-body">
+                                  <div class="col-md-12 alert-quote-bill" style="display: none">
+
+                                  </div>
+                                  <div class="tab-content">
+                                      <div id="cli-1-info" class="tab-pane fade in active bg-info">
+                                          <form method="post" class="selected-quote-bill-request" action="{{ path('billandgo_parameters_quote_bill_save') }}">
+                                                  <h5>Recevoir des notifications par e-mail lors des acceptations et refus de devis</h5>
+                                                  <div class="radio">
+                                                      <label for="syncok">
+                                                          <input type="radio" class="" name="alertquotebill" value="active" {% if alertQuotebill == "active" %}checked="checked"{% endif %}>
+                                                          Oui</label>
+
+                                                  </div>
+                                                  <div class="radio">
+                                                      <label for="syncnok">
+                                                          <input type="radio" class="" name="alertquotebill" value="inactive" {% if alertQuotebill == "inactive" %}checked="checked"{% endif %}>
+                                                          Non
+                                                      </label>
+                                                  </div>
+
+                                                  <button type="submit" class="btn btn-success form-control">Valider</button>
+
+
+                                          </form>
+                                      </div>
+                                      </div>
+                                  </div>
+                              </div>
+
+                          </div>
+                      </section>
                   </div>
-              </div>
+
 
           </section>
           <!-- /.content -->

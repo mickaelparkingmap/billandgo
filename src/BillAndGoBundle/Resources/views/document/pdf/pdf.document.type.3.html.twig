@@ -136,7 +136,9 @@
         <p> {{ selfCompanyEmail }} - {{ selfCompanyTel }}</p>
         </td>
         <td style="text-align:right">
+        {% if selfCompanyLogo is not null %}
        <span ><img alt="" src="{{ selfCompanyLogo }}" width="120px" style="text-align:right"></span>
+       {% endif %}
       </td>
     </div>
      <td>
@@ -185,7 +187,7 @@ mpdf-->
             <th><span >Nom</span></th>
             <th><span >Description</span></th>
             <th><span >Prix unitaire</span></th>
-            <th><span >Quantity</span></th>
+            <th><span >Quantité</span></th>
             <th><span >Total</span></th>
         </tr>
         </thead>
@@ -202,24 +204,74 @@ mpdf-->
 
         {% endfor %}
     </table>
+    {% if refTax.percent is defined %}
     <table class="balance">
         <tbody><tr>
             <th><span>Total hors taxes</span></th>
             <td><span data-prefix="">€</span><span> {{ totalHT }}</span></td>
         </tr>
+        {% if 0 != refTax.getPercent() %}
         <tr>
             <th><span >Taxes ({{ tax }})</span></th>
             <td><span data-prefix="">€</span><span> {{ taxtotal }}</span></td>
         </tr>
+        {% endif %}
         <tr>
             <th><span>Total toutes taxes comprises</span></th>
             <td><span data-prefix="">€</span><span> {{ totalHT + taxtotal }}</span></td>
         </tr>
         </tbody></table>
+    {% endif %}
 </article>
 <aside>
     <h1><span >Informations</span></h1>
-    <div >
+
+    <div>Date de validité : {{ document.delayDate|date('d/m/Y') }}</div>
+    {%  if refTax.percent is defined  and 0 == refTax.getPercent() %}
+        <br>
+        <div>TVA non applicable, art. 293 B du Code général des impôts</div>
+    {% endif %}
+
+    {% if null != document.answerDateAccepted %}
+        <br>
+        <br>
+        <br>
+        <br>
+        <div style="text-align: right">
+            Devis reçu avant l'exécution de la prestation, lu et approuvé, bon pour accord.
+            <br>
+            Accepté électroniquement le {{ document.answerDateAccepted|date('d/m/Y à H:m:i') }}</div>
+    {% elseif null != document.answerDateRefused %}
+        <br>
+        <br>
+        <br>
+        <br>
+        <div style="text-align: right">Lu et refusé électroniquement le {{ document.answerDateRefused|date('d/m/Y à H:m:i') }}
+        </div>
+    {% endif %}
+
+    {% if  document.paymentCondition is not null and document.paymentCondition|trim != "" %}
+        <br>
+        <br>
+        <div>Conditions de paiement</div>
+        <div>{{ document.paymentCondition }}</div>
+    {% endif %}
+
+    {% if  document.makeCondition is not null and document.makeCondition|trim != "" %}
+        <br>
+        <br>
+        <div>Conditions de réalisation</div>
+        <div>{{ document.makeCondition }}</div>
+    {% endif %}
+
+
+    {% if  document.specCondition is not null and document.specCondition|trim != "" %}
+        <br>
+        <br>
+        <div>Conditions particulières</div>
+        <div>{{ document.specCondition }}</div>
+    {% endif %}
+    <div>
         {% if document.isEstimate()  %}
             {% if user.getBanque() is not null and user.getIban() is not  null and user.getBic() is not  null %}
                 <div style="text-align: left"><strong>Coordonnées bancaires : </strong><br> NOM BANQUE : {{ user.getBanque() }} <br> IBAN : {{ user.getIban() }}<br>BIC : {{ user.getBic() }}</div><br />

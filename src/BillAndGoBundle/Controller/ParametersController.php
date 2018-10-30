@@ -85,6 +85,9 @@ class ParametersController extends Controller
         $sync = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
             array("user" => $user->getId(), "name" => "sync_task_calendar"));
 
+        $aqb = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $user->getId(), "name" => "alert_quote_bill_request"));
+
         $selectedTemplateCustomStyle = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
             array("user" => $user->getId(), "name" => "pdf_bill_quote_custom_style"));
 
@@ -113,6 +116,7 @@ class ParametersController extends Controller
                 'pdfchoice' => $pdftype,
                 'usersub' => $usersub,
                 'syncTask' => (null === $sync)? "inactive" : $sync->getValue(),
+                'alertQuotebill' => (null === $aqb)? "inactive" : $aqb->getValue(),
                 'ctf' => null === $selectedTemplateCustomFooter? "" : $selectedTemplateCustomFooter->getValue(),
                 'ctb' => null === $selectedTemplateCustomBody? "" : $selectedTemplateCustomBody->getValue(),
                 'cth' => null === $selectedTemplateCustomHeader? "" : $selectedTemplateCustomHeader->getValue(),
@@ -312,6 +316,49 @@ class ParametersController extends Controller
             $us = new UserOption();
             $us->setUser($user);
             $us->setName("sync_task_calendar");
+            $us->setValue($selected);
+            $manager->persist($us);
+            $manager->flush();
+        }
+
+
+        return new JsonResponse(["code" => 200, "msg" => "Votre choix a bien été sauvegardé", 200]);
+    }
+
+
+    /**
+     * @Route("/parameters/quote/bill/save", name="billandgo_parameters_quote_bill_save")
+     */
+    public function saveBillQuote(Request $request) {
+        $user = $this->getUser();
+        if (!is_object($user) || !$user instanceof UserInterface) {
+            throw new AccessDeniedException('This user does not have access to this section.');
+        }
+        $usersub = DefaultController::userSubscription($user, $this);
+        if ($usersub["remaining"] <= 0) {
+            $this->addFlash("error", $usersub["msg"]);
+            return ($this->redirectToRoute("fos_user_security_login"));
+        }
+        $manager = $this->getDoctrine()->getManager();
+
+        $selected = $request->get("alertquotebill");
+        $sync = $manager->getRepository('BillAndGoBundle:UserOption')->findOneBy(
+            array("user" => $user->getId(), "name" => "alert_quote_bill_request"));
+
+        if (in_array($sync, ["active", "inactive"])) {
+            return new JsonResponse(["code" => 500, "msg" => "Valeur non reconnue", 500]);
+        }
+
+        if (null !== $sync) {
+            $sync->setValue($selected);
+            $manager->merge($sync);
+            $manager->flush();
+        }
+
+        else {
+            $us = new UserOption();
+            $us->setUser($user);
+            $us->setName("alert_quote_bill_request");
             $us->setValue($selected);
             $manager->persist($us);
             $manager->flush();

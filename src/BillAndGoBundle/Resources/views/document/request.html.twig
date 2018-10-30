@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <title>
+        {% block title %} Bill&Go - Confirmation de l'inscription {% endblock %}
+    </title>
+    <meta name="description" content="Outil web destiné aux freelances/ micro-entrepreneurs développeur afin de simplifier leur gestion administrative" />
+    <meta name="keywords" content="Freelance, micro-entrepreneur, administratif, gestion administrative, temps, papier, compta, projets, devis, factures, taxes, iumio">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('bundles/billandgo/img/apple-touch-icon.png') }}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('bundles/billandgo/img/favicon-32x32.png') }}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('bundles/billandgo/img/favicon-16x16.png') }}" />
+    <link rel="manifest" href="{{ asset('bundles/billandgo/img/site.webmanifest') }}" />
+    <link rel="mask-icon" href="{{ asset('bundles/billandgo/img/safari-pinned-tab.svg') }}" color="#f26941" />
+    <link rel="shortcut icon" href="{{ asset('bundles/billandgo/img/favicon.ico') }}" />
+    <meta name="msapplication-TileColor" content="#2b5797" />
+    <meta name="msapplication-config" content="{{ asset('bundles/billandgo/img/browserconfig.xml') }}" />
+    <meta name="theme-color" content="#ffffff">
+    <link rel="icon" type="image/x-icon" href="{{ asset('bundles/billandgo/img/favicon.ico') }}"/>
+    <link href="{{ asset('bundles/billandgo/css/common.css') }}" type="text/css" rel="stylesheet"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link href="{{ asset('bundles/billandgo/assets/bootstrap/dist/css/bootstrap.css') }}" type="text/css" rel="stylesheet"/>
+
+    {% block stylesheets %}
+        <link href="{{ asset('bundles/billandgo/css/register.css') }}" type="text/css" rel="stylesheet"/>
+    {% endblock %}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118804156-2"></script>
+
+
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-118804156-2');
+    </script>
+
+</head>
+
+
+<body class="">
+<div class="container ">
+    <div class="modal-wrap row">
+        <div class="center-block">
+            <a class="center" href="/" >
+                <img src="{{ asset('bundles/billandgo/img/billgo-horizontal.png') }}" width="150" >
+            </a>
+        </div>
+    </div>
+
+    <div class="modal-bodies ">
+
+        <div class="modal-body modal-body-step-0 is-showing">
+            <div class="title title-mod">Requête d'acceptation {{ type }} {{ number }}</div>
+            <div class="description description-mod">
+                <p>Êtes-vous sur de vouloir accepter ce devis ?</p>
+                <p>Attention : un devis accepté vous engage légalement.</p>
+            <br>
+            <div class="text-center foot">
+                <div class="btn btn-success accepted btn-lg">J'accepte le devis</div>
+                <div class="btn btn-danger refused btn-lg" >Je refuse le devis</div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+    <footer class="text-right login-footer footer">
+        <br>
+        <small>Copyright &copy; {{ "now"|date("Y") }} - Bill&Go. Tous droits réservés. Bill&Go est un produit <a href="https://www.iumio.com">iumio</a></small> - <a href="{{ path('billandgo_ml') }}" target="_blank">Mentions légales et Politiques de confidentialités</a>
+    </footer>
+
+</body>
+
+
+
+{% block javascripts %}
+    <script src="{{ asset('bundles/billandgo/assets/jquery/dist/jquery.min.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/assets/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' // optional
+            });
+
+            $(".accepted, .refused").click(function (e) {
+                var urlAccepted = '{{ path('billandgo_document_email_anwser_validate', {doc_id: id, token: token, answer: 1}) }}';
+                var urlRefused = '{{ path('billandgo_document_email_anwser_validate', {doc_id: id, token: token, answer: 0}) }}';
+                var a = $(this).hasClass("accepted");
+                var url =  (a)? urlAccepted : urlRefused;
+
+                $.ajax({
+                    url : url,
+                    type : 'POST',
+                    data: $(this).serialize(),
+                    success : function(data, statut){ // success est toujours en place, bien sûr !
+                        if (a) {
+                            console.log("AX");
+                            $(".modal-bodies").find(".description").html("<span class='text-success'>Merci d'avoir accepté le {{ type }}. <br> Une notification de votre acceptation sera envoyé à la personne concernée.</span>");
+                            $(".foot").hide();
+                        }
+                        else {
+                            console.log("NA");
+                            $(".modal-bodies").find(".description").html("<span class='text-danger'>Vous avez refusé le devis {{ type }}. <br> Une notification de votre refus sera envoyé à la personne concernée.</span>");
+                            $(".foot").hide();
+                        }
+                    },
+
+                    error : function(resultat, statut, erreur){
+                        $(".modal-bodies").find(".description").html("<span class='text-warning'>Une erreur est survenue. Veuillez rafraîchir la page.</span>");
+                        $(".foot").hide();
+                    }
+                });
+
+
+            });
+        });
+    </script>
+    <script src="{{ asset('bundles/billandgo/js/script.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/assets/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/assets/iCheck/icheck.min.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/js/common.js') }}"></script>
+{% endblock %}
+
+</body>
+</html>
