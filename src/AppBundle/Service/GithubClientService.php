@@ -56,8 +56,7 @@ class  GithubClientService extends Controller
             throw new \Exception("user does not have github access registered");
         }
         $githubClient = new GithubClient();
-        $githubClient->authenticate("mbuliard", "inregnodatisumus", GithubClient::AUTH_HTTP_PASSWORD);
-        //$githubClient->authenticate(null, $user->getGithubAccessToken(), GithubClient::AUTH_HTTP_PASSWORD);
+        $githubClient->authenticate(null, $user->getGithubAccessToken(), GithubClient::AUTH_HTTP_PASSWORD);
 
         return $githubClient;
     }
