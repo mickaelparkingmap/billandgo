@@ -10,6 +10,12 @@
  *
  */
 
+
+
+
+
+$.datetimepicker.setDateFormatter('moment');
+jQuery.datetimepicker.setLocale('fr');
 var addEvent = function () {
     $(".loading-element").show();
     var range = getCalendarDateRange();
@@ -30,15 +36,18 @@ var addEvent = function () {
                 var event = events[i];
                 var allday = (typeof event.start.date !== "undefined");
                 myCalendar.fullCalendar( 'removeEvents', event.id)
+
+                var s = new Date((typeof event.start.date != "undefined") ? event.start.date : event.start.dateTime);
+
+                var e = new Date((typeof event.end.date != "undefined") ? event.end.date : event.end.dateTime);
+
                 var myEvent = {
                     id : event.id,
                     title: event.summary,
                     allDay: allday,
-                    start: formatingDate(event.start),
-                    end: formatingDate(event.end),
+                    start: s,
+                    end: e,
                     url: event.htmlLink,
-                    backgroundColor : '#f2634f',
-                    borderColor: '#f2634f',
                     description : (typeof event.description !== "undefined")? event.description : "Non renseigné",
                     location : (typeof event.location !== "undefined")? event.location : "Non renseigné"
                 };
@@ -105,14 +114,21 @@ $(function() {
         },
         //When u select some space in the calendar do the following:
         select: function (start, end, allDay) {
+
             //do something when space selected
             //Show 'add event' modal
-            console.log(start);
+            if ("1" == $('#allday').val()) {
+                $('#fancy-checkbox-default').click();
+            }
+
             $('#eName').val("");
             $('#eDescription').val("");
             $('#eLocation').val("");
             $('#eDueDate').val("");
-            $("#eStartDate").datepicker( "setDate", new Date(start));
+            $("#eStartDate").val(start.format('YYYY/MM/DD 00:00'));
+            $('#eDueDate').datetimepicker({step: 1});
+            $("#eStartDate").datetimepicker({step: 1, setdate: start.format('YYYY/MM/DD HH:mm')});
+
 
             $('#createEventModal').modal('show');
         },
@@ -143,26 +159,26 @@ $(function() {
             element.attr('href', 'javascript:void(0);');
             element.click(function() {
                 $("#eventTitle").html((event.title));
-                $("#startTime").html(moment(event.start).format('DD/MM/Y'));
-                $("#endTime").html(moment(event.end).format('DD/MM/Y'));
+                if (event.allDay) {
+                    $(".notallday").hide();
+                    $(".alldayok").show();
+                    $("#startTimeADK").html(moment(event.start).format('DD/MM/Y')+ " <small class='text-info'>(Toute la journée)</small>");
+                }
+                else {
+                    $(".alldayok").hide();
+                    $(".notallday").show();
+                    $("#startTime").html(moment(event.start).format('DD/MM/Y à HH:mm'));
+                    $("#endTime").html(moment(event.end).format('DD/MM/Y à HH:mm'));
+                }
+
+                $("#eventContent").find(".modal-footer .editevent").attr("event-id", event.id);
+                $(".closeon").attr("event-id", event.id);
                 $("#eventInfo").html(event.description);
                 $("#eventLink").attr('href', event.url);
                 $("#eventLocation").html(event.location);
                 $("#eventContent").modal('show');
             });
 
-            element.append( "<span class='closeon btn btn-danger text-center'><i class='fa fa-remove'></i></span>");
-            element.find(".closeon").click(function() {
-                if (confirm('Vous êtes sûr de vouloir supprimer l\'évènement ' + event.title + '?')) {
-                    $('#calendar').fullCalendar('removeEvents', event._id);
-                    var request = gapi.client.calendar.events.delete({
-                        'calendarId': 'primary',
-                        'eventId': event.id
-                    });
-                    request.execute(function(event) {
-                    });
-                }
-            });
         }
     });
 });
@@ -175,6 +191,81 @@ $('#submitButton').on('click', function(e){
     doSubmit();
 });
 
+
+$('#submitEditButton').on('click', function(e){
+    // We don't want this to act as a link so cancel the link action
+    e.preventDefault();
+
+    doEditSubmit();
+});
+
+$(".closeon").click(function(e) {
+    e.preventDefault();
+    var id = $(this).attr("event-id");
+    var evento = $("#calendar").fullCalendar('clientEvents', id)[0];
+    $(".modal").modal('hide');
+    $("#eventDelete").find(".modal-title").html("Suppression de l'évènement "+ evento.title )
+    $("#eventDelete").find(".modal-body strong").html(evento.title);
+    $("#eventDelete").modal('show');
+    $("#eventDeleteConfirm").attr("event-id", id);
+});
+
+
+$(".editevent").click(function(e) {
+    e.preventDefault();
+    var id = $(this).attr("event-id");
+
+    var evento = $("#calendar").fullCalendar('clientEvents', id)[0];
+    $(".modal").modal('hide');
+
+    $("#eNameE").val((evento.title));
+    $("#eStartDateE").val(moment(evento.start).format('YYYY/MM/DD HH:mm'));
+    $("#eStartDateE").datetimepicker({step: 1, format: 'YYYY/MM/DD HH:mm'});
+    $("#eDueDateE").val(moment(evento.end).format('YYYY/MM/DD HH:mm'));
+    $("#eDueDateE").datetimepicker({step: 1, format: 'YYYY/MM/DD HH:mm'});
+    if (1 == $("#alldayE").val()) {
+        $("#fancy-checkbox-defaultE").click();
+    }
+    if (evento.allDay) {
+        $("#fancy-checkbox-defaultE").click();
+        $("#eDueDateE").val(moment(evento.start).format('YYYY/MM/DD HH:mm'));
+    }
+
+    $("#eDescriptionE").val((evento.description == "Non renseigné")? "" : evento.description);
+    $("#eLocationE").val((evento.location == "Non renseigné")? "" : evento.location);
+
+    $("#editEventModal").find(".modal-title").html("Edition de l'évènement "+ evento.title )
+    //$("#eventDelete").find(".modal-body strong").html(evento.title);
+    $("#editEventModal").modal('show');
+    $("#submitEditButton").attr("event-id", id);
+});
+
+
+$("#eventDeleteConfirm").click(function(e) {
+    e.preventDefault();
+    var id = $(this).attr("event-id");
+    var evento = $("#calendar").fullCalendar('clientEvents', id)[0];
+    $(".modal").modal('hide');
+    $("#eventConfirmation").find(".modal-title").html("Confirmation de suppression de l'évènement "+ evento.title )
+    $("#eventConfirmation").find(".modal-body").html("L'évènement <strong>"+evento.title+"</strong> a bien été supprimé.");
+    $("#eventConfirmation").modal('show');
+
+        $('#calendar').fullCalendar('removeEvents', id);
+        var request = gapi.client.calendar.events.delete({
+            'calendarId': 'primary',
+            'eventId': id
+        });
+        request.execute(function(event) {
+            $("#eventConfirmation").modal('show');
+            setTimeout(function () {
+                $("#eventConfirmation").modal('hide');
+            }, 3000)
+        });
+
+
+
+});
+
 function zeroPadded(val) {
     if (val >= 10)
         return val;
@@ -184,38 +275,177 @@ function zeroPadded(val) {
 
 
 function doSubmit(){
-    console.log($('#eDueDate').val());
+    var alld = $('#allday').val();
+    if ("" === $('#eName').val()) {
+        $("#eName").effect("highlight", {}, 3000);
+        return false;
+    }
+    if (("" === $('#eStartDate').val() )) {
+        $("#eStartDate").effect("highlight", {}, 3000);
+        return false;
+    }
+
+    if (0 == alld && ("" === $('#eDueDate').val() )) {
+        $("#eDueDate").effect("highlight", {}, 3000);
+        return false;
+    }
+
+
     $("#createEventModal").modal('hide');
-    var event = {
-        title: $('#eName').val(),
-        start: new Date($('#eStartDate').val()),
-        end: new Date(moment($('#eDueDate').val()).format('Y/M/D')),
-        description: $('#eDescription').val(),
-        location: $('#eLocation').val(),
-    };
-    $("#calendar").fullCalendar('renderEvent', event, true);
+
 
     var d = new Date($('#eStartDate').val());
-    var d1 = new Date($('#eDueDate').val());
+
+    var st = null;
+    var ed = null;
+    if (1 == alld) {
+         st = ed = {
+            'date': d.getFullYear()+"-"+zeroPadded(d.getMonth() + 1)+"-"+zeroPadded(d.getDate())
+        };
+
+    }
+    else {
+        var d1 = new Date($('#eDueDate').val());
+        st = {
+            'dateTime': d.getFullYear()+"-"+zeroPadded(d.getMonth() + 1)+"-"+zeroPadded(d.getDate())+"T"+zeroPadded(d.getHours())+":"+zeroPadded(d.getMinutes())+":00",
+            'timeZone': 'Europe/Paris'
+        };
+
+        ed = {
+            'dateTime': d1.getFullYear()+"-"+zeroPadded(d.getMonth() + 1)+"-"+zeroPadded(d1.getDate())+"T"+zeroPadded(d1.getHours())+":"+zeroPadded(d1.getMinutes())+":00",
+            'timeZone': 'Europe/Paris'
+        };
+    }
     var event1 = {
         'summary': $('#eName').val(),
         'location':$('#eLocation').val(),
         'description': $('#eDescription').val(),
-        'start': {
-            'date': d.getFullYear()+"-"+zeroPadded(d.getMonth() + 1)+"-"+zeroPadded(d.getDate())
-        },
-        'end': {
-            'date':d1.getFullYear()+"-"+zeroPadded(d1.getMonth() + 1)+"-"+zeroPadded(d1.getDate())
-        }
+        'start': st,
+        'end': ed
     };
+
+    if (1 == alld) {
+        var event = {
+            title: $('#eName').val(),
+            start: new Date($('#eStartDate').val()),
+            end: new Date(moment($('#eDueDate').val()).format('Y/M/D H:m')),
+            description: $('#eDescription').val(),
+            location: $('#eLocation').val(),
+            allDay: true
+        };
+    }
+    else {
+        var event = {
+            title: $('#eName').val(),
+            start: new Date($('#eStartDate').val()),
+            end: new Date(moment($('#eDueDate').val()).format('Y/M/D H:m')),
+            description: $('#eDescription').val(),
+            location: $('#eLocation').val()
+        };
+    }
 
     var request = gapi.client.calendar.events.insert({
         'calendarId': 'primary',
         'resource': event1
     });
-    request.execute(function(event) {
+    request.execute(function(event2) {
+
+        event.id = event2.id;
+        $("#calendar").fullCalendar('renderEvent', event, true);
+
     });
 }
+
+
+
+function doEditSubmit(){
+    var id = $("#submitEditButton").attr("event-id");
+    var evento = $("#calendar").fullCalendar('clientEvents', id)[0];
+    var alld = $('#alldayE').val();
+    if ("" === $('#eNameE').val()) {
+        $("#eNameE").effect("highlight", {}, 3000);
+        return false;
+    }
+    if (("" === $('#eStartDateE').val() )) {
+        $("#eStartDateE").effect("highlight", {}, 3000);
+        return false;
+    }
+
+    if (0 == alld && ("" === $('#eDueDateE').val() )) {
+        $("#eDueDateE").effect("highlight", {}, 3000);
+        return false;
+    }
+
+
+    $("#editEventModal").modal('hide');
+
+
+    var d = new Date($('#eStartDateE').val());
+
+    var st = null;
+    var ed = null;
+    if (1 == alld) {
+        st = ed = {
+            'date': d.getFullYear()+"-"+zeroPadded(d.getMonth() + 1)+"-"+zeroPadded(d.getDate())
+        };
+
+    }
+    else {
+        var d1 = new Date($('#eDueDateE').val());
+        st = {
+            'dateTime': d.getFullYear()+"-"+zeroPadded(d.getMonth() + 1)+"-"+zeroPadded(d.getDate())+"T"+zeroPadded(d.getHours())+":"+zeroPadded(d.getMinutes())+":00",
+            'timeZone': 'Europe/Paris'
+        };
+
+        ed = {
+            'dateTime': d1.getFullYear()+"-"+zeroPadded(d.getMonth() + 1)+"-"+zeroPadded(d1.getDate())+"T"+zeroPadded(d1.getHours())+":"+zeroPadded(d1.getMinutes())+":00",
+            'timeZone': 'Europe/Paris'
+        };
+    }
+
+
+    if (1 == alld) {
+
+            evento.id = id;
+                evento.title = $('#eNameE').val();
+            evento.start = new Date($('#eStartDateE').val());
+            evento.end =  null;
+            evento.description =  $('#eDescriptionE').val();
+            evento.location= $('#eLocationE').val();
+            evento.allDay = true;
+
+    }
+    else {
+        evento.id = id;
+        evento.title = $('#eNameE').val();
+        evento.start = new Date($('#eStartDateE').val());
+        evento.end =  new Date(moment($('#eDueDateE').val()).format('Y/M/D H:m'));
+        evento.description =  $('#eDescriptionE').val();
+        evento.location= $('#eLocationE').val();
+        evento.allDay = false;
+    }
+
+
+    var eventGoogle = gapi.client.calendar.events.get({"calendarId": 'primary', "eventId": id});
+
+
+    eventGoogle.summary =  $('#eNameE').val();
+    eventGoogle.location = $('#eLocationE').val();
+    eventGoogle.description =  $('#eDescriptionE').val();
+    eventGoogle.start = st;
+    eventGoogle.end = ed;
+
+    var request = gapi.client.calendar.events.update({
+        'calendarId': 'primary',
+        'resource': eventGoogle,
+        'eventId': id
+    });
+    request.execute(function(event) {
+        $("#calendar").fullCalendar('updateEvent', evento, true);
+    });
+}
+
+
 
 // Client ID and API key from the Developer Console
 var CLIENT_ID = '1004743587999-bq41bcvaibn4480ou05mt1dgb53q2cp2.apps.googleusercontent.com';
@@ -270,11 +500,11 @@ function updateSigninStatus(isSignedIn) {
         authorizeButton.style.display = 'none';
         signoutButton.style.display = 'block';
         gastatus = 1;
-        $("#row_event_append, .row_pre_event").show();
+        //$("#row_event_append, .row_pre_event").show();
         listUpcomingEvents();
         addEvent();
         $("#calendar").show();
-        $(".row_pre_event").show();
+        //$(".row_pre_event").show();
     } else {
         $("#calendar").hide();
         $("#row_event_append, .row_pre_event").hide();
@@ -306,7 +536,7 @@ function handleSignoutClick(event) {
  */
 function appendPre(message) {
     var pre = document.getElementById('row_event_append');
-    pre.innerHTML = message;
+    //pre.innerHTML = message;
 }
 
 /**

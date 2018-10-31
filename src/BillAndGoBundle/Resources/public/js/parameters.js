@@ -85,4 +85,36 @@ $(document).ready(function(){
         });
     });
 
+
+    $('.selected-quote-bill-request').on('submit', function(e){
+        e.preventDefault();
+        $.ajax({
+            url : $(this).attr("action"),
+            type : 'POST',
+            data: {"alertquotebill" : $('input[name=alertquotebill]:checked', this).val()},
+            success : function(data, statut){ // success est toujours en place, bien sûr !
+                if (500 === data["code"]) {
+                    $(".alert-quote-bill").html(" <div class=\"alert alert-danger\">"+(data['msg'])+"</div>");
+                }
+                else {
+                    $(".alert-quote-bill").html(" <div class=\"alert alert-success\">"+(data['msg'])+"</div>");
+                }
+
+                $(".alert-quote-bill").show();
+                setTimeout(function () {
+                    $(".alert-quote-bill").hide();
+                }, 6000);
+            },
+
+            error : function(resultat, statut, erreur){
+                $(".alert-quote-bill").html(" <div class=\"alert alert-danger\">"+(resultat['msg'])+"</div>");
+                $(".alert-quote-bill").show();
+                setTimeout(function () {
+                    $(".alert-quote-bill").hide();
+                }, 6000);
+            }
+
+        });
+    });
+
 });

@@ -3,6 +3,8 @@
 {% block title %}{{ parent() }} - Votre agenda connecté{% endblock %}
 {% block advanced_stylesheets %}
     <link href="{{ asset('bundles/billandgo/assets/fullcalendar/dist/fullcalendar.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('bundles/billandgo/assets/datetimepicker/jquery.datetimepicker.css') }}" type="text/css" rel="stylesheet"/>
+
 {% endblock %}
 {% block fos_user_content %}
 
@@ -29,37 +31,49 @@
 
                             <p> Connectez-vous à votre compte Google afin de profiter de cette fonctionnalitée</p>
 
-                            <button type="button" class="btn btn-primary" onclick="location.href='{{ path('billandgo_parameters_show') }}'">Aller dans mes paramètres</button>
+                            <button type="button" class="btn btn-info" onclick="location.href='{{ path('billandgo_parameters_show') }}'">Aller dans mes paramètres</button>
                         <!-- /.info-box-content -->
                 </div><!-- /.col -->
-                <div class="col-md-12 col-sm-12 col-xs-12 onlick column-link"  id="signout-button" style="display: none;">
+                <div class="col-md-12 col-sm-12 col-xs-12 onlick column-link"  id="signout-button" style="display: none;padding-top: 10px">
 
 
                         <p> Pour désactiver cette fonctionnalitée, veuillez vous déconnecter de votre compte Google depuis Bill&Go</p>
 
-                        <button type="button" class="btn btn-primary" onclick="location.href='{{ path('billandgo_parameters_show') }}'">Aller dans mes paramètres</button>
+                        <button type="button" class="btn btn-danger" onclick="location.href='{{ path('billandgo_parameters_show') }}'">Aller dans mes paramètres</button>
 
                     <!-- /.info-box -->
                 </div><!-- /.col -->
             </div>
-            <hr>
 
 
-            <div class="row" >
-                <div class="col-md-12">
-                    <div class="loading-element col-md-12" style="display: none"><div class="load-elem">Récupération des évènements...</div></div>
-                    <div id="calendar"></div>
-
-                </div>
-
-            </div>
             <div class="row row_pre_event" style="display: none">
-                <div class="col-md-12"><h3>Vos évènements à venir</h3></div>
+                <div class="col-md-12"><h4>Vos évènements à venir</h4></div>
             </div>
             <hr/>
-            <div class="row" id="row_event_append">
+            <div class="row" id="row_event_append" style="display: none">
 
             </div>
+
+
+
+                    <div class="box box-primary">
+                        <div class="box-body no-padding">
+                    <div class="loading-element col-md-12" style="display: none"><div class="load-elem">Récupération des évènements...</div></div>
+                    <div id="calendar" class="fc fc-unthemed fc-ltr"></div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
         </section>
 
         <div id="eventContent" class="modal fade" role="dialog">
@@ -73,15 +87,54 @@
                     <div class="modal-body">
                         <ul>
                             <li> Titre : <span id="eventTitle"></span></li>
-                            <li> Début : <span id="startTime"></span></li>
-                            <li> Fin : <span id="endTime"></span></li>
+                            <li class="notallday"> Début : <span id="startTime"></span></li>
+                            <li class="notallday"> Fin : <span id="endTime"></span></li>
+                            <li class="alldayok"> Date : <span id="startTimeADK"></span></li>
                             <li> Description : <span id="eventInfo"></span></li>
                             <li> Lieu : <span id="eventLocation"></span></li>
                         </ul>
                     </div>
                     <div class="modal-footer">
                         <a type="button" class="btn btn-default btn-info btn-outline" href="" id="eventLink" target="_blank">Voir sur Google Agenda</a>
-                        <button type="button" class="btn btn-default btn-danger btn-outline" data-dismiss="modal">Fermer</button>
+                        <button type="button" class="btn btn-default btn-yellow btn-outline editevent" event-id="">Editer</button>
+                        <button type="button" class="btn btn-default btn-danger btn-outline closeon" event-id="">Supprimer</button>
+                        <button type="button" class="btn btn-default btn-primary btn-outline" data-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="eventDelete" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title text-center "></h4>
+                    </div>
+                    <div class="modal-body">
+                       Êtes-vous sûre de vouloir supprimer l'évènement <strong></strong> ?
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" class="btn btn-default btn-success btn-outline" id="eventDeleteConfirm">Oui</a>
+                        <button type="button" class="btn btn-default btn-primary btn-outline" data-dismiss="modal">Non</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="eventConfirmation" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title text-center "></h4>
+                    </div>
+                    <div class="modal-body">
+
                     </div>
                 </div>
 
@@ -95,7 +148,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span> <span class="sr-only">close</span></button>
-                    <h4>Créer un évènement</h4>
+                    <h4 class="modal-title text-center ">Créer un évènement</h4>
                 </div>
                 <div id="modalBody2" class="modal-body">
                     <div class="form-group">
@@ -103,17 +156,31 @@
                     </div>
 
                     <div class="form-group form-inline">
-                        <div class="input-group date" data-provide="datetimepicker">
-                            <input type="text" id="eStartDate" class="form-control" placeholder="Date de début mm/dd/yyyy" disabled="disabled">
+                        <div class="input-group date">
+                            <input type="text" id="eStartDate" class="form-control" placeholder="Date de début" >
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </div>
                         </div>
+
+                        <div class="form-group-e" style="padding-top: 10px; display: inline-block">
+                            <input type="checkbox" name="fancy-checkbox-primary" id="fancy-checkbox-default" autocomplete="off" />
+                            <div class="btn-group-e" style="">
+                                <label for="fancy-checkbox-default" class="btn btn-default">
+                                    <span class="glyphicon glyphicon-ok"></span>
+                                    <span> </span>
+                                </label>
+                                <label for="fancy-checkbox-default" class="text-info" style="padding-left: 5px">
+                                    Toute la journée
+                                </label>
+                            </div>
+                            <input type="hidden" name="allday" id="allday" value="0" />
+                        </div>
                     </div>
 
                     <div class="form-group form-inline">
-                        <div class="input-group date" data-provide="datepicker">
-                            <input type="text" id="eDueDate" class="form-control" placeholder="Date de fin mm/dd/yyyy">
+                        <div class="input-group date" >
+                            <input type="text" id="eDueDate" class="form-control" placeholder="Date de fin">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </div>
@@ -137,7 +204,65 @@
     </div>
 
 
+    <div id="editEventModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span> <span class="sr-only">close</span></button>
+                    <h4 class="modal-title text-center "></h4>
+                </div>
+                <div id="modalBody2" class="modal-body">
+                    <div class="form-group">
+                        <input class="form-control" type="text" placeholder="Nom" id="eNameE">
+                    </div>
 
+                    <div class="form-group form-inline">
+                        <div class="input-group date">
+                            <input type="text" id="eStartDateE" class="form-control" placeholder="Date de début" >
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group-e" style="padding-top: 10px; display: inline-block">
+                            <input type="checkbox" name="fancy-checkbox-primary" id="fancy-checkbox-defaultE" autocomplete="off" />
+                            <div class="btn-group-e" style="">
+                                <label for="fancy-checkbox-defaultE" class="btn btn-default">
+                                    <span class="glyphicon glyphicon-ok"></span>
+                                    <span> </span>
+                                </label>
+                                <label for="fancy-checkbox-defaultE" class="text-info" style="padding-left: 5px">
+                                    Toute la journée
+                                </label>
+                            </div>
+                            <input type="hidden" name="alldayE" id="alldayE" value="0" />
+                        </div>
+                    </div>
+
+                    <div class="form-group form-inline">
+                        <div class="input-group date" >
+                            <input type="text" id="eDueDateE" class="form-control" placeholder="Date de fin">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea class="form-control"  rows="4" placeholder="Description" id= "eDescriptionE"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <input class="form-control" type="text" placeholder="Localisation" id= "eLocationE"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Annuler</button>
+                    <button type="submit" class="btn btn-primary" id="submitEditButton">Editer</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- /.content-wrapper -->
 
 {% endblock fos_user_content %}
@@ -146,6 +271,7 @@
 
     <script src="{{ asset('bundles/billandgo/assets/fullcalendar/dist/fullcalendar.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/assets/fullcalendar/dist/locale/fr.js') }}"></script>
+    <script src="{{ asset('bundles/billandgo/assets/datetimepicker/jquery.datetimepicker.js') }}"></script>
     <script src="{{ asset('bundles/billandgo/js/google.agenda.js') }}"></script>
 
     <script type="text/javascript">
@@ -164,7 +290,47 @@
                 }
             }, 2500);
 
+            $("#fancy-checkbox-default").click(function () {
+                if (0 == $("#allday").val())  {
+                    $("#eDueDate").parent().hide();
+                    $("#allday").val(1);
+                   var da = $("#eStartDate").val();
+                    da = da.split(" ");
+                    da = da[0];
+                    $("#eStartDate").val(da);
+                    $("#eStartDate").datetimepicker({datepicker:true,timepicker:false, format:'YYYY/MM/DD'});
+                } else {
+                    $("#eDueDate").parent().show();
+                    $("#allday").val(0);
+                    var da = $("#eStartDate").val();
+
+                    $("#eStartDate").val(da+" 00:00");
+                    $("#eStartDate").datetimepicker({timepicker:true, step: 1, format:'YYYY/MM/DD HH:mm'});
+                }
+            });
+
+
+            $("#fancy-checkbox-defaultE").click(function () {
+                if (0 == $("#alldayE").val())  {
+                    $("#eDueDateE").parent().hide();
+                    $("#alldayE").val(1);
+                    var da = $("#eStartDateE").val();
+                    da = da.split(" ");
+                    da = da[0];
+                    $("#eStartDateE").val(da);
+                    $("#eStartDateE").datetimepicker({datepicker:true,timepicker:false, format:'YYYY/MM/DD'});
+                } else {
+                    $("#eDueDateE").parent().show();
+                    $("#alldayE").val(0);
+                    var da = $("#eStartDateE").val();
+
+                    $("#eStartDateE").val(da+" 00:00");
+                    $("#eStartDateE").datetimepicker({timepicker:true, step: 1, format:'YYYY/MM/DD HH:mm'});
+                }
+            });
+
         });
+
 
         $(document).on('click', ".fc-next-button, .fc-prev-button, .fc-right button", function(){
             addEvent();

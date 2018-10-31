@@ -93,6 +93,7 @@
         {% if selfSiret is not null %}
         SIRET : {{ selfSiret }}
         {% endif %}
+        <small style="color:grey">ELZKDSZ?NZND</small>
         {% if false == selfPremium %}
         <p style="text-align:center"><small>Document généré par <a href="https://www.billandgo.fr">Bill&Go</a>, un produit <a href="https://www.iumio.com">iumio</a></smal></p>
         {% endif %}
@@ -112,7 +113,7 @@ mpdf-->
 </table>
 <br />
 
-<p class="projectName">{{ docType }} </p><br />
+<p class="projectName">Intitulé : <small>{{ document.description }}</small> </p><br />
 <table class="items" cellpadding="10">
     <thead>
     <tr>
@@ -138,23 +139,75 @@ mpdf-->
         </tr>
 
     {% endfor %}
-    <tr>
-        <td class="blanktotal" colspan="1" rowspan="3"></td>
+    {% if refTax.percent is defined %}
+        <tr>
+            <td class="blanktotal" colspan="1" rowspan="{% if 0 != refTax.percent %}3{% else %}2{% endif %}"></td>
 
-        <td class="totals " colspan="2">Sous total:</td>
-        <td class="totals cost" colspan="2">{{ totalHT }}€</td>
-    </tr>
-    <tr>
-        <td class="totals" colspan="2">{{ tax }}</td>
-        <td class="totals cost" colspan="2">{{ taxtotal }}€</td>
-    </tr>
-    <tr>
-        <td class="totals" colspan="2"><b>TOTAL:</b></td>
-        <td class="totals cost" colspan="2"><b>{{ totalHT + taxtotal }}€</b></td>
-    </tr>
+            <td class="totals " colspan="2">Sous total:</td>
+            <td class="totals cost" colspan="2">{{ totalHT }}€</td>
+        </tr>
+
+        {% if 0 != refTax.getPercent() %}
+        <tr>
+            <td class="totals" colspan="2">{{ tax }}</td>
+            <td class="totals cost" colspan="2">{{ taxtotal }}€</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td class="totals" colspan="2"><b>Total:</b></td>
+            <td class="totals cost" colspan="2"><b>{{ totalHT + taxtotal }}€</b></td>
+        </tr>
+    {% endif %}
     </tbody>
 </table>
 <br>
+
+<div><strong>Date de validité : {{ document.delayDate|date('d/m/Y') }}</strong></div>
+{%  if refTax.percent is defined  and 0 == refTax.getPercent() %}
+    <br>
+<div>TVA non applicable, art. 293 B du Code général des impôts</div>
+{% endif %}
+
+{% if null != document.answerDateAccepted %}
+    <br>
+    <br>
+    <br>
+    <br>
+    <div style="text-align: right">
+        Devis reçu avant l'exécution de la prestation, lu et approuvé, bon pour accord.
+        <br>
+        Accepté électroniquement le {{ document.answerDateAccepted|date('d/m/Y à H:m:i') }}</div>
+{% elseif null != document.answerDateRefused %}
+    <br>
+    <br>
+    <br>
+    <br>
+    <div style="text-align: right">Lu et refusé électroniquement le {{ document.answerDateRefused|date('d/m/Y à H:m:i') }}
+    </div>
+{% endif %}
+
+{% if  document.paymentCondition is not null and document.paymentCondition|trim != "" %}
+    <br>
+    <br>
+    <div><strong>Conditions de paiement</strong></div>
+    <div>{{ document.paymentCondition }}</div>
+{% endif %}
+
+{% if  document.makeCondition is not null and document.makeCondition|trim != "" %}
+    <br>
+    <br>
+    <div><strong>Conditions de réalisation</strong></div>
+    <div>{{ document.makeCondition }}</div>
+{% endif %}
+
+
+{% if  document.specCondition is not null and document.specCondition|trim != "" %}
+    <br>
+    <br>
+    <div><strong>Conditions particulières</strong></div>
+    <div>{{ document.specCondition }}</div>
+{% endif %}
+
 {% if document.isEstimate()  %}
     {% if user.getBanque() is not null and user.getIban() is not  null and user.getBic() is not  null %}
         <div style="text-align: left"><strong>Coordonnées bancaires : </strong><br> NOM BANQUE : {{ user.getBanque() }} <br> IBAN : {{ user.getIban() }}<br>BIC : {{ user.getBic() }}</div><br />

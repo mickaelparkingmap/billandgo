@@ -73,6 +73,27 @@ class DocumentRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+
+    /**
+     * @param int $refuser
+     *
+     * @param int $refClient
+     * @return array
+     */
+    public function findAllDocByRefClient(int $refuser, int $refClient, int $limit = null) : array
+    {
+        $qb = $this->createQueryBuilder('doc');
+        $qb
+            ->select('doc')
+            ->where('doc.refUser = :user')
+            ->andWhere('doc.refClient = :client')
+            ->setParameter('user', $refuser)
+            ->setMaxResults($limit)
+            ->orderBy("doc.id", "DESC")
+            ->setParameter('client', $refClient);
+        return $qb->getQuery()->getResult();
+    }
+
     /**
      * @param User $user
      * @param string $type

@@ -32,6 +32,7 @@ trait DocumentTrait
         }
         $bill->setDescription('facture de test');
         $bill->setRefUser($user);
+        $bill->setCreationDate(new \DateTime());
         $bill->setStatus('draw');
         $bill->setType(false);
         return $bill;
@@ -49,6 +50,7 @@ trait DocumentTrait
             $bill->setNumber($data['number']);
         }
         $bill->setDescription('devis de test');
+        $bill->setCreationDate(new \DateTime());
         $bill->setRefUser($user);
         $bill->setStatus('draw');
         $bill->setType(true);

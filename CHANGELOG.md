@@ -118,6 +118,20 @@ https://www.iumio.com
 - Add registration type
 
 
+## [1.7.0] - 2018-10-30
+###### SUN-SUN Version
+
+- Change quote/bill design
+- Add confirmation for quote acceptance
+- Autofocus on global search
+- Event edition
+- CSS fixes on calendar
+- New condititons on quote/bill
+- Add time on event
+- Client tab features
+- New dashboard
+- List quote, bill remaked
+
 [STABLE RELEASE]: https://github.com/iumio/billandgo
 [1.2.0]: https://github.com/iumio/billandgo/releases/tag/v1.2.0
 [1.2.1]: https://github.com/iumio/billandgo/releases/tag/v1.2.1

@@ -78,163 +78,192 @@
                 </div><!-- /.col -->
             </div>
 
+
+
+
+
+
+
+
+
             <div class="row">
-            <div class="col-md-6">
-            <div class="box box-default">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Les derniers projets en cours </h3>
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                    </div>
-                    <div class="box-body">
-                        <hr/>
-                        <div class="row">
-                            {% set nbp = 0 %}
-                            {% set nbcolor = 0 %}
-                            {% set maxcolor = 6 %}
-                            {% set color = ['bg-yellow', 'bg-green', 'bg-purple', 'bg-black', 'bg-blue', 'bg-red'] %}
-                            {% for p in projects if nbp < 4 %}
-                                <div class="col-md-6 onlick" onclick="location.href='{{ path('billandgo_project_view', {'id': p.id}) }}'">
-                                    <!-- Widget: user widget style 1 -->
-                                    <div class="box box-widget widget-user-2 box-client {{ color[nbcolor] }}-client">
-                                        <!-- Add the bg color to the header using any of the bg-* classes -->
-                                        <div class="widget-user-header  {{ color[nbcolor] }}">
-                                            <div class="widget-user-image" style="margin-top: -35px;">
-                                                <span class="img-circle"><i class="fa fa-industry fa-3x ppdashbboard" ></i> </span>
-                                            </div>
-                                            <!-- /.widget-user-image -->
-                                            <h3 class="widget-user-username"> Projet {{ p.name|capitalize }} </h3>
-                                            <h5 class="widget-user-desc">Deadline : <span class="">{{ p.deadLine|date('d/m/Y') }}</span></h5>
+                <section class="col-lg-6 connectedSortable ui-sortable">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Vos derniers projets en cours </h3>
 
-                                        </div>
-                                        <div class="box-footer no-padding">
-                                            <div class="panel-body">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- /.widget-user -->
-                                </div>
-                                {% set nbp = nbp + 1 %}
-                                {%  set nbcolor = nbcolor + 1 %}
-                                {% if nbcolor >= maxcolor %}
-                                    {%  set nbcolor = 0 %}
-                                {% endif %}
-                            {% else %}
-                                <div class="callout callout-info">
-                                    <h4>Oups! Vous n'avez aucun projet en cours </h4>
-                                </div>
-                            {% endfor %}
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-
-                </div>
-
-            </div>
-            </div>
-            <div class="col-md-6">
-
-                <div class="box box-default" >
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Vos évènements à venir </h3>
-                        <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                        </div>
+                        <!-- /.box-header -->
                         <div class="box-body">
-                            <hr/>
-                            <div class=""  id="row_google_agenda_hide">
-                                <p> Connectez-vous à votre compte Google afin de profiter de cette fonctionnalitée</p>
-
-                                <button type="button" class="btn btn-primary" onclick="location.href='{{ path('billandgo_parameters_show') }}'">Aller dans mes paramètres</button>
-                            </div>
-                            <div id="row_google_agenda" path-elem="{{ path('billandgo_organizer_show') }}">
-                                <div class="row" id="row_event_append"  >
-
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-            {% set nbPaiments = 0 %}
-            {% set total = 0 %}
-            {% set nbcolor = 0 %}
-            {% set maxcolor = 6 %}
-            {% set color = ['bg-yellow', 'bg-green', 'bg-purple', 'bg-black', 'bg-blue', 'bg-red'] %}
-            {% for paiment in paiments %}
-                {% set total = total + paiment.amount %}
-                {% set nbPaiments = nbPaiments + 1 %}
-                {% set paymenttype = "Non connu" %}
-                {% if paiment.mode == "order" %}
-                    {% set paymenttype = "Virement bancaire" %}
-                {% elseif paiment.mode == "cash" %}
-                    {% set paymenttype = "Espèce" %}
-                {% elseif paiment.mode == "cheque" %}
-                    {% set paymenttype = "Chèque" %}
-                {% endif %}
-                {%  set nbcolor = nbcolor + 1 %}
-                {% if nbcolor >= maxcolor %}
-                    {%  set nbcolor = 0 %}
-                {% endif %}
-            {% endfor %}
-            <div class="row">
-                <div class="col-md-6">
-
-                    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-                    <!-- /.box -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <!-- solid sales graph -->
-                            <div class="box box-solid bg-teal-gradient">
-                                <!-- /.box-body -->
-                                <div class="box-footer no-border">
-                                    <div class="row">
-                                        <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-                                            <div class="progress-group">
-                                                <span class="progress-text">Facture(s) payée(s)</span>
-                                                <span class="progress-number text-green"><b>{{ billpaidm }}</b>/{{ billtotalm }}</span>
-
-                                                <div class="progress sm">
-                                                    <div class="progress-bar progress-bar-aqua bg-teal" style="width: {% if billtotalm > 0 %}{{ billpaidm * 100 / billtotalm }}{% else %}0{% endif %}%"></div>
-                                                </div>
-                                            </div>
-
-                                            <div class="knob-label"><strong>Factures payées</strong></div>
-                                        </div>
-                                        <!-- ./col -->
-                                        <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-                                            <!-- /.progress-group -->
-                                            <div class="progress-group">
-                                                <span class="progress-text">Devis accepté(s)</span>
-                                                <span class="progress-number text-green"><b>{{ quotesacceptm }}</b>/{{ quotestotalm }}</span>
-
-                                                <div class="progress sm">
-                                                    <div class="progress-bar progress-bar-aqua bg-teal" style="width: {% if quotestotalm > 0 %}{{ quotesacceptm * 100 / quotestotalm }}{% else %}0{% endif %}%"></div>
-                                                </div>
-                                            </div>
-
-                                            <div class="knob-label"><strong>Devis acceptés</strong></div>
-                                        </div>
-                                        <!-- ./col -->
-                                        <!--<div class="col-xs-4 text-center">
-                                            <input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60"
-                                                   data-fgColor="#39CCCC">
-
-                                            <div class="knob-label">In-Store</div>
-                                        </div>-->
-                                        <!-- ./col -->
+                            <ul class="products-list product-list-in-box">
+                                {% set nbp = 0 %}
+                                {% for p in projects if nbp < 4 %}
+                                <li class="item">
+                                    <div class="product-img">
+                                        <i class="fa fa-building fa-2x"></i>
                                     </div>
-                                    <!-- /.row -->
+                                    <div class="product-info">
+                                        <a href="{{ path('billandgo_project_view', {'id': p.id}) }}" class="product-title">{{ p.name|capitalize }}
+                                            <span class="text-sm label label-success pull-right">Deadline : {{ p.deadline|date('d/m/Y') }}</span></a>
+                                        <span class="product-description">
+                                        {{ p.description|capitalize }}
+                                        </span>
+                                    </div>
+                                </li>
+                                    {% set nbp = nbp + 1 %}
+                                {% else %}
+                                <li class="item">
+                                        <h4>Oups! Vous n'avez aucun projet en cours </h4>
+                                </li>
+                                {% endfor %}
+
+                                <!-- /.item -->
+                            </ul>
+                        </div>
+                        <!-- /.box-body -->
+                        <div class="box-footer text-center">
+                            <a href="{{ path('billandgo_project_list')}}" class="uppercase">Voir tous les projets</a>
+                        </div>
+                        <!-- /.box-footer -->
+                    </div>
+
+
+                    <div class="">
+
+                        <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                        <!-- /.box -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- solid sales graph -->
+                                <div class="box box-solid bg-teal-gradient">
+                                    <!-- /.box-body -->
+                                    <div class="box-footer no-border">
+                                        <div class="row">
+                                            <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+                                                <div class="progress-group">
+                                                    <span class="progress-text">Facture(s) payée(s)</span>
+                                                    <span class="progress-number text-green"><b>{{ billpaidm }}</b>/{{ billtotalm }}</span>
+
+                                                    <div class="progress sm">
+                                                        <div class="progress-bar progress-bar-aqua bg-teal" style="width: {% if billtotalm > 0 %}{{ billpaidm * 100 / billtotalm }}{% else %}0{% endif %}%"></div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="knob-label"><strong>Factures payées</strong></div>
+                                            </div>
+                                            <!-- ./col -->
+                                            <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+                                                <!-- /.progress-group -->
+                                                <div class="progress-group">
+                                                    <span class="progress-text">Devis accepté(s)</span>
+                                                    <span class="progress-number text-green"><b>{{ quotesacceptm }}</b>/{{ quotestotalm }}</span>
+
+                                                    <div class="progress sm">
+                                                        <div class="progress-bar progress-bar-aqua bg-teal" style="width: {% if quotestotalm > 0 %}{{ quotesacceptm * 100 / quotestotalm }}{% else %}0{% endif %}%"></div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="knob-label"><strong>Devis acceptés</strong></div>
+                                            </div>
+                                            <!-- ./col -->
+                                            <!--<div class="col-xs-4 text-center">
+                                                <input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60"
+                                                       data-fgColor="#39CCCC">
+
+                                                <div class="knob-label">In-Store</div>
+                                            </div>-->
+                                            <!-- ./col -->
+                                        </div>
+                                        <!-- /.row -->
+                                    </div>
+                                    <!-- /.box-footer -->
                                 </div>
-                                <!-- /.box-footer -->
+                                <!-- /.box -->
                             </div>
-                            <!-- /.box -->
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6">
+
+
+
+                </section>
+
+                <section class="col-lg-6 connectedSortable ui-sortable">
+                {% set nbPaiments = 0 %}
+                {% set total = 0 %}
+                {% set nbcolor = 0 %}
+                {% set maxcolor = 6 %}
+                {% set color = ['bg-yellow', 'bg-green', 'bg-purple', 'bg-black', 'bg-blue', 'bg-red'] %}
+                {% for paiment in paiments %}
+                    {% set total = total + paiment.amount %}
+                    {% set nbPaiments = nbPaiments + 1 %}
+                    {% set paymenttype = "Non connu" %}
+                    {% if paiment.mode == "order" %}
+                        {% set paymenttype = "Virement bancaire" %}
+                    {% elseif paiment.mode == "cash" %}
+                        {% set paymenttype = "Espèce" %}
+                    {% elseif paiment.mode == "cheque" %}
+                        {% set paymenttype = "Chèque" %}
+                    {% endif %}
+                    {%  set nbcolor = nbcolor + 1 %}
+                    {% if nbcolor >= maxcolor %}
+                        {%  set nbcolor = 0 %}
+                    {% endif %}
+                {% endfor %}
+
+
+
+
+
+                        <div class="box box-success">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Vos évènements à venir  </h3>
+
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <ul class="products-list product-list-in-box" id="row_google_agenda_hide">
+
+                                    <li class="item" >
+                                        <div class="product-img">
+                                            <i class="fa fa-calendar fa-2x"></i>
+                                        </div>
+                                        <div class="product-info">
+                                            <div href="#" class="product-title">
+
+                                                <p> Connectez-vous à votre compte Google afin de profiter de cette fonctionnalitée</p>
+                                                <button type="button" class="btn btn-primary" onclick='location.href="{{ url('billandgo_parameters_show') }}"' >Aller dans mes paramètres</button>
+
+
+                                                <span class="label label-success pull-right"></span></div>
+
+                                            <span class="product-description">
+
+                                        </span>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <ul class="products-list product-list-in-box" id="row_google_agenda" path-elem="{{ path('billandgo_organizer_show') }}">
+                                    <!-- /.item -->
+                                </ul>
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer text-center">
+                                <a href="{{ path('billandgo_organizer_show')}}" class="uppercase">Voir votre agenda</a>
+                            </div>
+                            <!-- /.box-footer -->
+                        </div>
+
+
+
+
                     <div class="box box-default">
                         <div class="box-header with-border">
                             <h4><strong>Statistiques des paiements par mois (Année {{ 'now'|date('Y') }})</strong></h4>
@@ -263,7 +292,14 @@
 
                         <!-- /.box-body -->
                     </div>
-                </div>
+
+
+
+</section>
+        </div>
+
+            <div class="row">
+
             </div>
         </section>
         <!-- /.content -->

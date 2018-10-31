@@ -57,43 +57,91 @@
 
 
             <div class="row">
-                <div class="col-md-7">
+                <div class="col-md-8">
 
                     <div class="box box-widget widget-user-2">
                         <!-- Add the bg color to the header using any of the bg-* classes -->
-                        <div class="widget-user-header bg-black">
+                        <div class="widget-user-header bg-yellow">
                             <div class="widget-user-image" style="margin-top: -35px">
                                 <i class="fa fa-info ppdashbboard fa-3x"></i>
                             </div>
                             <!-- /.widget-user-image -->
-                            <h3 class="widget-user-username">Informations</h3>
-                            <h5 class="widget-user-desc">Descriptions, ...</h5>
+                            <h3 class="widget-user-username">Informations sur ce projet</h3>
+                            <h5 class="widget-user-desc">Obtenez les informations sur le projet {{ project.name }}</h5>
                         </div>
                         <div class="box-footer">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <ul>
-                                        <li><strong>Description : </strong> <span id="pdescription">{{ project.description }}</span> <a href="#" class="btn btn-primary btn-outline edit-desc">Editer la description</a>
-                                            <div class="form-desc-edited form-group " style="display: none;">
-                                                <textarea class="desc-edited form-control">{{ project.description|trim }}</textarea>
-                                                <div class="text-left">
-                                                    <br>
-                                                    <input type="button" value="Annuler" class="canceled-desc-edit btn btn-danger">
-                                                    <input type="button" value="Sauvegarder" class="save-desc-edit btn btn-success">
+                                <div class="col-md-12">
 
+                                    <ul class="products-list product-list-in-box">
+
+                                        <li class="item">
+                                            <div class="product-img">
+                                                <i class="fa fa-file-text fa-2x"></i>
+                                            </div>
+                                            <div class="product-info">
+                                                <div  class="product-title">
+                                                    <strong>Description  </strong>  <a href="#" class="btn btn-primary btn-outline edit-desc">Editer la description</a>
+                                                    <div class="form-desc-edited form-group " style="display: none;">
+                                                        <textarea class="desc-edited form-control">{{ project.description|trim }}</textarea>
+                                                        <div class="text-left">
+                                                            <br>
+                                                            <input type="button" value="Annuler" class="canceled-desc-edit btn btn-danger">
+                                                            <input type="button" value="Sauvegarder" class="save-desc-edit btn btn-success">
+
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div></li>
-                                        <li><strong>Date de début du projet : </strong> {{ project.begin|date('d/m/Y') }}</li>
-                                        <li><strong>Deadline : </strong> {{ project.deadLine|date('d/m/Y') }}</li>
+                                                <span class="product-description">
+                                            <span id="pdescription">{{ project.description }}</span>
+                                                    </span>
+
+                                            </div>
+                                        </li>
+
+
+                                        <li class="item">
+                                            <div class="product-img">
+                                                <i class="fa fa-angle-up fa-2x"></i>
+                                            </div>
+                                            <div class="product-info">
+                                                <div  class="product-title">
+                                                    <strong>Date de début  </strong>
+                                                </div>
+                                                <span class="product-description">
+                                            {{ project.begin|date('d/m/Y') }}
+                                        </span>
+                                            </div>
+                                        </li>
+
+                                        <li class="item">
+                                            <div class="product-img">
+                                                <i class="fa fa-angle-down fa-2x"></i>
+                                            </div>
+                                            <div class="product-info">
+                                                <div  class="product-title">
+                                                    <strong>Deadline  </strong>
+                                                </div>
+                                                <span class="product-description">
+                                            {{ project.deadLine|date('d/m/Y') }}
+                                        </span>
+                                            </div>
+                                        </li>
+
                                         {% if project.repoName %}
-                                            <li>
-                                                <strong>GitHub : </strong>
-                                                <a href="{{ project.repoUrl }}" target="_blank">{{ project.repoName }}</a>
-                                            </li>
-                                        {% elseif user.githubId %}
-                                            <li>
-                                                <strong>GitHub :</strong>
-                                                <span class="dropdown">
+                                            <li class="item">
+                                                <div class="product-img">
+                                                    <i class="fa fa-github fa-2x"></i>
+                                                </div>
+                                                <div class="product-info">
+                                                    <div  class="product-title">
+                                                        <strong>Dépôt Github </strong>
+                                                    </div>
+                                                    <span class="product-description">
+                                                      {% if project.repoName %}
+                                                          <a href="{{ project.repoUrl }}" target="_blank">{{ project.repoName }}</a>
+                                                    {% elseif user.githubId %}
+                                                     <span class="dropdown">
                                                     <button class="btn btn-success btn-outline dropdown-toggle" type="button" id="dropdownGitRepo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                         Ajouter un dépôt
                                                     </button>
@@ -104,8 +152,7 @@
                                                         </button>
                                                     </div>
                                                 </span>
-                                            </li>
-                                            <div class="modal fade text-center" id="createRepoModal" tabindex="-1" role="dialog" aria-labelledby="createRepoModalLabel" aria-hidden="true">
+                                                          <div class="modal fade text-center" id="createRepoModal" tabindex="-1" role="dialog" aria-labelledby="createRepoModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
@@ -140,15 +187,59 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        {% else %}
-                                            <li><strong>GitHub : </strong><i class="color-grey">compte non synchronisé</i></li>
-                                        {% endif %}
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <h4>Actions</h4>
+                                                      {% else %}
+                                                          Compte non synchronisé
+                                                      {% endif %}
 
-                                    <div class="box-footer text-left">
+                                        </span>
+                                                </div>
+                                            </li>
+                                        {% endif %}
+                                        {% if project.refClient != NULL %}
+                                            {% set document = project.refClient %}
+                                            {% set client = project.refClient %}
+                                            <li class="item">
+                                                <div class="product-img">
+                                                    <i class="fa fa-user-circle fa-2x"></i>
+                                                </div>
+                                                <div class="product-info">
+                                                    <div  class="product-title">
+                                                        <strong>Client  </strong>
+                                                    </div>
+                                                    <span class="product-description">
+                                           <a href="{{ path('billandgo_clients_view', {'id': client.id}) }}">{{ client.companyName }}</a>
+                                        </span>
+                                                </div>
+                                            </li>
+                                        {% endif %}
+                                        <!-- /.item -->
+                                    </ul>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="box box-widget widget-user-2">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="widget-user-header bg-green">
+                            <div class="widget-user-image" style="margin-top: -35px">
+                                <i class="fa fa-info ppdashbboard fa-3x"></i>
+                            </div>
+                            <!-- /.widget-user-image -->
+                            <h3 class="widget-user-username">Actions possible sur ce projet</h3>
+                            <h5 class="widget-user-desc">Effectuer des actions sur le projet {{ project.name }}</h5>
+                        </div>
+                        <div class="box-footer">
+                            <div class="row">
+
+                                <div class="col-md-12">
+
+
+                                    <div class="box-footer text-center">
 
                                         <button type="button" class="btn btn-success btn-outline" data-toggle="modal" data-target="#createBillModal">
                                             Créer une facture
@@ -186,13 +277,6 @@
                         </div>
 
                     </div>
-                </div>
-                <div class="col-md-5">
-                    {% if project.refClient != NULL %}
-                        {% set document = project.refClient %}
-                        {% set client = project.refClient %}
-                        {{ include("BillAndGoBundle:Devis:fullclient.html.twig") }}
-                    {% endif %}
 
                 </div>
             </div>
@@ -201,7 +285,7 @@
 
 
 
-            <div class="box box-default collapsed-box">
+            <div class="box box-success">
                 <div class="box-header with-border">
                     {% set timeLeft = 0 %}
                     {% set timeDone = 0 %}
@@ -262,86 +346,86 @@
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                                    <form action="" method="post" class="text-center">
-                                                                        <div class="row row-modified">
-                                                                        <input type="hidden" name="id_line" value="{{ line.id }}">
-                                                                        <div class="col-md-6">
-                                                                        <div class="form-group row">
-                                                                            <label for="name"  class="col-md-12">Nom</label>
-                                                                            <div class="col-md-12">
+                                                        <form action="" method="post" class="text-center">
+                                                            <div class="row row-modified">
+                                                                <input type="hidden" name="id_line" value="{{ line.id }}">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group row">
+                                                                        <label for="name"  class="col-md-12">Nom</label>
+                                                                        <div class="col-md-12">
                                                                             <input type="text" name="name" value="{{ line.name }}" class="form-control">
-                                                                            </div>
                                                                         </div>
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                        <div class="form-group row">
-                                                                            <label for="description"  class="col-md-12">Description</label>
-                                                                            <div class="col-md-12">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group row">
+                                                                        <label for="description"  class="col-md-12">Description</label>
+                                                                        <div class="col-md-12">
                                                                             <textarea name="description" class="textdesc form-control">{{ line.description }}</textarea>
-                                                                            </div>
                                                                         </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group row">
+                                                                        <label for="quantity" class="col-md-12">Quantité</label>
+                                                                        <div class="col-md-12">
+                                                                            <input type="number" name="quantity" value="{{ line.quantity }}" class="form-control">
                                                                         </div>
-                                                                        <div class="col-md-6">
-                                                                        <div class="form-group row">
-                                                                            <label for="quantity" class="col-md-12">Quantité</label>
-                                                                            <div class="col-md-12">
-                                                                                <input type="number" name="quantity" value="{{ line.quantity }}" class="form-control">
-                                                                            </div>
 
-                                                                        </div>
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                        <div class="form-group row">
-                                                                            <label for="price "  class="col-md-12">Prix</label>
-                                                                            <div class="col-md-12">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group row">
+                                                                        <label for="price "  class="col-md-12">Prix</label>
+                                                                        <div class="col-md-12">
                                                                             <input type="number" name="price" value="{{ line.price }}" class="form-control">
-                                                                            </div>
                                                                         </div>
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                        <div class="form-group row">
-                                                                            <label for="refTax"  class="col-md-12">Taxes</label>
-                                                                            <div class="col-md-12">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group row">
+                                                                        <label for="refTax"  class="col-md-12">Taxes</label>
+                                                                        <div class="col-md-12">
                                                                             <select name="refTax" class="form-control">
                                                                                 <option value="">Veuillez choisir une taxe</option>
                                                                                 {% for tax in taxes %}
                                                                                     <option value="{{ tax.id }}">{{ tax.name }} ({{ tax.percent }}%)</option>
                                                                                 {% endfor %}
                                                                             </select>
-                                                                            </div>
                                                                         </div>
-                                                                        </div>
-                                                                        <div class="col-md-6 ">
-                                                                        <div class="form-group row">
-                                                                            <label for="estimated_time"  class="col-md-12">Temps estimé</label>
-                                                                            <div class="col-md-12">
-                                                                            <input type="number" name="estimated_time" value="{{ line.estimatedTime }}" class="form-control">
-                                                                            </div>
-                                                                        </div>
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                        <div class="form-group row">
-                                                                            <label for="chrono_time"  class="col-md-12">Temps passé</label>
-                                                                            <div class="col-md-12">
-                                                                            <input type="number" name="chrono_time" value="{{ line.chronoTime }}" class="form-control">
-                                                                            </div>
-                                                                        </div>
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                        <div class="form-group row">
-                                                                            <label for="deadLine"  class="col-md-12">Délai</label>
-                                                                            <div class="col-md-12">
-                                                                            <input type="text" class="datepick form-control" name="deadLine" value="{{ line.deadLine|date('d/m/Y') }}">
-                                                                            </div>
-                                                                        </div>
-                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6 ">
+                                                                    <div class="form-group row">
+                                                                        <label for="estimated_time"  class="col-md-12">Temps estimé</label>
                                                                         <div class="col-md-12">
-                                                                        <div class="form-group">
-                                                                            <input type="submit" class="btn btn-success btn-outline" value="Modifier">
+                                                                            <input type="number" name="estimated_time" value="{{ line.estimatedTime }}" class="form-control">
                                                                         </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group row">
+                                                                        <label for="chrono_time"  class="col-md-12">Temps passé</label>
+                                                                        <div class="col-md-12">
+                                                                            <input type="number" name="chrono_time" value="{{ line.chronoTime }}" class="form-control">
                                                                         </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group row">
+                                                                        <label for="deadLine"  class="col-md-12">Délai</label>
+                                                                        <div class="col-md-12">
+                                                                            <input type="text" class="datepick form-control" name="deadLine" value="{{ line.deadLine|date('d/m/Y') }}">
                                                                         </div>
-                                                                    </form>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <div class="form-group">
+                                                                        <input type="submit" class="btn btn-success btn-outline" value="Modifier">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </form>
 
 
                                                     </div>
@@ -430,7 +514,7 @@
                                             <br/>
                                             <a class="btn btn-warning btn-outline"
                                                href="{{ path('billandgo_project_line_edit_status',
-                                                    {'id' : project.id, 'id_line' : line.id, 'status' : 'working'}) }}"
+                                                   {'id' : project.id, 'id_line' : line.id, 'status' : 'working'}) }}"
                                             >
                                                 Démarrer la tâche
                                             </a>
@@ -439,22 +523,22 @@
                                             <br/>
                                             <a class="btn btn-success btn-outline"
                                                href="{{ path('billandgo_project_line_edit_status',
-                                               {'id' : project.id, 'id_line' : line.id, 'status' : 'waiting'}) }}"
+                                                   {'id' : project.id, 'id_line' : line.id, 'status' : 'waiting'}) }}"
                                             >
-                                               Terminée la tâche
+                                                Terminée la tâche
                                             </a>
                                         {% elseif line.status == "waiting" %}
                                             <span class="green-text">{{ status_fr[line.status] }}</span>
                                             <br/>
                                             <a class="btn btn-danger btn-outline"
                                                href="{{ path('billandgo_project_line_edit_status',
-                                               {'id' : project.id, 'id_line' : line.id, 'status' : 'working'}) }}"
+                                                   {'id' : project.id, 'id_line' : line.id, 'status' : 'working'}) }}"
                                             >
                                                 Revoir la tâche
                                             </a>
                                             <a class="btn btn-success btn-outline"
                                                href="{{ path('billandgo_project_line_edit_status',
-                                               {'id' : project.id, 'id_line' : line.id, 'status' : 'validated'}) }}"
+                                                   {'id' : project.id, 'id_line' : line.id, 'status' : 'validated'}) }}"
                                             >
                                                 Valider la tâche
                                             </a>
@@ -465,7 +549,7 @@
                                     <td>
                                         {% if line.status == "canceled" %}
                                             <a href="{{ path('billandgo_project_line_edit_status',
-                                               {'id' : project.id, 'id_line' : line.id, 'status' : 'planned'}) }}"
+                                                {'id' : project.id, 'id_line' : line.id, 'status' : 'planned'}) }}"
                                                title="rétablir" class="btn btn-success btn-outline">
                                                 <i class="fa fa-toggle-off text-success"></i>
                                                 Rétalir
@@ -477,7 +561,7 @@
                                             </a>
                                         {% else %}
                                             <a href="{{ path('billandgo_project_line_edit_status',
-                                            {'id' : project.id, 'id_line' : line.id, 'status' : 'canceled'}) }}"
+                                                {'id' : project.id, 'id_line' : line.id, 'status' : 'canceled'}) }}"
                                                title="annuler" class="btn btn-danger btn-outline">
                                                 <i class="fa fa-toggle-on text-danger"></i>
                                                 Annuler
@@ -492,7 +576,7 @@
                                         {% if line.refBill|first %}
                                             <br/>
                                             <a class="btn btn-info btn-outline" href="{{ path("billandgo_document_view", {"id" : line.refBill|first.id}) }}" >
-                                                Voir le devis {{ line.refBill|first.number }}
+                                                Voir la facture {{ line.refBill|first.number }}
                                             </a>
                                         {% endif %}
                                     </td>
