@@ -718,7 +718,12 @@
                 $.getJSON("{{ path('billandgo_project_list_repo', {'id': project.id}) }}", function (data) {
                     $.each(data, function (key, val) {
                         $('#gitList').append(
-                            '<li><a class="dropdown-item btn btn-success btn-outline" href="#">' + val.name + '</a></li>'
+                            '<li>' +
+                                '<form method="POST" action="{{ path('billandgo_project_set_repo', {'id': project.id}) }}">' +
+                                    '<input type="hidden" name="name" value="' + val.full_name + '">' +
+                                    '<input class="btn btn-success btn-outline" type="submit" value="' + val.name +'">' +
+                                '</form>' +
+                            '</li>'
                         );
                     });
                 });

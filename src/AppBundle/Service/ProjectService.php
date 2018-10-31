@@ -58,8 +58,8 @@ class  ProjectService extends Controller
     }
 
     /**
-     * @param User $user
-     * @param int $projectID
+     * @param User  $user
+     * @param int   $projectID
      * @return Project|null
      */
     public function getProject (User $user, int $projectID) : ?Project
@@ -74,10 +74,10 @@ class  ProjectService extends Controller
     }
 
     /**
-     * @param User $user
-     * @param int $projectID
-     * @param string $repoName
-     * @param bool $public
+     * @param User      $user
+     * @param int       $projectID
+     * @param string    $repoName
+     * @param bool      $public
      * @return Project|null
      * @throws EntityNotFoundException
      * @throws AccessDeniedException
@@ -101,5 +101,40 @@ class  ProjectService extends Controller
         $this->githubClientService->createRepo($project, $user, $repoName, $public);
 
         return $project;
+    }
+
+    /**
+     * @param User      $user
+     * @param int       $projectID
+     * @param string    $repoName
+     * @return Project
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     */
+    public function setRepo (
+        User    $user,
+        int     $projectID,
+        string  $repoName
+    ): Project
+    {
+        /** @var Project|null $project */
+        $project = $this->entityManager->getRepository(Project::class)->find($projectID);
+        if (!$project) {
+            throw new EntityNotFoundException();
+        }
+        if ($project->getRefUser() !== $user) {
+            throw new AccessDeniedException();
+        }
+
+        try {
+            $project->setRepoName($repoName);
+            $this->entityManager->persist($project);
+            $this->entityManager->flush();
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+
+        return $project;
+
     }
 }

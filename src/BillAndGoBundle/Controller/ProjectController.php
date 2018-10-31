@@ -577,8 +577,8 @@ class ProjectController extends Controller
      * @Route("projects/{id}/create_repo", name="billandgo_project_create_repo")
      * @Method("POST")
      *
-     * @param int $id
-     * @param Request $request
+     * @param int       $id
+     * @param Request   $request
      * @return Response
      * @throws EntityNotFoundException
      * @throws \Exception
@@ -600,6 +600,31 @@ class ProjectController extends Controller
     }
 
     /**
+     * @Route("projects/{id}/set_repo/", name="billandgo_project_set_repo")
+     * @Method("POST")
+     *
+     * @param int $id
+     * @param Request $request
+     * @return Response
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     */
+    public function setRepo(int $id, Request $request): Response
+    {
+        $user = $this->getUser();
+        if (!is_object($user)) {
+            throw new AccessDeniedException('disconnected');
+        }
+        $repoName = $request->get("name");
+        if (!$repoName) {
+            throw new \Exception("missing name parameter");
+        }
+        $this->projectService->setRepo($user, $id, $repoName);
+
+        return $this->redirect($this->generateUrl("billandgo_project_view", ["id" => $id]));
+    }
+
+    /**
      * @Route("projects/{id}/list_repo", name="billandgo_project_list_repo")
      * @Method("GET")
      *
@@ -614,6 +639,7 @@ class ProjectController extends Controller
         foreach ($repos as $repo) {
             $returnList[] = [
                 "name"          => $repo["name"],
+                "full_name"     => $repo["full_name"],
                 "private"       => $repo["private"],
                 "created_at"    => $repo["created_at"],
                 "updated_at"    => $repo["updated_at"]
