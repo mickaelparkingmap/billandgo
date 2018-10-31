@@ -149,13 +149,16 @@
 
                                                          <div class="box box-widget widget-user-2">
                         <!-- Add the bg color to the header using any of the bg-* classes -->
-                        <div class="widget-user-header bg-green">
-                            <div class="widget-user-image" style="margin-top: -35px">
-                                <i class="fa fa-github ppdashbboard fa-3x"></i>
-                            </div>
+                        <div class="widget-user-header bg-green text-center flex-block">
                             <!-- /.widget-user-image -->
-                            <h3 class="widget-user-username">Vos dépôts</h3>
+                            <span>Vos dépôts</span>
+                            <a  class="btn btn-danger dropdown-toggle "   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                   Fermer
+                                                    </a>
 
+                                                        <a  class="btn btn-primary"  data-toggle="modal" data-target="#createRepoModal">
+                                                            Créer un dépôt
+                                                        </a>
                         </div>
                         <div class="box-footer">
                             <div class="row">
@@ -171,9 +174,6 @@
 
 
 
-                                                        <button type="button" class="btn btn-success btn-outline text-center center-block repoopen" data-toggle="modal" data-target="#createRepoModal">
-                                                            Créer un dépôt
-                                                        </button>
                                                     </div>
                                                     </div>
                                                 </span>
@@ -826,9 +826,9 @@
                 $.getJSON("{{ path('billandgo_project_list_repo', {'id': project.id}) }}", function (data) {
                     $.each(data, function (key, val) {
                         $('#gitList').append(
-                            '<li class="item"><li class="item">\n' +
+                            '<li class="item">\n' +
                             '                                            <div class="product-img">\n' +
-                            '                                                <i class="fa fa-file-text fa-2x"></i>\n' +
+                            '                                                <i class="fa fa-github"></i>\n' +
                             '                                            </div>\n' +
                             '                                            <div class="product-info">\n' +
                             '                                                <div  class="product-title">' +
