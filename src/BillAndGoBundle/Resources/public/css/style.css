@@ -87,6 +87,10 @@
     background-color: white;
 }
 
+.dropdown-mod {
+    position: relative;
+}
+
 .dashboard .widget-user-2 .widget-user-header, .organizer .widget-user-2 .widget-user-header {
     height: 95px;
     overflow: auto;

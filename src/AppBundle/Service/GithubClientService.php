@@ -60,7 +60,7 @@ class  GithubClientService extends Controller
         if ($project->getRepoName()) {
             throw new \Exception("project already has a github repo");
         }
-        if (!$user ->getGithubAccessToken() || $user->getGithubId()) {
+        if (!$user->getGithubAccessToken() || !$user->getGithubId()) {
             throw new \Exception("user does not have github access registered");
         }
         $githubClient = new GithubClient();
@@ -89,7 +89,7 @@ class  GithubClientService extends Controller
         User $user
     ) : ArrayCollection
     {
-        if (!$user ->getGithubAccessToken() || $user->getGithubId()) {
+        if (!$user->getGithubAccessToken() || !$user->getGithubId()) {
             throw new \Exception("user does not have github access registered");
         }
         $githubClient = new GithubClient();
