@@ -14,12 +14,15 @@
 
 namespace AppBundle\Service;
 
+use BillAndGoBundle\Entity\Line;
 use BillAndGoBundle\Entity\Project;
 use BillAndGoBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Github\Api\Issue;
 use Github\Api\Repo;
+use Github\Exception\MissingArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Github\Client as GithubClient;
 
@@ -43,6 +46,57 @@ class  GithubClientService extends Controller
     }
 
     /**
+     * @param User $user
+     * @return GithubClient
+     * @throws \Exception
+     */
+    private function getAuthenticatedClient(User $user): GithubClient
+    {
+        if (!$user->getGithubAccessToken() || !$user->getGithubId()) {
+            throw new \Exception("user does not have github access registered");
+        }
+        $githubClient = new GithubClient();
+        $githubClient->authenticate("mbuliard", "inregnodatisumus", GithubClient::AUTH_HTTP_PASSWORD);
+        //$githubClient->authenticate(null, $user->getGithubAccessToken(), GithubClient::AUTH_HTTP_PASSWORD);
+
+        return $githubClient;
+    }
+
+    /**
+     * @param User $user
+     * @param Project $project
+     * @throws \Exception
+     */
+    private function setIssues (
+        User    $user,
+        Project $project
+    ) {
+        $explodedRepo = explode("/", $project->getRepoName());
+        $userName = $explodedRepo[0];
+        $repoName = $explodedRepo[1];
+        $githubClient = $this->getAuthenticatedClient($user);
+
+        /** @var Repo $githubRepoApi */
+        $githubRepoApi = $githubClient->api("repo");
+        $githubRepoApi->update(
+            $userName,
+            $repoName,
+            ['has_issues' => true, 'name' => $repoName, "description" => $project->getDescription()]
+        );
+
+        /** @var Issue $githubIssueApi */
+        $githubIssueApi = $githubClient->api("issue");
+        /** @var Line $line */
+        foreach ($project->getRefLines() as $line) {
+            $githubIssueApi->create(
+                $userName,
+                $repoName,
+                array('title' => $line->getName(), 'body' => $line->getDescription())
+            );
+        }
+    }
+
+    /**
      * @param Project $project
      * @param User $user
      * @param string $repoName
@@ -60,11 +114,7 @@ class  GithubClientService extends Controller
         if ($project->getRepoName()) {
             throw new \Exception("project already has a github repo");
         }
-        if (!$user->getGithubAccessToken() || !$user->getGithubId()) {
-            throw new \Exception("user does not have github access registered");
-        }
-        $githubClient = new GithubClient();
-        $githubClient->authenticate(null, $user->getGithubAccessToken(), GithubClient::AUTH_HTTP_PASSWORD);
+        $githubClient = $this->getAuthenticatedClient($user);
         /** @var Repo $githubRepoApi */
         $githubRepoApi = $githubClient->api("repo");
         try {
@@ -73,6 +123,11 @@ class  GithubClientService extends Controller
             $project->setRepoName($repoFullName);
             $this->entityManager->persist($project);
             $this->entityManager->flush();
+        } catch (\Exception $e) {
+            throw new \Exception("GitHub : ".$e->getMessage());
+        }
+        try {
+            $this->setIssues($user, $project);
         } catch (\Exception $e) {
             throw new \Exception("GitHub : ".$e->getMessage());
         }
@@ -89,13 +144,43 @@ class  GithubClientService extends Controller
         User $user
     ) : ArrayCollection
     {
-        if (!$user->getGithubAccessToken() || !$user->getGithubId()) {
-            throw new \Exception("user does not have github access registered");
-        }
-        $githubClient = new GithubClient();
-        $githubClient->authenticate(null, $user->getGithubAccessToken(), GithubClient::AUTH_HTTP_PASSWORD);
+        $githubClient = $this->getAuthenticatedClient($user);
         $repoArray = $githubClient->currentUser()->repositories();
 
         return new ArrayCollection($repoArray);
+    }
+
+    /**
+     * @param User      $user
+     * @param Project   $project
+     * @param string    $issueTitle
+     * @param string    $issueBody
+     * @return Project
+     * @throws \Exception
+     */
+    public function createIssue(
+        User    $user,
+        Project $project,
+        string  $issueTitle,
+        string  $issueBody
+    ): Project {
+        if (!$project->getRepoName()) {
+            throw new \Exception("project does not have github repository registered");
+        }
+        $explodedRepo = explode("/", $project->getRepoName());
+        $userName = $explodedRepo[0];
+        $repoName = $explodedRepo[1];
+
+        try {
+            $githubClient = $this->getAuthenticatedClient($user);
+
+            /** @var Issue $githubIssueApi */
+            $githubIssueApi = $githubClient->api("issue");
+            $githubIssueApi->create($userName, $repoName, array('title' => $issueTitle, 'body' => $issueBody));
+        } catch (MissingArgumentException $e) {
+            throw new \Exception("Github : " . $e->getMessage());
+        }
+
+        return $project;
     }
 }
