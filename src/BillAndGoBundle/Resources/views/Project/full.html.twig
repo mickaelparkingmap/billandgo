@@ -128,7 +128,6 @@
                                             </div>
                                         </li>
 
-                                        {% if project.repoName %}
                                             <li class="item">
                                                 <div class="product-img">
                                                     <i class="fa fa-github fa-2x"></i>
@@ -141,9 +140,43 @@
                                                       {% if project.repoName %}
                                                           <a href="{{ project.repoUrl }}" target="_blank">{{ project.repoName }}</a>
                                                     {% elseif user.githubId %}
-                                                          <button type="button" class="btn btn-success btn-outline" data-toggle="modal" data-target="#createRepoModal">
-                                                    Créer un dépôt
-                                                </button>
+                                                     <span class="dropdown">
+                                                    <button class="btn btn-success btn-outline dropdown-toggle" type="button" id="dropdownGitRepo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        Ajouter un dépôt
+                                                    </button>
+                                                    <div class="dropdown-menu dropdown-mod" aria-labelledby="dropdownGitRepo">
+
+
+                                                         <div class="box box-widget widget-user-2">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="widget-user-header bg-green">
+                            <div class="widget-user-image" style="margin-top: -35px">
+                                <i class="fa fa-github ppdashbboard fa-3x"></i>
+                            </div>
+                            <!-- /.widget-user-image -->
+                            <h3 class="widget-user-username">Vos dépôts</h3>
+
+                        </div>
+                        <div class="box-footer">
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                    <ul class="products-list product-list-in-box" id="gitList">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                                                        <button type="button" class="btn btn-success btn-outline text-center center-block repoopen" data-toggle="modal" data-target="#createRepoModal">
+                                                            Créer un dépôt
+                                                        </button>
+                                                    </div>
+                                                    </div>
+                                                </span>
                                                           <div class="modal fade text-center" id="createRepoModal" tabindex="-1" role="dialog" aria-labelledby="createRepoModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
                                                     <div class="modal-content">
@@ -186,7 +219,6 @@
                                         </span>
                                                 </div>
                                             </li>
-                                        {% endif %}
                                         {% if project.refClient != NULL %}
                                             {% set document = project.refClient %}
                                             {% set client = project.refClient %}
@@ -787,5 +819,28 @@
         delayDate = new Date(nowDate.getFullYear(), nowDate.getMonth() + 1, 0);
         $('#bill_delay').datepicker('setDate', delayDate);
         $('#bill_delay_2').datepicker('setDate', delayDate);
+
+        //list of github repo
+        $('#dropdownGitRepo').click(function () {
+            if ($('#gitList>li').length < 1) {
+                $.getJSON("{{ path('billandgo_project_list_repo', {'id': project.id}) }}", function (data) {
+                    $.each(data, function (key, val) {
+                        $('#gitList').append(
+                            '<li class="item"><li class="item">\n' +
+                            '                                            <div class="product-img">\n' +
+                            '                                                <i class="fa fa-file-text fa-2x"></i>\n' +
+                            '                                            </div>\n' +
+                            '                                            <div class="product-info">\n' +
+                            '                                                <div  class="product-title">' +
+                                '<form method="POST" action="{{ path('billandgo_project_set_repo', {'id': project.id}) }}">' +
+                                    '<input type="hidden" name="name" value="' + val.full_name + '">' +
+                                    '<input class="btn btn-success btn-outline" type="submit" value="' + val.name +'">' +
+                                '</form></div></div>' +
+                            '</li>'
+                        );
+                    });
+                });
+            }
+        });
     </script>
 {% endblock %}

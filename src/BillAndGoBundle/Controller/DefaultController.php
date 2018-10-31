@@ -84,60 +84,6 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/test/github/urltoken", name="billandgo_test_github_urltoken")
-     * @return Response
-     */
-    public function testGithubUrlTokenAction()
-    {
-        try {
-            $user = $this->getUser();
-            $githubClient = new \Github\Client();
-        $githubClient->authenticate($user->getGithubAccessToken(), null,\Github\Client::AUTH_URL_TOKEN);
-            $newRepo = $githubClient->api('repo')->create('test-urltoken', "for test", "repo-homepage.com", true);
-        } catch (\Exception $exception) {
-            return new Response($exception->getMessage());
-        }
-
-        return new Response(json_encode($newRepo));
-    }
-
-    /**
-     * @Route("/test/github/urlclient", name="billandgo_test_github_urlclient")
-     * @return Response
-     */
-    public function testGithubUrlClientAction()
-    {
-        try {
-            $user = $this->getUser();
-            $githubClient = new \Github\Client();
-            $githubClient->authenticate($user->getGithubId(), $user->getGithubAccessToken(), \Github\Client::AUTH_URL_CLIENT_ID);
-            $newRepo = $githubClient->api('repo')->create('test-urlclient', "for test", "repo-homepage.com", true);
-        } catch (\Exception $exception) {
-            return new Response($exception->getMessage());
-        }
-
-        return new Response(json_encode($newRepo));
-    }
-
-    /**
-     * @Route("/test/github/httptoken", name="billandgo_test_github_httptoken")
-     * @return Response
-     */
-    public function testGithubHttpTokenAction()
-    {
-        try {
-            $user = $this->getUser();
-            $githubClient = new \Github\Client();
-            $githubClient->authenticate($user->getGithubAccessToken(), null,\Github\Client::AUTH_HTTP_TOKEN);
-            $newRepo = $githubClient->api('repo')->create('test-httptoken', "for test", "repo-homepage.com", true);
-        } catch (\Exception $exception) {
-            return new Response($exception->getMessage());
-        }
-
-        return new Response(json_encode($newRepo));
-    }
-
-    /**
      * User data page
      * @Route("/mes-donnees/", name="billandgo_datas")
      */
