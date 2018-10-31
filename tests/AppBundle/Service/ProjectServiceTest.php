@@ -14,6 +14,7 @@
 
 namespace Tests\AppBundle\Service;
 
+use AppBundle\Service\GithubClientService;
 use AppBundle\Service\ProjectService;
 use BillAndGoBundle\Entity\Project;
 use Tests\AppBundle\Utils\ProjectTrait;
@@ -39,7 +40,7 @@ class ProjectServiceTest extends PurgeTestCase
         $project = $this->createProject($user);
         $this->save($project);
 
-        $service = new ProjectService($this->getEntityManager());
+        $service = new ProjectService($this->getEntityManager(), new GithubClientService($this->getEntityManager()));;
         $propro = $service->getProject($user, $project->getId());
         $this->assertNotNull($propro);
         $this->assertTrue($propro instanceof Project);
@@ -56,7 +57,7 @@ class ProjectServiceTest extends PurgeTestCase
         $project = $this->createProject($user);
         $this->save($project);
 
-        $service = new ProjectService($this->getEntityManager());
+        $service = new ProjectService($this->getEntityManager(), new GithubClientService($this->getEntityManager()));;
         $propro = $service->getProject($user, $project->getId() + 1);
         $this->assertNull($propro);
     }
@@ -76,7 +77,7 @@ class ProjectServiceTest extends PurgeTestCase
         $project = $this->createProject($user);
         $this->save($project);
 
-        $service = new ProjectService($this->getEntityManager());
+        $service = new ProjectService($this->getEntityManager(), new GithubClientService($this->getEntityManager()));;
         $propro = $service->getProject($user2, $project->getId());
         $this->assertNull($propro);
     }
@@ -88,7 +89,7 @@ class ProjectServiceTest extends PurgeTestCase
     {
         $user = $this->createUser();
         $this->save($user);
-        $service = new ProjectService($this->getEntityManager());
+        $service = new ProjectService($this->getEntityManager(), new GithubClientService($this->getEntityManager()));;
 
         //0
         $list = $service->getProjectList($user);
