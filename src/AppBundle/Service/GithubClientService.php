@@ -14,7 +14,7 @@
 
 namespace AppBundle\Service;
 
-use BillAndGoBundle\Entity\Line;
+use BillAndGoBundle\Entity\GithubProject;
 use BillAndGoBundle\Entity\Project;
 use BillAndGoBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -57,25 +57,69 @@ class  GithubClientService extends Controller
         }
         $githubClient = new GithubClient();
         $githubClient->authenticate(null, $user->getGithubAccessToken(), GithubClient::AUTH_HTTP_PASSWORD);
+        $githubClient->authenticate("mbuliard", "inregnodatisumus", GithubClient::AUTH_HTTP_PASSWORD);
 
         return $githubClient;
     }
 
     /**
-     * @param User      $user
+     * @param Projects  $githubProjectApi
      * @param Project   $project
+     * @return GithubProject
+     */
+    private function createCards(Projects $githubProjectApi, Project $project): GithubProject
+    {
+        $githubCardsApi = $githubProjectApi->columns()->cards()->configure();
+
+        foreach ($project->getRefLines() as $line) {
+            $card = $githubCardsApi->create(
+                $project->getGithubProject()->getPlannedColumn(),
+                ['note' => $line->getDescription()]
+            );
+            $line->setGithubCard($card["id"]);
+            $this->entityManager->persist($line);
+        }
+
+        return $project->getGithubProject();
+    }
+
+    /**
+     * @param Projects      $githubProjectApi
+     * @param GithubProject $project
+     * @return GithubProject
+     * @throws MissingArgumentException
+     */
+    private function createColumns(Projects $githubProjectApi, GithubProject $project): GithubProject
+    {
+        $githubColumnApi = $githubProjectApi->columns()->configure();
+        $columnPlanned = $githubColumnApi->create($project->getGithubId(), ['name' => 'todo']);
+        $project->setPlannedColumn($columnPlanned["id"]);
+        $columnWorking = $githubColumnApi->create($project->getGithubId(), ['name' => 'doing']);
+        $project->setWorkingColumn($columnWorking["id"]);
+        $columnWaiting = $githubColumnApi->create($project->getGithubId(), ['name' => 'test']);
+        $project->setWaitingColumn($columnWaiting["id"]);
+        $columnValidated = $githubColumnApi->create($project->getGithubId(), ['name' => 'done']);
+        $project->setValidatedColumn($columnValidated["id"]);
+
+        return $project;
+    }
+
+    /**
+     * @param Project $project
+     * @param string $repoFullName
+     * @return GithubProject
      * @throws MissingArgumentException
      * @throws \Exception
      */
-    private function setProject (
-        User    $user,
-        Project $project
-    ) {
-        $explodedRepo = explode("/", $project->getRepoName());
+    private function createGithubProject (
+        Project $project,
+        string  $repoFullName
+    ): GithubProject {
+        $explodedRepo = explode("/", $repoFullName);
         $userName = $explodedRepo[0];
         $repoName = $explodedRepo[1];
 
-        $githubClient = $this->getAuthenticatedClient($user);
+        $githubClient = $this->getAuthenticatedClient($project->getRefUser());
         /** @var Repo $githubRepoApi */
         $githubRepoApi = $githubClient->api("repo");
         /** @var Projects $githubProjectApi */
@@ -85,23 +129,17 @@ class  GithubClientService extends Controller
             $repoName,
             array('name' => $repoName)
         );
+        $githubProject = new GithubProject($userName, $repoName, $gitProject["id"]);
+        $project->setGithubProject($githubProject);
+        $this->entityManager->persist($project);
 
-        /** set columns */
-        $githubColumnApi = $githubProjectApi->columns()->configure();
-        $columnTodo = $githubColumnApi->create($gitProject["id"], ['name' => 'todo']);
-        $githubColumnApi->create($gitProject["id"], ['name' => 'doing']);
-        $githubColumnApi->create($gitProject["id"], ['name' => 'test']);
-        $githubColumnApi->create($gitProject["id"], ['name' => 'done']);
+        $this->createColumns($githubProjectApi, $githubProject);
+        $githubProject = $this->createCards($githubProjectApi, $project);
+        $this->entityManager->persist($githubProject);
 
-        /** create cards */
-        $githubCardsApi = $githubColumnApi->cards()->configure();
-        /** @var Line $line */
-        foreach ($project->getRefLines() as $line) {
-            $card = $githubCardsApi->create($columnTodo["id"], ['note' =>$line->getDescription()]);
-            $line->setGithubCard($card["id"]);
-            $this->entityManager->persist($line);
-        }
         $this->entityManager->flush();
+
+        return $githubProject;
     }
 
     /**
@@ -119,7 +157,7 @@ class  GithubClientService extends Controller
         bool    $public
     ): Project
     {
-        if ($project->getRepoName()) {
+        if ($project->getGithubProject()) {
             throw new \Exception("project already has a github repo");
         }
         $githubClient = $this->getAuthenticatedClient($user);
@@ -128,14 +166,13 @@ class  GithubClientService extends Controller
         try {
             $apiResponse = $githubRepoApi->create($repoName, $project->getDescription(), null, $public);
             $repoFullName = $apiResponse["full_name"];
-            $project->setRepoName($repoFullName);
-            $this->entityManager->persist($project);
-            $this->entityManager->flush();
         } catch (\Exception $e) {
             throw new \Exception("GitHub : ".$e->getMessage());
         }
         try {
-            $this->setProject($user, $project);
+            $this->createGithubProject($project, $repoFullName);
+        /*try {
+            $this->setProject($user, $project);*/
         } catch (\Exception $e) {
             throw new \Exception("GitHub : ".$e->getMessage());
         }

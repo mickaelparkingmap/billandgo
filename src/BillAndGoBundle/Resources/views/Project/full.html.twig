@@ -137,86 +137,80 @@
                                                         <strong>Dépôt Github </strong>
                                                     </div>
                                                     <span class="product-description">
-                                                      {% if project.repoName %}
-                                                          <a href="{{ project.repoUrl }}" target="_blank">{{ project.repoName }}</a>
-                                                    {% elseif user.githubId %}
-                                                     <span class="dropdown">
-                                                    <button class="btn btn-success btn-outline dropdown-toggle" type="button" id="dropdownGitRepo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        Ajouter un dépôt
-                                                    </button>
-                                                    <div class="dropdown-menu dropdown-mod" aria-labelledby="dropdownGitRepo">
+                                                        {% if project.githubProject %}
+                                                            <a href="{{ project.repoUrl }}" target="_blank">
+                                                                {{ project.githubProject.fullName }}
+                                                            </a>
+                                                        {% elseif user.githubId %}
+                                                            <span class="dropdown">
+                                                                <button class="btn btn-success btn-outline dropdown-toggle" type="button" id="dropdownGitRepo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                    Ajouter un dépôt
+                                                                </button>
+                                                                <div class="dropdown-menu dropdown-mod" aria-labelledby="dropdownGitRepo">
+                                                                    <div class="box box-widget widget-user-2">
+                                                                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                                                                        <div class="widget-user-header bg-green">
+                                                                            <div class="widget-user-image" style="margin-top: -35px">
+                                                                                <i class="fa fa-github ppdashbboard fa-3x"></i>
+                                                                            </div>
+                                                                            <!-- /.widget-user-image -->
+                                                                            <h3 class="widget-user-username">Vos dépôts</h3>
 
+                                                                        </div>
+                                                                        <div class="box-footer">
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
 
-                                                         <div class="box box-widget widget-user-2">
-                        <!-- Add the bg color to the header using any of the bg-* classes -->
-                        <div class="widget-user-header bg-green">
-                            <div class="widget-user-image" style="margin-top: -35px">
-                                <i class="fa fa-github ppdashbboard fa-3x"></i>
-                            </div>
-                            <!-- /.widget-user-image -->
-                            <h3 class="widget-user-username">Vos dépôts</h3>
-
-                        </div>
-                        <div class="box-footer">
-                            <div class="row">
-                                <div class="col-md-12">
-
-                                    <ul class="products-list product-list-in-box" id="gitList">
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-
-
-                                                        <button type="button" class="btn btn-success btn-outline text-center center-block repoopen" data-toggle="modal" data-target="#createRepoModal">
-                                                            Créer un dépôt
-                                                        </button>
-                                                    </div>
-                                                    </div>
-                                                </span>
-                                                          <div class="modal fade text-center" id="createRepoModal" tabindex="-1" role="dialog" aria-labelledby="createRepoModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h4 class="modal-title text-center" id="repoModalLabel">Création d'un dépôt GitHub</h4>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body text-left">
-                                                            <form method="post" action="{{ path('billandgo_project_create_repo', {'id' : project.id}) }}">
-                                                                <div class="form-group row">
-                                                                    <label for="name" class="col-sm-7 col-form-label">Nom du dépôt :</label>
-                                                                    <div class="col-sm-5">
-                                                                        <input class="form-control" type="text" id="name" name="name">
+                                                                                    <ul class="products-list product-list-in-box" id="gitList">
+                                                                                    </ul>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <button type="button" class="btn btn-success btn-outline text-center center-block repoopen" data-toggle="modal" data-target="#createRepoModal">
+                                                                            Créer un dépôt
+                                                                        </button>
                                                                     </div>
                                                                 </div>
-                                                                <div class="form-group row">
-                                                                    <label for="private" class="col-sm-9 col-form-label">
-                                                                        Dépôt privé ?
-                                                                        <i class="color-grey font-light">(fonctionnalité payante de GitHub)</i>
-                                                                    </label>
-                                                                    <div class="col-sm-3 text-right">
-                                                                        <input class="custom-control custom-checkbox" type="checkbox" id="private" name="private">
+                                                            </span>
+                                                            <div class="modal fade text-center" id="createRepoModal" tabindex="-1" role="dialog" aria-labelledby="createRepoModalLabel" aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h4 class="modal-title text-center" id="repoModalLabel">Création d'un dépôt GitHub</h4>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body text-left">
+                                                                            <form method="post" action="{{ path('billandgo_project_create_repo', {'id' : project.id}) }}">
+                                                                                <div class="form-group row">
+                                                                                    <label for="name" class="col-sm-7 col-form-label">Nom du dépôt :</label>
+                                                                                    <div class="col-sm-5">
+                                                                                        <input class="form-control" type="text" id="name" name="name">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group row">
+                                                                                    <label for="private" class="col-sm-9 col-form-label">
+                                                                                        Dépôt privé ?
+                                                                                        <i class="color-grey font-light">(fonctionnalité payante de GitHub)</i>
+                                                                                    </label>
+                                                                                    <div class="col-sm-3 text-right">
+                                                                                        <input class="custom-control custom-checkbox" type="checkbox" id="private" name="private">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <button type="submit" class="btn btn-success btn-outline">Créer le dépôt</button>
+                                                                            </form>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-danger btn-outline" data-dismiss="modal">Fermer</button>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                                <button type="submit" class="btn btn-success btn-outline">Créer le dépôt</button>
-                                                            </form>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-danger btn-outline" data-dismiss="modal">Fermer</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                            </div>
                                                       {% else %}
                                                           Compte non synchronisé
                                                       {% endif %}
-
-                                        </span>
+                                                    </span>
                                                 </div>
                                             </li>
                                         {% if project.refClient != NULL %}
