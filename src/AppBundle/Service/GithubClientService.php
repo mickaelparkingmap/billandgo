@@ -20,8 +20,8 @@ use BillAndGoBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Github\Api\Issue;
 use Github\Api\Repo;
+use Github\Api\Repository\Projects;
 use Github\Exception\MissingArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Github\Client as GithubClient;
@@ -56,50 +56,57 @@ class  GithubClientService extends Controller
             throw new \Exception("user does not have github access registered");
         }
         $githubClient = new GithubClient();
-        $githubClient->authenticate(null, $user->getGithubAccessToken(), GithubClient::AUTH_HTTP_PASSWORD);
+        //$githubClient->authenticate(null, $user->getGithubAccessToken(), GithubClient::AUTH_HTTP_PASSWORD);
+        $githubClient->authenticate("mbuliard", "inregnodatisumus", GithubClient::AUTH_HTTP_PASSWORD);
 
         return $githubClient;
     }
 
     /**
-     * @param User $user
-     * @param Project $project
+     * @param User      $user
+     * @param Project   $project
+     * @throws MissingArgumentException
      * @throws \Exception
      */
-    private function setIssues (
+    private function setProject (
         User    $user,
         Project $project
     ) {
         $explodedRepo = explode("/", $project->getRepoName());
         $userName = $explodedRepo[0];
         $repoName = $explodedRepo[1];
-        $githubClient = $this->getAuthenticatedClient($user);
 
+        $githubClient = $this->getAuthenticatedClient($user);
         /** @var Repo $githubRepoApi */
         $githubRepoApi = $githubClient->api("repo");
-        $githubRepoApi->update(
+        /** @var Projects $githubProjectApi */
+        $githubProjectApi = $githubRepoApi->projects()->configure();
+        $gitProject = $githubProjectApi->create(
             $userName,
             $repoName,
-            ['has_issues' => true, 'name' => $repoName, "description" => $project->getDescription()]
+            array('name' => $repoName)
         );
 
-        /** @var Issue $githubIssueApi */
-        $githubIssueApi = $githubClient->api("issue");
+        /** set columns */
+        $githubColumnApi = $githubProjectApi->columns()->configure();
+        $columnTodo = $githubColumnApi->create($gitProject["id"], ['name' => 'todo']);
+        $githubColumnApi->create($gitProject["id"], ['name' => 'doing']);
+        $githubColumnApi->create($gitProject["id"], ['name' => 'test']);
+        $githubColumnApi->create($gitProject["id"], ['name' => 'done']);
+
+        /** create cards */
+        $githubCardsApi = $githubColumnApi->cards()->configure();
         /** @var Line $line */
         foreach ($project->getRefLines() as $line) {
-            $githubIssueApi->create(
-                $userName,
-                $repoName,
-                array('title' => $line->getName(), 'body' => $line->getDescription())
-            );
+            $githubCardsApi->create($columnTodo["id"], ['note' =>$line->getDescription()]);
         }
     }
 
     /**
-     * @param Project $project
-     * @param User $user
-     * @param string $repoName
-     * @param bool $public
+     * @param Project   $project
+     * @param User      $user
+     * @param string    $repoName
+     * @param bool      $public
      * @return Project|null
      * @throws \Exception
      */
@@ -126,7 +133,7 @@ class  GithubClientService extends Controller
             throw new \Exception("GitHub : ".$e->getMessage());
         }
         try {
-            $this->setIssues($user, $project);
+            $this->setProject($user, $project);
         } catch (\Exception $e) {
             throw new \Exception("GitHub : ".$e->getMessage());
         }
@@ -147,39 +154,5 @@ class  GithubClientService extends Controller
         $repoArray = $githubClient->currentUser()->repositories();
 
         return new ArrayCollection($repoArray);
-    }
-
-    /**
-     * @param User      $user
-     * @param Project   $project
-     * @param string    $issueTitle
-     * @param string    $issueBody
-     * @return Project
-     * @throws \Exception
-     */
-    public function createIssue(
-        User    $user,
-        Project $project,
-        string  $issueTitle,
-        string  $issueBody
-    ): Project {
-        if (!$project->getRepoName()) {
-            throw new \Exception("project does not have github repository registered");
-        }
-        $explodedRepo = explode("/", $project->getRepoName());
-        $userName = $explodedRepo[0];
-        $repoName = $explodedRepo[1];
-
-        try {
-            $githubClient = $this->getAuthenticatedClient($user);
-
-            /** @var Issue $githubIssueApi */
-            $githubIssueApi = $githubClient->api("issue");
-            $githubIssueApi->create($userName, $repoName, array('title' => $issueTitle, 'body' => $issueBody));
-        } catch (MissingArgumentException $e) {
-            throw new \Exception("Github : " . $e->getMessage());
-        }
-
-        return $project;
     }
 }
