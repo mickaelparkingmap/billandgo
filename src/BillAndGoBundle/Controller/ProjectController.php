@@ -534,9 +534,9 @@ class ProjectController extends Controller
     /**
      * edit status of a line
      *
-     * @param int    $id      id of the project
-     * @param int    $id_line id of the line to edit
-     * @param String $status  new status : draw, estimated, accepted, planned, working, waiting, validated, billing, billed, canceled
+     * @param int       $id id of the project
+     * @param int       $id_line id of the line to edit
+     * @param String    $status new status : draw, estimated, accepted, planned, working, waiting, validated, billing, billed, canceled
      * @Route("/projects/{id}/line/{id_line}/edit/status/{status}", name="billandgo_project_line_edit_status")
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -551,20 +551,21 @@ class ProjectController extends Controller
             $this->addFlash("error", $usersub["msg"]);
             return ($this->redirectToRoute("fos_user_security_login"));
         }
-        $avalaible_status = [
-            "draw", "estimated", "accepted",
-            "planned", "working", "waiting", "validated",
-            "billing", "billed",
-            "canceled"
-        ];
-        if (($id > 0) && ($id_line > 0) && (in_array($status, $avalaible_status))) {
+        if (($id > 0) && ($id_line > 0) && (in_array($status, Line::AVALAIBLE_STATUS))) {
             $manager = $this->getDoctrine()->getManager();
-            $project = $manager->getRepository('BillAndGoBundle:Project')->find($id);
-            $line = $manager->getRepository('BillAndGoBundle:Line')->find($id_line);
+            /** @var Project $project */
+            $project = $manager->getRepository(Project::class)->find($id);
+            /** @var Line $line */
+            $line = $manager->getRepository(Line::class)->find($id_line);
             if (($project != null) && ($line != null)) {
                 if (($project->getRefUser() == $user) && ($line->getRefUser() == $user)) {
                     $line->setStatus($status);
+                    $manager->persist($line);
                     $manager->flush();
+                    try {
+                        $this->githubClientService->moveCard($line, $project, $status);
+                    } catch (\Exception $e) {
+                    }
                     return $this->redirect($this->generateUrl("billandgo_project_view", array('id' => $id)));
                 }
             }

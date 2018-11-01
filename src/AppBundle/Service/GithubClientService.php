@@ -15,11 +15,13 @@
 namespace AppBundle\Service;
 
 use BillAndGoBundle\Entity\GithubProject;
+use BillAndGoBundle\Entity\Line;
 use BillAndGoBundle\Entity\Project;
 use BillAndGoBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Github\Api\Project\Cards;
 use Github\Api\Repo;
 use Github\Api\Repository\Projects;
 use Github\Exception\MissingArgumentException;
@@ -59,6 +61,34 @@ class  GithubClientService extends Controller
         $githubClient->authenticate(null, $user->getGithubAccessToken(), GithubClient::AUTH_HTTP_PASSWORD);
 
         return $githubClient;
+    }
+
+    /**
+     * @param Line $line
+     * @param Project $project
+     * @param string $newStatus
+     * @return bool
+     * @throws \Exception
+     */
+    public function moveCard(Line $line, Project $project, string $newStatus): bool
+    {
+        $githubClient = $this->getAuthenticatedClient($project->getRefUser());
+        /** @var Repo $githubRepoApi */
+        $githubRepoApi = $githubClient->api("repo");
+        /** @var Cards $githubCardApi */
+        $githubCardApi = $githubRepoApi->projects()->columns()->cards()->configure();
+
+        $columns = $project->getGithubProject()->getColumns();
+        if (!$columns[$newStatus]) {
+            return false;
+        }
+        $columnId = intval($columns[$newStatus]);
+        try {
+            $githubCardApi->move($line->getGithubCard(), ["position" => "bottom", "column_id" => $columnId]);
+        } catch (\Exception $e) {
+            return false;
+        }
+        return true;
     }
 
     /**
