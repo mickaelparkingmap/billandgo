@@ -57,7 +57,6 @@ class  GithubClientService extends Controller
         }
         $githubClient = new GithubClient();
         $githubClient->authenticate(null, $user->getGithubAccessToken(), GithubClient::AUTH_HTTP_PASSWORD);
-        $githubClient->authenticate("mbuliard", "inregnodatisumus", GithubClient::AUTH_HTTP_PASSWORD);
 
         return $githubClient;
     }
