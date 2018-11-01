@@ -562,9 +562,11 @@ class ProjectController extends Controller
                     $line->setStatus($status);
                     $manager->persist($line);
                     $manager->flush();
-                    try {
-                        $this->githubClientService->moveCard($line, $project, $status);
-                    } catch (\Exception $e) {
+                    if ($project->getGithubProject()) {
+                        try {
+                            $this->githubClientService->moveCard($line, $project, $status);
+                        } catch (\Exception $e) {
+                        }
                     }
                     return $this->redirect($this->generateUrl("billandgo_project_view", array('id' => $id)));
                 }
@@ -572,6 +574,32 @@ class ProjectController extends Controller
         }
         $ar404 = ["doesn't exist"];
         return new Response(json_encode($ar404), 404);
+    }
+
+    /**
+     * @Route("/projects/{projectId}/update_line_status", name="billandgo_project_line_update_status")
+     *
+     * @param int $projectId
+     * @return Response
+     */
+    public function updateLineStatus(int $projectId): Response
+    {
+        $user = $this->getUser();
+        if (!is_object($user)) {
+            throw new AccessDeniedException('disconnected');
+        }
+
+        /** @var Project $project */
+        $project = $this->getDoctrine()->getRepository(Project::class)->find($projectId);
+        if (!$project) {
+            $ar404 = ["doesn't exist"];
+            return new Response(json_encode($ar404), 404);
+        }
+        if (!$project->getGithubProject()) {
+            return new Response("no github repo", 400);
+        }
+        $this->githubClientService->updateLinesFromCards($project);
+        return $this->redirect($this->generateUrl("billandgo_project_view", array('id' => $projectId)));
     }
 
     /**

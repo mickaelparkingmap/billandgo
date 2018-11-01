@@ -64,9 +64,65 @@ class  GithubClientService extends Controller
     }
 
     /**
-     * @param Line $line
      * @param Project $project
-     * @param string $newStatus
+     * @return Project
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
+     */
+    public function updateLinesFromCards(Project $project): Project
+    {
+        $githubClient = $this->getAuthenticatedClient($project->getRefUser());
+        /** @var Repo $githubRepoApi */
+        $githubRepoApi = $githubClient->api("repo");
+        /** @var Cards $githubCardApi */
+        $githubCardApi = $githubRepoApi->projects()->columns()->cards()->configure();
+        $cardStatus = [];
+        try {
+            $plannedCards = $githubCardApi->all($project->getGithubProject()->getPlannedColumn());
+            foreach ($plannedCards as $plannedCard) {
+                $cardStatus[$plannedCard["id"]] = "planned";
+            }
+        } catch (\Exception $e) {
+        }
+        try {
+            $workingCards = $githubCardApi->all($project->getGithubProject()->getWorkingColumn());
+            foreach ($workingCards as $card) {
+                $cardStatus[$card["id"]] = "working";
+            }
+        } catch (\Exception $e) {
+        }
+        try {
+            $waitingCards = $githubCardApi->all($project->getGithubProject()->getWaitingColumn());
+            foreach ($waitingCards as $card) {
+                $cardStatus[$card["id"]] = "waiting";
+            }
+        } catch (\Exception $e) {
+        }
+        try {
+            $validatedCards = $githubCardApi->all($project->getGithubProject()->getValidatedColumn());
+            foreach ($validatedCards as $card) {
+                $cardStatus[$card["id"]] = "validated";
+            }
+        } catch (\Exception $e) {
+        }
+
+        /** @var Line $line */
+        foreach ($project->getRefLines() as $line) {
+            $gitStatus = $cardStatus[$line->getGithubCard()];
+            if ($line->getStatus() !== $gitStatus) {
+                $line->setStatus($gitStatus);
+                $this->entityManager->persist($line);
+            }
+        }
+        $this->entityManager->flush();
+
+        return $project;
+    }
+
+    /**
+     * @param Line      $line
+     * @param Project   $project
+     * @param string    $newStatus
      * @return bool
      * @throws \Exception
      */
@@ -134,8 +190,8 @@ class  GithubClientService extends Controller
     }
 
     /**
-     * @param Project $project
-     * @param string $repoFullName
+     * @param Project   $project
+     * @param string    $repoFullName
      * @return GithubProject
      * @throws MissingArgumentException
      * @throws \Exception
