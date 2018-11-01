@@ -56,8 +56,7 @@ class  GithubClientService extends Controller
             throw new \Exception("user does not have github access registered");
         }
         $githubClient = new GithubClient();
-        //$githubClient->authenticate(null, $user->getGithubAccessToken(), GithubClient::AUTH_HTTP_PASSWORD);
-        $githubClient->authenticate("mbuliard", "inregnodatisumus", GithubClient::AUTH_HTTP_PASSWORD);
+        $githubClient->authenticate(null, $user->getGithubAccessToken(), GithubClient::AUTH_HTTP_PASSWORD);
 
         return $githubClient;
     }
@@ -98,8 +97,11 @@ class  GithubClientService extends Controller
         $githubCardsApi = $githubColumnApi->cards()->configure();
         /** @var Line $line */
         foreach ($project->getRefLines() as $line) {
-            $githubCardsApi->create($columnTodo["id"], ['note' =>$line->getDescription()]);
+            $card = $githubCardsApi->create($columnTodo["id"], ['note' =>$line->getDescription()]);
+            $line->setGithubCard($card["id"]);
+            $this->entityManager->persist($line);
         }
+        $this->entityManager->flush();
     }
 
     /**

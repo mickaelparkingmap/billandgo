@@ -155,6 +155,13 @@ class Line
      */
     private $refBill;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="github_card", type="string", length=255, nullable=true)
+     */
+    private $githubCard;
+
 
     /**
      * Get id
@@ -542,5 +549,23 @@ class Line
     public function getRefTax() : ?Tax
     {
         return $this->refTax;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGithubCard(): string
+    {
+        return $this->githubCard;
+    }
+
+    /**
+     * @param string $githubCard
+     * @return Line
+     */
+    public function setGithubCard(string $githubCard): Line
+    {
+        $this->githubCard = $githubCard;
+        return $this;
     }
 }
