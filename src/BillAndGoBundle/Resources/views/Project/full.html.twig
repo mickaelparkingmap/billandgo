@@ -147,28 +147,52 @@
                                                                     Ajouter un dépôt
                                                                 </button>
                                                                 <div class="dropdown-menu dropdown-mod" aria-labelledby="dropdownGitRepo">
-                                                                    <div class="box box-widget widget-user-2">
-                                                                        <!-- Add the bg color to the header using any of the bg-* classes -->
-                                                                        <div class="widget-user-header bg-green">
-                                                                            <div class="widget-user-image" style="margin-top: -35px">
-                                                                                <i class="fa fa-github ppdashbboard fa-3x"></i>
-                                                                            </div>
-                                                                            <!-- /.widget-user-image -->
-                                                                            <h3 class="widget-user-username">Vos dépôts</h3>
 
-                                                                        </div>
-                                                                        <div class="box-footer">
-                                                                            <div class="row">
-                                                                                <div class="col-md-12">
+                                                         <div class="box box-widget widget-user-2">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="widget-user-header bg-green text-center flex-block">
+                            <!-- /.widget-user-image -->
+                            <span>Vos dépôts</span>
+                            <a  class="btn btn-danger dropdown-toggle "   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                   Fermer
+                                                    </a>
 
-                                                                                    <ul class="products-list product-list-in-box" id="gitList">
-                                                                                    </ul>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <button type="button" class="btn btn-success btn-outline text-center center-block repoopen" data-toggle="modal" data-target="#createRepoModal">
-                                                                            Créer un dépôt
-                                                                        </button>
+                                                        <a  class="btn btn-primary"  data-toggle="modal" data-target="#createRepoModal">
+                                                            Créer un dépôt
+                                                        </a>
+                        </div>
+                        <div class="box-footer">
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                    <ul class="products-list product-list-in-box" id="gitList">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                                                    </div>
+                                                    </div>
+                                                </span>
+                                                          <div class="modal fade text-center" id="createRepoModal" tabindex="-1" role="dialog" aria-labelledby="createRepoModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title text-center" id="repoModalLabel">Création d'un dépôt GitHub</h4>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body text-left">
+                                                            <form method="post" action="{{ path('billandgo_project_create_repo', {'id' : project.id}) }}">
+                                                                <div class="form-group row">
+                                                                    <label for="name" class="col-sm-7 col-form-label">Nom du dépôt :</label>
+                                                                    <div class="col-sm-5">
+                                                                        <input class="form-control" type="text" id="name" name="name">
                                                                     </div>
                                                                 </div>
                                                             </span>
@@ -832,9 +856,9 @@
                 $.getJSON("{{ path('billandgo_project_list_repo', {'id': project.id}) }}", function (data) {
                     $.each(data, function (key, val) {
                         $('#gitList').append(
-                            '<li class="item"><li class="item">\n' +
+                            '<li class="item">\n' +
                             '                                            <div class="product-img">\n' +
-                            '                                                <i class="fa fa-file-text fa-2x"></i>\n' +
+                            '                                                <i class="fa fa-github"></i>\n' +
                             '                                            </div>\n' +
                             '                                            <div class="product-info">\n' +
                             '                                                <div  class="product-title">' +
