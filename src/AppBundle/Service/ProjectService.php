@@ -127,9 +127,7 @@ class  ProjectService extends Controller
         }
 
         try {
-            $project->setRepoName($repoName);
-            $this->entityManager->persist($project);
-            $this->entityManager->flush();
+            $this->githubClientService->createGithubProject($project, $repoName);
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }

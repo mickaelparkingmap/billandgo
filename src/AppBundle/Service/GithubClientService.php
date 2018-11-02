@@ -196,7 +196,7 @@ class  GithubClientService extends Controller
      * @throws MissingArgumentException
      * @throws \Exception
      */
-    private function createGithubProject (
+    public function createGithubProject (
         Project $project,
         string  $repoFullName
     ): GithubProject {
@@ -256,8 +256,6 @@ class  GithubClientService extends Controller
         }
         try {
             $this->createGithubProject($project, $repoFullName);
-        /*try {
-            $this->setProject($user, $project);*/
         } catch (\Exception $e) {
             throw new \Exception("GitHub : ".$e->getMessage());
         }

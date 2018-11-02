@@ -37,7 +37,7 @@ class GithubProject
     /**
      * @var string
      *
-     * @ORM\Column(name="github_id", type="string", length=255)
+     * @ORM\Column(name="github_id", type="string", length=255, nullable=true)
      */
     private $githubId;
 
@@ -79,7 +79,7 @@ class GithubProject
     public function __construct(
         string  $user,
         string  $repository,
-        string  $githubId
+        string  $githubId = null
     ) {
         $this->setUser($user);
         $this->setRepository($repository);
@@ -147,10 +147,10 @@ class GithubProject
     }
 
     /**
-     * @param string $githubId
+     * @param string|null $githubId
      * @return GithubProject
      */
-    private function setGithubId(string $githubId): GithubProject
+    private function setGithubId(?string $githubId): GithubProject
     {
         $this->githubId = $githubId;
         return $this;
