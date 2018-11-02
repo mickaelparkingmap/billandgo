@@ -65,11 +65,10 @@ class  GithubClientService extends Controller
 
     /**
      * @param Project $project
-     * @return Project
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @return array
      * @throws \Exception
      */
-    public function updateLinesFromCards(Project $project): Project
+    private function getCardsStatus(Project $project): array
     {
         $githubClient = $this->getAuthenticatedClient($project->getRefUser());
         /** @var Repo $githubRepoApi */
@@ -106,12 +105,27 @@ class  GithubClientService extends Controller
         } catch (\Exception $e) {
         }
 
+        return $cardStatus;
+    }
+
+    /**
+     * @param Project $project
+     * @return Project
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
+     */
+    public function updateLinesFromCards(Project $project): Project
+    {
+        $cardStatus = $this->getCardsStatus($project);
+
         /** @var Line $line */
         foreach ($project->getRefLines() as $line) {
-            $gitStatus = $cardStatus[$line->getGithubCard()];
-            if ($line->getStatus() !== $gitStatus) {
-                $line->setStatus($gitStatus);
-                $this->entityManager->persist($line);
+            if ($cardStatus[$line->getGithubCard()]) {
+                $gitStatus = $cardStatus[$line->getGithubCard()];
+                if ($line->getStatus() !== $gitStatus) {
+                    $line->setStatus($gitStatus);
+                    $this->entityManager->persist($line);
+                }
             }
         }
         $this->entityManager->flush();
