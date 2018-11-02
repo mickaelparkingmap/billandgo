@@ -14,7 +14,6 @@
 
 namespace BillAndGoBundle\Entity;
 
-use BillAndGoBundle\Repository\LineRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -27,6 +26,35 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Line
 {
+    const STATUS_DRAW = "draw";
+    const STATUS_ESTIMATED = "estimated";
+    const STATUS_ACCEPTED = "accepted";
+    const STATUS_PLANNED = "planned";
+    const STATUS_WORKING = "working";
+    const STATUS_WAITING = "waiting";
+    const STATUS_VALIDATED = "validated";
+    const STATUS_BILLING = "billing";
+    const STATUS_BILLED = "billed";
+    const STATUS_CANCELED = "canceled";
+    const PROJECT_STATUS = [
+        self::STATUS_PLANNED,
+        self::STATUS_WORKING,
+        self::STATUS_WAITING,
+        self::STATUS_VALIDATED
+    ];
+    const AVALAIBLE_STATUS = [
+        self::STATUS_DRAW,
+        self::STATUS_ESTIMATED,
+        self::STATUS_ACCEPTED,
+        self::STATUS_PLANNED,
+        self::STATUS_WORKING,
+        self::STATUS_WAITING,
+        self::STATUS_VALIDATED,
+        self::STATUS_BILLING,
+        self::STATUS_BILLED,
+        self::STATUS_CANCELED
+    ];
+
     /**
      * @var int
      *
@@ -154,6 +182,13 @@ class Line
      *      )
      */
     private $refBill;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="github_card", type="string", length=255, nullable=true)
+     */
+    private $githubCard;
 
 
     /**
@@ -542,5 +577,23 @@ class Line
     public function getRefTax() : ?Tax
     {
         return $this->refTax;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGithubCard(): string
+    {
+        return $this->githubCard;
+    }
+
+    /**
+     * @param string $githubCard
+     * @return Line
+     */
+    public function setGithubCard(string $githubCard): Line
+    {
+        $this->githubCard = $githubCard;
+        return $this;
     }
 }

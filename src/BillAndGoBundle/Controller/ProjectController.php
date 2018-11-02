@@ -534,9 +534,9 @@ class ProjectController extends Controller
     /**
      * edit status of a line
      *
-     * @param int    $id      id of the project
-     * @param int    $id_line id of the line to edit
-     * @param String $status  new status : draw, estimated, accepted, planned, working, waiting, validated, billing, billed, canceled
+     * @param int       $id id of the project
+     * @param int       $id_line id of the line to edit
+     * @param String    $status new status : draw, estimated, accepted, planned, working, waiting, validated, billing, billed, canceled
      * @Route("/projects/{id}/line/{id_line}/edit/status/{status}", name="billandgo_project_line_edit_status")
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -551,26 +551,55 @@ class ProjectController extends Controller
             $this->addFlash("error", $usersub["msg"]);
             return ($this->redirectToRoute("fos_user_security_login"));
         }
-        $avalaible_status = [
-            "draw", "estimated", "accepted",
-            "planned", "working", "waiting", "validated",
-            "billing", "billed",
-            "canceled"
-        ];
-        if (($id > 0) && ($id_line > 0) && (in_array($status, $avalaible_status))) {
+        if (($id > 0) && ($id_line > 0) && (in_array($status, Line::AVALAIBLE_STATUS))) {
             $manager = $this->getDoctrine()->getManager();
-            $project = $manager->getRepository('BillAndGoBundle:Project')->find($id);
-            $line = $manager->getRepository('BillAndGoBundle:Line')->find($id_line);
+            /** @var Project $project */
+            $project = $manager->getRepository(Project::class)->find($id);
+            /** @var Line $line */
+            $line = $manager->getRepository(Line::class)->find($id_line);
             if (($project != null) && ($line != null)) {
                 if (($project->getRefUser() == $user) && ($line->getRefUser() == $user)) {
                     $line->setStatus($status);
+                    $manager->persist($line);
                     $manager->flush();
+                    if ($project->getGithubProject()) {
+                        try {
+                            $this->githubClientService->moveCard($line, $project, $status);
+                        } catch (\Exception $e) {
+                        }
+                    }
                     return $this->redirect($this->generateUrl("billandgo_project_view", array('id' => $id)));
                 }
             }
         }
         $ar404 = ["doesn't exist"];
         return new Response(json_encode($ar404), 404);
+    }
+
+    /**
+     * @Route("/projects/{projectId}/update_line_status", name="billandgo_project_line_update_status")
+     *
+     * @param int $projectId
+     * @return Response
+     */
+    public function updateLineStatus(int $projectId): Response
+    {
+        $user = $this->getUser();
+        if (!is_object($user)) {
+            throw new AccessDeniedException('disconnected');
+        }
+
+        /** @var Project $project */
+        $project = $this->getDoctrine()->getRepository(Project::class)->find($projectId);
+        if (!$project) {
+            $ar404 = ["doesn't exist"];
+            return new Response(json_encode($ar404), 404);
+        }
+        if (!$project->getGithubProject()) {
+            return new Response("no github repo", 400);
+        }
+        $this->githubClientService->updateLinesFromCards($project);
+        return $this->redirect($this->generateUrl("billandgo_project_view", array('id' => $projectId)));
     }
 
     /**

@@ -84,8 +84,6 @@ class Project
      */
     private $refClient;
 
-
-
     /**
      * @var ArrayCollection
      *
@@ -97,14 +95,12 @@ class Project
      */
     private $refLines;
 
-
     /**
-     * @var string
+     * @var GithubProject
      *
-     * @ORM\Column(name="github_repo", type="text", length=255, nullable=true)
+     * @ORM\OneToOne(targetEntity="GithubProject", cascade={"persist"})
      */
-    private $repoName;
-
+    private $githubProject;
 
     /**
      * Set begin
@@ -118,8 +114,6 @@ class Project
         $this->begin = $begin;
         return $this;
     }
-
-
 
     /**
      * Get begin
@@ -303,26 +297,26 @@ class Project
     /**
      * @return string
      */
-    public function getRepoName(): ?string
-    {
-        return $this->repoName;
-    }
-
-    /**
-     * @return string
-     */
     public function getRepoUrl(): ?string
     {
-        return "https://github.com/".$this->getRepoName();
+        return "https://github.com/".$this->getGithubProject()->getFullName();
     }
 
     /**
-     * @param string $repoName
+     * @return GithubProject|null
+     */
+    public function getGithubProject(): ?GithubProject
+    {
+        return $this->githubProject;
+    }
+
+    /**
+     * @param GithubProject|null $githubProject
      * @return Project
      */
-    public function setRepoName(?string $repoName): Project
+    public function setGithubProject(GithubProject $githubProject): ?Project
     {
-        $this->repoName = $repoName;
+        $this->githubProject = $githubProject;
         return $this;
     }
 
