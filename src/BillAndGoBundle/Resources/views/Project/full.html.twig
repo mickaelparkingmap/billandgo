@@ -329,15 +329,22 @@
 
             <div class="box box-success">
                 <div class="box-header with-border">
-                    {% set timeLeft = 0 %}
-                    {% set timeDone = 0 %}
+                    {% set timeValidated = 0 %}
+                    {% set timeWaiting = 0 %}
+                    {% set timeWorking = 0 %}
+                    {% set timePlanned = 0 %}
                     {% for line in project.refLines %}
-                        {% if line.status == "planned" %}
-                            {% set timeLeft = timeLeft + line.estimatedTime * line.quantity %}
-                        {% else %}
-                            {% set timeDone = timeDone + line.estimatedTime * line.quantity %}
+                        {% if line.status == "validated" %}
+                            {% set timeValidated = timeValidated + line.estimatedTime * line.quantity %}
+                        {% elseif line.status == "waiting" %}
+                            {% set timeWaiting = timeWaiting + line.estimatedTime * line.quantity %}
+                        {% elseif line.status == "working" %}
+                            {% set timeWorking = timeWorking + line.estimatedTime * line.quantity %}
+                        {% elseif line.status == "planned" %}
+                            {% set timePlanned = timePlanned + line.estimatedTime * line.quantity %}
                         {% endif %}
                     {% endfor %}
+                    {% set timeTotal = timeValidated + timeWaiting + timeWorking + timePlanned %}
                     <div>
                     <h3 class="box-title">Tâches du projet ({{ project.refLines|length }})</h3>
                     {% if project.githubProject %}
@@ -740,21 +747,36 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    {% if timeDone + timeLeft > 0 %}
+                    {% if timeTotal > 0 %}
+                        {% set percentValidated = (timeValidated / (timeTotal) * 100) | round %}
                         <h4>Progression du projet</h4>
 
-                        <p>{{ timeDone }} h travaillé sur {{ timeDone + timeLeft }} h </p>
+                        <p>{{ timeValidated }} h validé sur {{ timeTotal }} h </p>
                         <div class="progress progress-mod">
-                            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="{{ (timeDone / (timeDone + timeLeft) * 100) | round }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ (timeDone / (timeDone + timeLeft) * 100) | round}}%">
-                                <span class="prg-b">{{ (timeDone / (timeDone + timeLeft) * 100) | round}}%</span>
-                            </div>
+                            {% if timeValidated > 0 %}
+                                <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="{{ percentValidated }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ percentValidated }}%">
+                                    <span class="prg-b">validé : {{ percentValidated }}%</span>
+                                </div>
+                            {% endif %}
+                            {% if timeWaiting > 0 %}
+                                {% set percentWaiting = (timeWaiting / (timeTotal) * 100) | round %}
+                                <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="{{ percentWaiting }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ percentWaiting }}%">
+                                    <span class="prg-b">en test : {{ percentWaiting }}%</span>
+                                </div>
+                            {% endif %}
+                            {% if timeWorking > 0 %}
+                                {% set percentWorking = (timeWorking / (timeTotal) * 100) | round %}
+                                <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" aria-valuenow="{{ percentWorking }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ percentWorking }}%">
+                                    <span class="prg-b">en cours : {{ percentWorking }}%</span>
+                                </div>
+                            {% endif %}
                         </div>
                     {% endif %}
                     <p>
                         Valeur du projet : {{ value }}€ HT
-                        {% if timeDone + timeLeft > 0 %}
-                            , soit {{ (value / (timeDone + timeLeft))|round() }}€/h
-                            dont {{ (timeDone / (timeDone + timeLeft) * value) | round}}€ validés
+                        {% if timeTotal > 0 %}
+                            , soit {{ (value / (timeTotal))|round() }}€/h
+                            dont {{ (timeValidated / (timeTotal) * value) | round}}€ validés
                         {% endif %}
                     </p>
 
